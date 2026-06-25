@@ -16,18 +16,20 @@
 ========================= */
 
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 20px 40px;
-  position: relative;
-  z-index: 1000;
+  z-index: 9999;
 }
+
 
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
   background: #fff;
   border-radius: 60px;
-  padding: 18px 28px;
+  padding: 5px 15px;
 
   display: flex;
   align-items: center;
@@ -201,11 +203,13 @@
   align-items: flex-start;
   gap: 12px;
 
-  margin-bottom: 22px;
-  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
 
+  cursor: pointer;
   transition: all 0.25s ease;
 }
+
 
 .solution-item h4 {
   color: var(--text-dark);
@@ -386,4 +390,55 @@
   max-height: 200px;
   opacity: 1;
   transform: translateY(0);
+}
+
+.company-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 10px;
+  border-radius: 12px;
+
+  transition: all 0.25s ease;
+}
+
+.company-item:hover {
+  background: #f9fafb;
+}
+
+.company-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary);
+
+  flex-shrink: 0;
+}
+
+.company-content h4 {
+  margin-bottom: 4px;
+}
+
+.company-content p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.solution-content h4 {
+  margin-bottom: 4px;
+}
+
+.solution-content p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.chere {
+  transition: transform 0.3s ease;
+}
+
+.chere:hover {
+  transform: rotate(180deg);
 }

@@ -19,42 +19,60 @@ import "../../Styles/components/Navbar.css";
 
 const fullScreenSixeSolutionInfo = [
   {
-    header: "For Schools",
-    logo: <School size={22} />,
-    header2: "School OS",
-    info2: "Attendance, Admin & Results",
-    logo3: <Wallet size={20} />,
-    header3: "Financial Management",
-    info3: "Fee Compliance & Reconciliation",
-    logo4: <FileCheck size={20} />,
-    header4: "CBT Engine",
-    info4: "Assessment & Exams",
-  },
+  header: "For Schools",
+  logo: <School size={22} />,
 
-  {
-    header: "For Parents",
-    logo: <Shield size={22} />,
-    header2: "Acceede Pay",
-    info2: "Tuition & Fee Payments",
-    logo3: <CreditCard size={20} />,
-    header3: "Flexpay",
-    info3: "Installment Plans",
-    logo4: <BarChart3 size={20} />,
-    header4: "Performance",
-    info4: "Monitor Child's Progress",
-  },
+  logo2: <School size={20} />,
+  header2: "School OS",
+  info2: "Attendance, Admin & Results",
 
-  {
-    header: "For Students",
-    logo: <GraduationCap size={22} />,
-    header2: "Study App",
-    info2: "AI-Powered Learning",
-  },
+  logo3: <Wallet size={20} />,
+  header3: "Financial Management",
+  info3: "Fee Compliance & Reconciliation",
+
+  logo4: <FileCheck size={20} />,
+  header4: "CBT Engine",
+  info4: "Assessment & Exams",
+},
+
+ {
+  header: "For Parents",
+  logo: <Shield size={22} />,
+
+  logo2: <CreditCard size={20} />,
+  header2: "Acceede Pay",
+  info2: "Tuition & Fee Payments",
+
+  logo3: <Wallet size={20} />,
+  header3: "Flexpay",
+  info3: "Installment Plans",
+
+  logo4: <BarChart3 size={20} />,
+  header4: "Performance",
+  info4: "Monitor Child's Progress",
+},
+
+ {
+  header: "For Students",
+  logo: <GraduationCap size={22} />,
+
+  logo2: <GraduationCap size={20} />,
+  header2: "Study App",
+  info2: "AI-Powered Learning",
+}
 ];
 
 const companyInfo = [
-  { info: "About Us", content: "Our Mission & Story" },
-  { info: "Contact", content: "Get in Touch" },
+  {
+    logo: <School size={20} />,
+    info: "About Us",
+    content: "Our Mission & Story",
+  },
+  {
+    logo: <Shield size={20} />,
+    info: "Contact",
+    content: "Get in Touch",
+  },
 ];
 
 export default function Navbar() {
@@ -110,7 +128,9 @@ export default function Navbar() {
                 onMouseLeave={() => setShowSolutions(false)}
               >
                 <button className="nav-link-btn">
-                  Solutions <ChevronDown size={16} />
+                  Solutions <ChevronDown
+  className= "chere"
+/>
                 </button>
 
                 {showSolutions && (
@@ -124,23 +144,41 @@ export default function Navbar() {
 
                         {item.header2 && (
                           <div className="solution-item">
-                            <h4>{item.header2}</h4>
-                            <p>{item.info2}</p>
-                          </div>
+  <div className="solution-icon">
+    {item.logo2}
+  </div>
+
+  <div className="solution-content">
+    <h4>{item.header2}</h4>
+    <p>{item.info2}</p>
+  </div>
+</div>
                         )}
 
                         {item.header3 && (
                           <div className="solution-item">
-                            <h4>{item.header3}</h4>
-                            <p>{item.info3}</p>
-                          </div>
+  <div className="solution-icon">
+    {item.logo3}
+  </div>
+
+  <div className="solution-content">
+    <h4>{item.header3}</h4>
+    <p>{item.info3}</p>
+  </div>
+</div>
                         )}
 
                         {item.header4 && (
                           <div className="solution-item">
-                            <h4>{item.header4}</h4>
-                            <p>{item.info4}</p>
-                          </div>
+  <div className="solution-icon">
+    {item.logo4}
+  </div>
+
+  <div className="solution-content">
+    <h4>{item.header4}</h4>
+    <p>{item.info4}</p>
+  </div>
+</div>
                         )}
                       </div>
                     ))}
@@ -155,16 +193,24 @@ export default function Navbar() {
                 onMouseLeave={() => setShowCompany(false)}
               >
                 <button className="nav-link-btn">
-                  Company <ChevronDown size={16} />
+                  Company <ChevronDown
+  className="chere"
+/>
                 </button>
 
                 {showCompany && (
                   <div className="company-dropdown">
                     {companyInfo.map((item, index) => (
                       <div key={index} className="company-item">
-                        <h4>{item.info}</h4>
-                        <p>{item.content}</p>
-                      </div>
+  <div className="company-icon">
+    {item.logo}
+  </div>
+
+  <div className="company-content">
+    <h4>{item.info}</h4>
+    <p>{item.content}</p>
+  </div>
+</div>
                     ))}
                   </div>
                 )}
@@ -176,18 +222,8 @@ export default function Navbar() {
                   className="accordion-header"
                   onClick={() => toggleSection("schools")}
                 >
-                  <School size={16} />
                   For Schools
-                  <ChevronDown
-                    className={`icon ${openSection === "schools" ? "rotate" : ""}`}
-                  />
                 </button>
-
-                <div className={`accordion-body ${openSection === "schools" ? "show" : ""}`}>
-                  <NavLink to="/schools">School Overview</NavLink>
-                  <NavLink to="/schools/admin">Admin System</NavLink>
-                  <NavLink to="/schools/results">Results</NavLink>
-                </div>
               </div>
 
               <div className="accordion-item">
@@ -195,17 +231,9 @@ export default function Navbar() {
                   className="accordion-header"
                   onClick={() => toggleSection("parents")}
                 >
-                  <Shield size={16} />
                   For Parents
-                  <ChevronDown
-                    className={`icon ${openSection === "parents" ? "rotate" : ""}`}
-                  />
                 </button>
 
-                <div className={`accordion-body ${openSection === "parents" ? "show" : ""}`}>
-                  <NavLink to="/parents/payments">Payments</NavLink>
-                  <NavLink to="/parents/performance">Performance</NavLink>
-                </div>
               </div>
 
               <div className="accordion-item">
@@ -213,17 +241,9 @@ export default function Navbar() {
                   className="accordion-header"
                   onClick={() => toggleSection("students")}
                 >
-                  <GraduationCap size={16} />
                   For Students
-                  <ChevronDown
-                    className={`icon ${openSection === "students" ? "rotate" : ""}`}
-                  />
                 </button>
 
-                <div className={`accordion-body ${openSection === "students" ? "show" : ""}`}>
-                  <NavLink to="/students/study">Study App</NavLink>
-                  <NavLink to="/students/classes">Classes</NavLink>
-                </div>
               </div>
 
             </div>
