@@ -17,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/Michael-aal/petra-school-project/issues"
   },
-  "homepage": "https://github.com/Michael-aal/petra-school-project#readme"
+  "homepage": "https://github.com/Michael-aal/petra-school-project#readme",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.2.0",
+    "morgan": "^1.11.0"
+  }
 }
