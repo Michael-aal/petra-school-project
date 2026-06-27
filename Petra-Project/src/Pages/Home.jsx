@@ -60,49 +60,55 @@ const homeInfo = [
 
 
 // Setion1
-
 function HomeSection1() {
   return (
-    <section>
-      <div>
-        {img1.map((item, index) => (
-          <img key={index} src={item} alt="" width={300} />
-        ))}
-      </div>
-
-      <div>
-        <h2>
-          <Star size={18} /> Acceede OS v2.0 is Live
-        </h2>
-
-        <h3>
-          The Operating System <span>for Academic</span>{" "}
-          <span>Excellence</span>
-        </h3>
-
-        <p>
-          The single platform trusted by schools for school management,
-          financial control, and by students for crushing WAEC & JAMB with
-          AI-powered mastery.
-        </p>
-
-        <div className="section1btn">
-          <button>
-            Book a Demo (Schools)
-            <Notebook />
-          </button>
-
-          <button>
-            Try AI Study App
-            <Zap />
-          </button>
+    <section className="homeSection1">
+      <div className="section1-container">
+        {/* LEFT IMAGES */}
+        <div className="section1-left-images">
+          {img1.map((item, index) => (
+            <img key={index} src={item} alt="Acceede user" className="section1-img" />
+          ))}
         </div>
-      </div>
 
-      <div>
-        {img2.map((item, index) => (
-          <img key={index} src={item} alt="" width={300} />
-        ))}
+        {/* CENTER CONTENT */}
+        <div className="section1-content">
+          <div className="section1-badge">
+            <span className="badge-dot">●</span>
+            ACCEEDE OS V2.0 IS LIVE
+          </div>
+
+          <h1 className="section1-title">
+            The Operating System
+            <span className="section1-highlight"> for Academic</span>
+            <span className="section1-highlight"> Excellence</span>
+          </h1>
+
+          <p className="section1-description">
+            The single platform trusted by schools for school management,
+            financial control, and by students for crushing WAEC & JAMB with
+            AI-powered mastery.
+          </p>
+
+          <div className="section1-buttons">
+            <button className="section1-btn section1-btn-primary">
+              <Notebook size={18} />
+              Book a Demo (Schools)
+            </button>
+
+            <button className="section1-btn section1-btn-secondary">
+              <Zap size={18} />
+              Try AI Study App
+            </button>
+          </div>
+        </div>
+
+        {/* RIGHT IMAGES */}
+        <div className="section1-right-images">
+          {img2.map((item, index) => (
+            <img key={index} src={item} alt="Acceede student" className="section1-img" />
+          ))}
+        </div>
       </div>
     </section>
   );

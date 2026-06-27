@@ -5,6 +5,8 @@ import Solution from "./Pages/Solution";
 import Company from "./Pages/Company";
 import Navbar from "./Pages/components/Navbar";
 import Forparents from "./Pages/Forparents"
+import About from "./Pages/About";
+import Contact from "./Pages/Contact";
 import Home from "./Pages/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -19,6 +21,8 @@ function App() {
         <Route path="/schools" element={<ForSchool />} />
         <Route path="/parents" element={<Forparents />} />
         <Route path="/students" element={<ForStudents />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
     </Router>
