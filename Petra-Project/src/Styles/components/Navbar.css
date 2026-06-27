@@ -449,3 +449,92 @@
 .chere:hover {
   transform: rotate(180deg);
 }
+
+/* =========================
+   MOBILE ACCORDION
+========================= */
+
+.mobile-section-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.mobile-section-header:hover {
+  color: var(--primary);
+}
+
+.section-chevron {
+  transition: transform 0.3s ease;
+  color: var(--primary);
+}
+
+.section-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+.accordion-body.show {
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.mobile-solution-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 12px;
+  border-left: 3px solid var(--primary);
+  margin-bottom: 8px;
+}
+
+.mobile-solution-group:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-solution-group h4 {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Dark mode for mobile accordion */
+body.dark .mobile-section-header {
+  color: #f3f4f6;
+}
+
+body.dark .mobile-section-header:hover {
+  color: var(--primary-light);
+}
+
+body.dark .accordion-body.show {
+  border-top-color: #374151;
+}
+
+body.dark .section-chevron {
+  color: var(--primary-light);
+}
