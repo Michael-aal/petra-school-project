@@ -19,11 +19,16 @@
   },
   "homepage": "https://github.com/Michael-aal/petra-school-project#readme",
   "dependencies": {
+    "@prisma/client": "^7.8.0",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.2.0",
-    "morgan": "^1.11.0"
+    "morgan": "^1.11.0",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
   }
 }
