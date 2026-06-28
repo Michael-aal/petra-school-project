@@ -1,5 +1,6 @@
 import { Building2, ArrowRight, LayoutDashboard, Wallet, TestTube, TrendingUp, Shield, CircleCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import "../Styles/Forschool.css";
 
 const forSchoolBtn = ["Request a Strategic Demo", "Contact Sales"];
 
@@ -51,68 +52,104 @@ const Modernie = ["Ready to Modernize Your School?", "Join hundreds of forward-t
 
 export default function ForSchool() {
   return (
-    <section>
-        <div className="">
-            <div className="">
-      <h2>
-        <Building2 /> FOR SCHOOLS
-      </h2>
-      <h3>
-        Run Your Entire School on <span>Autopilot</span>
-      </h3>
-      <p>
-        Stop using fragmented tools. Acceede connects your Administration, 
-        Finances, and Assessments into one powerful, unified Operating System.
-      </p>
-      
-      <div className="">
-        {forSchoolBtn.map((item, index) => (
-          <NavLink to="/" key={index}>
-            {item}
-            {index === 0 && <ArrowRight />}
-          </NavLink>
+    <section className="fsos">
+
+      {/* HEADER */}
+      <div className="fsos-header">
+
+        <div className="fsos-badge">
+          <Building2 />
+          FOR SCHOOLS
+        </div>
+
+        <h2 className="fsos-title">
+          Run Your Entire School on <span>Autopilot</span>
+        </h2>
+
+        <p className="fsos-description">
+          Stop using fragmented tools. Acceede connects your Administration,
+          Finances, and Assessments into one powerful, unified Operating System.
+        </p>
+
+        <div className="fsos-actions">
+          {forSchoolBtn.map((item, index) => (
+            <NavLink to="/" key={index} className={index === 0 ? "fsos-btn1" : "fsos-btn2"}>
+              {item}
+              {index === 0 && <ArrowRight className="fsos-icon" />}
+            </NavLink>
+          ))}
+        </div>
+
+      </div>
+
+      {/* FEATURES */}
+      <div className="fsos-features">
+
+        {ForSchoolPurpose.map((item, index) => (
+          <div className="fsos-featureCard" key={index}>
+
+            <h3 className="fsos-featureIcon">{item.logo}</h3>
+
+            <h2 className="fsos-featureTitle">{item.title}</h2>
+
+            <p className="fsos-featureText">{item.info}</p>
+
+            <h4 className="fsos-featureLink">
+              Explore {item.to} <ArrowRight />
+            </h4>
+
+          </div>
         ))}
-      </div>
-      </div>
 
-      <div className="">
-        {
-            ForSchoolPurpose.map((item, index) => (
-                <div className="" key={index}>
-                    <h3>{item.logo}</h3>
-                    <h2>{item.title}</h2>
-                    <p>{item.info}</p>
-
-                    <h4>Explore {item.to} <ArrowRight /> </h4>
-                </div>
-            ))
-        }
       </div>
 
-      <div className="">
-        <h2>Why Top Schools Choose Acceede</h2>
-        <p>We don't just sell software; we partner with you to achieve operational excellence.</p>
+      {/* REASONS */}
+      <div className="fsos-reasons">
 
-        {
-            topSchoolInfo.map((item, index) => (
-                <div className="" key={index}>
-                    <h3>{item.logo}</h3>
-                    <div className="">
-                        <h4>{item.title}</h4>
-                        <p>{item.info}</p>
-                    </div>
-                </div>
-            ))
-        }
+        <h2 className="fsos-reasonsTitle">
+          Why Top Schools Choose Acceede
+        </h2>
+
+        <p className="fsos-reasonsText">
+          We don't just sell software; we partner with you to achieve operational excellence.
+        </p>
+
+<div className="">
+        {topSchoolInfo.map((item, index) => (
+          <div className="fsos-reasonItem" key={index}>
+
+            <h3 className="fsos-reasonIcon">{item.logo}</h3>
+
+            <div className="fsos-reasonContent">
+              <h4 className="fsos-reasonTitle">{item.title}</h4>
+              <p className="fsos-reasonText">{item.info}</p>
+            </div>
+
+          </div>
+        ))}
+
+        </div>
+
       </div>
 
-      <div className="">
-        <h2>Ready to Modernize Your School?</h2>
-        <p>Join hundreds of forward-thinking institutions that trust Acceede. Schedule a personalized walkthrough today.</p>
+      {/* CTA */}
+      <div className="fsos-cta">
 
-        <button>Book Your Demo</button>
+        <h2 className="fsos-ctaTitle">
+          Ready to Modernize Your School?
+        </h2>
+
+        <p className="fsos-ctaText">
+          Join hundreds of forward-thinking institutions that trust Acceede.
+          Schedule a personalized walkthrough today.
+        </p>
+
+        <button className="fsos-ctaButton">
+          Book Your Demo
+        </button>
+
       </div>
-      </div>
+
     </section>
   );
 }

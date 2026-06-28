@@ -138,13 +138,17 @@ function HomeSection2() {
 
   return (
     <section className="homeSection2">
-      <div className="section2-content">
-        <div className="recognition-badge">
-          <Sparkles size={16} />
-          Recognition
-        </div>
 
-        <h2>As Featured In</h2>
+      <div className="section2-wrapper">
+
+        <div className="section2-text">
+          <div className="recognition-badge">
+            <Sparkles size={16} />
+            Recognition
+          </div>
+
+          <h2>As Featured In</h2>
+        </div>
 
         <div className="logos-container">
           {logos.map((item, index) => (
@@ -153,11 +157,13 @@ function HomeSection2() {
             </div>
           ))}
         </div>
+
       </div>
 
-      <a href="https://wa.me/" className="whatsapp-btn" aria-label="Contact us on WhatsApp">
+      <a href="https://wa.me/" className="whatsapp-btn">
         <MessageCircle size={24} />
       </a>
+
     </section>
   );
 }
