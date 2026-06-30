@@ -4,7 +4,7 @@ import ForStudents from "./Pages/Forstusents";
 import Solution from "./Pages/Solution";
 import Company from "./Pages/Company";
 import Navbar from "./Pages/components/Navbar";
-import Forparents from "./Pages/Forparents"
+import Forparents from "./Pages/Forparents";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Home from "./Pages/Home";
