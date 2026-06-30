@@ -27,6 +27,10 @@
         white;
 }
 
+.section1-left-images, .section1-right-images{
+  display: none;
+}
+
 
 .section1-badge{
   display: flex;
@@ -133,6 +137,47 @@ width: 300px;
   font-size: 20px;
   font-weight: 600;
   gap: 10px;
+}
+
+@media(min-width: 375px){
+.section1-badge{
+  margin-top: 1em;
+  font-size: .8em;
+  font-weight: 700;
+  width: fit-content;
+  padding-left: .4em;
+  border-radius: 99999px;
+}
+
+.section1-title{
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  padding-left: 1em;
+  padding-right: 1em;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+}
+.section1-description{
+  color: rgb(75, 85, 99);
+  line-height: 1.625;
+  font-size: 1.2rem;
+  max-width: 41rem;
+  width: 100%;
+  padding-left: 1.3em;
+  padding-right: 1.3em;
+}
+
+.section1-btn-primary, .section1-btn-secondary{
+  font-size: 1.125rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 1em 2em;
+  gap: .5em;
+}
 }
 
 

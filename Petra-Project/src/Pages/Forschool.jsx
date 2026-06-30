@@ -27,22 +27,22 @@ const ForSchoolPurpose = [
 
 const topSchoolInfo = [
     {
-        logo: <TrendingUp />,
+        logo: <TrendingUp className="fsos-svg" />,
         title: "Revenue Assurance",
         info: "Our integrated payment rails and reconciliation tools ensure you collect 100% of your fees, on time. No more leakages."
     },
     {
-        logo: <Shield />,
+        logo: <Shield className="fsos-svg" />,
         title: "Data Security First",
         info: "We employ bank-grade encryption and security protocols to keep your sensitive student and financial data safe."
     },
     {
-        logo: <CircleCheck />,
+        logo: <CircleCheck className="fsos-svg" />,
         title: "Dedicated Support",
         info: "You get a dedicated account manager and 24/7 technical support. We are an extension of your team."
     },
     {
-        logo: <Building2 />,
+        logo: <Building2 className="fsos-svg" />,
         title: "Scalable Infrastructure",
         info: "Whether you have 50 students or 5,000, our cloud-native infrastructure scales with your growth without skipping a beat."
     },
@@ -114,7 +114,7 @@ export default function ForSchool() {
           We don't just sell software; we partner with you to achieve operational excellence.
         </p>
 
-<div className="">
+<div className="fsos-info">
         {topSchoolInfo.map((item, index) => (
           <div className="fsos-reasonItem" key={index}>
 
@@ -144,9 +144,9 @@ export default function ForSchool() {
           Schedule a personalized walkthrough today.
         </p>
 
-        <button className="fsos-ctaButton">
+        <NavLink to="/" className="fsos-ctaButton">
           Book Your Demo
-        </button>
+        </NavLink>
 
       </div>
 

@@ -1,5 +1,6 @@
 import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "../Styles/Home.css";
 import MarqueeModule from "react-fast-marquee";
 
@@ -61,11 +62,12 @@ const homeInfo = [
 
 // Setion1
 function HomeSection1() {
+
   return (
     <section className="homeSection1">
       <div className="section1-container">
         {/* LEFT IMAGES */}
-        <div className="section1-left-images">
+        <div className="  section1-left-images">
           {img1.map((item, index) => (
             <img key={index} src={item} alt="Acceede user" className="section1-img" />
           ))}

@@ -5,17 +5,18 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    padding:  6em 0 2em ;
+        background-color: #f3f4f6;
 }
 
 .fsos-header{
+        padding:  6em 0 2em ;
     display: flex;
     text-align: center;
     flex-direction: column;
     align-items: center;
-    background-color: #f3f4f6;
-    padding-top: 1em;
+    padding-top: 6em;
     padding-bottom: 3rem;
+    width: 100%;
 }
 
 .fsos-badge{
@@ -50,7 +51,7 @@
 
 .fsos-description{
     color: rgb(75, 85, 99, 1);
-    max-width: 48rem;
+    max-width: 45rem;
     line-height: 1.625;
     font-size: 1.25rem;
     padding: 0 1em;
@@ -68,16 +69,15 @@
 
 .fsos-btn1, .fsos-btn2{
     font-weight: 700;
-    padding: 1em 2em;
     border-radius: 9999px;
     gap: 0.5rem;
-    width: 100%;
     text-align: center;
 }
 
 .fsos-btn1{
     display: flex;
     color: #FFFFFF;
+        padding: 1em 2em;
     align-items: center;
     background: #4543B5;
     box-shadow: 0 0 #0000;
@@ -88,13 +88,13 @@
 .fsos-btn2{
     color: #111827;
     font-size: 1rem;
-    background-color: #f3f4f6;
     padding: 1rem 2rem;
+    background-color: #F3F4F6;
 }
 
 .fsos-reasons{
     padding: 6rem 1rem;
-    background-color: #F9FAFB;
+    background-color: rgb(249 250 251);
     margin-bottom: 5rem;
     border-width: 1px;
     display: flex;
@@ -117,4 +117,95 @@
     color: rgb(75, 85, 99);
     font-size: 1rem;
     margin-bottom: 4rem;
+}
+
+.fsos-info{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.fsos-reasonItem{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+
+.fsos-reasonIcon{
+    padding: 0.5rem;
+    background-color: rgb(69, 67, 181 , 0.1);
+    color: rgb(69, 67, 181);
+    border-radius: 0.5rem;
+    height: fit-content;
+    margin-top: 0.25rem;
+}
+
+.fsos-reasonContent{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.fsos-reasonTitle{
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: sans-serif;
+    line-height: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.fsos-reasonText{
+    color: rgb(75, 85, 99);
+    line-height: 1.625;
+    font-size: 1.05em;
+}
+
+.fsos-cta{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background-color: rgb(69, 67, 181);
+}
+
+
+
+
+ /* Tab Size */
+@media(min-width: 768px){
+
+    .fsos-title{
+        font-size: 4.5rem;
+    }
+
+    .fsos-description{
+        max-width: 48rem;
+    }
+
+    .fsos-actions{
+        flex-direction: row;
+    }
+
+    .fsos-reasonsTitle{
+        font-size: 3.5rem;
+        line-height: 1;
+    }
+
+    .fsos-info{
+        padding: 0 1em;
+        display: grid;
+        row-gap: 3rem;
+        column-gap: 3rem;
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fsos-reasonText{
+        max-width: 35em;
+    }
 }
