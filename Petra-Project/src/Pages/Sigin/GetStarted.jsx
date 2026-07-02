@@ -1,5 +1,6 @@
 import { User, Mail, Phone, Building2, MapPin, Search, Send } from "lucide-react";
 import "../../Styles/Sigin/GetStarted.css";
+import { NavLink } from "react-router-dom";
 
 export default function GetStarted() {
   return (
@@ -99,9 +100,9 @@ export default function GetStarted() {
         </div>
 
         {/* SUBMIT */}
-        <button className="gs-button">
+        <NavLink to="/dashboard" className="gs-button">
           Submit Request <Send />
-        </button>
+        </NavLink>
 
       </div>
 
