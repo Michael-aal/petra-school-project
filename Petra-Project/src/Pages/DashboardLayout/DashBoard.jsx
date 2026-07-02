@@ -6,6 +6,7 @@ function MenuItem({ title, children }) {
 
   return (
     <div className="menu-section">
+      
       <div
         onClick={() => setOpen(!open)}
         style={{ cursor: "pointer", fontWeight: "bold", marginTop: "10px" }}
