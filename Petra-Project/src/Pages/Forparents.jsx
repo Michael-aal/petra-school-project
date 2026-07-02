@@ -8,18 +8,28 @@ import {Users, Smartphone, CreditCard, PiggyBank, GraduationCap, Heart, Clock, C
       logo: <CreditCard />,
       title: "Instant Payments", 
       info: "Pay tuition, buy uniforms, and settle bills in seconds. Get instant receipts and track your spending history.", 
-      to: "Acceede Pay" 
+      to: "Acceede Pay" ,
+      svgColor: "#2563eb",
+      svgBgColor: "rgb(59, 130, 246/ 0.1)",
+      rightTop: "#3B82F61A"
     }, 
       { 
         logo: <PiggyBank />, 
         title: "Financial Flexibility", 
-        info: "Can't pay all at once? Split tuition into convenient monthly installments at 0% interest with Flexpay.", to: "Flexpay" 
+        info: "Can't pay all at once? Split tuition into convenient monthly installments at 0% interest with Flexpay.", 
+        to: "Flexpay" ,
+        svgColor: "#16a34a",
+        svgBgColor: "rgb(34, 197 ,94/ 0.1 )",
+        rightTop: "#22C55E1A"
       }, 
       { 
         logo: <GraduationCap />, 
         title: "Academic Success", 
         info: "Give your child a 24/7 AI Tutor. Personalized lesson plans, instant homework help, and exam prep for WAEC & JAMB.", 
-        to: "Study App" 
+        to: "Study App" ,
+        svgBgColor: "#6366F11A",
+        svgColor: "rgb(79 70 229)",
+        rightTop: "#6366F11A"
       }, 
     ] 
     
@@ -71,7 +81,12 @@ export default function Forparents() {
           {ForParentFeature.map((item, index) => (
             <div className="fparent-featureCard" key={index}>
 
-              <h3 className="fparent-featureIcon">
+              <div
+  className="feature-top-circle"
+  style={{ backgroundColor: item.rightTop }}
+></div>
+
+              <h3 className="fparent-featureIcon" style={{backgroundColor: item.svgBgColor, color: item.svgColor}}>
                 {item.logo}
               </h3>
 
@@ -83,7 +98,7 @@ export default function Forparents() {
                 {item.info}
               </p>
 
-              <h4 className="fparent-featureLink">
+              <h4 className="fparent-featureLink"style={{color: item.svgColor}} >
                 Explore {item.to} <ArrowRight />
               </h4>
 
@@ -132,36 +147,36 @@ export default function Forparents() {
         </div>
 
       </div>
-
+      
       {/* App Download */}
-      <div className="fparent-download">
+<div className="fparent-download">
 
-        <h3 className="fparent-downloadBadge">
-          <Smartphone />
-          FOR PARENTS
-        </h3>
+  <div className="fparent-downloadBadge">
+    <Smartphone />
+    <span>FOR PARENTS</span>
+  </div>
 
-        <h2 className="fparent-downloadTitle">
-          Join the Community
-        </h2>
+  <h2 className="fparent-downloadTitle">
+    Join the Community
+  </h2>
 
-        <p className="fparent-downloadText">
-          Over 50,000 parents are already using Acceede to power their children's education.
-        </p>
+  <p className="fparent-downloadText">
+    Over 50,000 parents are already using Acceede to power their children's education.
+  </p>
 
-        <div className="fparent-downloadActions">
+  <div className="fparent-downloadActions">
 
-          <a href="" className="fparent-storeButton">
-            Google Play
-          </a>
+    <a href="/" className="fparent-storeButton">
+      Google Play
+    </a>
 
-          <a href="" className="fparent-storeButton">
-            App Store
-          </a>
+    <a href="/" className="fparent-storeButton secondary">
+      App Store
+    </a>
 
-        </div>
+  </div>
 
-      </div>
+</div>
 
     </section>
   )

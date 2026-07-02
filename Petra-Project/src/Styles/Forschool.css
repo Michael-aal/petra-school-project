@@ -46,7 +46,7 @@
 }
 
 .fsos-title{
-    color: #000000 transparent;
+    color: #000;
         line-height: 1.25;
     margin-bottom: 1em;
 }
@@ -120,7 +120,7 @@
 .fparent-btnPrimary{
     color: #FFFFFF;
     background: #0891B2;
-    width: 100%;
+    width: fit-content;
     max-width: 639px;
     text-align: center;
     justify-content: center;
@@ -133,8 +133,8 @@
 
 .fsos-btn2, .fparent-btnSecondary{
     font-size: 1rem;
-    padding: 1rem 2rem;
-    width: 100%;
+    padding: 1rem 2.5rem;
+    width: fit-content;
     max-width: 639px;
 }
 
@@ -198,7 +198,8 @@
     margin-top: 0.25rem;
 }
 
-.fsos-reasonConten, .fparent-modernContent{
+.fsos-reasonContent,
+.fparent-modernContent{
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -233,7 +234,141 @@
         background-color: rgb(69, 67, 181);
 }
 
+.fsos-cta{
+    width: 100%;
+    padding: 6rem 1.5rem;
+    color: #fff;
+}
 
+.fsos-ctaTitle{
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.fsos-ctaText{
+    max-width: 700px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    opacity: .9;
+}
+
+.fsos-ctaButton{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    color:#4543B5;
+    background:#fff;
+    padding:1rem 2rem;
+    border-radius:999px;
+    font-weight:700;
+    transition:.3s;
+}
+
+.fsos-ctaButton:hover{
+    transform:translateY(-3px);
+}
+
+.fsos-features,
+.fparent-features{
+    width:100%;
+    max-width:1300px;
+    padding:0 1.5rem 6rem;
+    display:grid;
+    gap:2rem;
+}
+
+/* Feature Cards */
+.fsos-featureCard,
+.fparent-featureCard {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 18px;
+    padding: 2rem;
+    transition: .3s ease;
+    z-index: 1;
+}
+
+.fsos-featureCard:hover,
+.fparent-featureCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+}
+
+.fsos-featureIcon{
+    color:#4543B5;
+    background:#eef0ff;
+}
+
+
+.feature-top-circle{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 200px;
+    height: 200px;
+
+    border-radius: 50%;
+
+    transform: translate(50%, -50%);
+
+    z-index: 0;
+}
+
+/* Keep content above the circle */
+.fsos-featureIcon,
+.fsos-featureTitle,
+.fsos-featureText,
+.fsos-featureLink,
+.fparent-featureIcon,
+.fparent-featureTitle,
+.fparent-featureText,
+.fparent-featureLink{
+    position: relative;
+    z-index: 2;
+}
+
+.fparent-featureIcon{
+    color:#06b6d4;
+    background:#cffafe;
+}
+
+.fsos-featureIcon,
+.fparent-featureIcon{
+    width:60px;
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:16px;
+    margin-bottom:1.5rem;
+}
+
+
+.fsos-featureTitle,
+.fparent-featureTitle{
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:1rem;
+}
+
+.fsos-featureText,
+.fparent-featureText{
+    color:#6b7280;
+    line-height:1.7;
+    margin-bottom:2rem;
+}
+
+.fsos-featureLink,
+.fparent-featureLink{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    font-weight:600;
+}
 
 
  /* Tab Size */
@@ -268,4 +403,314 @@
     .fsos-reasonText, .fparent-modernDescription{
         max-width: 35em;
     }
+}
+
+@media(min-width:768px){
+
+.fsos-features,
+.fparent-features{
+    grid-template-columns:repeat(3,1fr);
+}
+  
+}
+
+/* ==========================
+   PARENT DOWNLOAD CTA
+========================== */
+
+.fparent-download{
+    width: 50em;
+    max-width: 65em;
+    height: fit-content;
+    border-radius: 2em;
+    box-shadow: -10px 10px 10px rgb(5, 72, 88);
+
+    background:#0891B2;
+    color:#fff;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:6rem 1.5rem;
+}
+
+.fparent-downloadBadge{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+
+    padding:.6rem 1.2rem;
+
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:999px;
+
+    font-size:.875rem;
+    font-weight:700;
+
+    margin-bottom:2rem;
+}
+
+.fparent-downloadBadge svg{
+    width:18px;
+    height:18px;
+}
+
+.fparent-downloadTitle{
+    font-size:2.5rem;
+    font-weight:700;
+    line-height:1.2;
+    margin-bottom:1rem;
+}
+
+.fparent-downloadText{
+    max-width:650px;
+
+    font-size:1.1rem;
+    line-height:1.7;
+
+    color:rgba(255,255,255,.85);
+
+    margin-bottom:3rem;
+}
+
+.fparent-downloadActions{
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.fparent-storeButton{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:180px;
+
+    padding:1rem 2rem;
+
+    border-radius:999px;
+
+    background:#fff;
+    color:#0891B2;
+
+    font-weight:700;
+
+    transition:.3s;
+}
+
+.fparent-storeButton:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.fparent-storeButton.secondary{
+    background:transparent;
+    color:#fff;
+    border:2px solid rgba(255,255,255,.35);
+}
+
+.fparent-storeButton.secondary:hover{
+    background:rgba(255,255,255,.08);
+}
+
+
+.fsu-section {
+  padding: 5rem 1.5rem;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+}
+
+/* HERO */
+.fsu-hero {
+  text-align: center;
+  max-width: 750px;
+}
+
+.fsu-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #2563eb1a;
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+
+.fsu-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 1rem 0;
+}
+
+.fsu-title span {
+  color: #9333ea;
+}
+
+.fsu-text {
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* BUTTONS */
+.fsu-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.fsu-btnPrimary,
+.fsu-btnSecondary {
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s ease;
+}
+
+.fsu-btnPrimary {
+  background: #9333ea;
+  color: white;
+}
+
+.fsu-btnSecondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.fsu-btnPrimary:hover {
+  transform: translateY(-2px);
+  background: #7e22ce;
+}
+
+.fsu-btnSecondary:hover {
+  transform: translateY(-2px);
+  background: #d1d5db;
+}
+
+/* GRID */
+.fsu-grid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* CARD */
+.fsu-card {
+  position: relative;
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.fsu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+/* glow */
+.fsu-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  filter: blur(20px);
+}
+
+/* ICON */
+.fsu-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+/* TEXT */
+.fsu-cardTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.fsu-cardText {
+  color: #6b7280;
+  margin: 0.5rem 0 1rem;
+  line-height: 1.6;
+}
+
+/* LINK */
+.fsu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* BADGE ICON */
+.fsu-badgeIcon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* FOOTER */
+.fsu-footer {
+  text-align: center;
+}
+
+.fsu-footer h2 {
+  font-size: 2rem;
+}
+
+.fsu-footer p {
+  color: #6b7280;
+}
+
+.fsu-footerBtn {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 12px 20px;
+  background: #2563eb;
+  color: white;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .fsu-title {
+    font-size: 4rem;
+  }
+
+  .fsu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -9,19 +9,28 @@ const ForSchoolPurpose = [
         logo: <LayoutDashboard />,
         title: "Core Operation",
         info: "Manage students, staff, attendance, and results generation with ease. The backbone of your digital campus.",
-        to: "School OS"
+        to: "School OS",
+        svgColor: "#9333ea",
+        svgBgColor: "#A855F71A",
+        rightTop: "#A855F714",
     },
     {
         logo: <Wallet />,
         title: "Financial Control",
         info: "Eliminate fraud, automate fee collection, and boost revenue with Flexpay installment plans for parents.",
-        to: "Finance"
+        to: "Finance",
+        svgColor: "rgb(22 163 74)",
+        svgBgColor: "rgb(34 197 94 / 0.1)",
+        rightTop: "#22C55E1A"
     },
     {
         logo: <TestTube />,
         title: "Modern Assessment",
         info: "Conduct exams, CA, and homework digitally. Save thousands of teacher hours on grading and analysis.",
-        to: "CBT Engine"
+        to: "CBT Engine",
+        svgColor: "#0891b2",
+        svgBgColor: "rgb(6 182 212 / 0.1)",
+        rightTop: "#06B6D41A"
     }
 ]
 
@@ -88,13 +97,18 @@ export default function ForSchool() {
         {ForSchoolPurpose.map((item, index) => (
           <div className="fsos-featureCard" key={index}>
 
-            <h3 className="fsos-featureIcon">{item.logo}</h3>
+            <div
+  className="feature-top-circle"
+  style={{ backgroundColor: item.rightTop }}
+></div>
+
+            <h3 className="fsos-featureIcon" style={{backgroundColor: item.svgBgColor, color: item.svgColor}}>{item.logo}</h3>
 
             <h2 className="fsos-featureTitle">{item.title}</h2>
 
             <p className="fsos-featureText">{item.info}</p>
 
-            <h4 className="fsos-featureLink">
+            <h4 className="fsos-featureLink" style={{color: item.svgColor}} >
               Explore {item.to} <ArrowRight />
             </h4>
 
