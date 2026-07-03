@@ -19,47 +19,65 @@ import "../../Styles/components/Navbar.css";
 
 const fullScreenSixeSolutionInfo = [
   {
-  header: "For Schools",
-  logo: <School size={22} />,
-
-  logo2: <School size={20} />,
-  header2: "School OS",
-  info2: "Attendance, Admin & Results",
-
-  logo3: <Wallet size={20} />,
-  header3: "Financial Management",
-  info3: "Fee Compliance & Reconciliation",
-
-  logo4: <FileCheck size={20} />,
-  header4: "CBT Engine",
-  info4: "Assessment & Exams",
-},
-
- {
-  header: "For Parents",
-  logo: <Shield size={22} />,
-
-  logo2: <CreditCard size={20} />,
-  header2: "Acceede Pay",
-  info2: "Tuition & Fee Payments",
-
-  logo3: <Wallet size={20} />,
-  header3: "Flexpay",
-  info3: "Installment Plans",
-
-  logo4: <BarChart3 size={20} />,
-  header4: "Performance",
-  info4: "Monitor Child's Progress",
-},
-
- {
-  header: "For Students",
-  logo: <GraduationCap size={22} />,
-
-  logo2: <GraduationCap size={20} />,
-  header2: "Study App",
-  info2: "AI-Powered Learning",
-}
+    header: "For Schools",
+    logo: <School size={22} />,
+    items: [
+      {
+        logo: <School size={20} />,
+        title: "School OS",
+        desc: "Attendance, Admin & Results",
+        path: "/solution/school-os",
+      },
+      {
+        logo: <Wallet size={20} />,
+        title: "Financial Management",
+        desc: "Fee Compliance & Reconciliation",
+        path: "/solution/financial-management",
+      },
+      {
+        logo: <FileCheck size={20} />,
+        title: "CBT Engine",
+        desc: "Assessment & Exams",
+        path: "/solution/cbt-engine",
+      },
+    ],
+  },
+  {
+    header: "For Parents",
+    logo: <Shield size={22} />,
+    items: [
+      {
+        logo: <CreditCard size={20} />,
+        title: "Acceede Pay",
+        desc: "Tuition & Fee Payments",
+        path: "/solution/acceede-pay",
+      },
+      {
+        logo: <Wallet size={20} />,
+        title: "Flexpay",
+        desc: "Installment Plans",
+        path: "/solution/flexpay",
+      },
+      {
+        logo: <BarChart3 size={20} />,
+        title: "Performance",
+        desc: "Monitor Child's Progress",
+        path: "/solution/performance",
+      },
+    ],
+  },
+  {
+    header: "For Students",
+    logo: <GraduationCap size={22} />,
+    items: [
+      {
+        logo: <GraduationCap size={20} />,
+        title: "Study App",
+        desc: "AI-Powered Learning",
+        path: "/solution/study-app",
+      },
+    ],
+  },
 ];
 
 const companyInfo = [
@@ -67,11 +85,13 @@ const companyInfo = [
     logo: <School size={20} />,
     info: "About Us",
     content: "Our Mission & Story",
+    path: "/about",
   },
   {
     logo: <Shield size={20} />,
     info: "Contact",
     content: "Get in Touch",
+    path: "/contact",
   },
 ];
 
@@ -81,11 +101,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
-  const [openSection, setOpenSection] = useState(null);
-
-  const toggleSection = (section) => {
-    setOpenSection((prev) => (prev === section ? null : section));
-  };
+  const [expandedSection, setExpandedSection] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -106,31 +122,43 @@ export default function Navbar() {
     document.body.className = darkMode ? "dark" : "light";
   }, [darkMode]);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".dropdown-wrapper")) {
+        setShowSolutions(false);
+        setShowCompany(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-
         {/* LEFT */}
         <div className="navbar-left">
-
-          <div className="navbar-logo">
+          <NavLink to="/" className="navbar-logo">
             <School size={34} />
             <span>Petra School</span>
-          </div>
+          </NavLink>
 
           {!isMobile && (
             <div className="nav-links">
-
               {/* SOLUTIONS */}
               <div
                 className="dropdown-wrapper"
                 onMouseEnter={() => setShowSolutions(true)}
                 onMouseLeave={() => setShowSolutions(false)}
               >
-                <button className="nav-link-btn">
-                  Solutions <ChevronDown
-  className= "chere"
-/>
+                <button className="nav-link-btn" aria-label="Solutions menu">
+                  Solutions
+                  <ChevronDown className="chevron-icon" size={18} />
                 </button>
 
                 {showSolutions && (
@@ -142,44 +170,21 @@ export default function Navbar() {
                           {item.header}
                         </h3>
 
-                        {item.header2 && (
-                          <div className="solution-item">
-  <div className="solution-icon">
-    {item.logo2}
-  </div>
-
-  <div className="solution-content">
-    <h4>{item.header2}</h4>
-    <p>{item.info2}</p>
-  </div>
-</div>
-                        )}
-
-                        {item.header3 && (
-                          <div className="solution-item">
-  <div className="solution-icon">
-    {item.logo3}
-  </div>
-
-  <div className="solution-content">
-    <h4>{item.header3}</h4>
-    <p>{item.info3}</p>
-  </div>
-</div>
-                        )}
-
-                        {item.header4 && (
-                          <div className="solution-item">
-  <div className="solution-icon">
-    {item.logo4}
-  </div>
-
-  <div className="solution-content">
-    <h4>{item.header4}</h4>
-    <p>{item.info4}</p>
-  </div>
-</div>
-                        )}
+                        {item.items.map((subItem, subIndex) => (
+                          <NavLink
+                            key={subIndex}
+                            to={subItem.path}
+                            className="solution-item"
+                          >
+                            <div className="solution-icon">
+                              {subItem.logo}
+                            </div>
+                            <div className="solution-content">
+                              <h4>{subItem.title}</h4>
+                              <p>{subItem.desc}</p>
+                            </div>
+                          </NavLink>
+                        ))}
                       </div>
                     ))}
                   </div>
@@ -192,84 +197,72 @@ export default function Navbar() {
                 onMouseEnter={() => setShowCompany(true)}
                 onMouseLeave={() => setShowCompany(false)}
               >
-                <button className="nav-link-btn">
-                  Company <ChevronDown
-  className="chere"
-/>
+                <button className="nav-link-btn" aria-label="Company menu">
+                  Company
+                  <ChevronDown className="chevron-icon" size={18} />
                 </button>
 
                 {showCompany && (
                   <div className="company-dropdown">
                     {companyInfo.map((item, index) => (
-                      <div key={index} className="company-item">
-  <div className="company-icon">
-    {item.logo}
-  </div>
-
-  <div className="company-content">
-    <h4>{item.info}</h4>
-    <p>{item.content}</p>
-  </div>
-</div>
+                      <NavLink
+                        key={index}
+                        to={item.path}
+                        className="company-item"
+                      >
+                        <div className="company-icon">
+                          {item.logo}
+                        </div>
+                        <div className="company-content">
+                          <h4>{item.info}</h4>
+                          <p>{item.content}</p>
+                        </div>
+                      </NavLink>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* ACCORDION LINKS */}
-              <div className="accordion-item">
-                <button
-                  className="accordion-header"
-                  onClick={() => toggleSection("schools")}
-                >
-                  For Schools
-                </button>
-              </div>
+              {/* STATIC LINKS */}
+              <NavLink to="/schools" className="nav-link">
+                For Schools
+              </NavLink>
 
-              <div className="accordion-item">
-                <button
-                  className="accordion-header"
-                  onClick={() => toggleSection("parents")}
-                >
-                  For Parents
-                </button>
+              <NavLink to="/parents" className="nav-link">
+                For Parents
+              </NavLink>
 
-              </div>
-
-              <div className="accordion-item">
-                <button
-                  className="accordion-header"
-                  onClick={() => toggleSection("students")}
-                >
-                  For Students
-                </button>
-
-              </div>
-
+              <NavLink to="/students" className="nav-link">
+                For Students
+              </NavLink>
             </div>
           )}
         </div>
 
         {/* RIGHT */}
         <div className="navbar-right">
-
           <button
             className="theme-btn"
             onClick={() => setDarkMode((prev) => !prev)}
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             {darkMode ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
           {!isMobile && (
-            <button className="cta-btn">Get Started</button>
+            <NavLink to="/get-started" className="cta-btn">
+              Get Started
+            </NavLink>
           )}
 
           {isMobile && (
             <button
               className="mobile-menu-btn"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X /> : <Menu />}
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           )}
         </div>
@@ -278,33 +271,107 @@ export default function Navbar() {
       {/* MOBILE MENU */}
       {isMobile && mobileMenuOpen && (
         <div className="mobile-menu">
-
+          {/* SOLUTIONS SECTION */}
           <div className="mobile-menu-section">
-            <h3>Solutions</h3>
-            {fullScreenSixeSolutionInfo.map((item, index) => (
-              <div key={index} className="mobile-solution-group">
-                <h4>{item.header}</h4>
-                {item.header2 && <p>{item.header2}</p>}
-                {item.header3 && <p>{item.header3}</p>}
-                {item.header4 && <p>{item.header4}</p>}
+            <button
+              className="mobile-section-header"
+              onClick={() => toggleSection("solutions")}
+              aria-expanded={expandedSection === "solutions"}
+            >
+              <span>Solutions</span>
+              <ChevronDown
+                className={`section-chevron ${
+                  expandedSection === "solutions" ? "expanded" : ""
+                }`}
+                size={18}
+              />
+            </button>
+
+            {expandedSection === "solutions" && (
+              <div className="accordion-body show">
+                {fullScreenSixeSolutionInfo.map((item, index) => (
+                  <div key={index} className="mobile-solution-group">
+                    <h4>{item.header}</h4>
+                    {item.items.map((subItem, subIndex) => (
+                      <NavLink
+                        key={subIndex}
+                        to={subItem.path}
+                        className="mobile-menu-link"
+                      >
+                        {subItem.title}
+                      </NavLink>
+                    ))}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
 
+          {/* COMPANY SECTION */}
           <div className="mobile-menu-section">
-            <h3>Company</h3>
-            {companyInfo.map((item, index) => (
-              <p key={index}>{item.info}</p>
-            ))}
+            <button
+              className="mobile-section-header"
+              onClick={() => toggleSection("company")}
+              aria-expanded={expandedSection === "company"}
+            >
+              <span>Company</span>
+              <ChevronDown
+                className={`section-chevron ${
+                  expandedSection === "company" ? "expanded" : ""
+                }`}
+                size={18}
+              />
+            </button>
+
+            {expandedSection === "company" && (
+              <div className="accordion-body show">
+                {companyInfo.map((item, index) => (
+                  <NavLink
+                    key={index}
+                    to={item.path}
+                    className="mobile-menu-link"
+                  >
+                    {item.info}
+                  </NavLink>
+                ))}
+              </div>
+            )}
           </div>
 
-          <NavLink to="/schools">For Schools</NavLink>
-          <NavLink to="/parents">For Parents</NavLink>
-          <NavLink to="/students">For Students</NavLink>
+          {/* PAGES SECTION */}
+          <div className="mobile-menu-section">
+            <button
+              className="mobile-section-header"
+              onClick={() => toggleSection("pages")}
+              aria-expanded={expandedSection === "pages"}
+            >
+              <span>Pages</span>
+              <ChevronDown
+                className={`section-chevron ${
+                  expandedSection === "pages" ? "expanded" : ""
+                }`}
+                size={18}
+              />
+            </button>
 
-          <button className="mobile-cta-btn">
+            {expandedSection === "pages" && (
+              <div className="accordion-body show">
+                <NavLink to="/schools" className="mobile-menu-link">
+                  For Schools
+                </NavLink>
+                <NavLink to="/parents" className="mobile-menu-link">
+                  For Parents
+                </NavLink>
+                <NavLink to="/students" className="mobile-menu-link">
+                  For Students
+                </NavLink>
+              </div>
+            )}
+          </div>
+
+          <NavLink to="/get-started" className="mobile-cta-btn">
             Get Started
-          </button>
+          </NavLink>
         </div>
       )}
     </nav>

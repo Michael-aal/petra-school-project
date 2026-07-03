@@ -1,6 +1,10 @@
-import { Notebook, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
+import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "../Styles/Home.css";
+import MarqueeModule from "react-fast-marquee";
+
+const Marquee = MarqueeModule.default;
 
 const img1 = [
   "https://acceede.com/assets/bookkeeping-CVnCZp_U.png",
@@ -20,8 +24,13 @@ export default function Home() {
     <><HomeSection1 />
     <HomeSection2 />
             <HomeSection3 />
+            <HomeSection4 />
             <HomeSection5 />
             <HomeSection7 />
+            <HomeSection8 />
+            <HomeSection9 />
+            <HomeSection10 />
+            <HomeSection11 />
             </> 
   )
 }
@@ -52,49 +61,56 @@ const homeInfo = [
 
 
 // Setion1
-
 function HomeSection1() {
+
   return (
-    <section>
-      <div>
-        {img1.map((item, index) => (
-          <img key={index} src={item} alt="" width={300} />
-        ))}
-      </div>
-
-      <div>
-        <h2>
-          <Star size={18} /> Acceede OS v2.0 is Live
-        </h2>
-
-        <h3>
-          The Operating System <span>for Academic</span>{" "}
-          <span>Excellence</span>
-        </h3>
-
-        <p>
-          The single platform trusted by schools for school management,
-          financial control, and by students for crushing WAEC & JAMB with
-          AI-powered mastery.
-        </p>
-
-        <div className="section1btn">
-          <button>
-            Book a Demo (Schools)
-            <Notebook />
-          </button>
-
-          <button>
-            Try AI Study App
-            <Zap />
-          </button>
+    <section className="homeSection1">
+      <div className="section1-container">
+        {/* LEFT IMAGES */}
+        <div className="  section1-left-images">
+          {img1.map((item, index) => (
+            <img key={index} src={item} alt="Acceede user" className="section1-img" />
+          ))}
         </div>
-      </div>
 
-      <div>
-        {img2.map((item, index) => (
-          <img key={index} src={item} alt="" width={300} />
-        ))}
+        {/* CENTER CONTENT */}
+        <div className="section1-content">
+          <div className="section1-badge">
+            <span className="badge-dot">●</span>
+            ACCEEDE OS V2.0 IS LIVE
+          </div>
+
+          <h1 className="section1-title">
+            The Operating System
+            <span className="section1-highlight"> for Academic</span>
+            <span className="section1-highlight"> Excellence</span>
+          </h1>
+
+          <p className="section1-description">
+            The single platform trusted by schools for school management,
+            financial control, and by students for crushing WAEC & JAMB with
+            AI-powered mastery.
+          </p>
+
+          <div className="section1-buttons">
+            <button className="section1-btn section1-btn-primary">
+              <Notebook size={18} />
+              Book a Demo (Schools)
+            </button>
+
+            <button className="section1-btn section1-btn-secondary">
+              <Zap size={18} />
+              Try AI Study App
+            </button>
+          </div>
+        </div>
+
+        {/* RIGHT IMAGES */}
+        <div className="section1-right-images">
+          {img2.map((item, index) => (
+            <img key={index} src={item} alt="Acceede student" className="section1-img" />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -124,13 +140,17 @@ function HomeSection2() {
 
   return (
     <section className="homeSection2">
-      <div className="section2-content">
-        <div className="recognition-badge">
-          <Sparkles size={16} />
-          Recognition
-        </div>
 
-        <h2>As Featured In</h2>
+      <div className="section2-wrapper">
+
+        <div className="section2-text">
+          <div className="recognition-badge">
+            <Sparkles size={16} />
+            Recognition
+          </div>
+
+          <h2>As Featured In</h2>
+        </div>
 
         <div className="logos-container">
           {logos.map((item, index) => (
@@ -139,11 +159,13 @@ function HomeSection2() {
             </div>
           ))}
         </div>
+
       </div>
 
-      <a href="https://wa.me/" className="whatsapp-btn" aria-label="Contact us on WhatsApp">
+      <a href="https://wa.me/" className="whatsapp-btn">
         <MessageCircle size={24} />
       </a>
+
     </section>
   );
 }
@@ -190,6 +212,73 @@ style={{ backgroundColor: item.bgColor, color: item.color }}
       </div>
     </div>
   );
+}
+
+//Section4
+
+function HomeSection4(){
+
+  const homeSection4Inffo = [
+    {
+      logo: <Users />,
+      user: "For Parents",
+      info: "Split the payment of your child's school fees into 3 to 4 installments with 0% interest rate and enjoy amazing rewards, like free books and scholarships for just paying school fees.",
+      img: "https://acceede.com/assets/parents-CoW2iC7K.png"
+    },
+    {
+      logo: <Building2 />,
+      user: "For Schools",
+      info: "Tired of uncollected school fees payment? Get access to guaranteed school fees collection with our groundbreaking technology. Get access to cashflow financing at the beginning of the term to run your school efficiently.",
+      img: "https://acceede.com/assets/schools-mzkTYKwk.png"
+    },
+    {
+      logo: <Book />,
+      user: "For Vocational / Training Institutes",
+      info: "See increase in enrollment by up to 40% - GUARANTEED, with our flexible payment service. Get access to cashflow financing to run your Institution efficiently.",
+      img: "https://acceede.com/assets/institutions-DKZZthvC.png"
+    },
+    {
+      logo: <GraduationCap />,
+      user: "For Students",
+      info: "Get to learn and pay later. Split your course/training payment into flexible installment at 0% interest rate.",
+      img: "https://acceede.com/assets/Students-D-Kr-uqs.png"
+    }
+  ]
+
+  return(
+    <section className="homeSection4">
+        <div className="section4-header">
+          <h2 className="section4-title">How we make life easier for everyone</h2>
+          <div className="section4-divider">______</div>
+        </div>
+
+        <div className="section4-grid">
+          {
+            homeSection4Inffo.map((item, index) => (
+              <div 
+                key={index} 
+                className={`section4-item ${index % 2 === 0 ? "section4-small" : "section4-large"}`}
+              >
+                <div className="section4-content">
+                  <div className="section4-icon">
+                    {item.logo}
+                  </div>
+                  <h4 className="section4-user">{item.user}</h4>
+                  <p className="section4-info">{item.info}</p>
+
+                  <NavLink to="/" className="section4-link">
+                    Learn More <ArrowRight size={18} />
+                  </NavLink>
+                </div>
+                <div className="section4-image">
+                  <img src={item.img} alt={item.user} className="section4-img" />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+    </section>
+  )
 }
 
 // Section5
@@ -387,6 +476,167 @@ function HomeSection7(){
           <h3 className="exams-list">WAEC • JAMB • NECO</h3>
         </div>
       </div>
+    </section>
+  )
+}
+
+function HomeSection8(){
+
+  const HomeSection8Img = [
+    "https://acceede.com/assets/Paystack-DG63jtoH.jpg", 
+    "https://acceede.com/assets/globus-CiXblTWW.jpg", 
+    "https://acceede.com/assets/mono-Bd1MYfxU.png", 
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRionUdyUbXG8DIusYJ5EycjMjWy4qVA5fHv7X8SXEkkw&s=10", 
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2Nf7dOeDrYG-Q-DTOKBDwLHBNBDe1K4kV4HY9jkLN7fSt8FBdzpLR1PzG&s=10"  
+  ]
+
+  return(
+    <section className="homeSection8">
+      <div className="section8-header">
+        <h2 className="section8-title">
+          <Zap size={24} /> POWERED BY
+        </h2>
+
+        <p className="section8-subtitle">
+          Accelerate your growth with our financial partners and enablers
+        </p>
+      </div>
+
+      <div className="section8-marquee-wrapper">
+        <Marquee pauseOnHover={true}>
+          {
+            HomeSection8Img.map((item, index) => (
+              <div key={index} className="marquee-item">
+                <img src={item} alt={`Partner ${index + 1}`} className="marquee-img" />
+              </div>
+            ))
+          }
+        </Marquee>
+      </div>
+    </section>
+  )
+}
+
+function HomeSection9(){
+
+  const homeSection9Info = [
+    {
+      info: "Acceede relieves the stress of bulky payment and frees up cash to do more things at a time. They are very very dependable, reliable and trustworthy. They keep to their promise in terms of charges. There are no extra charges. I pray GOD will take them to higher levels.",
+      user: "Prince Ajibola",
+      schoolName: "RoyalPath Schools"
+    },
+    {
+      info: "Acceede is a good company, very very good. They're reliable, they reduce stress unlike other banks and their interest is very low. I recommend them to anyone that is interested.",
+      user: "Mrs Obar",
+      schoolName: "Agnity School"
+    },
+    {
+      info: "Aceede, your service is awesome, reliable and time friendly. I appreciate your quick response despite the short notice. Kindly keep up the good service.",
+      user: "Mr Giwa",
+      schoolName: "Eclos College"
+    }
+  ]
+
+  return(
+    <section className="homeSection9">
+      <div className="section9-header">
+        <h2 className="section9-title">
+          What Our <span className="section9-highlight">Customers Say About</span> Us
+        </h2>
+        <div className="section9-divider">______</div>
+      </div>
+
+      <div className="section9-testimonials">
+        {
+          homeSection9Info.map((item, index) => (
+            <div key={index} className="testimonial-card">
+              <div className="testimonial-quote-icon">
+                <Quote size={32} />
+              </div>
+              <p className="testimonial-text">{item.info}</p>
+              <hr className="testimonial-divider" />
+              <div className="testimonial-author">
+                <h3 className="author-name">{item.user}</h3>
+                <h4 className="author-school">{item.schoolName}</h4>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  )
+}
+
+function HomeSection10(){
+
+  return(
+    <section className="homeSection10">
+      <div className="section10-container">
+        <div className="section10-content">
+          <h2 className="section10-title">
+            <Smartphone size={28} /> For Parents
+          </h2>
+          <h3 className="section10-subtitle">
+            Manage school payments on the go.
+          </h3>
+          <p className="section10-description">
+            No more harassment or embarrassment. Download the Acceede App to pay tuition fees instantly, schedule installment plans, and track your child's education journey.
+          </p>
+
+          <div className="section10-buttons">
+            <a 
+              href="https://play.google.com/store/apps/details?id=com.acceede" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="app-link google-play"
+            >
+             <Play />
+              Google Play
+            </a>
+            <a 
+              href="https://apps.apple.com/app/acceede" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="app-link app-store"
+            >
+              <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="App Store" className="app-logo" />
+              App Store
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function HomeSection11(){
+
+  return(
+    <section className="homeSection11">
+      <div className="section11-header">
+        <h2 className="section11-title">
+          <Mail size={28} /> STAY UPDATED
+        </h2>
+        <h3 className="section11-subtitle">Newsletter</h3>
+        <p className="section11-description">
+          Stay updated with exclusive offers and educational content by subscribing to our newsletter. Our monthly newsletter provides a curated selection of articles, tips, and success stories in education. Join our community of educators, students, and parents to stay informed and inspired.
+        </p>
+      </div>
+
+      <div className="section11-form">
+        <input 
+          type="email" 
+          placeholder="Enter your email" 
+          className="section11-input"
+        />
+        <button className="section11-btn">
+          Subscribe <Send size={20} />
+        </button>
+      </div>
+
+      <p className="section11-privacy">
+        We respect your privacy. Unsubscribe at any time.
+      </p>
     </section>
   )
 }

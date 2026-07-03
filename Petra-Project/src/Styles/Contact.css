@@ -1,0 +1,287 @@
+/* =========================
+   BASE LAYOUT
+========================= */
+
+.ctc-page {
+  min-height: 100vh;
+  padding: 6rem 1.5rem;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  font-family: sans-serif;
+}
+
+/* HEADER */
+
+.ctc-header {
+  text-align: center;
+  max-width: 700px;
+}
+
+.ctc-header h2 {
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: #6366f1;
+  font-weight: 700;
+}
+
+.ctc-header h3 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0.5rem 0;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.ctc-header p {
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* =========================
+   MAIN LAYOUT (2 COLUMN)
+========================= */
+
+.ctc-layout {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* =========================
+   LEFT SIDE (INFO)
+========================= */
+
+.ctc-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.ctc-info h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+/* INFO CARD */
+.ctc-infoCard {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ctc-infoCard:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.ctc-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  border-radius: 10px;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.ctc-infoCard h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: #111827;
+}
+
+.ctc-infoCard p {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 2px 0;
+}
+
+.ctc-infoCard span {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+/* SUPPORT BOX */
+.ctc-supportBox {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #111827;
+  color: white;
+}
+
+.ctc-supportBox h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.ctc-supportBox p {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin: 0.5rem 0 1rem;
+}
+
+.ctc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #60a5fa;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.ctc-link:hover {
+  gap: 12px;
+  color: #93c5fd;
+}
+
+/* =========================
+   FORM BOX (RIGHT SIDE)
+========================= */
+
+.ctc-formBox {
+  background: white;
+  padding: 2rem;
+  height: fit-content;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.ctc-formBox h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.ctc-formBox p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* ROW (Full Name + Email) */
+.ctc-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* FIELD */
+.ctc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.ctc-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* INPUTS */
+.ctc-field input,
+.ctc-field textarea,
+.ctc-field select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+  background: white;
+}
+
+/* FOCUS EFFECT */
+.ctc-field input:focus,
+.ctc-field textarea:focus,
+.ctc-field select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+  transform: translateY(-1px);
+}
+
+/* TEXTAREA */
+.ctc-field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.ctc-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #4543B5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.ctc-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* TABLET / DESKTOP */
+@media (min-width: 1000px) {
+  .ctc-layout {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+  }
+
+  .ctc-header h3 {
+    font-size: 3rem;
+  }
+}
+
+@media(min-width: 768px){
+      .ctc-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* LARGE DESKTOP */
+@media (min-width: 1024px) {
+  .ctc-page {
+    padding: 6rem 2rem;
+  }
+
+  .ctc-formBox,
+  .ctc-info {
+    padding: 2.5rem;
+  }
+}
