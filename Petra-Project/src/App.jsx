@@ -51,7 +51,7 @@ function App() {
 
         {/* Dashboard */}
         <Route element={<DashboardLay />}>
-        <Route path="/dashboard" element={<DashboardSidebar/>} />
+
         </Route>
 
       </Routes>
