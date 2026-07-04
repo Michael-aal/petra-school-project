@@ -10,6 +10,7 @@ import About from "./Pages/About";
 import Home from "./Pages/Home";
 import GetStarted from "./Pages/Sigin/GetStarted"
 import Contact from "./Pages/Contact";
+import UserInfo from "./Styles/DashBoardLayout/UserInfo";
 import { BrowserRouter as Router, Routes, Route, Outlet} from "react-router-dom";
 
 function PublicLayout(){
@@ -30,6 +31,7 @@ function DashboardLay() {
       <div style={{ flex: 1, padding: "20px" }}>
         <Outlet />
       </div>
+      <UserInfo />
     </div>
   );
 }
