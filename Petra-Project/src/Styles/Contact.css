@@ -13,6 +13,59 @@
   font-family: sans-serif;
 }
 
+body.dark .ctc-page {
+  background: #000000;
+  color: #f5f5f7;
+}
+
+body.dark .ctc-header h2 {
+  color: #6d5bff;
+}
+
+body.dark .ctc-header h3,
+body.dark .ctc-info h2,
+body.dark .ctc-formBox h2,
+body.dark .ctc-infoCard h3,
+body.dark .ctc-field label {
+  color: #f5f5f7;
+}
+
+body.dark .ctc-header p,
+body.dark .ctc-infoCard p,
+body.dark .ctc-infoCard span,
+body.dark .ctc-formBox p,
+body.dark .ctc-supportBox p {
+  color: #a1a1aa;
+}
+
+body.dark .ctc-info,
+body.dark .ctc-formBox,
+body.dark .ctc-supportBox,
+body.dark .ctc-infoCard,
+body.dark .ctc-field input,
+body.dark .ctc-field textarea,
+body.dark .ctc-field select {
+  background: linear-gradient(135deg, rgba(17, 17, 24, 0.98), rgba(10, 12, 20, 0.98));
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+}
+
+body.dark .ctc-infoCard:hover {
+  background: #161616;
+}
+
+body.dark .ctc-field input:focus,
+body.dark .ctc-field textarea:focus,
+body.dark .ctc-field select:focus {
+  border-color: #6d5bff;
+  box-shadow: 0 0 0 3px rgba(109, 91, 255, 0.18);
+}
+
+body.dark .ctc-btn {
+  background: linear-gradient(135deg, #5b5bff, #6d5bff);
+  color: #ffffff;
+}
+
 /* HEADER */
 
 .ctc-header {

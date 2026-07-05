@@ -7,6 +7,74 @@
     align-items: center;
 }
 
+body.dark .fsos,
+body.dark .fparent {
+    background: #000000;
+    color: #f5f5f7;
+}
+
+body.dark .fsos-header,
+body.dark .fparent-header,
+body.dark .fsos-reasons,
+body.dark .fparent-modern,
+body.dark .fsos-cta {
+    background: transparent;
+}
+
+body.dark .fsos-badge,
+body.dark .fparent-badge,
+body.dark .fsos-featureCard,
+body.dark .fparent-featureCard,
+body.dark .fsos-reasonItem,
+body.dark .fparent-modernCard,
+body.dark .fsos-ctaButton,
+body.dark .fparent-btnSecondary,
+body.dark .fsos-btn2 {
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+}
+
+body.dark .fsos-title,
+body.dark .fparent-title,
+body.dark .fsos-reasonsTitle,
+body.dark .fparent-modernTitle,
+body.dark .fsos-ctaTitle,
+body.dark .fsos-featureTitle,
+body.dark .fparent-featureTitle,
+body.dark .fsos-reasonTitle,
+body.dark .fparent-modernCardTitle {
+    color: #f5f5f7;
+}
+
+body.dark .fsos-description,
+body.dark .fparent-description,
+body.dark .fsos-reasonsText,
+body.dark .fparent-modernDescription,
+body.dark .fsos-reasonText,
+body.dark .fparent-modernCardText,
+body.dark .fsos-featureText,
+body.dark .fparent-featureText,
+body.dark .fsos-ctaText {
+    color: #a1a1aa;
+}
+
+body.dark .fsos-btn1,
+body.dark .fparent-btnPrimary,
+body.dark .fsos-ctaButton {
+    background: linear-gradient(135deg, #5b5bff, #6d5bff);
+    color: #ffffff;
+}
+
+body.dark .fsos-featureCard:hover,
+body.dark .fparent-featureCard:hover,
+body.dark .fsos-reasonItem:hover,
+body.dark .fparent-modernCard:hover {
+    transform: translateY(-4px);
+    border-color: #6d5bff;
+    box-shadow: 0 0 0 1px rgba(109, 91, 255, 0.25), 0 20px 45px rgba(91, 91, 255, 0.12);
+}
+
 .fsos{
     background-color: #f3f4f6;
 }

@@ -6,9 +6,17 @@
   --primary-dark: #4338ca;
   --text-dark: #111827;
   --text-muted: #6b7280;
-
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
   --shadow-sm: 0 8px 25px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+body.dark {
+  --surface: #000000;
+  --surface-muted: #09090b;
+  --text-dark: #f5f5f7;
+  --text-muted: #a1a1aa;
 }
 
 *, ::after, ::before {
@@ -34,9 +42,11 @@
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  background: #fff;
+  background: var(--surface);
+  color: var(--text-dark);
   border-radius: 60px;
   padding: 5px 15px;
+  border: 1px solid rgba(76, 90, 122, 0.22);
 
   display: flex;
   align-items: center;
@@ -81,7 +91,7 @@
   border: none;
   background: transparent;
 
-  color: #4b5563;
+  color: var(--text-muted);
   text-decoration: none;
 
   font-size: 0.95rem;
@@ -123,6 +133,31 @@
   justify-content: center;
 }
 
+body.dark .navbar-container {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.35);
+}
+
+body.dark .nav-link,
+body.dark .nav-link-btn,
+body.dark .navbar-logo,
+body.dark .theme-btn {
+  color: #f5f5f7;
+}
+
+body.dark .nav-link:hover,
+body.dark .nav-link-btn:hover {
+  color: #6d5bff;
+}
+
+body.dark .solutions-dropdown,
+body.dark .company-dropdown,
+body.dark .mobile-menu {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .cta-btn {
   background: var(--primary);
   color: white;
@@ -161,7 +196,7 @@
 
   width: min(850px, 95vw);
 
-  background: white;
+  background: var(--surface);
   border-radius: 24px;
 
   padding: 40px;
@@ -181,7 +216,7 @@
 
   width: min(280px, 90vw);
 
-  background: white;
+  background: var(--surface);
   border-radius: 18px;
 
   padding: 25px;
@@ -280,7 +315,7 @@
 .mobile-menu {
   margin-top: 20px;
 
-  background: white;
+  background: var(--surface);
   border-radius: 24px;
 
   padding: 25px;

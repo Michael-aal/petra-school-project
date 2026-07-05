@@ -1,1 +1,147 @@
 @import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body.dark {
+  background-color: #000000;
+  color: #f5f5f7;
+}
+
+body.dark::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at top left, rgba(91, 91, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(109, 91, 255, 0.08), transparent 24%),
+    linear-gradient(135deg, #000000 0%, #050505 45%, #09090b 100%);
+}
+
+body.dark::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent 100%);
+}
+
+body.dark #root {
+  background: transparent;
+}
+
+body.dark a,
+body.dark button,
+body.dark input,
+body.dark textarea,
+body.dark select {
+  color: inherit;
+}
+
+body.dark .navbar-container,
+body.dark .solutions-dropdown,
+body.dark .company-dropdown,
+body.dark .mobile-menu,
+body.dark section,
+body.dark .footer,
+body.dark .info-card,
+body.dark .testimonial-card,
+body.dark .section4-item,
+body.dark .section5-cards .info-card,
+body.dark .section11-form,
+body.dark .section11-input,
+body.dark form,
+body.dark .card,
+body.dark .panel,
+body.dark .homeSection1,
+body.dark .homeSection2,
+body.dark .homeSection3,
+body.dark .homeSection4,
+body.dark .homeSection5,
+body.dark .homeSection7,
+body.dark .homeSection8,
+body.dark .homeSection9,
+body.dark .homeSection10,
+body.dark .homeSection11,
+body.dark .fsos,
+body.dark .fparent,
+body.dark .ctc-page {
+  background: #09090b;
+  color: #f5f5f7;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.38);
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark p,
+body.dark li,
+body.dark span {
+  color: #f5f5f7;
+  text-shadow: none;
+}
+
+body.dark .section1-description,
+body.dark .section5-description,
+body.dark .section7-stats .stats-description,
+body.dark .section10-description,
+body.dark .section11-description,
+body.dark .section11-privacy,
+body.dark .card-text,
+body.dark .section4-info,
+body.dark .feature-text,
+body.dark .testimonial-text,
+body.dark .section8-subtitle,
+body.dark .section3-header p {
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+body.dark .section11-input::placeholder,
+body.dark input::placeholder,
+body.dark textarea::placeholder,
+body.dark select::placeholder {
+  color: #a1a1aa;
+}
+
+body.dark .homeSection2,
+body.dark .homeSection3,
+body.dark .homeSection4,
+body.dark .homeSection5,
+body.dark .homeSection7,
+body.dark .homeSection8,
+body.dark .homeSection9,
+body.dark .homeSection10,
+body.dark .homeSection11,
+body.dark .fsos,
+body.dark .fparent,
+body.dark .ctc-page {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
