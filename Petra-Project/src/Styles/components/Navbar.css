@@ -125,18 +125,23 @@ body.dark {
   border: none;
   background: transparent;
   cursor: pointer;
-
   color: #374151;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.theme-btn:hover {
+  color: var(--primary);
+  transform: translateY(-1px);
 }
 
 body.dark .navbar-container {
-  background: #000000;
+  background: rgba(5, 5, 5, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(20px);
 }
 
 body.dark .nav-link,

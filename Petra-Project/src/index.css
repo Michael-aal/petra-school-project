@@ -90,8 +90,13 @@ body.dark .homeSection10,
 body.dark .homeSection11,
 body.dark .fsos,
 body.dark .fparent,
-body.dark .ctc-page {
-  background: #09090b;
+body.dark .ctc-page,
+body.dark .section7-stats,
+body.dark .feature-card,
+body.dark .section5-cards .info-card,
+body.dark .homeSection4 .section4-item,
+body.dark .section11-form {
+  background: #111111;
   color: #f5f5f7;
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.38);

@@ -4,6 +4,7 @@
     flex-wrap: wrap;
     background: #FFFFFF;
     padding: 80px 24px 40px;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 body.dark .footer {

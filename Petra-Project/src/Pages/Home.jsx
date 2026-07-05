@@ -6,19 +6,6 @@ import MarqueeModule from "react-fast-marquee";
 
 const Marquee = MarqueeModule.default;
 
-const img1 = [
-  "https://acceede.com/assets/bookkeeping-CVnCZp_U.png",
-  "https://acceede.com/assets/children-Bzqga-HY.png",
-  "https://acceede.com/assets/woman-BpDTj0AB.png",
-];
-
-const img2 = [
-  "https://acceede.com/assets/teacher-D_wgfr-G.png",
-  "https://acceede.com/assets/boy-Cidne9lz.png",
-];
-
-
-
 export default function Home() {
   return (
     <><HomeSection1 />
@@ -62,54 +49,107 @@ const homeInfo = [
 
 // Setion1
 function HomeSection1() {
+  const highlights = [
+    "Live dashboards",
+    "AI study coach",
+    "Fee automation",
+  ];
 
   return (
     <section id="home-section-1" className="homeSection1">
       <div className="section1-container">
-        {/* LEFT IMAGES */}
-        <div className="  section1-left-images">
-          {img1.map((item, index) => (
-            <img key={index} src={item} alt="Acceede user" className="section1-img" />
-          ))}
-        </div>
-
-        {/* CENTER CONTENT */}
         <div className="section1-content">
           <div className="section1-badge">
-            <span className="badge-dot">●</span>
-            ACCEEDE OS V2.0 IS LIVE
+            <span className="badge-dot" />
+            PETRA OS V2.0 IS LIVE
           </div>
 
           <h1 className="section1-title">
-            The Operating System
-            <span className="section1-highlight"> for Academic</span>
-            <span className="section1-highlight"> Excellence</span>
+            The premium operating system for
+            <span className="section1-highlight"> modern schools</span>
           </h1>
 
           <p className="section1-description">
-            The single platform trusted by schools for school management,
-            financial control, and by students for crushing WAEC & JAMB with
-            AI-powered mastery.
+            Unify admissions, payments, attendance, and AI-powered learning in one calm
+            experience designed for ambitious education teams.
           </p>
 
           <div className="section1-buttons">
             <button className="section1-btn section1-btn-primary">
               <Notebook size={18} />
-              Book a Demo (Schools)
+              Book a Demo
             </button>
 
             <button className="section1-btn section1-btn-secondary">
               <Zap size={18} />
-              Try AI Study App
+              Explore the platform
             </button>
+          </div>
+
+          <div className="section1-highlights">
+            {highlights.map((item) => (
+              <div key={item} className="highlight-pill">
+                <CheckCircle size={14} />
+                {item}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* RIGHT IMAGES */}
-        <div className="section1-right-images">
-          {img2.map((item, index) => (
-            <img key={index} src={item} alt="Acceede student" className="section1-img" />
-          ))}
+        <div className="section1-visual">
+          <div className="dashboard-card dashboard-card-main">
+            <div className="dashboard-header">
+              <div>
+                <p className="dashboard-label">School Operations</p>
+                <h3>Realtime command center</h3>
+              </div>
+              <div className="dashboard-chip">+18% efficiency</div>
+            </div>
+
+            <div className="dashboard-grid">
+              <div className="dashboard-panel">
+                <span className="dashboard-label">Revenue</span>
+                <div className="dashboard-amount">₦4.2M</div>
+                <div className="dashboard-bar">
+                  <span />
+                </div>
+              </div>
+              <div className="dashboard-panel">
+                <span className="dashboard-label">Attendance</span>
+                <div className="dashboard-amount">97.4%</div>
+                <div className="dashboard-bar">
+                  <span />
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-list">
+              <div className="dashboard-item">
+                <div>
+                  <strong>Fee collection</strong>
+                  <span>Auto-reminders sent</span>
+                </div>
+                <span>12 min ago</span>
+              </div>
+              <div className="dashboard-item">
+                <div>
+                  <strong>Student success</strong>
+                  <span>AI revision plan ready</span>
+                </div>
+                <span>Live</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard-card dashboard-card-side">
+            <h4>Built for premium school teams</h4>
+            <p>Thoughtful automation, crystal-clear reporting, and a polished experience your staff will love.</p>
+            <div className="dashboard-steps">
+              <div className="dashboard-step"><span className="dashboard-step-dot" />Admissions in minutes</div>
+              <div className="dashboard-step"><span className="dashboard-step-dot" />Secure parent billing</div>
+              <div className="dashboard-step"><span className="dashboard-step-dot" />AI study guidance</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
