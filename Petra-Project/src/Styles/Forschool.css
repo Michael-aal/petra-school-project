@@ -111,6 +111,10 @@ body.dark .fparent-modernCard:hover {
     background-color: #f3f4f6;
 }
 
+.fsos-title{
+    
+}
+
 .fsos-header, .fparent-header{
         padding:  6em 0 2em ;
     display: flex;
@@ -120,6 +124,7 @@ body.dark .fparent-modernCard:hover {
     padding-top: 6em;
     padding-bottom: 3rem;
     width: 100%;
+    height: 10px; 
 }
 
 .fsos-badge{
@@ -769,7 +774,6 @@ body.dark .fparent-modernCard:hover {
   line-height: 1.6;
   font-size: 0.95rem;
 }
-
 /* LINK */
 .fsu-link {
   display: inline-flex;
