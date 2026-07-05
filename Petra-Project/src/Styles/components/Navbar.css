@@ -242,7 +242,7 @@ body.dark .mobile-menu {
   font-size: 1.2rem;
   font-weight: 700;
 
-  margin-bottom: 25px;
+  margin-bottom: 27px;
 }
 
 .solution-item {
@@ -435,8 +435,10 @@ span{
   }
 
   .navbar-container {
-  max-width: 95%;
-  margin: 0 auto;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  
   background: var(--surface);
   color: var(--text-dark);
   border-radius: 60px;
