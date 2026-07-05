@@ -345,6 +345,11 @@ body.dark .dashboard-item {
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
 }
 
+
+body.dark .section1-badge{
+  color: white;
+}
+
 body.dark .section1-title,
 body.dark .section1-description,
 body.dark .dashboard-header h3,
@@ -519,20 +524,6 @@ body.dark .card-info {
      position: relative;
     overflow: hidden;
 
-    background:
-        radial-gradient(circle at top left,
-        rgba(180,215,255,.45) 0%,
-        transparent 100%),
-
-        radial-gradient(circle at top center,
-        rgba(190,140,255,.28) 0%,
-        transparent 90%),
-
-        radial-gradient(circle at bottom left,
-        rgba(255,205,145,.35) 0%,
-        transparent 80%),
-
-        white;
 }
 
 .section1-left-images, .section1-right-images{
@@ -549,6 +540,7 @@ body.dark .card-info {
   gap: 10px;
   width: 300px;
   height: 30px;
+  color: white;
   background-color: white;
   font-size: 20px;
   font-weight: 600;
@@ -703,20 +695,6 @@ width: 300px;
      position: relative;
     overflow: hidden;
 
-    background:
-        radial-gradient(circle at top left,
-        rgba(180,215,255,.45) 0%,
-        transparent 100%),
-
-        radial-gradient(circle at top center,
-        rgba(190,140,255,.28) 0%,
-        transparent 90%),
-
-        radial-gradient(circle at bottom left,
-        rgba(255,205,145,.35) 0%,
-        transparent 80%),
-
-        white;
 }
 
 .section1-left-images, .section1-right-images{
@@ -979,20 +957,6 @@ width: 300px;
      position: relative;
     overflow: hidden;
 
-    background:
-        radial-gradient(circle at top left,
-        rgba(180,215,255,.45) 0%,
-        transparent 100%),
-
-        radial-gradient(circle at top center,
-        rgba(190,140,255,.28) 0%,
-        transparent 90%),
-
-        radial-gradient(circle at bottom left,
-        rgba(255,205,145,.35) 0%,
-        transparent 80%),
-
-        white;
 }
 
 .section1-left-images, .section1-right-images{
