@@ -174,7 +174,7 @@ export default function Navbar() {
         {/* LEFT */}
         <div className="navbar-left">
           <NavLink to="/" className="navbar-logo">
-            <School size={34} />
+            <School size={27} />
             <span>Petra School</span>
           </NavLink>
 

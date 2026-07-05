@@ -38,9 +38,8 @@ body.dark {
   z-index: 9999;
 }
 
-
 .navbar-container {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
   background: var(--surface);
   color: var(--text-dark);
@@ -54,6 +53,7 @@ body.dark {
 
   box-shadow: var(--shadow-sm);
 }
+
 
 /* =========================
    LEFT SIDE
@@ -138,7 +138,7 @@ body.dark {
 }
 
 body.dark .navbar-container {
-  background: rgba(5, 5, 5, 0.92);
+  background: rgba(0, 8, 65, 0.92), ;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(20px);
@@ -313,6 +313,10 @@ body.dark .mobile-menu {
   align-items: center;
 }
 
+span{
+  font-size: 18px;
+}
+
 /* =========================
    MOBILE MENU
 ========================= */
@@ -401,6 +405,22 @@ body.dark .mobile-menu {
   }
 
   .navbar-container {
+  max-width: 90%;
+  margin: 0 auto;
+  background: var(--surface);
+  color: var(--text-dark);
+  border-radius: 60px;
+  padding: 5px 15px;
+  border: 1px solid rgba(76, 90, 122, 0.22);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: var(--shadow-sm);
+}
+
+  .navbar-container {
     padding: 15px 20px;
   }
 
@@ -411,8 +431,24 @@ body.dark .mobile-menu {
 
 @media (max-width: 768px) {
   .navbar-container {
-    border-radius: 20px;
+    border-radius: 50px;
   }
+
+  .navbar-container {
+  max-width: 95%;
+  margin: 0 auto;
+  background: var(--surface);
+  color: var(--text-dark);
+  border-radius: 60px;
+  padding: 10px 15px;
+  border: 1px solid rgba(76, 90, 122, 0.22);
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: var(--shadow-sm);
+}
 
   .navbar-logo {
     font-size: 1.4rem;
