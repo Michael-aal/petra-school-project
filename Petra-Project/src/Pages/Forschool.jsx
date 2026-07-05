@@ -72,11 +72,11 @@ export default function ForSchool() {
         </div>
 
         <h2 className="fsos-title">
-          Run Your Entire School on <span>Autopilot</span>
+          Run Your Entire School on <span className="text1">Autopilot</span>
         </h2>
 
         <p className="fsos-description">
-          Stop using fragmented tools. Acceede connects your Administration,
+          Stop using fragmented tools. Petra connects your Administration,
           Finances, and Assessments into one powerful, unified Operating System.
         </p>
 
@@ -121,7 +121,7 @@ export default function ForSchool() {
       <div className="fsos-reasons">
 
         <h2 className="fsos-reasonsTitle">
-          Why Top Schools Choose Acceede
+          Why Top Schools Choose Petra
         </h2>
 
         <p className="fsos-reasonsText">
