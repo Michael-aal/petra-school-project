@@ -9,7 +9,7 @@
 
 body.dark .fsos,
 body.dark .fparent {
-    background: #000000;
+    background: #040020;
     color: #f5f5f7;
 }
 
@@ -21,11 +21,10 @@ body.dark .fsos-cta {
     background: transparent;
 }
 
-body.dark .fsos-badge,
+
 body.dark .fparent-badge,
 body.dark .fsos-featureCard,
 body.dark .fparent-featureCard,
-body.dark .fsos-reasonItem,
 body.dark .fparent-modernCard,
 body.dark .fsos-ctaButton,
 body.dark .fparent-btnSecondary,
@@ -36,6 +35,25 @@ body.dark .fsu-footerBtn {
     background: #111111;
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #f5f5f7;
+}
+
+.fsu-hero{
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+body.dark .fsos-reasonItem{
+        background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+
+    padding: 20px;
+    border-radius: 30px;
+    width: 95%;
 }
 
 body.dark .fsos-title,
@@ -51,6 +69,11 @@ body.dark .fsu-title,
 body.dark .fsu-cardTitle,
 body.dark .fsu-footer h2 {
     color: #f5f5f7;
+}
+
+body.dark .fsos-badge, 
+body.dark .text1 {
+ color: #2563eb;
 }
 
 body.dark .fsos-description,
@@ -81,7 +104,7 @@ body.dark .fsos-reasonItem:hover,
 body.dark .fparent-modernCard:hover {
     transform: translateY(-4px);
     border-color: #6d5bff;
-    box-shadow: 0 0 0 1px rgba(109, 91, 255, 0.25), 0 20px 45px rgba(91, 91, 255, 0.12);
+    box-shadow: 0 0 0 1px rgba(192, 192, 212, 0.25), 0 20px 45px rgba(91, 91, 255, 0.12);
 }
 
 .fsos{
@@ -175,7 +198,7 @@ body.dark .fparent-modernCard:hover {
 
 .fsos-btn1, .fsos-btn2, .fparent-btnPrimary, .fparent-btnSecondary{
     font-weight: 700;
-    border-radius: 9999px;
+    border-radius: 50px;
     gap: 0.5rem;
     text-align: center;
 }
@@ -270,7 +293,7 @@ body.dark .fparent-modernCard:hover {
 
 .fsos-reasonIcon, .fparent-modernIcon{
     padding: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 10rem;
     height: fit-content;
     margin-top: 0.25rem;
 }
@@ -362,7 +385,7 @@ body.dark .fparent-modernCard:hover {
     position: relative;
     overflow: hidden;
     background: #fff;
-    border-radius: 18px;
+    border-radius: 50px;
     padding: 2rem;
     transition: .3s ease;
     z-index: 1;
