@@ -97,7 +97,16 @@ const companyInfo = [
 
 export default function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+
+    const savedTheme = window.localStorage.getItem("petra-theme");
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
@@ -119,7 +128,10 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.className = darkMode ? "dark" : "light";
+    document.body.classList.toggle("dark", darkMode);
+    document.body.classList.toggle("light", !darkMode);
+    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+    window.localStorage.setItem("petra-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {
@@ -136,6 +148,24 @@ export default function Navbar() {
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const handleMenuClose = (shouldScrollToHome = false) => {
+    setMobileMenuOpen(false);
+    setExpandedSection(null);
+    setShowSolutions(false);
+    setShowCompany(false);
+
+    if (shouldScrollToHome) {
+      window.setTimeout(() => {
+        const firstSection = document.getElementById("home-section-1");
+        if (firstSection) {
+          firstSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }, 70);
+    }
   };
 
   return (
@@ -175,6 +205,7 @@ export default function Navbar() {
                             key={subIndex}
                             to={subItem.path}
                             className="solution-item"
+                            onClick={() => handleMenuClose(subItem.path === "/")}
                           >
                             <div className="solution-icon">
                               {subItem.logo}
@@ -209,6 +240,7 @@ export default function Navbar() {
                         key={index}
                         to={item.path}
                         className="company-item"
+                        onClick={() => handleMenuClose(item.path === "/")}
                       >
                         <div className="company-icon">
                           {item.logo}
@@ -297,6 +329,7 @@ export default function Navbar() {
                         key={subIndex}
                         to={subItem.path}
                         className="mobile-menu-link"
+                        onClick={() => handleMenuClose(subItem.path === "/")}
                       >
                         {subItem.title}
                       </NavLink>
@@ -356,20 +389,20 @@ export default function Navbar() {
 
             {expandedSection === "pages" && (
               <div className="accordion-body show">
-                <NavLink to="/schools" className="mobile-menu-link">
+                <NavLink to="/schools" className="mobile-menu-link" onClick={() => handleMenuClose(false)}>
                   For Schools
                 </NavLink>
-                <NavLink to="/parents" className="mobile-menu-link">
+                <NavLink to="/parents" className="mobile-menu-link" onClick={() => handleMenuClose(false)}>
                   For Parents
                 </NavLink>
-                <NavLink to="/students" className="mobile-menu-link">
+                <NavLink to="/students" className="mobile-menu-link" onClick={() => handleMenuClose(false)}>
                   For Students
                 </NavLink>
               </div>
             )}
           </div>
 
-          <NavLink to="/get-started" className="mobile-cta-btn">
+          <NavLink to="/get-started" className="mobile-cta-btn" onClick={() => handleMenuClose(false)}>
             Get Started
           </NavLink>
         </div>

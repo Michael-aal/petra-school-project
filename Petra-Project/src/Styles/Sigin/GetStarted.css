@@ -8,6 +8,32 @@
   gap: 40px;
 }
 
+body.dark .gs {
+  background: linear-gradient(135deg, #060816 0%, #090b18 45%, #11131f 100%);
+  color: #f5f5f7;
+}
+
+body.dark .gs-title,
+body.dark .gs-subtitle,
+body.dark .gs-description,
+body.dark .gs-sectionTitle,
+body.dark .gs-field label {
+  color: #f5f5f7;
+}
+
+body.dark .gs-form,
+body.dark .gs-inputWrapper {
+  background: linear-gradient(135deg, rgba(17, 17, 24, 0.98), rgba(10, 12, 20, 0.98));
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+body.dark .gs-inputWrapper input {
+  background: transparent;
+  color: #f5f5f7;
+}
+
 /* HERO */
 .gs-hero {
   text-align: center;

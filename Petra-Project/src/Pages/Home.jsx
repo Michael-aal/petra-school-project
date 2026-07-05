@@ -64,7 +64,7 @@ const homeInfo = [
 function HomeSection1() {
 
   return (
-    <section className="homeSection1">
+    <section id="home-section-1" className="homeSection1">
       <div className="section1-container">
         {/* LEFT IMAGES */}
         <div className="  section1-left-images">
