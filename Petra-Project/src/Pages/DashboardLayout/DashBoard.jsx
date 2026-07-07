@@ -15,11 +15,14 @@ function MenuItem({ title, children }) {
 }
 
 export default function DashboardSidebar() {
+
+   const schoolName = "PETRA" //This is where the school name is
+
   return (
     <aside className="sidebar">
 
       <div className="sidebar-header">
-        <h2>PETRA</h2>
+        <h2>{schoolName}</h2>
         <X size={20} />
       </div>
 
@@ -30,7 +33,7 @@ export default function DashboardSidebar() {
           <span>Get Started</span>
         </NavLink>
 
-        <NavLink to="/">
+        <NavLink to="/dashboardHome">
           <img src="https://school.acceede.com/static/media/home-11.1cffcc3bd9cba2dbf0f182ba581c062a.svg" alt="" />
           <span>Home</span>
         </NavLink>
