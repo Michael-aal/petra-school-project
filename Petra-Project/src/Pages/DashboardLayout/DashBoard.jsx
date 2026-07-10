@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../../Styles/DashBoardLayout/Dashboard.css"
 import { NavLink } from "react-router-dom";
 import { X } from "lucide-react";
@@ -14,20 +15,42 @@ function MenuItem({ title, children }) {
   );
 }
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ sidebarOpen, setSidebarOpen }) {
 
-   const schoolName = "PETRA" //This is where the school name is
+   const schoolName = "PETRA"
+
 
   return (
-    <aside className="sidebar">
+    <>
+
+    {sidebarOpen && (
+        <div 
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+        ></div>
+    )}
+
+
+    <aside className={`sidebar ${sidebarOpen ? "show-sidebar" : ""}`}>
+
 
       <div className="sidebar-header">
+
         <h2>{schoolName}</h2>
-        <X size={20} />
+
+        <button 
+            className="sidebar-close"
+            onClick={() => setSidebarOpen(false)}
+        >
+            <X size={22}/>
+        </button>
+
       </div>
 
-      {/* Dashboard */}
-      <MenuItem title="Dashboard">
+
+      {/* KEEP ALL YOUR MENU ITEMS HERE */}
+
+<MenuItem title="Dashboard">
         <NavLink to="/dashboard">
           <img src="https://school.acceede.com/static/media/more.505d298ccead783ac815adfdf5ed6b85.svg" alt="" />
           <span>Get Started</span>
@@ -172,5 +195,9 @@ export default function DashboardSidebar() {
       </MenuItem>
 
     </aside>
+
+    </>
   );
 }
+
+
