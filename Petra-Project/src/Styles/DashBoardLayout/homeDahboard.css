@@ -1,5 +1,4 @@
 .dashboard-home {
-    min-height: 100vh;
     background: var(--bg);
     padding: 32px;
     color: var(--text);

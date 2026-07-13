@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "../../Styles/DashBoardLayout/homeDahboard.css"
-const [sidebarOpen,setSidebarOpen] = useState(false);
+import { useState, useEffect } from "react";
 
 const dgd = [
     {
