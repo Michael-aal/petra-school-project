@@ -62,7 +62,7 @@ body.dark {
 .navbar-left {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 30px;
 }
 
 .navbar-logo {
@@ -260,7 +260,7 @@ body.dark .mobile-menu {
 
 .solution-item h4 {
   color: var(--text-dark);
-  font-size: 1rem;
+  font-size: 0.7rem;
   margin-bottom: 4px;
 }
 
