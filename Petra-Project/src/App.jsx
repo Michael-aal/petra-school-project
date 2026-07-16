@@ -8,9 +8,10 @@ import Navbar from "./Pages/components/Navbar";
 import Forparents from "./Pages/Forparents";
 import About from "./Pages/About";
 import Home from "./Pages/Home";
+import HomeDashBoard from "./Pages/DashboardLayout/homeDahboard";
 import GetStarted from "./Pages/Sigin/GetStarted"
 import Contact from "./Pages/Contact";
-import UserInfo from "./Styles/DashBoardLayout/UserInfo";
+import UserInfo from "./Pages/DashboardLayout/UserInfo";
 import { BrowserRouter as Router, Routes, Route, Outlet} from "react-router-dom";
 
 function PublicLayout(){
@@ -55,6 +56,7 @@ function App() {
         {/* Dashboard */}
 <Route element={<DashboardLay />}>
   <Route path="/dashboard" element={<h1>Dashboard Home</h1>} />
+  <Route path="//dashboardHome" element={<HomeDashBoard />} />
   <Route path="/enrollments" element={<h1>Enrollments</h1>} />
   <Route path="/classes" element={<h1>Classes</h1>} />
   <Route path="/bus" element={<h1>Bus</h1>} />
