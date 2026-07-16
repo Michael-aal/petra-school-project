@@ -166,11 +166,11 @@ export default function Forparents() {
 
   <div className="fparent-downloadActions">
 
-    <a href="/" className="fparent-storeButton">
+    <a href="/" className=" appBtn fparent-storeButton">
       Google Play
     </a>
 
-    <a href="/" className="fparent-storeButton secondary">
+    <a href="/" className="  fparent-storeButton secondary">
       App Store
     </a>
 

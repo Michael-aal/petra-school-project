@@ -697,8 +697,10 @@ width: 300px;
 
 }
 
+
+
 .section1-left-images, .section1-right-images{
-  display: none;
+
 }
 
 
@@ -1072,18 +1074,24 @@ width: 300px;
 }
 }
 
-@media(min-width: 375px){
+@media(min-width: 0px){
+.section1-content{
+  height: 130vh;
+  padding: 20px 5px;
+}
+
 .section1-badge{
+  z-index: 1000;
   margin-top: 1em;
-  font-size: .8em;
+  font-size: .5em;
   font-weight: 700;
   width: fit-content;
-  padding-left: .4em;
+  padding:.4em 1em;
   border-radius: 99999px;
 }
 
 .section1-title{
-  font-size: 2.6rem;
+  font-size: 2.3rem;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: -0.025em;
@@ -1111,6 +1119,11 @@ width: 300px;
   padding: 1em 2em;
   gap: .5em;
 }
+
+.highlight-pill{
+ z-index: 1000;
+}
+
   .section3-header h2 {
     font-size: 0.875rem;
   }
