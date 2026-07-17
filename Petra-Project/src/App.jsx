@@ -2,7 +2,7 @@ import Footer from "./Pages/components/Footer"
 import ForSchool from "./Pages/Forschool";
 import ForStudents from "./Pages/Forstusents";
 import Solution from "./Pages/Solution";
-import DashboardSidebar from "./Pages/DashboardLayout/DashBoard";
+import {SidebarNav} from "./Pages/DashboardLayout/SidebarNav";
 import Company from "./Pages/Company";
 import Navbar from "./Pages/components/Navbar";
 import Forparents from "./Pages/Forparents";
@@ -11,7 +11,7 @@ import Home from "./Pages/Home";
 import HomeDashBoard from "./Pages/DashboardLayout/homeDahboard";
 import GetStarted from "./Pages/Sigin/GetStarted"
 import Contact from "./Pages/Contact";
-import UserInfo from "./Pages/DashboardLayout/UserInfo";
+import UserInfo from "./Pages/DashboardLayout/TopNavbar";
 import { BrowserRouter as Router, Routes, Route, Outlet} from "react-router-dom";
 
 function PublicLayout(){
@@ -28,7 +28,7 @@ function PublicLayout(){
 function DashboardLay() {
   return (
     <div style={{ display: "flex" }}>
-      <DashboardSidebar />
+      <SidebarNav />
       <div style={{ flex: 1, padding: "20px" }}>
         <Outlet />
       </div>

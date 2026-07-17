@@ -1,8 +1,20 @@
 import { User, Mail, Phone, Building2, MapPin, Search, Send } from "lucide-react";
 import "../../Styles/Sigin/GetStarted.css";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 export default function GetStarted() {
+
+  const {userInfo, setUserInfo} = useContext(UserContext);
+
+  const handleChange = (e) => {
+    setUserInfo({
+      ...userInfo,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
     <section className="gs">
 
@@ -31,11 +43,20 @@ export default function GetStarted() {
 
         {/* FULL NAME */}
         <div className="gs-field">
-          <label>Full Name</label>
+          <label>FirstName</label>
 
           <div className="gs-inputWrapper">
             <User className="gs-icon" />
-            <input type="text" placeholder="Enter your full name" />
+            <input name="firstName" type="text" placeholder="Enter your first name" value={userInfo.firstName} onChange={handleChange} />
+          </div>
+        </div>
+
+        <div className="gs-field">
+          <label>LastName</label>
+
+          <div className="gs-inputWrapper">
+            <User className="gs-icon" />
+            <input name="lastName" type="text" placeholder="Enter your Last name" value={userInfo.lastName} onChange={handleChange} />
           </div>
         </div>
 
@@ -45,7 +66,7 @@ export default function GetStarted() {
 
           <div className="gs-inputWrapper">
             <Mail className="gs-icon" />
-            <input type="email" placeholder="name@example.com" />
+            <input  type="text" placeholder="name@example.com" value={userInfo.email} onChange={handleChange} />
           </div>
         </div>
 
@@ -55,7 +76,7 @@ export default function GetStarted() {
 
           <div className="gs-inputWrapper">
             <Phone className="gs-icon" />
-            <input type="tel" placeholder="+234..." />
+            <input name="phoneNumber" type="tel" placeholder="+234..." value={userInfo.phoneNumber} onChange={handleChange} />
           </div>
         </div>
 
@@ -67,7 +88,7 @@ export default function GetStarted() {
 
           <div className="gs-inputWrapper">
             <Building2 className="gs-icon" />
-            <input type="text" placeholder="e.g Grace Schools" />
+            <input name="institution" type="text" placeholder="e.g Grace Schools" value={userInfo.institution} onChange={handleChange} />
           </div>
         </div>
 
@@ -78,14 +99,14 @@ export default function GetStarted() {
 
             <div className="gs-inputWrapper">
               <MapPin className="gs-icon" />
-              <input type="text" placeholder="Select state" />
+              <input name="state" type="text" placeholder="Select state" value={userInfo.state} onChange={handleChange} />
             </div>
           </div>
 
           <div className="gs-field">
             <label>City</label>
 
-            <input type="text" placeholder="e.g Sango" />
+            <input name="city" type="text" placeholder="e.g Sango" value={userInfo.city} onChange={handleChange} />
           </div>
 
         </div>
@@ -95,7 +116,7 @@ export default function GetStarted() {
 
           <div className="gs-inputWrapper">
             <Search className="gs-icon" />
-            <input type="text" placeholder="LinkedIn, Friend, Event..." />
+            <input name="referral" type="text" placeholder="LinkedIn, Friend, Event..." value={userInfo.referral} onChange={handleChange} />
           </div>
         </div>
 
