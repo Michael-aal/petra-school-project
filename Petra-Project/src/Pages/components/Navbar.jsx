@@ -102,7 +102,7 @@ export default function Navbar() {
 
     const savedTheme = window.localStorage.getItem("petra-theme");
     if (savedTheme) {
-      return savedTheme === "dark";
+      return savedTheme === "white";
     }
 
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -115,12 +115,11 @@ export default function Navbar() {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-
+    
       if (window.innerWidth >= 768) {
         setMobileMenuOpen(false);
       }
-    };
-
+    }
     handleResize();
 
     window.addEventListener("resize", handleResize);
@@ -174,7 +173,7 @@ export default function Navbar() {
         {/* LEFT */}
         <div className="navbar-left">
           <NavLink to="/" className="navbar-logo">
-            <School size={27} />
+            <School size={30} />
             <span>Petra School</span>
           </NavLink>
 
@@ -188,7 +187,7 @@ export default function Navbar() {
               >
                 <button className="nav-link-btn" aria-label="Solutions menu">
                   Solutions
-                  <ChevronDown className="chevron-icon" size={18} />
+                  <ChevronDown className="chevron-icon" size={15} />
                 </button>
 
                 {showSolutions && (
@@ -230,7 +229,7 @@ export default function Navbar() {
               >
                 <button className="nav-link-btn" aria-label="Company menu">
                   Company
-                  <ChevronDown className="chevron-icon" size={18} />
+                  <ChevronDown className="chevron-icon" size={15} />
                 </button>
 
                 {showCompany && (

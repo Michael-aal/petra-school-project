@@ -39,7 +39,8 @@ body.dark {
 }
 
 .navbar-container {
-  max-width: 90%;
+  font-size:  100px;
+  max-width: 95%;
   margin: 0 auto;
   background: var(--surface);
   color: var(--text-dark);
@@ -94,7 +95,7 @@ body.dark {
   color: var(--text-muted);
   text-decoration: none;
 
-  font-size: 0.95rem;
+  font-size: 0.6rem;
   font-weight: 500;
 
   cursor: pointer;
@@ -168,13 +169,14 @@ body.dark .mobile-menu {
   color: white;
   border: none;
 
-  padding: 14px 30px;
+  padding: 10px 30px;
   border-radius: 40px;
 
-  font-size: 0.95rem;
+  font-size: .6rem;
   font-weight: 600;
-
+  display: flex;
   cursor: pointer;
+  
 
   transition: all 0.3s ease;
 }
@@ -389,7 +391,6 @@ span{
 
   background: var(--primary);
   color: white;
-
   font-weight: 600;
 
   cursor: pointer;
@@ -399,13 +400,13 @@ span{
    RESPONSIVE
 ========================= */
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
   .navbar {
     padding: 15px;
   }
 
   .navbar-container {
-  max-width: 90%;
+  max-width: 100%;
   margin: 0 auto;
   background: var(--surface);
   color: var(--text-dark);

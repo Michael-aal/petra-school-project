@@ -1,0 +1,322 @@
+/* ===========================
+   ABOUT HERO
+=========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+      font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+
+  font-style: normal;
+  font-variation-settings:
+
+}
+
+.about{
+    background:#090712;
+}
+
+.section1{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    padding:100px 20px;
+    background: white;
+    color: black;
+}
+
+.title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 28px;
+    border-radius:40px;
+    background:rgba(108,99,255,.12);
+    border:1px solid rgba(255,255,255,.08);
+    color:#7A78FF;
+    font-weight:700;
+    margin-bottom:40px;
+}
+
+.context{
+    color:black;
+    font-size:72px;
+    line-height:1.15;
+    max-width:1100px;
+}
+
+.highlight{
+    color:#0700c6;
+    font-size: 45px;
+}
+
+.underline{
+    position:relative;
+}
+
+.underline::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:100%;
+    height:6px;
+    background:#0700c6;
+    border-radius:10px;
+}
+
+.describe{
+    margin-top:35px;
+    color:#A9A9B7;
+    font-size:28px;
+    max-width:900px;
+    line-height:1.7;
+}
+
+/* ===========================
+   STORY
+=========================== */
+
+.story{
+    background:#ffffff;
+    padding:80px 20px 120px;
+}
+
+.story-container{
+
+    max-width:1450px;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+
+    padding:70px;
+
+    border-radius:45px;
+
+    background:linear-gradient(180deg,#514fc8,#39379d);
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:0 30px 70px rgba(0,0,0,.35);
+}
+
+.story-container::before{
+
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background-image:
+    radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+
+    background-size:32px 32px;
+
+    opacity:.25;
+}
+
+.story-left{
+
+    position:relative;
+    z-index:2;
+}
+
+.story-badge{
+
+    display:inline-flex;
+
+    padding:14px 28px;
+
+    background:#B35CFF;
+
+    color:white;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    transform:rotate(-3deg);
+
+    margin-bottom:40px;
+}
+
+.story-left h2{
+
+    color:white;
+
+    font-size:56px;
+
+    line-height:1.15;
+
+    margin-bottom:35px;
+}
+
+.story-left p{
+
+    color:#ECECFF;
+
+    font-size:26px;
+
+    line-height:1.8;
+
+    margin-bottom:35px;
+}
+
+.story-right{
+
+    position:relative;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    border-radius:35px;
+
+    min-height:600px;
+}
+
+.timeline-line{
+
+    position:absolute;
+
+    width:520px;
+    height:300px;
+
+    border:6px dashed rgba(255,255,255,.35);
+
+    border-left:none;
+    border-bottom:none;
+
+    border-radius:300px;
+
+    left:100px;
+    top:180px;
+
+    transform:rotate(-8deg);
+}
+
+.timeline-card{
+
+    position:absolute;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:18px 24px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.16);
+
+    backdrop-filter:blur(15px);
+
+    color:white;
+}
+
+.timeline-card h3{
+
+    margin:0;
+    font-size:24px;
+}
+
+.timeline-card span{
+
+    color:#DDDDFD;
+}
+
+.year{
+
+    width:55px;
+    height:55px;
+
+    background:white;
+
+    color:#514fc8;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-weight:bold;
+}
+
+.card1{
+
+    left:35px;
+    bottom:35px;
+}
+
+.card2{
+
+    right:60px;
+    top:290px;
+}
+
+.card3{
+
+    right:35px;
+    top:40px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+.context{
+    font-size:46px;
+}
+
+.describe{
+    font-size:20px;
+}
+
+.story-container{
+
+    grid-template-columns:1fr;
+    padding:40px 25px;
+}
+
+.story-left h2{
+
+    font-size:40px;
+}
+
+.story-left p{
+
+    font-size:18px;
+}
+
+.story-right{
+
+    min-height:500px;
+}
+
+.timeline-line{
+
+    display:none;
+}
+
+.timeline-card{
+
+    position:relative;
+    margin:20px;
+    left:auto;
+    right:auto;
+    top:auto;
+    bottom:auto;
+}
+}
