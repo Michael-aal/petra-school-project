@@ -40,7 +40,7 @@ body.dark {
 
 .navbar-container {
   font-size:  100px;
-  max-width: 95%;
+  max-width: 90%;
   margin: 0 auto;
   background: var(--surface);
   color: var(--text-dark);
@@ -66,12 +66,16 @@ body.dark {
   gap: 30px;
 }
 
+.petra{
+  font-size: 14.5px;
+}
+
 .navbar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
 
-  font-size: 1.8rem;
+  font-size: 1.0rem;
   font-weight: 700;
   color: var(--primary);
   cursor: pointer;
@@ -198,7 +202,7 @@ body.dark .mobile-menu {
 .solutions-dropdown {
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 300%;
   transform: translateX(-50%);
 
   width: min(850px, 95vw);
@@ -280,11 +284,14 @@ body.dark .mobile-menu {
   color: var(--text-muted);
 }
 
+
+
 /* COMPANY */
-.company-item {
+body.dark .company-item {
   margin-bottom: 18px;
   cursor: pointer;
-
+  color: black;
+   background-color: ;
   transition: all 0.25s ease;
 }
 
@@ -297,9 +304,22 @@ body.dark .mobile-menu {
   margin-bottom: 4px;
 }
 
+.company-item h4:hover{
+  color: #4338ca;
+}
+
+.company-content{
+  font-size: 18px;
+  font-weight: 800;
+
+}
+
+
+
 .company-item p {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.55rem;
+  font-weight: 600;
 }
 
 /* =========================
@@ -481,7 +501,7 @@ span{
 .company-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 
   padding: 10px;
   border-radius: 12px;
@@ -489,9 +509,6 @@ span{
   transition: all 0.25s ease;
 }
 
-.company-item:hover {
-  background: #f9fafb;
-}
 
 .company-icon {
   display: flex;
@@ -502,6 +519,7 @@ span{
 
   flex-shrink: 0;
 }
+
 
 .company-content h4 {
   margin-bottom: 4px;

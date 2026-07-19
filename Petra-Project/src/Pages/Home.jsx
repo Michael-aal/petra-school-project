@@ -1,4 +1,4 @@
-import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
+      import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../Styles/Home.css";
@@ -66,7 +66,9 @@ function HomeSection1() {
 
           <h1 className="section1-title">
             The premium operating system for
-            <span className="section1-highlight"> modern schools</span>
+           <p>
+             <span className="section1-highlight"> modern schools</span>
+            </p>
           </h1>
 
           <p className="section1-description">

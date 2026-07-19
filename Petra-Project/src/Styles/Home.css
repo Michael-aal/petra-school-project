@@ -24,7 +24,7 @@ body.dark {
   background:
     radial-gradient(circle at top left, rgba(91, 91, 255, 0.16), transparent 24%),
     radial-gradient(circle at 82% 0%, rgba(34, 211, 238, 0.14), transparent 20%),
-    linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    linear-gradient( 90deg, #9dcaf7 0%, #ffd4e5 50% , rgb(214, 168, 255) 100%);
   overflow: hidden;
   transition: background 0.3s ease;
 }
@@ -91,6 +91,7 @@ body.dark {
   letter-spacing: -0.03em;
   color: var(--hero-text);
   margin: 0;
+  
 }
 
 .section1-highlight {
@@ -99,6 +100,8 @@ body.dark {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-size: 25px;
+  letter-spacing: 5px;
 }
 
 .section1-description {
@@ -465,7 +468,7 @@ body.dark .card-info {
   }
 
   .section1-buttons {
-    flex-direction: column;
+    
     width: 100%;
     gap: 0.75rem;
   }
@@ -513,7 +516,7 @@ body.dark .card-info {
 
 .section1-content{
   width: 100%;
-  height: 120vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -540,7 +543,7 @@ body.dark .card-info {
   gap: 10px;
   width: 300px;
   height: 30px;
-  color: white;
+  color: black;
   background-color: white;
   font-size: 20px;
   font-weight: 600;
@@ -771,7 +774,6 @@ width: 300px;
 
 .section1-buttons{
   display: flex;
-  flex-direction: column;
   gap: 30px;
   justify-content: center;
   align-items: center;
@@ -1033,7 +1035,6 @@ width: 300px;
 
 .section1-buttons{
   display: flex;
-  flex-direction: column;
   gap: 30px;
   justify-content: center;
   align-items: center;
@@ -1074,9 +1075,9 @@ width: 300px;
 }
 }
 
-@media(min-width: 0px){
+@media(min-width: 480px){
 .section1-content{
-  height: 130vh;
+  height: 100vh;
   padding: 20px 5px;
 }
 
@@ -1091,10 +1092,10 @@ width: 300px;
 }
 
 .section1-title{
-  font-size: 2.3rem;
+  font-size: 350%;
   font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: -0.025em;
+  line-height: 1;
+  /* letter-spacing: -1.025em; */
   padding-left: 1em;
   padding-right: 1em;
   display: flex;
@@ -1149,7 +1150,50 @@ width: 300px;
 }
 
 @media (max-width: 480px) {
+.section1-content{
+  height: 120vh;
+  padding: 20px 5px;
+}
 
+.section1-badge{
+  z-index: 1000;
+  margin-top: 1em;
+  font-size: .5em;
+  font-weight: 700;
+  width: fit-content;
+  padding:.4em 1em;
+  border-radius: 99999px;
+}
+
+.section1-title{
+  font-size: 200%;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  padding-left: 1em;
+  padding-right: 1em;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+}
+.section1-description{
+  color: rgb(75, 85, 99);
+  line-height: 1.625;
+  font-size: 1.2rem;
+  max-width: 41rem;
+  width: 100%;
+  padding-left: 1.3em;
+  padding-right: 1.3em;
+}
+
+.section1-btn-primary, .section1-btn-secondary{
+  font-size: 1.125rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 1em 2em;
+  gap: .5em;
+}
   .section3-header h2 {
      font-size: 0.75rem; /* Slightly smaller */
     font-size: 0.875rem;

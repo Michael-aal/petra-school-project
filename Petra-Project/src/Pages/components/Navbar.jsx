@@ -173,8 +173,8 @@ export default function Navbar() {
         {/* LEFT */}
         <div className="navbar-left">
           <NavLink to="/" className="navbar-logo">
-            <School size={30} />
-            <span>Petra School</span>
+            <School size={18} />
+            <span className="petra">Petra School</span>
           </NavLink>
 
           {!isMobile && (
@@ -405,7 +405,7 @@ export default function Navbar() {
             Get Started
           </NavLink>
         </div>
-      )}
+      ) }
     </nav>
   );
 }
