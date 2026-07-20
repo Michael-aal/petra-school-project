@@ -88,7 +88,7 @@
 /* ---------- Page base ---------- */
 
 .about-page {
-  background: black;
+  background: var(--bg);
   color: var(--text);
   transition: background var(--ease), color var(--ease);
   overflow-x: hidden;
@@ -147,7 +147,8 @@
   align-items: center;
   text-align: center;
   padding: clamp(90px, 14vw, 140px) 20px clamp(60px, 8vw, 100px);
-  background:  linear-gradient( rgb(68, 178, 215) , white);
+  background: radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.14), transparent 42%),
+    radial-gradient(circle at 85% 85%, rgba(20, 184, 166, 0.14), transparent 42%), var(--bg);
 }
 
 .hero-section .container {
@@ -552,17 +553,8 @@
   }
 
   .hero-section {
-    min-height: 70vh;
+    min-height: auto;
     padding-top: 100px;
-    
-  }
-
-  .container{
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    justify-content: center;
-    align-items: center;
   }
 
   .feature-card,

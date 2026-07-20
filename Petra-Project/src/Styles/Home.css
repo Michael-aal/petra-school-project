@@ -653,9 +653,9 @@ width: 300px;
 }
 
 .section1-title{
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: -0.025em;
   padding-left: 1em;
   padding-right: 1em;
@@ -1077,9 +1077,8 @@ width: 300px;
 
 @media(min-width: 480px){
 .section1-content{
-  height: 130vh;
+  height: 100vh;
   padding: 20px 5px;
-  display: flex;
 }
 
 .section1-badge{

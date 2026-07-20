@@ -1,18 +1,25 @@
 import { User, Mail, Phone, Building2, MapPin, Search, Send } from "lucide-react";
 import "../../Styles/Sigin/GetStarted.css";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
 export default function GetStarted() {
 
   const {userInfo, setUserInfo} = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setUserInfo({
-      ...userInfo,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate("/dashboard");
   };
 
   return (
@@ -37,7 +44,7 @@ export default function GetStarted() {
       </div>
 
       {/* FORM */}
-      <div className="gs-form">
+      <form className="gs-form" onSubmit={handleSubmit}>
 
         <h2 className="gs-sectionTitle">Contact Details</h2>
 
@@ -66,7 +73,7 @@ export default function GetStarted() {
 
           <div className="gs-inputWrapper">
             <Mail className="gs-icon" />
-            <input  type="text" placeholder="name@example.com" value={userInfo.email} onChange={handleChange} />
+            <input name="email" type="email" placeholder="name@example.com" value={userInfo.email} onChange={handleChange} />
           </div>
         </div>
 
@@ -121,11 +128,11 @@ export default function GetStarted() {
         </div>
 
         {/* SUBMIT */}
-        <NavLink to="/dashboard" className="gs-button">
+        <button type="submit" className="gs-button">
           Submit Request <Send />
-        </NavLink>
+        </button>
 
-      </div>
+      </form>
 
     </section>
   );

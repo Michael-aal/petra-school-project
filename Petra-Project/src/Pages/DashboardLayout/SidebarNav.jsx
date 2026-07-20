@@ -29,46 +29,67 @@ import {
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
-import UserInfo from "./TopNavbar";
-
-
 
 const navGroups = [
   {
     label: "Dashboard",
     icon: LayoutDashboard,
-    href: "/",
+    href: "/dashboard",
   },
   {
     label: "School Setup",
     icon: School,
     children: [
-      { label: "School Profile", icon: School, href: "/setup/profile" },
-      { label: "Academic Session", icon: Calendar, href: "/setup/sessions" },
-      { label: "Classes", icon: BookOpen, href: "/setup/classes" },
-      { label: "Subjects", icon: ClipboardList, href: "/setup/subjects" },
+      {
+        label: "School Profile",
+        icon: School,
+        href: "/dashboard/setup/profile",
+      },
+      {
+        label: "Academic Session",
+        icon: Calendar,
+        href: "/dashboard/setup/sessions",
+      },
+      { label: "Classes", icon: BookOpen, href: "/dashboard/setup/classes" },
+      {
+        label: "Subjects",
+        icon: ClipboardList,
+        href: "/dashboard/setup/subjects",
+      },
     ],
   },
   {
     label: "Students",
     icon: GraduationCap,
     children: [
-      { label: "Students", icon: GraduationCap, href: "/students" },
-      { label: "Enrollment", icon: UserCheck, href: "/students/enrollment" },
-      { label: "Parents", icon: Users, href: "/students/parents" },
-      { label: "Gate Monitoring", icon: UserCheck, href: "/students/gate" },
+      { label: "Students", icon: GraduationCap, href: "/dashboard/students" },
+      {
+        label: "Enrollment",
+        icon: UserCheck,
+        href: "/dashboard/students/enrollment",
+      },
+      { label: "Parents", icon: Users, href: "/dashboard/students/parents" },
+      {
+        label: "Gate Monitoring",
+        icon: UserCheck,
+        href: "/dashboard/students/gate",
+      },
     ],
   },
   {
     label: "Academics",
     icon: BookOpen,
     children: [
-      { label: "Timetable", icon: Calendar, href: "/academics/timetable" },
-      { label: "School Bus", icon: Bus, href: "/academics/bus" },
+      {
+        label: "Timetable",
+        icon: Calendar,
+        href: "/dashboard/academics/timetable",
+      },
+      { label: "School Bus", icon: Bus, href: "/dashboard/academics/bus" },
       {
         label: "Attendance",
         icon: ClipboardCheck,
-        href: "/academics/attendance",
+        href: "/dashboard/academics/attendance",
       },
     ],
   },
@@ -76,12 +97,16 @@ const navGroups = [
     label: "Examination",
     icon: FileText,
     children: [
-      { label: "CBT", icon: ClipboardList, href: "/examination/cbt" },
-      { label: "Results", icon: BarChart2, href: "/examination/results" },
+      { label: "CBT", icon: ClipboardList, href: "/dashboard/examination/cbt" },
+      {
+        label: "Results",
+        icon: BarChart2,
+        href: "/dashboard/examination/results",
+      },
       {
         label: "Report Cards",
         icon: FileText,
-        href: "/examination/reports",
+        href: "/dashboard/examination/reports",
       },
     ],
   },
@@ -89,12 +114,12 @@ const navGroups = [
     label: "Staff",
     icon: UserCog,
     children: [
-      { label: "Teachers", icon: UserCog, href: "/staff/teachers" },
-      { label: "Admins", icon: UserCog, href: "/staff/admins" },
+      { label: "Teachers", icon: UserCog, href: "/dashboard/staff/teachers" },
+      { label: "Admins", icon: UserCog, href: "/dashboard/staff/admins" },
       {
         label: "Attendance",
         icon: ClipboardCheck,
-        href: "/staff/attendance",
+        href: "/dashboard/staff/attendance",
       },
     ],
   },
@@ -102,15 +127,23 @@ const navGroups = [
     label: "Finance",
     icon: CreditCard,
     children: [
-      { label: "Payments", icon: CreditCard, href: "/finance/payments" },
-      { label: "Invoices", icon: Receipt, href: "/finance/invoices" },
+      {
+        label: "Payments",
+        icon: CreditCard,
+        href: "/dashboard/finance/payments",
+      },
+      { label: "Invoices", icon: Receipt, href: "/dashboard/finance/invoices" },
       {
         label: "Extra Fees",
         icon: PlusCircle,
-        href: "/finance/extra-fees",
+        href: "/dashboard/finance/extra-fees",
       },
-      { label: "FlexPay", icon: Wallet, href: "/finance/flexpay" },
-      { label: "Cashflow", icon: TrendingUp, href: "/finance/cashflow" },
+      { label: "FlexPay", icon: Wallet, href: "/dashboard/finance/flexpay" },
+      {
+        label: "Cashflow",
+        icon: TrendingUp,
+        href: "/dashboard/finance/cashflow",
+      },
     ],
   },
   {
@@ -120,258 +153,159 @@ const navGroups = [
       {
         label: "Notifications",
         icon: Bell,
-        href: "/communication/notifications",
+        href: "/dashboard/communication/notifications",
       },
       {
         label: "Support",
         icon: HelpCircle,
-        href: "/communication/support",
+        href: "/dashboard/communication/support",
       },
     ],
   },
   {
     label: "Settings",
     icon: Settings,
-    href: "/settings",
+    href: "/dashboard/settings",
   },
 ];
 
-
 const FIXED_NAV = navGroups;
 
-
-export function SidebarNav({ onNavigate }) {
-
+export function SidebarNav({ onNavigate, collapsed = false }) {
   const location = useLocation();
 
-
   const [openGroups, setOpenGroups] = useState(() => {
-
     const initial = {};
 
     FIXED_NAV.forEach((group) => {
-
       if (
         group.children?.some((child) =>
-          location.pathname.startsWith(child.href)
+          location.pathname.startsWith(child.href),
         )
       ) {
         initial[group.label] = true;
       }
-
     });
 
     return initial;
-
   });
 
-
   const toggleGroup = (label) => {
-
-    setOpenGroups((prev)=>({
+    setOpenGroups((prev) => ({
       ...prev,
       [label]: !prev[label],
     }));
-
   };
 
-
-  const isActive = (href)=>
+  const isActive = (href) =>
     href === "/"
       ? location.pathname === "/"
       : location.pathname.startsWith(href);
 
-      //Take care of the user INput
-  const {userInfo, setUserInfo} = useContext(UserContext);
+  //Take care of the user INput
+  const { userInfo, setUserInfo } = useContext(UserContext);
 
   const handleChange = (e) => {
     setUserInfo({
       ...userInfo,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-const SchoolNmae = userInfo.institution.split(" ")[0];
-const FirstLetterFirstName = userInfo.firstName[0];
-const FirstLetterLastNmae = userInfo.lastName[0];
+  const schoolName = userInfo.institution?.split(" ")[0] ?? "";
+  const firstLetterFirstName = userInfo.firstName?.[0] ?? "";
+  const firstLetterLastName = userInfo.lastName?.[0] ?? "";
 
-return (
-  <div className="">
-    <div className="">
-      <img src="" alt="" />
-      <div className="">
-          <h2>{SchoolNmae}</h2>
-          <h3>SCHOOL PLATFORM</h3>
+  return (
+    <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">
+        <img src="" alt="" className="sidebar-logo" />
+        <div className="sidebar-brand">
+          <h2 className="brand-title">{schoolName || "School"}</h2>
+          <h3 className="brand-sub">SCHOOL PLATFORM</h3>
+        </div>
       </div>
-        <h4><X /></h4>
+
+      <nav className="sidebar-nav">
+        {FIXED_NAV.map((item) => {
+          if (!item.children) {
+            const active = isActive(item.href);
+
+            return (
+              <NavLink
+                key={item.label}
+                to={item.href}
+                onClick={onNavigate}
+                className={`sidebar-link ${active ? "active" : ""}`}
+              >
+                <item.icon className="sidebar-icon" />
+
+                <span className="sidebar-label">{item.label}</span>
+              </NavLink>
+            );
+          }
+
+          const isOpen = openGroups[item.label];
+
+          const groupActive = item.children.some((child) =>
+            isActive(child.href),
+          );
+
+          return (
+            <div key={item.label}>
+              <button
+                type="button"
+                onClick={() => toggleGroup(item.label)}
+                className={`sidebar-group ${groupActive ? "group-active" : ""}`}
+              >
+                <item.icon className="sidebar-icon" />
+
+                <span className="sidebar-title sidebar-label">
+                  {item.label}
+                </span>
+
+                {isOpen ? (
+                  <ChevronDown className="arrow-icon" />
+                ) : (
+                  <ChevronRight className="arrow-icon" />
+                )}
+              </button>
+
+              {isOpen && (
+                <div className="sidebar-children">
+                  {item.children.map((child) => {
+                    const active = isActive(child.href);
+
+                    return (
+                      <NavLink
+                        key={child.href}
+                        to={child.href}
+                        onClick={onNavigate}
+                        className={`sidebar-child ${active ? "active" : ""}`}
+                      >
+                        <child.icon className="child-icon" />
+
+                        <span className="child-label">{child.label}</span>
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      <div className="sidebar-footer">
+        <div className="sidebar-avatar">
+          {firstLetterFirstName || "U"}
+          {firstLetterLastName || ""}
+        </div>
+        <div className="sidebar-user">
+          <h3>{userInfo.firstName || "Guest"}</h3>
+          <h4>{userInfo.email || "Complete your profile"}</h4>
+        </div>
+      </div>
     </div>
-
-<nav className="sidebar-nav">
-
-
-{FIXED_NAV.map((item)=>{
-
-
-if(!item.children){
-
-const active = isActive(item.href);
-
-
-return (
-
-<NavLink
-
-key={item.label}
-
-to={item.href}
-
-onClick={onNavigate}
-
-className={`sidebar-link ${active ? "active" : ""}`}
-
->
-
-<item.icon className="sidebar-icon"/>
-
-<span>{item.label}</span>
-
-</NavLink>
-
-);
-
-}
-
-
-
-const isOpen = openGroups[item.label];
-
-
-const groupActive = item.children.some(
-(child)=>isActive(child.href)
-);
-
-
-
-return (
-
-<div key={item.label}>
-
-
-<button
-
-type="button"
-
-onClick={()=>toggleGroup(item.label)}
-
-className={`sidebar-group ${
-groupActive ? "group-active" : ""
-}`}
-
->
-
-
-<item.icon className="sidebar-icon"/>
-
-
-<span className="sidebar-title">
-
-{item.label}
-
-</span>
-
-
-
-{
-isOpen ?
-
-<ChevronDown className="arrow-icon"/>
-
-:
-
-<ChevronRight className="arrow-icon"/>
-
-}
-
-
-
-</button>
-
-
-
-{
-isOpen &&
-
-<div className="sidebar-children">
-
-
-{
-item.children.map((child)=>{
-
-
-const active = isActive(child.href);
-
-
-
-return (
-
-<NavLink
-
-key={child.href}
-
-to={child.href}
-
-onClick={onNavigate}
-
-className={`sidebar-child ${
-active ? "active" : ""
-}`}
-
->
-
-
-<child.icon className="child-icon"/>
-
-
-<span>{child.label}</span>
-
-
-</NavLink>
-
-);
-
-
-})
-
-}
-
-
-
-</div>
-
-}
-
-
-</div>
-
-
-);
-
-
-})}
-
-
-
-</nav>
-
-<div className="">
-  <h2>{FirstLetterFirstName}{FirstLetterLastNmae}</h2>
-  <div className="">
-    <h3> {userInfo.firstName}</h3>
-    <h4>{userInfo.email}</h4>
-  </div>
-</div>
-</div>
-
-)
-
+  );
 }
