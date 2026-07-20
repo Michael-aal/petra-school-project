@@ -1,0 +1,71 @@
+.top-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #0b1220;
+  color: #e6eef8;
+  border-bottom: 5px solid;
+    position: sticky;
+  top: 0;
+  z-index: 10;}
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.menu-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.top-welcome {
+  font-weight: 600;
+}
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.user-name {
+  font-weight: 600;
+}
+.user-caret {
+  opacity: 0.8;
+}
