@@ -18,8 +18,8 @@ const About = () => {
 
       {/* Origin Story */}
       <section className="section origin-section">
-        <div className="container">
-          <h2>From Payment Platform to Educational Revolution</h2>
+        <div className="container section2">
+          <h2 className='title'>From Payment Platform to Educational Revolution</h2>
           <p>
             In 2022, fueled by a passion to democratize access to learning, we recognized a problem 
             that countless African families faced daily: the burden of educational expenses was holding back brilliant minds.
