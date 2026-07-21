@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -25,9 +25,9 @@ import {
   UserCheck,
   PlusCircle,
   X,
+  Building2,
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
-import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
 const navGroups = [
@@ -202,15 +202,7 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
       ? location.pathname === "/"
       : location.pathname.startsWith(href);
 
-  //Take care of the user INput
-  const { userInfo, setUserInfo } = useContext(UserContext);
-
-  const handleChange = (e) => {
-    setUserInfo({
-      ...userInfo,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const { userInfo } = useContext(UserContext);
 
   const schoolName = userInfo.institution?.split(" ")[0] ?? "";
   const firstLetterFirstName = userInfo.firstName?.[0] ?? "";
@@ -219,11 +211,28 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
   return (
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <img src="" alt="" className="sidebar-logo" />
+        <div className="sidebar-contaner-logo">
+        {
+          userInfo.profileImage ? (
+            <img 
+            src={userInfo.profileImage}
+            alt="School Logo"
+            className="sidebar-logo"
+            />
+          ) : (
+            <div className="sidebar-logo">
+              <Building2 />
+            </div>
+          )
+        }
+        </div>
         <div className="sidebar-brand">
           <h2 className="brand-title">{schoolName || "School"}</h2>
           <h3 className="brand-sub">SCHOOL PLATFORM</h3>
         </div>
+        <h4 className="sidebar-close">
+          <X />
+        </h4>
       </div>
 
       <nav className="sidebar-nav">
