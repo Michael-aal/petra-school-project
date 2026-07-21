@@ -11,6 +11,38 @@ import About from "./Pages/About";
 import Home from "./Pages/Home";
 import SignIn from "./Pages/Sigin/SignIn";
 import Register from "./Pages/Sigin/Register";
+import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
+import SchoolSetupPage from "./Pages/DashboardLayout/pages/SchoolSetupPage";
+import StudentsListPage from "./Pages/DashboardLayout/pages/students/StudentsListPage";
+import AcademicsPage from "./Pages/DashboardLayout/pages/AcademicsPage";
+import ExaminationPage from "./Pages/DashboardLayout/pages/ExaminationPage";
+import StaffPage from "./Pages/DashboardLayout/pages/StaffPage";
+import FinancePage from "./Pages/DashboardLayout/pages/FinancePage";
+import CommunicationPage from "./Pages/DashboardLayout/pages/CommunicationPage";
+import SettingsPage from "./Pages/DashboardLayout/pages/SettingsPage";
+import ProfilePage from "./Pages/DashboardLayout/pages/setup/ProfilePage";
+import SessionsPage from "./Pages/DashboardLayout/pages/setup/SessionsPage";
+import ClassesPage from "./Pages/DashboardLayout/pages/setup/ClassesPage";
+import SubjectsPage from "./Pages/DashboardLayout/pages/setup/SubjectsPage";
+import EnrollmentPage from "./Pages/DashboardLayout/pages/students/EnrollmentPage";
+import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
+import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
+import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
+import BusPage from "./Pages/DashboardLayout/pages/academics/BusPage";
+import AttendancePage from "./Pages/DashboardLayout/pages/academics/AttendancePage";
+import CbtPage from "./Pages/DashboardLayout/pages/examination/CbtPage";
+import ResultsPage from "./Pages/DashboardLayout/pages/examination/ResultsPage";
+import ReportsPage from "./Pages/DashboardLayout/pages/examination/ReportCardsPage";
+import TeachersPage from "./Pages/DashboardLayout/pages/staff/TeachersPage";
+import StaffAdminsPage from "./Pages/DashboardLayout/pages/staff/AdminsPage";
+import StaffAttendancePage from "./Pages/DashboardLayout/pages/staff/StaffAttendancePage";
+import PaymentsPage from "./Pages/DashboardLayout/pages/finance/PaymentsPage";
+import InvoicesPage from "./Pages/DashboardLayout/pages/finance/InvoicesPage";
+import ExtraFeesPage from "./Pages/DashboardLayout/pages/finance/ExtraFeesPage";
+import FlexpayPage from "./Pages/DashboardLayout/pages/finance/FlexpayPage";
+import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
+import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
+import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
 import {
@@ -21,54 +53,21 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./Styles/DashBoardLayout/SidebarNav.css";
-import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
-import SettingsPage from "./Pages/DashboardLayout/pages/SettingsPage";
-
-import ProfilePage from "./Pages/DashboardLayout/pages/setup/ProfilePage";
-import SessionsPage from "./Pages/DashboardLayout/pages/setup/SessionsPage";
-import ClassesPage from "./Pages/DashboardLayout/pages/setup/ClassesPage";
-import SubjectsPage from "./Pages/DashboardLayout/pages/setup/SubjectsPage";
-
-import StudentsListPage from "./Pages/DashboardLayout/pages/students/StudentsListPage";
-import EnrollmentPage from "./Pages/DashboardLayout/pages/students/EnrollmentPage";
-import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
-import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
-
-import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
-import BusPage from "./Pages/DashboardLayout/pages/academics/BusPage";
-import AttendancePage from "./Pages/DashboardLayout/pages/academics/AttendancePage";
-
-import CbtPage from "./Pages/DashboardLayout/pages/examination/CbtPage";
-import ResultsPage from "./Pages/DashboardLayout/pages/examination/ResultsPage";
-import ReportCardsPage from "./Pages/DashboardLayout/pages/examination/ReportCardsPage";
-
-import TeachersPage from "./Pages/DashboardLayout/pages/staff/TeachersPage";
-import AdminsPage from "./Pages/DashboardLayout/pages/staff/AdminsPage";
-import StaffAttendancePage from "./Pages/DashboardLayout/pages/staff/StaffAttendancePage";
-
-import PaymentsPage from "./Pages/DashboardLayout/pages/finance/PaymentsPage";
-import InvoicesPage from "./Pages/DashboardLayout/pages/finance/InvoicesPage";
-import ExtraFeesPage from "./Pages/DashboardLayout/pages/finance/ExtraFeesPage";
-import FlexpayPage from "./Pages/DashboardLayout/pages/finance/FlexpayPage";
-import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
-
-import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
-import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
-import SchoolOS from "./pages/solutions/SchoolOS";
-import FinancialManagement from "./pages/solutions/FinancialManagement";
-import CBTEngine from "./pages/solutions/CBTEngine";
-import PetraPay from "./pages/solutions/PetraPay";
-import FlexPay from "./pages/solutions/FlexPay";
-import Performance from "./pages/solutions/Performance";
-import AIStudyApp from "./pages/solutions/AIStudyApp";
-import LearningHub from "./pages/solutions/LearningHub";
-import DigitalLibrary from "./pages/solutions/DigitalLibrary";
-import TeacherWorkspace from "./pages/solutions/TeacherWorkspace";
-import LessonPlanner from "./pages/solutions/LessonPlanner";
-import AssessmentTools from "./pages/solutions/AssessmentTools";
-import SchoolAnalytics from "./pages/solutions/SchoolAnalytics";
-import Admissions from "./pages/solutions/Admissions";
-import CommunicationHub from "./pages/solutions/CommunicationHub";
+import SchoolOS from "./Pages/solutions/SchoolOS";
+import FinancialManagement from "./Pages/solutions/FinancialManagement";
+import CBTEngine from "./Pages/solutions/CBTEngine";
+import PetraPay from "./Pages/solutions/PetraPay";
+import FlexPay from "./Pages/solutions/FlexPay";
+import Performance from "./Pages/solutions/Performance";
+import AIStudyApp from "./Pages/solutions/AIStudyApp";
+import LearningHub from "./Pages/solutions/LearningHub";
+import DigitalLibrary from "./Pages/solutions/DigitalLibrary";
+import TeacherWorkspace from "./Pages/solutions/TeacherWorkspace";
+import LessonPlanner from "./Pages/solutions/LessonPlanner";
+import AssessmentTools from "./Pages/solutions/AssessmentTools";
+import SchoolAnalytics from "./Pages/solutions/SchoolAnalytics";
+import Admissions from "./Pages/solutions/Admissions";
+import CommunicationHub from "./Pages/solutions/CommunicationHub";
 
 function PublicLayout() {
   return (
@@ -165,6 +164,7 @@ function App() {
         {/* Dashboard */}
         <Route element={<DashboardLay />}>
           <Route path="/dashboard" element={<DashboardHomePage />} />
+          <Route path="/dashboard/setup" element={<SchoolSetupPage />} />
           <Route path="/dashboard/setup/profile" element={<ProfilePage />} />
           <Route path="/dashboard/setup/sessions" element={<SessionsPage />} />
           <Route path="/dashboard/setup/classes" element={<ClassesPage />} />
@@ -178,6 +178,7 @@ function App() {
           <Route path="/dashboard/students/parents" element={<ParentsPage />} />
           <Route path="/dashboard/students/gate" element={<GatePage />} />
 
+          <Route path="/dashboard/academics" element={<AcademicsPage />} />
           <Route
             path="/dashboard/academics/timetable"
             element={<TimetablePage />}
@@ -188,6 +189,7 @@ function App() {
             element={<AttendancePage />}
           />
 
+          <Route path="/dashboard/examination" element={<ExaminationPage />} />
           <Route path="/dashboard/examination/cbt" element={<CbtPage />} />
           <Route
             path="/dashboard/examination/results"
@@ -195,16 +197,18 @@ function App() {
           />
           <Route
             path="/dashboard/examination/reports"
-            element={<ReportCardsPage />}
+            element={<ReportsPage />}
           />
 
+          <Route path="/dashboard/staff" element={<StaffPage />} />
           <Route path="/dashboard/staff/teachers" element={<TeachersPage />} />
-          <Route path="/dashboard/staff/admins" element={<AdminsPage />} />
+          <Route path="/dashboard/staff/admins" element={<StaffAdminsPage />} />
           <Route
             path="/dashboard/staff/attendance"
             element={<StaffAttendancePage />}
           />
 
+          <Route path="/dashboard/finance" element={<FinancePage />} />
           <Route
             path="/dashboard/finance/payments"
             element={<PaymentsPage />}
@@ -224,6 +228,10 @@ function App() {
           />
 
           <Route
+            path="/dashboard/communication"
+            element={<CommunicationPage />}
+          />
+          <Route
             path="/dashboard/communication/notifications"
             element={<NotificationsPage />}
           />
@@ -231,6 +239,7 @@ function App() {
             path="/dashboard/communication/support"
             element={<SupportPage />}
           />
+
           <Route path="/dashboard/settings" element={<SettingsPage />} />
         </Route>
       </Routes>

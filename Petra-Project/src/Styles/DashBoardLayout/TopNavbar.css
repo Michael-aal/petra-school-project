@@ -5,8 +5,7 @@
   padding: 10px 14px;
   background: #0b1220;
   color: #e6eef8;
-  border-bottom: 5px solid;
-    position: sticky;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);  position: sticky;
   top: 0;
   z-index: 10;}
 .top-left {

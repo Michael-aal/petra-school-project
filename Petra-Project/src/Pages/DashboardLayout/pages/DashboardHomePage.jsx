@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 import {
   BellRing,
   BookOpenCheck,
@@ -9,37 +11,6 @@ import {
   Wallet,
 } from "lucide-react";
 import "../../../Styles/DashBoardLayout/homeDahboard.css";
-
-const dashboardHomeInfo = [
-  {
-    id: 1,
-    info: "Total Students",
-    logo: GraduationCap,
-    amount: 1284,
-    link: "/dashboard/students",
-  },
-  {
-    id: 2,
-    info: "Total Staff",
-    logo: Users,
-    amount: 87,
-    link: "/dashboard/staff/teachers",
-  },
-  {
-    id: 3,
-    info: "Revenue",
-    logo: Wallet,
-    amount: "₦0",
-    link: "/dashboard/finance/payments",
-  },
-  {
-    id: 4,
-    info: "Attendance Rate",
-    logo: UserCheck,
-    amount: "0%",
-    link: "/dashboard/academics/attendance",
-  },
-];
 
 const quickActions = [
   {
@@ -95,11 +66,48 @@ export default function DashboardHomePage() {
     year: "numeric",
   });
 
+  // 1. Get students array directly from Context
+  const { userInfo, students } = useContext(UserContext);
+  
+  // 2. Calculate the exact total dynamically
+  const totalNumber = students ? students.length : 0;
+
+  const dashboardHomeInfo = [
+    {
+      id: 1,
+      info: "Total Students",
+      logo: GraduationCap,
+      amount: totalNumber, // <--- NOW PERFECTLY SYNCED
+      link: "/dashboard/students",
+    },
+    {
+      id: 2,
+      info: "Total Staff",
+      logo: Users,
+      amount: 87,
+      link: "/dashboard/staff/teachers",
+    },
+    {
+      id: 3,
+      info: "Revenue",
+      logo: Wallet,
+      amount: "₦0",
+      link: "/dashboard/finance/payments",
+    },
+    {
+      id: 4,
+      info: "Attendance Rate",
+      logo: UserCheck,
+      amount: "0%",
+      link: "/dashboard/academics/attendance",
+    },
+  ];
+
   return (
     <div className="dashboard-home">
       <div className="dashboard-home-intro">
         <div>
-          <h1 className="dashboard-home-welcome">Welcome back, Admin 👋</h1>
+          <h1 className="dashboard-home-welcome">Welcome back, {userInfo?.firstName || "Admin"} 👋</h1>
           <p className="dashboard-home-description">
             Here is a quick overview of your school operations for today.
           </p>
@@ -110,9 +118,8 @@ export default function DashboardHomePage() {
       <div className="dashboard-home-summary-cards">
         {dashboardHomeInfo.map((item) => {
           const IconComponent = item.logo;
-
           return (
-            <div className="dashboard-home-summary-card" key={item.id}>
+            <a href={item.link} className="dashboard-home-summary-card" key={item.id}>
               <div className="dashboard-home-card-top">
                 <div className="dashboard-home-card-content">
                   <p className="dashboard-home-card-title">{item.info}</p>
@@ -122,10 +129,8 @@ export default function DashboardHomePage() {
                   <IconComponent size={24} />
                 </div>
               </div>
-              <a href={item.link} className="dashboard-home-card-action">
-                View details
-              </a>
-            </div>
+              <span className="dashboard-home-card-action">View details →</span>
+            </a>
           );
         })}
       </div>
@@ -134,21 +139,13 @@ export default function DashboardHomePage() {
         <section className="dashboard-home-panel">
           <div className="dashboard-home-panel-header">
             <h3 className="dashboard-home-panel-title">Quick Actions</h3>
-            <a href="/dashboard" className="dashboard-home-panel-link">
-              View all
-            </a>
+            <a href="/dashboard" className="dashboard-home-panel-link">View all</a>
           </div>
-
           <div className="dashboard-home-actions">
             {quickActions.map((action) => {
               const ActionIcon = action.icon;
-
               return (
-                <a
-                  key={action.id}
-                  href={action.link}
-                  className="dashboard-home-action-card"
-                >
+                <a key={action.id} href={action.link} className="dashboard-home-action-card">
                   <div className="dashboard-home-action-text">
                     <div className="dashboard-home-action-icon">
                       <ActionIcon size={18} />
@@ -168,21 +165,17 @@ export default function DashboardHomePage() {
         <section className="dashboard-home-panel">
           <div className="dashboard-home-panel-header">
             <h3 className="dashboard-home-panel-title">Recent Activity</h3>
-            <a href="/dashboard" className="dashboard-home-panel-link">
-              See more
-            </a>
+            <a href="/dashboard" className="dashboard-home-panel-link">See more</a>
           </div>
-
           <ul className="dashboard-home-list">
             {recentActivity.map((item) => {
               const ActivityIcon = item.icon;
-
               return (
                 <li key={item.id} className="dashboard-home-list-item">
                   <div className="dashboard-home-list-icon">
                     <ActivityIcon size={16} />
                   </div>
-                  <div>
+                  <div className="dashboard-home-list-content">
                     <h4>{item.title}</h4>
                     <p>{item.meta}</p>
                   </div>
