@@ -52,6 +52,21 @@ import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
 
 import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
+import SchoolOS from "./pages/solutions/SchoolOS";
+import FinancialManagement from "./pages/solutions/FinancialManagement";
+import CBTEngine from "./pages/solutions/CBTEngine";
+import PetraPay from "./pages/solutions/PetraPay";
+import FlexPay from "./pages/solutions/FlexPay";
+import Performance from "./pages/solutions/Performance";
+import AIStudyApp from "./pages/solutions/AIStudyApp";
+import LearningHub from "./pages/solutions/LearningHub";
+import DigitalLibrary from "./pages/solutions/DigitalLibrary";
+import TeacherWorkspace from "./pages/solutions/TeacherWorkspace";
+import LessonPlanner from "./pages/solutions/LessonPlanner";
+import AssessmentTools from "./pages/solutions/AssessmentTools";
+import SchoolAnalytics from "./pages/solutions/SchoolAnalytics";
+import Admissions from "./pages/solutions/Admissions";
+import CommunicationHub from "./pages/solutions/CommunicationHub";
 
 function PublicLayout() {
   return (
@@ -107,6 +122,33 @@ function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/solution" element={<Solution />} />
+          <Route path="/solution/school-os" element={<SchoolOS />} />
+          <Route
+            path="/solution/financial-management"
+            element={<FinancialManagement />}
+          />
+          <Route path="/solution/cbt-engine" element={<CBTEngine />} />
+          <Route path="/solution/petra-pay" element={<PetraPay />} />
+          <Route path="/solution/flexpay" element={<FlexPay />} />
+          <Route path="/solution/performance" element={<Performance />} />
+          <Route path="/solution/ai-study-app" element={<AIStudyApp />} />
+          <Route path="/solution/learning-hub" element={<LearningHub />} />
+          <Route path="/solution/digital-library" element={<DigitalLibrary />} />
+          <Route
+            path="/solution/teacher-workspace"
+            element={<TeacherWorkspace />}
+          />
+          <Route path="/solution/lesson-planner" element={<LessonPlanner />} />
+          <Route
+            path="/solution/assessment-tools"
+            element={<AssessmentTools />}
+          />
+          <Route path="/solution/school-analytics" element={<SchoolAnalytics />} />
+          <Route path="/solution/admissions" element={<Admissions />} />
+          <Route
+            path="/solution/communication-hub"
+            element={<CommunicationHub />}
+          />
           <Route path="/company" element={<Company />} />
           <Route path="/schools" element={<ForSchool />} />
           <Route path="/parents" element={<Forparents />} />

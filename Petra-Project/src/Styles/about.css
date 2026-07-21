@@ -56,16 +56,16 @@
 .about-page *::after { box-sizing: border-box; }
 
 .about-page {
-<<<<<<< HEAD
+
   background: var(--bg);
   color: var(--text);
   transition: background var(--ease), color var(--ease);
   overflow-x: hidden;
-=======
+
   overflow: hidden;
   background: var(--about-bg);
   color: var(--about-text);
->>>>>>> codespace-recovery
+
   font-size: 16px;
   line-height: 1.65;
   transition: background-color var(--about-ease), color var(--about-ease);
@@ -97,13 +97,13 @@
   isolation: isolate;
   padding: clamp(7rem, 15vw, 11rem) 0 clamp(5rem, 10vw, 8rem);
   text-align: center;
-<<<<<<< HEAD
+
   padding: clamp(90px, 14vw, 140px) 20px clamp(60px, 8vw, 100px);
   background: radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.14), transparent 42%),
     radial-gradient(circle at 85% 85%, rgba(20, 184, 166, 0.14), transparent 42%), var(--bg);
-=======
+
   background: linear-gradient(135deg, #eaf4ff 0%, #d7eaff 48%, #effcf9 100%);
->>>>>>> codespace-recovery
+
 }
 .hero-section::before, .hero-section::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(2px); opacity: .65; }
 .hero-section::before { width: 28rem; aspect-ratio: 1; top: -15rem; left: -9rem; background: rgba(37, 99, 235, .18); }
@@ -224,7 +224,6 @@
   .feature-card, .culture-card, .role-card { padding: 1.35rem; }
   .contact-details { padding: 1.4rem; }
 }
-<<<<<<< HEAD
 
 .innovation-card h4 {
   font-size: 1.05rem;
@@ -521,6 +520,5 @@
     padding: 24px;
   }
 }
-=======
+
 @media (prefers-reduced-motion: reduce) { .about-page *, .about-page *::before, .about-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
->>>>>>> codespace-recovery

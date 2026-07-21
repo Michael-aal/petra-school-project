@@ -6,79 +6,12 @@ import {
   Sun,
   Moon,
   School,
-  Wallet,
-  FileCheck,
-  CreditCard,
-  BarChart3,
   Shield,
-  GraduationCap,
   ChevronDown,
 } from "lucide-react";
+import { solutionGroups } from "../../pages/solutions/solutionData";
 
 import "../../Styles/components/Navbar.css";
-
-const fullScreenSixeSolutionInfo = [
-  {
-    header: "For Schools",
-    logo: <School size={22} />,
-    items: [
-      {
-        logo: <School size={20} />,
-        title: "School OS",
-        desc: "Attendance, Admin & Results",
-        path: "/solution/school-os",
-      },
-      {
-        logo: <Wallet size={20} />,
-        title: "Financial Management",
-        desc: "Fee Compliance & Reconciliation",
-        path: "/solution/financial-management",
-      },
-      {
-        logo: <FileCheck size={20} />,
-        title: "CBT Engine",
-        desc: "Assessment & Exams",
-        path: "/solution/cbt-engine",
-      },
-    ],
-  },
-  {
-    header: "For Parents",
-    logo: <Shield size={22} />,
-    items: [
-      {
-        logo: <CreditCard size={20} />,
-        title: "Acceede Pay",
-        desc: "Tuition & Fee Payments",
-        path: "/solution/acceede-pay",
-      },
-      {
-        logo: <Wallet size={20} />,
-        title: "Flexpay",
-        desc: "Installment Plans",
-        path: "/solution/flexpay",
-      },
-      {
-        logo: <BarChart3 size={20} />,
-        title: "Performance",
-        desc: "Monitor Child's Progress",
-        path: "/solution/performance",
-      },
-    ],
-  },
-  {
-    header: "For Students",
-    logo: <GraduationCap size={22} />,
-    items: [
-      {
-        logo: <GraduationCap size={20} />,
-        title: "Study App",
-        desc: "AI-Powered Learning",
-        path: "/solution/study-app",
-      },
-    ],
-  },
-];
 
 const companyInfo = [
   {
@@ -192,10 +125,9 @@ export default function Navbar() {
 
                 {showSolutions && (
                   <div className="solutions-dropdown">
-                    {fullScreenSixeSolutionInfo.map((item, index) => (
+                    {solutionGroups.map((item, index) => (
                       <div key={index} className="solution-column">
                         <h3 className="solution-heading">
-                          {item.logo}
                           {item.header}
                         </h3>
 
@@ -204,11 +136,8 @@ export default function Navbar() {
                             key={subIndex}
                             to={subItem.path}
                             className="solution-item"
-                            onClick={() => handleMenuClose(subItem.path === "/")}
+                            onClick={() => handleMenuClose(false)}
                           >
-                            <div className="solution-icon">
-                              {subItem.logo}
-                            </div>
                             <div className="solution-content">
                               <h4>{subItem.title}</h4>
                               <p>{subItem.desc}</p>
@@ -320,7 +249,7 @@ export default function Navbar() {
 
             {expandedSection === "solutions" && (
               <div className="accordion-body show">
-                {fullScreenSixeSolutionInfo.map((item, index) => (
+                {solutionGroups.map((item, index) => (
                   <div key={index} className="mobile-solution-group">
                     <h4>{item.header}</h4>
                     {item.items.map((subItem, subIndex) => (
@@ -328,7 +257,7 @@ export default function Navbar() {
                         key={subIndex}
                         to={subItem.path}
                         className="mobile-menu-link"
-                        onClick={() => handleMenuClose(subItem.path === "/")}
+                        onClick={() => handleMenuClose(false)}
                       >
                         {subItem.title}
                       </NavLink>
