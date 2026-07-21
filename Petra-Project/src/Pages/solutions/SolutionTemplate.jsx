@@ -1,6 +1,5 @@
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import heroImage from "../../assets/hero.png";
 import Footer from "../../Pages/components/Footer";
 import "../../Styles/solutions.css";
 
@@ -31,7 +30,7 @@ function Hero({ data }) {
           <strong>Responsive SaaS workflows</strong>
         </div>
         <div className="solution-hero-preview">
-          <img src={heroImage} alt="" className="solution-hero-image" />
+          <img src={data.heroImage} alt="" className="solution-hero-image" />
         </div>
       </div>
     </section>
@@ -86,7 +85,7 @@ function Screenshots({ data }) {
       <div className="solution-shots">
         {data.screenshots.map((item, index) => (
           <div key={item} className={`solution-shot shot-${index + 1}`}>
-            <img src={heroImage} alt="" className="solution-shot-image" />
+            <img src={data.heroImage} alt="" className="solution-shot-image" />
             <strong>{item}</strong>
           </div>
         ))}

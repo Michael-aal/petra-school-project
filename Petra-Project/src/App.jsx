@@ -9,7 +9,8 @@ import Navbar from "./Pages/components/Navbar";
 import Forparents from "./Pages/Forparents";
 import About from "./Pages/About";
 import Home from "./Pages/Home";
-import GetStarted from "./Pages/Sigin/GetStarted";
+import SignIn from "./Pages/Sigin/SignIn";
+import Register from "./Pages/Sigin/Register";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
 import {
@@ -17,6 +18,7 @@ import {
   Routes,
   Route,
   Outlet,
+  Navigate,
 } from "react-router-dom";
 import "./Styles/DashBoardLayout/SidebarNav.css";
 import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
@@ -119,6 +121,9 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/get-started" element={<Navigate to="/signin" replace />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/solution" element={<Solution />} />
@@ -155,7 +160,6 @@ function App() {
           <Route path="/students" element={<ForStudents />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/get-started" element={<GetStarted />} />
         </Route>
 
         {/* Dashboard */}

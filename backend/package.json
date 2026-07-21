@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,16 +20,21 @@
   },
   "homepage": "https://github.com/Michael-aal/petra-school-project#readme",
   "dependencies": {
-    "@prisma/client": "^7.8.0", 
+    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/client": "^7.8.0",
+    "bcrypt": "^6.0.0",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-validator": "^7.2.1",
     "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.11.0",
     "pg": "^8.22.0"
   },
   "devDependencies": {
+    "nodemon": "^3.1.10",
     "prisma": "^7.8.0"
   }
 }
