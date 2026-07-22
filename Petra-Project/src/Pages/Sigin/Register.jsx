@@ -12,6 +12,12 @@ const initialForm = {
   email: "",
   password: "",
   confirmPassword: "",
+  phone: "",
+  institution: "",
+  institutionType: "",
+  state: "",
+  city: "",
+  hearAbout: "",
 };
 
 export default function Register() {
@@ -110,7 +116,8 @@ export default function Register() {
       email: userData?.email || form.email || userInfo?.email || "",
       role: userData?.role || userInfo?.role || "user",
       institution: userData?.institution || userInfo?.institution || "My School",
-      phoneNumber: userData?.phoneNumber || userInfo?.phoneNumber || userInfo?.phone || "",
+      phoneNumber:
+        userData?.phoneNumber || userData?.phone || userInfo?.phoneNumber || userInfo?.phone || "",
       state: userData?.state || userInfo?.state || "",
       city: userData?.city || userInfo?.city || "",
       profileImage: userData?.profileImage || userData?.profilePicture || userInfo?.profileImage || userInfo?.profilePicture || "",
@@ -133,6 +140,12 @@ export default function Register() {
         fullName: form.fullName,
         email: form.email,
         password: form.password,
+        phone: form.phone,
+        institution: form.institution,
+        institutionType: form.institutionType,
+        state: form.state,
+        city: form.city,
+        hearAbout: form.hearAbout,
       });
 
       const registeredUser = response?.user || {};
@@ -197,6 +210,89 @@ export default function Register() {
             />
           </div>
           {errors.fullName ? <small>{errors.fullName}</small> : null}
+        </label>
+
+        <label className="auth-field">
+          <span>Phone Number</span>
+          <div className="auth-input-wrap">
+            <Mail size={18} />
+            <input
+              name="phone"
+              type="tel"
+              placeholder="+234..."
+              value={form.phone}
+              onChange={handleChange}
+              autoComplete="tel"
+            />
+          </div>
+        </label>
+
+        <label className="auth-field">
+          <span>Name of Institution</span>
+          <div className="auth-input-wrap">
+            <UserRound size={18} />
+            <input
+              name="institution"
+              type="text"
+              placeholder="e.g. Grace Schools"
+              value={form.institution}
+              onChange={handleChange}
+            />
+          </div>
+        </label>
+
+        <label className="auth-field">
+          <span>Institution Type</span>
+          <div className="auth-input-wrap">
+            <select name="institutionType" value={form.institutionType} onChange={handleChange}>
+              <option value="">Select Type</option>
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="tertiary">Tertiary</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </label>
+
+        <div style={{ display: "flex", gap: 12 }}>
+          <label className="auth-field" style={{ flex: 1 }}>
+            <span>State</span>
+            <div className="auth-input-wrap">
+              <input
+                name="state"
+                type="text"
+                placeholder="Select State"
+                value={form.state}
+                onChange={handleChange}
+              />
+            </div>
+          </label>
+
+          <label className="auth-field" style={{ flex: 1 }}>
+            <span>City</span>
+            <div className="auth-input-wrap">
+              <input
+                name="city"
+                type="text"
+                placeholder="e.g. Ikeja"
+                value={form.city}
+                onChange={handleChange}
+              />
+            </div>
+          </label>
+        </div>
+
+        <label className="auth-field">
+          <span>How did you hear about us?</span>
+          <div className="auth-input-wrap">
+            <input
+              name="hearAbout"
+              type="text"
+              placeholder="e.g. LinkedIn, Friend, Event"
+              value={form.hearAbout}
+              onChange={handleChange}
+            />
+          </div>
         </label>
 
         <label className="auth-field">

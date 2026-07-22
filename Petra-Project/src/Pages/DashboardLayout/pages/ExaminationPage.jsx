@@ -1,3 +1,5 @@
+import './page-styles/ExaminationPage.css';
+
 export default function ExaminationPage() {
   return (
     <div className="dashboard-page">

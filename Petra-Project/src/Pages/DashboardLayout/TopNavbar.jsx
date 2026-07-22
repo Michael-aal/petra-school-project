@@ -51,7 +51,7 @@ export default function TopNavbar({ onToggle }) {
     <header className="top-navbar">
       <div className="top-left">
         <button className="menu-btn" onClick={handleMenuClick} aria-label="Toggle menu">
-          {!showButton ? <Menu /> : <X />}
+          {!showButton ? <Menu /> : <Menu />}
         </button>
         <div className="top-welcome">Welcome, {getFirstName(userInfo)}</div>
       </div>
@@ -69,10 +69,10 @@ export default function TopNavbar({ onToggle }) {
             aria-expanded={showMenu}
             aria-haspopup="menu"
           >
-            <UserAvatar user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} />
+            <UserAvatar  user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} />
             <div className="user-meta">
-              <div className="user-name">{getDisplayName(userInfo)}</div>
-              <div className="user-role">{userInfo?.role || "user"}</div>
+              <div className="user-name"><span className="greets">Hi,</span> {getDisplayName(userInfo)}</div>
+              {/* <div className="user-role">{userInfo?.role || "user"}</div> */}
             </div>
             <div className="user-caret">
               <ChevronDown />
@@ -82,8 +82,9 @@ export default function TopNavbar({ onToggle }) {
           {showMenu ? (
             <div className="account-dropdown" role="menu">
               <div className="account-dropdown-header">
-                <UserAvatar user={userInfo} size={44} />
+                <UserAvatar user={userInfo} size={44}  />
                 <div>
+                  
                   <strong>{getDisplayName(userInfo)}</strong>
                   <span>{userInfo?.email || "No email available"}</span>
                 </div>

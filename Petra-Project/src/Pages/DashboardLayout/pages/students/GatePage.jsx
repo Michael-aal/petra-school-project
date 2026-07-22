@@ -1,3 +1,5 @@
+import '../page-styles/GatePage.css';
+
 export default function GatePage() {
   return (
     <div className="dashboard-page">

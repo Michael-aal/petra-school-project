@@ -1,3 +1,5 @@
+import '../page-styles/ClassesPage.css';
+
 export default function ClassesPage() {
   return (
     <div className="dashboard-page">

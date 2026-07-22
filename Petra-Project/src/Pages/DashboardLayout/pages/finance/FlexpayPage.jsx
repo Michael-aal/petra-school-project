@@ -1,3 +1,5 @@
+import '../page-styles/FlexpayPage.css';
+
 export default function FlexpayPage() {
   return (
     <div className="dashboard-page">

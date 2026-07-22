@@ -1,3 +1,5 @@
+import '../page-styles/ParentsPage.css';
+
 export default function ParentsPage() {
   return (
     <div className="dashboard-page">

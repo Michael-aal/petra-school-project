@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import '../page-styles/ProfilePage.css';
 import { Building2, Upload } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
 import { getDisplayName } from "../../../../utils/userProfile";
@@ -58,26 +59,27 @@ export default function ProfilePage() {
       color: "var(--foreground)",
       backgroundColor: "var(--background)",
       minHeight: "100vh",
-      padding: "32px",
+      padding: "28px",
       fontFamily: "system-ui, sans-serif",
     },
     headerSection: {
       display: "flex",
       alignItems: "center",
-      gap: "16px",
-      marginBottom: "32px",
+      gap: "18px",
+      marginBottom: "28px",
     },
     headerIcon: {
       backgroundColor: "var(--input)",
       color: "var(--primary)",
-      width: "48px",
-      height: "48px",
+      width: "56px",
+      height: "56px",
       borderRadius: "12px",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       margin: 0,
       border: "1px solid var(--border)",
+      flex: "0 0 auto",
     },
     title: {
       fontSize: "22px",
@@ -92,34 +94,35 @@ export default function ProfilePage() {
     },
     mainLayout: {
       display: "grid",
-      gridTemplateColumns: "1fr 280px",
-      gap: "24px",
+      gridTemplateColumns: "1fr 320px",
+      gap: "28px",
       alignItems: "start",
     },
     cardLeft: {
       backgroundColor: "var(--card)",
       border: "1px solid var(--border)",
       borderRadius: "16px",
-      padding: "32px",
+      padding: "28px",
     },
     cardRight: {
       backgroundColor: "var(--card)",
       border: "1px solid var(--border)",
       borderRadius: "16px",
-      padding: "32px",
+      padding: "28px",
       display: "flex",
       flexDirection: "column",
+      alignItems: "center",
     },
     sectionTitle: {
       fontSize: "18px",
-      fontWeight: "600",
-      margin: "0 0 24px 0",
+      fontWeight: "700",
+      margin: "0 0 20px 0",
     },
     row: {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
-      gap: "20px",
-      marginBottom: "20px",
+      gap: "18px",
+      marginBottom: "18px",
     },
     inputGroup: {
       display: "flex",
@@ -127,16 +130,16 @@ export default function ProfilePage() {
       gap: "8px",
     },
     label: {
-      fontSize: "14px",
+      fontSize: "13px",
       fontWeight: "600",
-      color: "var(--foreground)",
+      color: "var(--muted-foreground)",
     },
     input: {
       color: "var(--foreground)",
       backgroundColor: "var(--input)",
       border: "1px solid var(--border)",
       height: "44px",
-      padding: "0 16px",
+      padding: "0 14px",
       borderRadius: "8px",
       fontSize: "14px",
       outline: "none",
@@ -147,24 +150,24 @@ export default function ProfilePage() {
       color: "var(--foreground)",
       backgroundColor: "var(--input)",
       border: "1px solid var(--border)",
-      padding: "12px 16px",
+      padding: "12px 14px",
       borderRadius: "8px",
       fontSize: "14px",
       outline: "none",
       width: "100%",
-      minHeight: "80px",
-      resize: "none",
+      minHeight: "90px",
+      resize: "vertical",
       boxSizing: "border-box",
     },
     imageContainer: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      gap: "16px",
+      gap: "12px",
     },
     logoBox: {
-      width: "140px",
-      height: "140px",
+      width: "120px",
+      height: "120px",
       borderRadius: "999px",
       backgroundColor: "var(--input)",
       display: "flex",
@@ -173,14 +176,14 @@ export default function ProfilePage() {
       overflow: "hidden",
     },
     fallbackText: {
-      fontSize: "36px",
+      fontSize: "32px",
       fontWeight: "700",
       color: "var(--primary)",
     },
     metaText: {
       fontSize: "12px",
       color: "var(--muted-foreground)",
-      margin: "4px 0 12px 0",
+      margin: "4px 0 8px 0",
     },
     uploadBtn: {
       cursor: "pointer",
@@ -203,12 +206,12 @@ export default function ProfilePage() {
   return (
     <div className="dashboard-page" style={styles.container}>
       <div style={styles.headerSection}>
-        <h2 style={styles.headerIcon}>
+        <div style={styles.headerIcon} aria-hidden>
           <Building2 size={22} />
-        </h2>
+        </div>
         <div>
-          <h3 style={styles.title}>Profile</h3>
-          <h4 style={styles.subtitle}>Manage your account identity and contact information</h4>
+          <h2 style={styles.title}>Profile</h2>
+          <p style={styles.subtitle}>Manage your account identity and contact information</p>
         </div>
       </div>
 

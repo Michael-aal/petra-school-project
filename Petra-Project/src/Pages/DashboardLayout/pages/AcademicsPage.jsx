@@ -1,3 +1,5 @@
+import './page-styles/AcademicsPage.css';
+
 export default function AcademicsPage() {
   return (
     <div className="dashboard-page">

@@ -1,3 +1,5 @@
+import '../page-styles/ExtraFeesPage.css';
+
 export default function ExtraFeesPage() {
   return (
     <div className="dashboard-page">

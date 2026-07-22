@@ -1,3 +1,5 @@
+import '../page-styles/InvoicesPage.css';
+
 export default function InvoicesPage() {
   return (
     <div className="dashboard-page">

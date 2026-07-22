@@ -1,3 +1,5 @@
+import '../page-styles/AttendancePage.css';
+
 export default function AttendancePage() {
   return (
     <div className="dashboard-page">

@@ -1,3 +1,5 @@
+import '../page-styles/BusPage.css';
+
 export default function BusPage() {
   return (
     <div className="dashboard-page">

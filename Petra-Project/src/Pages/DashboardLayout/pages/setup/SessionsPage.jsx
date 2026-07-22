@@ -1,3 +1,5 @@
+import '../page-styles/SessionsPage.css';
+
 export default function SessionsPage() {
   return (
     <div className="dashboard-page">

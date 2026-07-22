@@ -11,6 +11,12 @@ model User {
   fullName  String
   email     String   @unique
   password  String
+  phone     String?
+  institution String?
+  institutionType String?
+  state     String?
+  city      String?
+  hearAbout String?
   role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

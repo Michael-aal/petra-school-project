@@ -1,3 +1,5 @@
+import '../page-styles/ReportCardsPage.css';
+
 export default function ReportCardsPage() {
   return (
     <div className="dashboard-page">

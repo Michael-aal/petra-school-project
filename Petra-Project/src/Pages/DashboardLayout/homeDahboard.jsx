@@ -50,7 +50,7 @@ export default function HomeDashBoard() {
 <section className="dashboard-home">
 
     <h2 className="dashboard-home-welcome">
-        Welcome Back, {userFirstName} 👋
+        Welcome Back, {userFirstName} 
     </h2>
 
     <div className="dashboard-home-intro">

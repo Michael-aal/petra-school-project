@@ -1,3 +1,5 @@
+import '../page-styles/CbtPage.css';
+
 export default function CbtPage() {
   return (
     <div className="dashboard-page">

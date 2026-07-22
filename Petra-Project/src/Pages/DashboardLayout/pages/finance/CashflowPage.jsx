@@ -1,3 +1,5 @@
+import '../page-styles/CashflowPage.css';
+
 export default function CashflowPage() {
   return (
     <div className="dashboard-page">

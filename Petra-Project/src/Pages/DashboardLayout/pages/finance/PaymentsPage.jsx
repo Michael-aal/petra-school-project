@@ -1,3 +1,5 @@
+import '../page-styles/PaymentsPage.css';
+
 export default function PaymentsPage() {
   return (
     <div className="dashboard-page">

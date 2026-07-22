@@ -1,3 +1,5 @@
+import '../page-styles/TeachersPage.css';
+
 export default function TeachersPage() {
   return (
     <div className="dashboard-page">

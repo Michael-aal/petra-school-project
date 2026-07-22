@@ -1,3 +1,5 @@
+import '../page-styles/TimetablePage.css';
+
 export default function TimetablePage() {
   return (
     <div className="dashboard-page">

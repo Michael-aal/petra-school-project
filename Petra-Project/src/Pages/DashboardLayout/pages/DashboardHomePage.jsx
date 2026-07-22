@@ -58,6 +58,8 @@ const recentActivity = [
   },
 ];
 
+import './page-styles/DashboardHomePage.css';
+
 export default function DashboardHomePage() {
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-NG", {

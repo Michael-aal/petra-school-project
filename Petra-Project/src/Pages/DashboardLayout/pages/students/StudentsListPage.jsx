@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import "../../../../Styles/DashBoardLayout/studentListStyle.css";
 
+import '../page-styles/StudentsListPage.css';
+
 export default function StudentsListPage() {
   // 1. Get global students and setters from Context
   const { students, setStudents, userInfo, setUserInfo } = useContext(UserContext);

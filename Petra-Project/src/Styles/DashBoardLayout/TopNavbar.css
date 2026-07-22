@@ -3,18 +3,21 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #0b1220;
-  color: #e6eef8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--dashboard-topbar-bg);
+  color: var(--dashboard-topbar-text);
+  border-bottom: 1px solid var(--app-border);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.2);
   position: sticky;
   top: 0;
   z-index: 10;
 }
+
 .top-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .menu-btn {
   background: transparent;
   border: none;
@@ -26,17 +29,22 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
 .menu-btn:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(139, 92, 246, 0.18);
 }
+
 .top-welcome {
   font-weight: 600;
+  color: var(--dashboard-topbar-text);
 }
+
 .top-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .icon-btn {
   background: transparent;
   border: none;
@@ -45,85 +53,125 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+.icon-btn:hover {
+  background: rgba(59, 130, 246, 0.16);
+}
+
 .user-info {
+  text-transform: capitalize;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 20px;
   background: transparent;
   border: none;
   color: inherit;
   cursor: pointer;
   padding: 0;
 }
+
+.greets {
+  font-size: 13px;
+  color: var(--dashboard-topbar-muted);
+}
+
 .avatar {
   width: 36px;
   height: 36px;
   overflow: hidden;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
 }
+
 .user-role {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 20px;
+  color: var(--dashboard-topbar-muted);
   text-transform: capitalize;
 }
+
 .user-meta {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
 }
+
 .user-name {
   font-weight: 600;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 7px;
+  color: var(--dashboard-topbar-text);
 }
+
 .user-caret {
   opacity: 0.8;
 }
+
 .user-menu {
   position: relative;
 }
+
 .account-dropdown {
   position: absolute;
   right: 0;
   top: calc(100% + 10px);
   width: 280px;
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 16px;
   box-shadow: 0 18px 40px rgba(2, 6, 23, 0.35);
   padding: 14px;
   z-index: 20;
 }
+
+.logo {
+  color: white;
+}
+
 .account-dropdown-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
+
 .account-dropdown-header strong,
 .account-dropdown-header span,
 .account-dropdown-body span,
 .account-dropdown-body strong {
   display: block;
+  color: var(--app-text);
 }
+
 .account-dropdown-header span,
 .account-dropdown-body span {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--app-text-muted);
 }
+
 .account-dropdown-body {
   display: grid;
   gap: 10px;
+  color: rgba(255, 255, 255, 0.9);
   padding: 12px 0;
 }
+
 .account-dropdown-body div {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  color: rgba(255, 255, 255, 0.86);
 }
+
 .account-dropdown-actions {
   display: grid;
   gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
 }
+
 .account-dropdown-actions button {
   display: flex;
   align-items: center;
@@ -131,29 +179,34 @@
   width: 100%;
   padding: 10px 12px;
   border-radius: 10px;
-  border: 0;
-  background: rgba(255, 255, 255, 0.04);
-  color: inherit;
+  border: 1px solid var(--app-border);
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text);
   text-align: left;
   cursor: pointer;
 }
+
 .account-dropdown-actions button:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dashboard-accent-gradient);
+  color: #ffffff;
 }
+
 .user-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #1f6feb, #4f46e5);
-  color: white;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: #fff;
   flex-shrink: 0;
 }
+
 .user-avatar-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .user-avatar-initials {
   font-weight: 700;
   letter-spacing: 0.04em;

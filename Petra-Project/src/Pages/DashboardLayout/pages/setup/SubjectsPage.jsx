@@ -1,3 +1,5 @@
+import '../page-styles/SubjectsPage.css';
+
 export default function SubjectsPage() {
   return (
     <div className="dashboard-page">

@@ -1,3 +1,5 @@
+import '../page-styles/SupportPage.css';
+
 export default function SupportPage() {
   return (
     <div className="dashboard-page">

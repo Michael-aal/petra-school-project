@@ -33,6 +33,11 @@ import UserAvatar from "../../components/UserAvatar";
 
 const navGroups = [
   {
+    label: "Get Started",
+    icon: LayoutDashboard,
+    href: "/dashboard/get-started",
+  },
+  {
     label: "Dashboard",
     icon: LayoutDashboard,
     href: "/dashboard",
@@ -211,10 +216,12 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <div className="sidebar-contaner-logo">
-          <UserAvatar user={userInfo} size={44} className="sidebar-logo sidebar-logo-avatar" />
+            <School size={30} />
+
+          {/* <UserAvatar user={userInfo} size={40} className="sidebar-logo sidebar-logo-avatar" /> */}
         </div>
         <div className="sidebar-brand">
-          <h2 className="brand-title">{schoolName || getDisplayName(userInfo)}</h2>
+          <h2 className="brand-title">PETRA        </h2>
           <h3 className="brand-sub">SCHOOL PLATFORM</h3>
         </div>
         <h4 className="sidebar-close">

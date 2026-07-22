@@ -5,6 +5,32 @@
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: #f8fafc;
   color: #0f172a;
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f8fafc;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  --app-border: rgba(15, 23, 42, 0.08);
+  --app-accent: #4f46e5;
+  --app-accent-2: #3b82f6;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --dashboard-sidebar-bg: linear-gradient(145deg, #f8fafc 0%, #eef2ff 45%, #f8fbff 100%);
+  --dashboard-sidebar-text: #1f2937;
+  --dashboard-sidebar-muted: #6b7280;
+  --dashboard-topbar-bg: linear-gradient(90deg, #ffffff 0%, #f8faff 100%);
+  --dashboard-topbar-text: #1f2937;
+  --dashboard-topbar-muted: #64748b;
+  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-card-text: #0f172a;
+  --dashboard-card-muted: #64748b;
+  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-panel-text: #0f172a;
+  --dashboard-panel-muted: #64748b;
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
+  --dashboard-accent-gradient: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(90deg, #4338ca 0%, #2563eb 100%);
 }
 
 html,
@@ -15,14 +41,69 @@ body,
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--app-bg);
+  color: var(--app-text);
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+body.light {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f8fafc;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  --app-border: rgba(15, 23, 42, 0.08);
+  --app-accent: #4f46e5;
+  --app-accent-2: #3b82f6;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --dashboard-sidebar-bg: linear-gradient(145deg, #f8fafc 0%, #eef2ff 45%, #f8fbff 100%);
+  --dashboard-sidebar-text: #1f2937;
+  --dashboard-sidebar-muted: #6b7280;
+  --dashboard-topbar-bg: linear-gradient(90deg, #ffffff 0%, #f8faff 100%);
+  --dashboard-topbar-text: #1f2937;
+  --dashboard-topbar-muted: #64748b;
+  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-card-text: #0f172a;
+  --dashboard-card-muted: #64748b;
+  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-panel-text: #0f172a;
+  --dashboard-panel-muted: #64748b;
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
+  --dashboard-accent-gradient: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(90deg, #4338ca 0%, #2563eb 100%);
+}
+
 body.dark {
-  background-color: #000000;
-  color: #f5f5f7;
+  --app-bg: #060816;
+  --app-surface: #101425;
+  --app-surface-strong: #111827;
+  --app-text: #f5f5f7;
+  --app-text-muted: #a1a1aa;
+  --app-border: rgba(255, 255, 255, 0.08);
+  --app-accent: #8b5cf6;
+  --app-accent-2: #3b82f6;
+  --app-card: #121a2c;
+  --app-panel: #121a2c;
+  --dashboard-sidebar-bg: linear-gradient(145deg, #160d2e 0%, #1f1542 45%, #0b1737 100%);
+  --dashboard-sidebar-text: #f7f5ff;
+  --dashboard-sidebar-muted: rgba(247, 245, 255, 0.7);
+  --dashboard-topbar-bg: linear-gradient(90deg, rgba(20, 13, 38, 0.98) 0%, rgba(17, 27, 54, 0.98) 100%);
+  --dashboard-topbar-text: #f7f5ff;
+  --dashboard-topbar-muted: rgba(247, 245, 255, 0.8);
+  --dashboard-card-bg: linear-gradient(145deg, rgba(20, 15, 37, 0.96) 0%, rgba(24, 35, 64, 0.96) 100%);
+  --dashboard-card-text: #f7f5ff;
+  --dashboard-card-muted: rgba(247, 245, 255, 0.72);
+  --dashboard-panel-bg: linear-gradient(145deg, rgba(18, 14, 35, 0.98) 0%, rgba(24, 35, 64, 0.96) 100%);
+  --dashboard-panel-text: #ffffff;
+  --dashboard-panel-muted: rgba(247, 245, 255, 0.7);
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(255, 255, 255, 0.05);
+  --dashboard-accent-gradient: linear-gradient(90deg, #8b5cf6 0%, #3b82f6 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(90deg, #7c3aed 0%, #2563eb 100%);
+  background-color: var(--app-bg);
+  color: var(--app-text);
 }
 
 body.dark::before {
@@ -53,6 +134,19 @@ body.dark::after {
 
 body.dark #root {
   background: transparent;
+}
+
+.dashboard-page {
+  color: var(--app-text);
+  background: transparent;
+}
+
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page h3,
+.dashboard-page p,
+.dashboard-page span {
+  color: inherit;
 }
 
 body.dark a,

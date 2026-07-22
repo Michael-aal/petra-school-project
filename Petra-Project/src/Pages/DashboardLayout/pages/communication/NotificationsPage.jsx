@@ -1,3 +1,5 @@
+import '../page-styles/NotificationsPage.css';
+
 export default function NotificationsPage() {
   return (
     <div className="dashboard-page">

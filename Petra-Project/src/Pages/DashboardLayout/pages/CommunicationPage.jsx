@@ -1,3 +1,5 @@
+import './page-styles/CommunicationPage.css';
+
 export default function CommunicationPage() {
   return (
     <div className="dashboard-page">

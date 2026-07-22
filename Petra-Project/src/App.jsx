@@ -12,6 +12,7 @@ import Home from "./Pages/Home";
 import SignIn from "./Pages/Sigin/SignIn";
 import Register from "./Pages/Sigin/Register";
 import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
+import GetStarted from "./Pages/DashboardLayout/pages/GetStarted";
 import SchoolSetupPage from "./Pages/DashboardLayout/pages/SchoolSetupPage";
 import StudentsListPage from "./Pages/DashboardLayout/pages/students/StudentsListPage";
 import AcademicsPage from "./Pages/DashboardLayout/pages/AcademicsPage";
@@ -164,6 +165,7 @@ function App() {
         {/* Dashboard */}
         <Route element={<DashboardLay />}>
           <Route path="/dashboard" element={<DashboardHomePage />} />
+          <Route path="/dashboard/get-started" element={<GetStarted />} />
           <Route path="/dashboard/setup" element={<SchoolSetupPage />} />
           <Route path="/dashboard/setup/profile" element={<ProfilePage />} />
           <Route path="/dashboard/setup/sessions" element={<SessionsPage />} />

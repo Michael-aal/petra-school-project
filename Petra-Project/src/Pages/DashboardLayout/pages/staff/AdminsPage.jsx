@@ -1,3 +1,5 @@
+import '../page-styles/AdminsPage.css';
+
 export default function AdminsPage() {
   return (
     <div className="dashboard-page">

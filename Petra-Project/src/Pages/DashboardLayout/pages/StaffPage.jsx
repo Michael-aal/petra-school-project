@@ -1,3 +1,5 @@
+import './page-styles/StaffPage.css';
+
 export default function StaffPage() {
   return (
     <div className="dashboard-page">

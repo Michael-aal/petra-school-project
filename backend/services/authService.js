@@ -27,6 +27,12 @@ const safeUser = (user) => {
     lastName: user.lastName || lastName,
     email: user.email,
     role: user.role,
+    phone: user.phone || "",
+    institution: user.institution || "",
+    institutionType: user.institutionType || "",
+    state: user.state || "",
+    city: user.city || "",
+    hearAbout: user.hearAbout || "",
     profilePicture: user.profilePicture || "",
     profileImage: user.profileImage || user.profilePicture || "",
     createdAt: user.createdAt,
@@ -35,7 +41,7 @@ const safeUser = (user) => {
 };
 
 export const authService = {
-  register: async ({ fullName, email, password }) => {
+  register: async ({ fullName, email, password, phone, institution, institutionType, state, city, hearAbout, ...rest }) => {
     const existingUser = await userModel.findByEmail(email);
     if (existingUser) {
       const error = new Error("Email already in use");
@@ -48,6 +54,13 @@ export const authService = {
       fullName,
       email,
       password: hashed,
+      phone,
+      institution,
+      institutionType,
+      state,
+      city,
+      hearAbout,
+      ...rest,
     });
 
     return {

@@ -1,3 +1,5 @@
+import '../page-styles/ResultsPage.css';
+
 export default function ResultsPage() {
   return (
     <div className="dashboard-page">
