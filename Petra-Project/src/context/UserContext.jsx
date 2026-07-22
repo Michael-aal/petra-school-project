@@ -1,4 +1,7 @@
-import { createContext, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useEffect, useMemo, useState } from "react";
+import { authApi } from "../services/authApi";
+import { normalizeUser } from "../utils/userProfile";
 
 export const UserContext = createContext();
 
@@ -22,27 +25,72 @@ const defaultStudents = [
 ];
 
 export function UserProvider({ children }) {
-  const [userInfo, setUserInfo] = useState({
-    firstName: "Admin", // Added default so it doesn't show blank
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    institution: "My School",
-    state: "",
-    city: "",
-    referral: "",
-    schoolCode: "",
-    address: "",
-    country: "",
-    profileImage: "",
-    totalStudent: defaultStudents.length, // Synced initially
+  const [userInfo, setUserInfo] = useState(() => {
+    try {
+      const cached = window.localStorage.getItem("petra_user_info");
+      return cached
+        ? normalizeUser(JSON.parse(cached))
+        : normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
+    } catch {
+      return normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
+    }
   });
+  const [authReady, setAuthReady] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   // Global students state
   const [students, setStudents] = useState(defaultStudents);
 
+  useEffect(() => {
+    window.localStorage.setItem("petra_user_info", JSON.stringify(userInfo));
+  }, [userInfo]);
+
+  useEffect(() => {
+    let active = true;
+
+    authApi
+      .me()
+      .then((response) => {
+        if (!active) return;
+        setUserInfo((current) =>
+          normalizeUser({
+            ...current,
+            ...response.user,
+            totalStudent: defaultStudents.length,
+          }),
+        );
+      })
+      .catch((error) => {
+        if (!active) return;
+        setAuthError(error);
+        setUserInfo((current) =>
+          normalizeUser({
+            ...current,
+            totalStudent: defaultStudents.length,
+          }),
+        );
+      })
+      .finally(() => {
+        if (active) setAuthReady(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const userInfoWithTotals = useMemo(
+    () => ({ ...userInfo, totalStudent: students.length }),
+    [userInfo, students.length],
+  );
+
+  const value = useMemo(
+    () => ({ userInfo: userInfoWithTotals, setUserInfo, students, setStudents, authReady, authError }),
+    [userInfoWithTotals, students, authReady, authError],
+  );
+
   return (
-    <UserContext.Provider value={{ userInfo, setUserInfo, students, setStudents }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Eye, EyeOff, Lock, Mail, LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
+import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
+import { normalizeUser } from "../../utils/userProfile";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
@@ -12,6 +14,7 @@ const initialForm = {
 };
 
 export default function SignIn() {
+  const { setUserInfo } = useContext(UserContext);
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,10 +55,20 @@ export default function SignIn() {
 
     setLoading(true);
     try {
-      await authApi.login({
+      const response = await authApi.login({
         email: form.email,
         password: form.password,
       });
+
+      const loggedInUser = response?.user || {};
+      setUserInfo(
+        normalizeUser({
+          ...loggedInUser,
+          fullName: loggedInUser.fullName || form.email,
+          email: loggedInUser.email || form.email,
+          role: loggedInUser.role || "user",
+        }),
+      );
 
       if (form.rememberMe) {
         window.localStorage.setItem("petra_remember_email", form.email);

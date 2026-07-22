@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Eye, EyeOff, Lock, Mail, LoaderCircle, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
+import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
+import { normalizeUser, splitFullName } from "../../utils/userProfile";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
@@ -13,6 +15,7 @@ const initialForm = {
 };
 
 export default function Register() {
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -31,10 +34,56 @@ export default function Register() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
     setForm((current) => ({
       ...current,
       [name]: value,
     }));
+
+    if (name === "password" || name === "confirmPassword") {
+      return;
+    }
+
+    setUserInfo((current) => {
+      const nextUser = { ...current, [name]: value };
+
+      if (name === "fullName") {
+        const parts = value.trim().split(/\s+/).filter(Boolean);
+        nextUser.firstName = parts[0] || "";
+        nextUser.lastName = parts.length > 1 ? parts[parts.length - 1] : "";
+        nextUser.fullName = value;
+      }
+
+      if (name === "firstName" || name === "lastName") {
+        const firstName = name === "firstName" ? value : current.firstName || "";
+        const lastName = name === "lastName" ? value : current.lastName || "";
+        nextUser.firstName = firstName;
+        nextUser.lastName = lastName;
+        nextUser.fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+      }
+
+      if (name === "email") {
+        nextUser.email = value;
+      }
+
+      if (name === "phone") {
+        nextUser.phoneNumber = value;
+      }
+
+      if (name === "institution") {
+        nextUser.institution = value;
+      }
+
+      if (name === "state") {
+        nextUser.state = value;
+      }
+
+      if (name === "city") {
+        nextUser.city = value;
+      }
+
+      return normalizeUser(nextUser);
+    });
   };
 
   const validate = () => {
@@ -50,6 +99,26 @@ export default function Register() {
     return nextErrors;
   };
 
+  const persistRegistrationUser = (userData) => {
+    const parsedName = splitFullName(userData?.fullName || form.fullName);
+    const nextUser = normalizeUser({
+      ...userInfo,
+      ...userData,
+      firstName: userData?.firstName || parsedName.firstName || userInfo?.firstName || "",
+      lastName: userData?.lastName || parsedName.lastName || userInfo?.lastName || "",
+      fullName: userData?.fullName || form.fullName || userInfo?.fullName || "",
+      email: userData?.email || form.email || userInfo?.email || "",
+      role: userData?.role || userInfo?.role || "user",
+      institution: userData?.institution || userInfo?.institution || "My School",
+      phoneNumber: userData?.phoneNumber || userInfo?.phoneNumber || userInfo?.phone || "",
+      state: userData?.state || userInfo?.state || "",
+      city: userData?.city || userInfo?.city || "",
+      profileImage: userData?.profileImage || userData?.profilePicture || userInfo?.profileImage || userInfo?.profilePicture || "",
+    });
+
+    setUserInfo(nextUser);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setServerError("");
@@ -60,12 +129,21 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await authApi.register({
+      const response = await authApi.register({
         fullName: form.fullName,
         email: form.email,
         password: form.password,
       });
 
+      const registeredUser = response?.user || {};
+      const storedFullName = registeredUser.fullName || form.fullName;
+      const storedEmail = registeredUser.email || form.email;
+
+      persistRegistrationUser({
+        ...registeredUser,
+        fullName: storedFullName,
+        email: storedEmail,
+      });
       navigate("/dashboard", { replace: true });
     } catch (error) {
       const apiErrors = error.data?.errors;

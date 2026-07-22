@@ -25,10 +25,11 @@ import {
   UserCheck,
   PlusCircle,
   X,
-  Building2,
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
+import { getDisplayName } from "../../utils/userProfile";
+import UserAvatar from "../../components/UserAvatar";
 
 const navGroups = [
   {
@@ -205,29 +206,15 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
   const { userInfo } = useContext(UserContext);
 
   const schoolName = userInfo.institution?.split(" ")[0] ?? "";
-  const firstLetterFirstName = userInfo.firstName?.[0] ?? "";
-  const firstLetterLastName = userInfo.lastName?.[0] ?? "";
 
   return (
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <div className="sidebar-contaner-logo">
-        {
-          userInfo.profileImage ? (
-            <img 
-            src={userInfo.profileImage}
-            alt="School Logo"
-            className="sidebar-logo"
-            />
-          ) : (
-            <div className="sidebar-logo">
-              <Building2 />
-            </div>
-          )
-        }
+          <UserAvatar user={userInfo} size={44} className="sidebar-logo sidebar-logo-avatar" />
         </div>
         <div className="sidebar-brand">
-          <h2 className="brand-title">{schoolName || "School"}</h2>
+          <h2 className="brand-title">{schoolName || getDisplayName(userInfo)}</h2>
           <h3 className="brand-sub">SCHOOL PLATFORM</h3>
         </div>
         <h4 className="sidebar-close">
@@ -306,12 +293,9 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="sidebar-avatar">
-          {firstLetterFirstName || "U"}
-          {firstLetterLastName || ""}
-        </div>
+        <UserAvatar user={userInfo} size={40} className="sidebar-avatar" />
         <div className="sidebar-user">
-          <h3>{userInfo.firstName || "Guest"}</h3>
+          <h3>{getDisplayName(userInfo)}</h3>
           <h4>{userInfo.email || "Complete your profile"}</h4>
         </div>
       </div>

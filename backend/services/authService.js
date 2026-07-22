@@ -3,14 +3,36 @@ import { hashPassword } from "../utils/hashPassword.js";
 import { comparePassword } from "../utils/comparePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 
-const safeUser = (user) => ({
-  id: user.id,
-  fullName: user.fullName,
-  email: user.email,
-  role: user.role,
-  createdAt: user.createdAt,
-  updatedAt: user.updatedAt,
-});
+const getNameParts = (fullName = "") => {
+  const trimmed = fullName.trim();
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return { firstName: "", lastName: "" };
+  }
+
+  return {
+    firstName: parts[0],
+    lastName: parts.length > 1 ? parts[parts.length - 1] : "",
+  };
+};
+
+const safeUser = (user) => {
+  const { firstName, lastName } = getNameParts(user.fullName || "");
+
+  return {
+    id: user.id,
+    fullName: user.fullName || "",
+    firstName: user.firstName || firstName,
+    lastName: user.lastName || lastName,
+    email: user.email,
+    role: user.role,
+    profilePicture: user.profilePicture || "",
+    profileImage: user.profileImage || user.profilePicture || "",
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
 
 export const authService = {
   register: async ({ fullName, email, password }) => {

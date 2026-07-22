@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "../../../context/UserContext";
+import { getFirstName } from "../../../utils/userProfile";
 import {
   BellRing,
   BookOpenCheck,
@@ -66,10 +67,7 @@ export default function DashboardHomePage() {
     year: "numeric",
   });
 
-  // 1. Get students array directly from Context
   const { userInfo, students } = useContext(UserContext);
-  
-  // 2. Calculate the exact total dynamically
   const totalNumber = students ? students.length : 0;
 
   const dashboardHomeInfo = [
@@ -77,7 +75,7 @@ export default function DashboardHomePage() {
       id: 1,
       info: "Total Students",
       logo: GraduationCap,
-      amount: totalNumber, // <--- NOW PERFECTLY SYNCED
+      amount: totalNumber,
       link: "/dashboard/students",
     },
     {
@@ -107,9 +105,11 @@ export default function DashboardHomePage() {
     <div className="dashboard-home">
       <div className="dashboard-home-intro">
         <div>
-          <h1 className="dashboard-home-welcome">Welcome back, {userInfo?.firstName || "Admin"} 👋</h1>
+          <h1 className="dashboard-home-welcome">
+            Welcome back, {getFirstName(userInfo)} 👋
+          </h1>
           <p className="dashboard-home-description">
-            Here is a quick overview of your school operations for today.
+            Here is a quick overview of your school operations for today, {userInfo?.role || "user"}.
           </p>
         </div>
         <div className="dashboard-home-session">Today • {formattedDate}</div>

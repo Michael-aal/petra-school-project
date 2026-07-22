@@ -1,12 +1,14 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
+import { getFirstName } from "../../utils/userProfile";
 import "../../Styles/DashBoardLayout/homeDahboard.css"
-import { useState, useEffect } from "react";
 
 const dgd = [
     {
         title: "NGN Balance",
-        amonut: 0.00 ,
-        logo: "	https://school.acceede.com/static/media/wallet-03.93baae9472a0359e2f0058ef8635ffbb.svg",
+        amonut: 0.00,
+        logo: "https://school.acceede.com/static/media/wallet-03.93baae9472a0359e2f0058ef8635ffbb.svg",
         func: "Withdraw Balance",
         logoBgColor: "#3371E8",
         to: "withdrawBalance"
@@ -14,7 +16,7 @@ const dgd = [
     {
         title: "Balance Payouts",
         amonut: 0.00,
-        logo: "	https://school.acceede.com/static/media/upload-03.caf2d75c8bf3151327372053d51d1394.svg",
+        logo: "https://school.acceede.com/static/media/upload-03.caf2d75c8bf3151327372053d51d1394.svg",
         func: "View History",
         logoBgColor: "#41D38D",
         to: "viewHistory"
@@ -27,11 +29,12 @@ const dgd = [
         logoBgColor: "#E26E6A",
         to: "getCashflow"
     }
-]
+];
 
 export default function HomeDashBoard() {
-    const userFirstName = "Temioluwa";  //This is where the UserFirstName will be
-    const schoolName = "Petra Schools";   //This is where the user School name will be
+    const { userInfo } = useContext(UserContext);
+    const userFirstName = getFirstName(userInfo);
+    const schoolName = userInfo?.institution?.split(" ")[0] || "School";
 
     const today = new Date();
 
@@ -40,26 +43,8 @@ export default function HomeDashBoard() {
     const nextYear = currentYear + 1;
     const lastYear = currentYear - 1;
 
-    let term = "";
-    let session = "";
-
-    // First Term: September - December
-    if (month >= 8) {
-        term = "1st";
-        session = `${currentYear}/${nextYear}`;
-    }
-
-    // Second Term: January - April
-    else if (month <= 3) {
-        term = "2nd";
-        session = `${lastYear}/${currentYear}`;
-    }
-
-    // Third Term: May - August
-    else {
-        term = "3rd";
-        session = `${lastYear}/${currentYear}`;
-    }
+    const term = month >= 8 ? "1st" : month <= 3 ? "2nd" : "3rd";
+    const session = month >= 8 ? `${currentYear}/${nextYear}` : `${lastYear}/${currentYear}`;
 
     return (
 <section className="dashboard-home">
@@ -86,7 +71,7 @@ export default function HomeDashBoard() {
         {
             dgd.map((item, index) => (
 
-                <div className="dashboard-home-summary-card">
+                <div className="dashboard-home-summary-card" key={index}>
 
                     <div className="dashboard-home-card-top">
 
