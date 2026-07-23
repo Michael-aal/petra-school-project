@@ -42,6 +42,7 @@ import InvoicesPage from "./Pages/DashboardLayout/pages/finance/InvoicesPage";
 import ExtraFeesPage from "./Pages/DashboardLayout/pages/finance/ExtraFeesPage";
 import FlexpayPage from "./Pages/DashboardLayout/pages/finance/FlexpayPage";
 import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
+import WalletPage from "./Pages/DashboardLayout/pages/finance/WalletPage";
 import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
 import Contact from "./Pages/Contact";
@@ -223,6 +224,7 @@ function App() {
             path="/dashboard/finance/extra-fees"
             element={<ExtraFeesPage />}
           />
+          <Route path="/dashboard/finance/wallet" element={<WalletPage />} />
           <Route path="/dashboard/finance/flexpay" element={<FlexpayPage />} />
           <Route
             path="/dashboard/finance/cashflow"

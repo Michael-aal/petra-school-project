@@ -1,0 +1,224 @@
+.settings-page {
+  min-height: 100%;
+  padding: 20px 18px 24px;
+  color: var(--foreground);
+  background: transparent;
+}
+
+.settings-page-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.settings-page-hero-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent);
+  flex-shrink: 0;
+}
+
+.settings-page-hero h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 1.8vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.settings-page-hero p {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.settings-card {
+  min-height: 280px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-card-head h2 {
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.settings-field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.settings-theme-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0 16px;
+}
+
+.settings-theme-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.settings-theme-copy strong {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.settings-theme-copy span {
+  font-size: 0.84rem;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+.settings-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--primary), #3b82f6);
+  color: var(--primary-foreground);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 10px 18px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.settings-theme-toggle:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.settings-field span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.settings-field input,
+.settings-field select {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 4px;
+  border: 1px solid var(--input);
+  background: var(--background);
+  color: var(--foreground);
+  outline: none;
+  font-size: 0.92rem;
+}
+
+.settings-button {
+  margin-top: auto;
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #4f7cff, #4f6dff);
+  color: var(--primary-foreground);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0;
+  box-shadow: 0 10px 18px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.settings-button span {
+  line-height: 1;
+}
+
+.settings-button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.settings-status {
+  margin: 14px 2px 0;
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+}
+
+body.dark .settings-page {
+  color: var(--foreground);
+  background: transparent;
+}
+
+body.dark .settings-page-hero p,
+body.dark .settings-status {
+  color: var(--muted-foreground);
+}
+
+body.dark .settings-page-hero-icon {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+body.dark .settings-card {
+  background: linear-gradient(180deg, rgba(15, 18, 33, 0.98), rgba(22, 28, 52, 0.95));
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+}
+
+body.dark .settings-card-head h2,
+body.dark .settings-field span,
+body.dark .settings-theme-copy strong {
+  color: var(--foreground);
+}
+
+body.dark .settings-theme-copy span {
+  color: var(--muted-foreground);
+}
+
+body.dark .settings-field input,
+body.dark .settings-field select {
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--input);
+}
+
+@media (max-width: 900px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .settings-page {
+    padding: 16px;
+  }
+}

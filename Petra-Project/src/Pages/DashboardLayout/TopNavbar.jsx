@@ -19,7 +19,9 @@ export default function TopNavbar({ onToggle }) {
   const { userInfo } = useContext(UserContext);
   const [showButton, setShowBtn] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const menuRef = useRef(null);
+  const notifRef = useRef(null);
   const navigate = useNavigate();
 
   const handleMenuClick = () => {
@@ -31,6 +33,9 @@ export default function TopNavbar({ onToggle }) {
     const handleOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setShowMenu(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false);
       }
     };
 
@@ -57,9 +62,34 @@ export default function TopNavbar({ onToggle }) {
       </div>
 
       <div className="top-right">
-        <button className="icon-btn" aria-label="Notifications">
-          <Bell />
-        </button>
+        <div className="notification-menu" ref={notifRef}>
+          <button
+            className="icon-btn"
+            aria-label="Notifications"
+            onClick={() => setShowNotifications((current) => !current)}
+            aria-expanded={showNotifications}
+            aria-haspopup="menu"
+          >
+            <Bell />
+          </button>
+
+          {showNotifications ? (
+            <div className="notification-dropdown" role="menu">
+              <div className="notification-header">
+                <strong>Notifications</strong>
+                <button type="button" className="notification-close" onClick={() => setShowNotifications(false)} aria-label="Close notifications">
+                  ×
+                </button>
+              </div>
+              <div className="notification-body">
+                <p className="notification-empty">No new notifications</p>
+              </div>
+              <button type="button" className="notification-action" onClick={() => setShowNotifications(false)}>
+                See all Notifications
+              </button>
+            </div>
+          ) : null}
+        </div>
 
         <div className="user-menu" ref={menuRef}>
           <button

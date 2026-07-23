@@ -144,6 +144,7 @@ const navGroups = [
         icon: PlusCircle,
         href: "/dashboard/finance/extra-fees",
       },
+      { label: "Wallet", icon: Wallet, href: "/dashboard/finance/wallet" },
       { label: "FlexPay", icon: Wallet, href: "/dashboard/finance/flexpay" },
       {
         label: "Cashflow",

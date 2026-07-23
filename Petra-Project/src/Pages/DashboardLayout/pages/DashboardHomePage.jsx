@@ -1,192 +1,209 @@
 import { useContext } from "react";
-import { UserContext } from "../../../context/UserContext";
-import { getFirstName } from "../../../utils/userProfile";
+import { Link } from "react-router-dom";
 import {
-  BellRing,
-  BookOpenCheck,
+  ArrowRight,
+  Banknote,
+  Bell,
+  BookOpen,
   CalendarDays,
-  GraduationCap,
-  PlusCircle,
-  UserCheck,
-  Users,
+  CheckCircle2,
+  CreditCard,
+  Download,
+  Send,
+  ShieldAlert,
   Wallet,
 } from "lucide-react";
-import "../../../Styles/DashBoardLayout/homeDahboard.css";
+import { UserContext } from "../../../context/UserContext";
+import { getFirstName } from "../../../utils/userProfile";
+import "./page-styles/DashboardHomePage.css";
 
-const quickActions = [
+const summaryCards = [
   {
     id: 1,
-    title: "Enroll a new student",
-    description: "Add student records and start the admission process.",
-    icon: PlusCircle,
-    link: "/dashboard/students",
-  },
-  {
-    id: 2,
-    title: "Create a timetable",
-    description: "Plan lessons for the week and keep classes organized.",
-    icon: CalendarDays,
-    link: "/dashboard/academics/timetable",
-  },
-  {
-    id: 3,
-    title: "Review school fees",
-    description: "Track pending payments and update fee records.",
+    label: "NGN Balance",
+    value: "₦0.00",
+    accent: "blue",
     icon: Wallet,
-    link: "/dashboard/finance/payments",
-  },
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    title: "Attendance updated",
-    meta: "Class attendance for Grade 8 was synced this morning.",
-    icon: UserCheck,
+    action: "Withdraw Balance",
+    link: "/dashboard/finance/wallet",
   },
   {
     id: 2,
-    title: "New lesson published",
-    meta: "The Mathematics timetable was updated for next week.",
-    icon: BookOpenCheck,
+    label: "Balance Payouts",
+    value: "₦0.00",
+    accent: "teal",
+    icon: Download,
+    action: "View History",
+    link: "/dashboard/finance/cashflow",
   },
   {
     id: 3,
-    title: "School notice sent",
-    meta: "A parent reminder was shared to all active guardians.",
-    icon: BellRing,
+    label: "Cashflow",
+    value: "₦0.00",
+    accent: "rose",
+    icon: Send,
+    action: "Get Cashflow",
+    link: "/dashboard/finance/cashflow",
   },
 ];
 
-import './page-styles/DashboardHomePage.css';
+const actionTiles = [
+  {
+    id: 1,
+    label: "Withdraw",
+    icon: Banknote,
+    link: "/dashboard/finance/wallet",
+  },
+  {
+    id: 2,
+    label: "Transfer",
+    icon: Send,
+    link: "/dashboard/finance/wallet",
+  },
+  {
+    id: 3,
+    label: "Statement",
+    icon: CreditCard,
+    link: "/dashboard/finance/wallet",
+  },
+  {
+    id: 4,
+    label: "Pay Bills (coming soon)",
+    icon: Wallet,
+    link: "/dashboard/finance/wallet",
+  },
+];
+
+const accountSummary = [
+  {
+    id: 1,
+    label: "Account Number",
+    value: "N/A",
+    note: "This account is an NDIC insured deposit account used for school payments and transfers.",
+    icon: CreditCard,
+  },
+];
+
+const transactionStats = [
+  { id: 1, label: "Expected Income", value: "₦0", accent: "green", icon: CheckCircle2 },
+  { id: 2, label: "Total Paid", value: "₦0", accent: "green", icon: BookOpen },
+  { id: 3, label: "Current Debt", value: "₦0", accent: "red", icon: ShieldAlert },
+  { id: 4, label: "Discount", value: "₦0", accent: "red", icon: Bell },
+];
 
 export default function DashboardHomePage() {
+  const { userInfo } = useContext(UserContext);
+  const firstName = getFirstName(userInfo) || "Temiloluwa";
   const today = new Date();
-  const formattedDate = today.toLocaleDateString("en-NG", {
+  const sessionLabel = userInfo?.activeSession || "3rd Term • 2025/2026";
+
+  const formattedDate = today.toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
-  const { userInfo, students } = useContext(UserContext);
-  const totalNumber = students ? students.length : 0;
-
-  const dashboardHomeInfo = [
-    {
-      id: 1,
-      info: "Total Students",
-      logo: GraduationCap,
-      amount: totalNumber,
-      link: "/dashboard/students",
-    },
-    {
-      id: 2,
-      info: "Total Staff",
-      logo: Users,
-      amount: 87,
-      link: "/dashboard/staff/teachers",
-    },
-    {
-      id: 3,
-      info: "Revenue",
-      logo: Wallet,
-      amount: "₦0",
-      link: "/dashboard/finance/payments",
-    },
-    {
-      id: 4,
-      info: "Attendance Rate",
-      logo: UserCheck,
-      amount: "0%",
-      link: "/dashboard/academics/attendance",
-    },
-  ];
-
   return (
     <div className="dashboard-home">
-      <div className="dashboard-home-intro">
+      <section className="dashboard-home-header">
         <div>
-          <h1 className="dashboard-home-welcome">
-            Welcome back, {getFirstName(userInfo)} 👋
-          </h1>
-          <p className="dashboard-home-description">
-            Here is a quick overview of your school operations for today, {userInfo?.role || "user"}.
+          <h1>Welcome Back, {firstName}</h1>
+          <p>Here&apos;s what&apos;s happening in your school today.</p>
+        </div>
+        <div className="dashboard-home-session-pill">{sessionLabel}</div>
+      </section>
+
+      <div className="dashboard-home-alert">
+        <div className="dashboard-home-alert-icon">
+          <ShieldAlert size={14} />
+        </div>
+        <div>
+          <strong>Heads up! The current term is ending soon.</strong>
+          <p>
+            The term is scheduled to end in 7 days. Please ensure all assessments,
+            results, and reports are up to date before the term closes.
           </p>
         </div>
-        <div className="dashboard-home-session">Today • {formattedDate}</div>
       </div>
 
-      <div className="dashboard-home-summary-cards">
-        {dashboardHomeInfo.map((item) => {
-          const IconComponent = item.logo;
+      <section className="dashboard-home-summary">
+        {summaryCards.map((item) => {
+          const Icon = item.icon;
           return (
-            <a href={item.link} className="dashboard-home-summary-card" key={item.id}>
-              <div className="dashboard-home-card-top">
-                <div className="dashboard-home-card-content">
-                  <p className="dashboard-home-card-title">{item.info}</p>
-                  <h2 className="dashboard-home-card-amount">{item.amount}</h2>
+            <article key={item.id} className="dashboard-home-summary-card">
+              <div className="dashboard-home-summary-top">
+                <div>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
                 </div>
-                <div className="dashboard-home-card-icon">
-                  <IconComponent size={24} />
+                <div className={`dashboard-home-summary-icon tone-${item.accent}`}>
+                  <Icon size={18} />
                 </div>
               </div>
-              <span className="dashboard-home-card-action">View details →</span>
-            </a>
+
+              <Link to={item.link} className={`dashboard-home-summary-action tone-${item.accent}`}>
+                <span>{item.action}</span>
+                <ArrowRight size={14} />
+              </Link>
+            </article>
           );
         })}
-      </div>
+      </section>
 
-      <div className="dashboard-home-grid">
-        <section className="dashboard-home-panel">
-          <div className="dashboard-home-panel-header">
-            <h3 className="dashboard-home-panel-title">Quick Actions</h3>
-            <a href="/dashboard" className="dashboard-home-panel-link">View all</a>
+      <section className="dashboard-home-tiles">
+        {actionTiles.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link key={item.id} to={item.link} className="dashboard-home-tile">
+              <Icon size={22} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </section>
+
+      <section className="dashboard-home-content">
+        <article className="dashboard-home-panel dashboard-home-account-panel">
+          <h2>Account Details</h2>
+          <div className="dashboard-home-account-row">
+            <div className="dashboard-home-account-icon">
+              <CreditCard size={16} />
+            </div>
+            <div className="dashboard-home-account-text">
+              <strong>{accountSummary[0].label}</strong>
+              <span>{accountSummary[0].value}</span>
+            </div>
           </div>
-          <div className="dashboard-home-actions">
-            {quickActions.map((action) => {
-              const ActionIcon = action.icon;
+          <p>{accountSummary[0].note}</p>
+          <div className="dashboard-home-account-badge">NDIC</div>
+        </article>
+
+        <article className="dashboard-home-panel dashboard-home-summary-panel">
+          <h2>Transaction Summary</h2>
+          <div className="dashboard-home-stats-grid">
+            {transactionStats.map((item) => {
+              const Icon = item.icon;
               return (
-                <a key={action.id} href={action.link} className="dashboard-home-action-card">
-                  <div className="dashboard-home-action-text">
-                    <div className="dashboard-home-action-icon">
-                      <ActionIcon size={18} />
-                    </div>
-                    <div>
-                      <h4>{action.title}</h4>
-                      <p>{action.description}</p>
-                    </div>
+                <div key={item.id} className={`dashboard-home-stat stat-${item.accent}`}>
+                  <div className="dashboard-home-stat-icon">
+                    <Icon size={16} />
                   </div>
-                  <span className="dashboard-home-action-arrow">→</span>
-                </a>
+                  <div>
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                </div>
               );
             })}
           </div>
-        </section>
+        </article>
+      </section>
 
-        <section className="dashboard-home-panel">
-          <div className="dashboard-home-panel-header">
-            <h3 className="dashboard-home-panel-title">Recent Activity</h3>
-            <a href="/dashboard" className="dashboard-home-panel-link">See more</a>
-          </div>
-          <ul className="dashboard-home-list">
-            {recentActivity.map((item) => {
-              const ActivityIcon = item.icon;
-              return (
-                <li key={item.id} className="dashboard-home-list-item">
-                  <div className="dashboard-home-list-icon">
-                    <ActivityIcon size={16} />
-                  </div>
-                  <div className="dashboard-home-list-content">
-                    <h4>{item.title}</h4>
-                    <p>{item.meta}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      </div>
+      <footer className="dashboard-home-footer">
+        <span>© 2026 All rights reserved by Acceede.com</span>
+        <span>{formattedDate}</span>
+      </footer>
     </div>
   );
 }

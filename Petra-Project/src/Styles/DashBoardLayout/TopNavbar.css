@@ -109,8 +109,78 @@
   opacity: 0.8;
 }
 
+.notification-menu,
 .user-menu {
   position: relative;
+}
+
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 300px;
+  max-width: 340px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  box-shadow: 0 22px 45px rgba(15, 23, 42, 0.16);
+  padding: 18px;
+  z-index: 20;
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.notification-header strong {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.notification-close {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.notification-close:hover {
+  color: var(--app-text);
+}
+
+.notification-body {
+  padding: 10px 0 18px;
+}
+
+.notification-empty {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.95rem;
+}
+
+.notification-action {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
+  color: #ffffff;
+  font-weight: 700;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.notification-action:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
 .account-dropdown {
@@ -209,5 +279,7 @@
 
 .user-avatar-initials {
   font-weight: 700;
+  font-size: 0.9rem;
   letter-spacing: 0.04em;
+  line-height: 1;
 }

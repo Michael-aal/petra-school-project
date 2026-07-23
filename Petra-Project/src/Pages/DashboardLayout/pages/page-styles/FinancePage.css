@@ -1,2 +1,22 @@
 /* Styles for FinancePage */
 .finance-page{ padding:22px; }
+
+.finance-page-actions {
+  margin-top: 24px;
+}
+
+.finance-page-button {
+  display: inline-flex;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: var(--dashboard-accent-gradient);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.finance-page-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(79, 70, 229, 0.18);
+}

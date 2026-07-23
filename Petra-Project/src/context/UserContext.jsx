@@ -56,6 +56,7 @@ export function UserProvider({ children }) {
           normalizeUser({
             ...current,
             ...response.user,
+            profileImage: response.user?.profileImage || response.user?.profilePicture || current.profileImage,
             totalStudent: defaultStudents.length,
           }),
         );

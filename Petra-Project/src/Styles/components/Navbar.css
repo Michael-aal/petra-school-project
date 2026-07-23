@@ -4,19 +4,22 @@
 :root {
   --primary: #4f46e5;
   --primary-dark: #4338ca;
-  --text-dark: #111827;
-  --text-muted: #6b7280;
-  --surface: #ffffff;
-  --surface-muted: #f8fafc;
+  --text-dark: var(--foreground);
+  --text-muted: var(--muted-foreground);
+  --surface: var(--card);
+  --surface-muted: var(--background);
+  --surface-elevated: rgba(255, 255, 255, 0.92);
   --shadow-sm: 0 8px 25px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 20px 40px rgba(0, 0, 0, 0.12);
+  --border-color: var(--border);
 }
 
 body.dark {
-  --surface: #000000;
-  --surface-muted: #09090b;
-  --text-dark: #f5f5f7;
-  --text-muted: #a1a1aa;
+  --surface: var(--card);
+  --surface-muted: var(--background);
+  --text-dark: var(--foreground);
+  --text-muted: var(--muted-foreground);
+  --surface-elevated: rgba(17, 24, 39, 0.94);
 }
 
 *, ::after, ::before {
@@ -39,14 +42,14 @@ body.dark {
 }
 
 .navbar-container {
-  font-size:  100px;
+  font-size: 16px;
   max-width: 90%;
   margin: 0 auto;
   background: var(--surface);
   color: var(--text-dark);
   border-radius: 60px;
   padding: 5px 15px;
-  border: 1px solid rgba(76, 90, 122, 0.22);
+  border: 1px solid var(--border-color);
 
   display: flex;
   align-items: center;
@@ -130,7 +133,7 @@ body.dark {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: #374151;
+  color: var(--text-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,7 +146,7 @@ body.dark {
 }
 
 body.dark .navbar-container {
-  background: rgba(0, 8, 65, 0.92), ;
+  background: var(--surface-elevated);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 20px 45px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(20px);
@@ -158,19 +161,41 @@ body.dark .theme-btn {
 
 body.dark .nav-link:hover,
 body.dark .nav-link-btn:hover {
-  color: #6d5bff;
+  color: #a5b4fc;
 }
 
 body.dark .solutions-dropdown,
 body.dark .company-dropdown,
 body.dark .mobile-menu {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(6,6,10,0.98) 0%, rgba(16,16,28,0.96) 60%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+body.dark .solution-heading,
+body.dark .solution-item h4,
+body.dark .company-item h4,
+body.dark .mobile-section-header,
+body.dark .mobile-menu a {
+  color: #f3f4f6;
+}
+
+body.dark .solution-item p,
+body.dark .company-item p,
+body.dark .solution-content p,
+body.dark .company-content p,
+body.dark .mobile-solution-group p {
+  color: #b6c2e2;
+}
+
+body.dark .solutions-dropdown,
+body.dark .company-dropdown {
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px);
 }
 
 .cta-btn {
   background: var(--primary);
-  color: white;
+  color: #ffffff;
   border: none;
 
   padding: 10px 30px;
@@ -207,7 +232,7 @@ body.dark .mobile-menu {
 
   width: min(850px, 95vw);
 
-  background: var(--surface);
+  background: linear-gradient(135deg, rgba(6,6,10,0.98) 0%, rgba(16,16,28,0.96) 60%);
   border-radius: 24px;
 
   padding: 40px;
@@ -217,6 +242,19 @@ body.dark .mobile-menu {
   gap: 40px;
 
   box-shadow: var(--shadow-md);
+}
+
+.solutions-dropdown .solution-item {
+  background: transparent;
+}
+
+.solutions-dropdown .solution-item a,
+.solutions-dropdown .solution-item button {
+  color: var(--app-text);
+}
+
+.solutions-dropdown .solution-item p {
+  color: var(--app-text-muted);
 }
 
 /* COMPANY DROPDOWN */
@@ -290,8 +328,7 @@ body.dark .mobile-menu {
 body.dark .company-item {
   margin-bottom: 18px;
   cursor: pointer;
-  color: black;
-   background-color: ;
+  color: var(--text-dark);
   transition: all 0.25s ease;
 }
 
@@ -392,7 +429,7 @@ span{
 
 .mobile-menu a {
   text-decoration: none;
-  color: #374151;
+  color: var(--text-dark);
   font-weight: 500;
   transition: all 0.25s ease;
 }
@@ -432,7 +469,7 @@ span{
   color: var(--text-dark);
   border-radius: 60px;
   padding: 5px 15px;
-  border: 1px solid rgba(76, 90, 122, 0.22);
+  border: 1px solid var(--border-color);
 
   display: flex;
   align-items: center;
@@ -464,7 +501,7 @@ span{
   color: var(--text-dark);
   border-radius: 60px;
   padding: 10px 15px;
-  border: 1px solid rgba(76, 90, 122, 0.22);
+  border: 1px solid var(--border-color);
   
   display: flex;
   align-items: center;
@@ -625,13 +662,13 @@ body.dark .mobile-section-header {
 }
 
 body.dark .mobile-section-header:hover {
-  color: var(--primary-light);
+  color: var(--primary);
 }
 
 body.dark .accordion-body.show {
-  border-top-color: #374151;
+  border-top-color: var(--border-color);
 }
 
 body.dark .section-chevron {
-  color: var(--primary-light);
+  color: var(--primary);
 }

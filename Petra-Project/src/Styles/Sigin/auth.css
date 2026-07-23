@@ -27,18 +27,93 @@ body.light .auth-page {
 
 .auth-visual,
 .auth-card {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
   border-radius: 28px;
-  background: rgba(17, 17, 17, 0.92);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(20px);
 }
 
 body.light .auth-visual,
 body.light .auth-card {
-  border-color: rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+  border-color: var(--border-color);
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-md);
+}
+
+body.dark .auth-visual,
+body.dark .auth-card {
+  background: var(--surface-elevated);
+  border-color: var(--border-color);
+}
+
+/* Map app-level theme variables to the auth component variables */
+body.light,
+.light {
+  --surface: var(--app-surface);
+  --surface-muted: var(--app-surface-strong);
+  --surface-elevated: var(--app-panel);
+  --text-dark: var(--app-text);
+  --text-muted: var(--app-text-muted);
+  --border-color: var(--app-border);
+}
+
+body.dark,
+.dark {
+  --surface: var(--app-surface);
+  --surface-muted: var(--app-panel);
+  --surface-elevated: var(--app-card);
+  --text-dark: var(--app-text);
+  --text-muted: var(--app-text-muted);
+  --border-color: var(--app-border);
+}
+
+/* Support other dark-mode class placements (e.g. `html.dark`) */
+.dark .auth-visual,
+.dark .auth-card,
+body.dark .auth-visual,
+body.dark .auth-card {
+  background: var(--surface-elevated) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark);
+}
+
+/* Override global rules that set `body.dark section` and `body.dark form` to white */
+.dark section.auth-shell,
+body.dark section.auth-shell,
+.dark form.auth-form,
+body.dark form.auth-form {
+  background: var(--surface-elevated) !important;
+  color: var(--text-dark) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Ensure inputs and buttons don't become white under alternate dark selectors */
+.dark .auth-input-wrap,
+body.dark .auth-input-wrap {
+  background: var(--surface) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark .auth-input-wrap input,
+body.dark .auth-input-wrap input {
+  color: var(--text-dark) !important;
+}
+
+.dark .auth-submit,
+body.dark .auth-submit {
+  box-shadow: 0 18px 35px rgba(79, 70, 229, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .auth-visual,
+  .auth-card,
+  .auth-input-wrap {
+    background: var(--surface-elevated) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-dark) !important;
+  }
 }
 
 .auth-visual {
@@ -66,8 +141,8 @@ body.light .auth-visual {
   height: 44px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.06);
-  color: #f5f5f7;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   margin-bottom: 1.5rem;
 }
@@ -76,6 +151,12 @@ body.light .auth-theme-btn {
   background: rgba(255, 255, 255, 0.9);
   color: #111827;
   border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.dark .auth-theme-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .auth-brand-row {
@@ -89,7 +170,7 @@ body.light .auth-theme-btn {
   height: 64px;
   object-fit: contain;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-muted);
   padding: 10px;
 }
 
@@ -106,13 +187,24 @@ body.light .auth-form-header h2,
 body.light .auth-field span,
 body.light .auth-switch,
 body.light .auth-footnote {
-  color: #0f172a;
+  color: var(--text-dark);
 }
 
 .auth-brand-sub {
   margin: 0.25rem 0 0;
   color: #a1a1aa;
   font-size: 0.95rem;
+}
+
+body.dark .auth-brand-sub,
+body.dark .auth-copy p,
+body.dark .auth-form-header p,
+body.dark .auth-point p,
+body.dark .auth-field small,
+body.dark .auth-link,
+body.dark .auth-switch,
+body.dark .auth-footnote {
+  color: var(--text-muted);
 }
 
 body.light .auth-brand-sub,
@@ -122,7 +214,7 @@ body.light .auth-point p,
 body.light .auth-point strong,
 body.light .auth-field small,
 body.light .auth-link {
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .auth-copy {
@@ -174,13 +266,18 @@ body.light .auth-eyebrow {
   align-items: flex-start;
   padding: 1rem 1.05rem;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-color);
 }
 
 body.light .auth-point {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(15, 23, 42, 0.06);
+  background: var(--surface-muted);
+  border-color: var(--border-color);
+}
+
+body.dark .auth-point {
+  background: var(--surface-muted);
+  border-color: var(--border-color);
 }
 
 .auth-point-dot {
@@ -188,7 +285,7 @@ body.light .auth-point {
   height: 0.85rem;
   border-radius: 50%;
   margin-top: 0.25rem;
-  background: linear-gradient(135deg, #60a5fa, #a855f7);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   box-shadow: 0 0 0 0.3rem rgba(96, 165, 250, 0.12);
   flex-shrink: 0;
 }
@@ -221,6 +318,10 @@ body.light .auth-point-dot {
   box-shadow: 0 0 0 0.3rem rgba(96, 165, 250, 0.14);
 }
 
+body.dark .auth-point-dot {
+  box-shadow: 0 0 0 0.3rem rgba(99, 102, 241, 0.14);
+}
+
 .auth-card {
   padding: 2.1rem;
   display: flex;
@@ -228,18 +329,36 @@ body.light .auth-point-dot {
   justify-content: center;
 }
 
-body.light .auth-input-wrap {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(15, 23, 42, 0.08);
+.auth-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-body.light .auth-input-wrap input {
-  color: #0f172a;
+body.light .auth-input-wrap {
+  background: var(--surface-muted);
+  border-color: var(--border-color);
+}
+
+body.dark .auth-input-wrap {
+  background: var(--surface);
+  border-color: var(--border-color);
+}
+
+body.light .auth-input-wrap input,
+body.dark .auth-input-wrap input {
+  color: var(--text-dark);
 }
 
 body.light .auth-input-wrap input::placeholder,
-body.light .auth-eye-btn {
-  color: #64748b;
+body.dark .auth-input-wrap input::placeholder,
+.auth-eye-btn {
+  color: var(--text-muted);
 }
 
 body.light .auth-alert {
@@ -274,6 +393,12 @@ body.light .auth-alert {
   font-size: 0.95rem;
 }
 
+body.dark .auth-alert {
+  background: rgba(185, 28, 28, 0.16);
+  border-color: rgba(248, 113, 113, 0.28);
+  color: #fecaca;
+}
+
 .auth-field {
   display: flex;
   flex-direction: column;
@@ -282,7 +407,7 @@ body.light .auth-alert {
 
 .auth-field span {
   font-size: 0.92rem;
-  color: #e4e4e7;
+  color: var(--text-dark);
   font-weight: 600;
 }
 
@@ -292,13 +417,13 @@ body.light .auth-alert {
   gap: 0.75rem;
   padding: 0.95rem 1rem;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-color);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .auth-input-wrap:focus-within {
-  border-color: rgba(99, 102, 241, 0.75);
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
 }
 
@@ -308,17 +433,17 @@ body.light .auth-alert {
   outline: none;
   background: transparent;
   font-size: 0.98rem;
-  color: #f5f5f7;
+  color: var(--text-dark);
 }
 
 .auth-input-wrap input::placeholder {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .auth-eye-btn {
   background: transparent;
   border: none;
-  color: #a1a1aa;
+  color: var(--text-muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -344,16 +469,16 @@ body.light .auth-alert {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: #d4d4d8;
+  color: var(--text-muted);
   font-size: 0.92rem;
 }
 
 .auth-checkbox input {
-  accent-color: #6366f1;
+  accent-color: var(--primary);
 }
 
 .auth-link {
-  color: #a5b4fc;
+  color: var(--primary);
   text-decoration: none;
   font-size: 0.92rem;
 }
@@ -371,8 +496,8 @@ body.light .auth-alert {
   gap: 0.65rem;
   padding: 0.95rem 1rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--surface);
   font-weight: 700;
   font-size: 0.98rem;
   cursor: pointer;
@@ -381,6 +506,10 @@ body.light .auth-alert {
 
 body.light .auth-submit {
   box-shadow: 0 18px 35px rgba(79, 70, 229, 0.18);
+}
+
+body.dark .auth-submit {
+  box-shadow: 0 18px 35px rgba(79, 70, 229, 0.3);
 }
 
 .auth-submit:disabled {
@@ -397,19 +526,24 @@ body.light .auth-submit {
 .auth-footnote {
   margin: 0;
   text-align: center;
-  color: #a1a1aa;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .auth-switch a {
-  color: #c4b5fd;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 700;
 }
 
 body.light .auth-switch a,
 body.light .auth-link {
-  color: #4338ca;
+  color: var(--primary);
+}
+
+body.dark .auth-switch a,
+body.dark .auth-link {
+  color: var(--text-muted);
 }
 
 .auth-switch a:hover {

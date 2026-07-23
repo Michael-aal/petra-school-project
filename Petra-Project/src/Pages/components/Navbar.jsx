@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { solutionGroups } from "../../pages/solutions/solutionData";
+import { applyTheme, getInitialTheme } from "../../utils/theme";
 
 import "../../Styles/components/Navbar.css";
 
@@ -31,14 +32,7 @@ const companyInfo = [
 export default function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return false;
-
-    const savedTheme = window.localStorage.getItem("petra-theme");
-    if (savedTheme) {
-      return savedTheme === "white";
-    }
-
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return getInitialTheme() === "dark";
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
@@ -60,10 +54,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle("dark", darkMode);
-    document.body.classList.toggle("light", !darkMode);
-    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
-    window.localStorage.setItem("petra-theme", darkMode ? "dark" : "light");
+    applyTheme(darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {

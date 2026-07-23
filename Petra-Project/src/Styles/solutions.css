@@ -1,11 +1,15 @@
 .solution-page {
   padding: 40px 20px 0;
+  /* force dark/gradient background for solution pages */
+  background: linear-gradient(135deg, #030306 0%, #0b0b12 60%);
+  color: var(--app-text);
 }
 
 .solution-index {
   width: min(1160px, 100%);
   margin: 0 auto;
   padding: 40px 20px;
+  color: var(--app-text);
 }
 
 .solution-index-hero {
@@ -32,9 +36,9 @@
 
 .solution-index-group {
   padding: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--app-border);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(180deg, rgba(12,12,20,0.9), rgba(18,18,28,0.88));
 }
 
 .solution-index-links {
@@ -74,10 +78,11 @@
 .solution-benefit-item,
 .solution-faq-item,
 .solution-cta {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(12,12,20,0.9), rgba(18,18,28,0.88));
+  border: 1px solid var(--app-border);
   border-radius: 24px;
   backdrop-filter: blur(14px);
+  color: var(--app-text);
 }
 
 .solution-hero-copy {
@@ -106,7 +111,7 @@
 .solution-benefit-item p,
 .solution-faq-item p,
 .solution-cta p {
-  color: #a1a1aa;
+  color: var(--app-text-muted);
 }
 
 .solution-actions {
@@ -153,7 +158,9 @@
   display: inline-flex;
   width: fit-content;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.82));
+  color: var(--app-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .solution-hero-stat strong {
@@ -165,22 +172,22 @@
 .solution-hero-preview {
   min-height: 240px;
   border-radius: 20px;
-  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border: 1px dashed rgba(255,255,255,0.04);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   background:
-    radial-gradient(circle at top left, rgba(96, 165, 250, 0.28), transparent 35%),
-    radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.2), transparent 32%);
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.08), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.06), transparent 32%);
 }
 
 .preview-dot {
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  background: #f5f5f7;
-  opacity: 0.8;
+  background: rgba(255,255,255,0.9);
+  opacity: 0.9;
 }
 
 .solution-hero-image,
@@ -296,4 +303,78 @@
   .solution-cta {
     padding: 20px;
   }
+}
+
+/* Dark-mode: force black / gradient surfaces for solution pages and cards */
+body.dark .solution-page,
+.dark .solution-page,
+body.dark .solution-index,
+.dark .solution-index {
+  background: linear-gradient(135deg, #030306 0%, #0b0b12 60%);
+  color: var(--app-text);
+}
+
+body.dark .solution-index-group,
+body.dark .solution-hero-copy,
+body.dark .solution-hero-panel,
+body.dark .solution-card,
+body.dark .solution-shot,
+body.dark .solution-benefit-item,
+body.dark .solution-faq-item,
+body.dark .solution-cta,
+.dark .solution-index-group,
+.dark .solution-hero-copy,
+.dark .solution-hero-panel,
+.dark .solution-card,
+.dark .solution-shot,
+.dark .solution-benefit-item,
+.dark .solution-faq-item,
+.dark .solution-cta {
+  background: linear-gradient(180deg, rgba(12,12,20,0.9), rgba(18,18,28,0.88));
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+  backdrop-filter: blur(10px);
+}
+
+body.dark .solution-index-links a,
+.dark .solution-index-links a {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.02);
+  color: var(--app-text-muted);
+}
+
+body.dark .solution-hero h1,
+.dark .solution-hero h1 {
+  color: var(--app-text);
+}
+
+body.dark .solution-hero p,
+.dark .section-heading p,
+.dark .solution-card p,
+.dark .solution-benefit-item p,
+.dark .solution-faq-item p,
+.dark .solution-cta p {
+  color: var(--app-text-muted);
+}
+
+/* ensure preview dots and small accents remain visible */
+body.dark .preview-dot,
+.dark .preview-dot {
+  background: rgba(255,255,255,0.9);
+}
+
+/* Strong overrides: prevent any white panels on solution pages */
+body.dark section.solution-hero,
+.dark section.solution-hero,
+body.dark .solution-section,
+.dark .solution-section {
+  background: linear-gradient(135deg, #030306 0%, #0b0b12 60%) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--app-border) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
+}
+
+body.dark section.solution-section.solution-benefits,
+.dark section.solution-section.solution-benefits {
+  background: linear-gradient(180deg, rgba(10,10,14,0.92), rgba(18,18,28,0.9)) !important;
 }

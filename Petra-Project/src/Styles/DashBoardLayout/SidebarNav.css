@@ -41,7 +41,8 @@
   color: var(--dashboard-sidebar-text);
   border-right: 1px solid var(--app-border);
   box-shadow: 14px 0 40px rgba(2, 6, 23, 0.18);
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 100dvh;
   max-width: fit-content;
   width: 260px;
   min-width: 260px;
@@ -51,6 +52,7 @@
   justify-content: space-between;
   transition: width 180ms ease, min-width 180ms ease;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-behavior: smooth;
   scrollbar-width: none;
   top: 0;
@@ -248,8 +250,10 @@ body.dark .sidebar-child:hover {
 
 .dashboard-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 100dvh;
   background: var(--app-bg);
+  overflow: hidden;
 }
 
 .dashboard-sidebar {
@@ -263,9 +267,12 @@ body.dark .sidebar-child:hover {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
 .dashboard-content {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   background: transparent;
 }
@@ -300,7 +307,8 @@ body.dark .sidebar-child:hover {
   .sidebar-container {
     width: 280px;
     min-width: 280px;
-    min-height: 100vh;
+    height: 100vh;
+    min-height: 100dvh;
     max-width: fit-content;
   }
 

@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { applyTheme, getInitialTheme } from "../../utils/theme";
 
 export default function AuthShell({ children, eyebrow, title, subtitle, footnote }) {
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return true;
-    const savedTheme = window.localStorage.getItem("petra-theme");
-    if (savedTheme) return savedTheme === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return getInitialTheme() === "dark";
   });
 
   useEffect(() => {
-    document.body.classList.toggle("dark", darkMode);
-    document.body.classList.toggle("light", !darkMode);
-    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
-    window.localStorage.setItem("petra-theme", darkMode ? "dark" : "light");
+    applyTheme(darkMode ? "dark" : "light");
   }, [darkMode]);
 
   return (

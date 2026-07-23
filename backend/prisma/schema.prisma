@@ -20,6 +20,42 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  wallet       Wallet?
+  transactions Transaction[]
+}
+
+model Wallet {
+  id            String        @id @default(cuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id])
+  accountNumber String        @unique
+  accountName   String
+  bankName      String
+  bankCode      String
+  currency      String        @default("NGN")
+  balance       Float         @default(0.0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  walletId    String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  reference   String   @unique
+  type        String
+  amount      Float
+  status      String
+  description String?
+  source      String?
+  destination String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model School {

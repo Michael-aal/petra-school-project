@@ -7,6 +7,8 @@ import morgan from "morgan";
 
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import walletRoutes from "./routes/walletRoutes.js";
+import paystackRoutes from "./routes/paystackRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -32,7 +34,14 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 app.use(helmet());
 app.use(compression());
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({
+  limit: "1mb",
+  verify: (req, _res, buf) => {
+    if (req.originalUrl === "/api/paystack/webhook") {
+      req.rawBody = buf;
+    }
+  },
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 
@@ -41,6 +50,8 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/wallet", walletRoutes);
+app.use("/api/paystack", paystackRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
