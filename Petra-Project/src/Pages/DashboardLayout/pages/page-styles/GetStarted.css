@@ -1,23 +1,20 @@
 ﻿.gs {
   min-height: 100vh;
   padding: 3.5rem 2rem 4rem;
-  background: linear-gradient(135deg, #060816 0%, #090b18 45%, #11131f 100%);
+  background: var(--app-bg);
+  color: var(--app-text);
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-body.dark .gs {
-  background: linear-gradient(135deg, #060816 0%, #090b18 45%, #11131f 100%);
-}
-
 .gs-hero {
   width: 100%;
   border-radius: 32px;
-  background: linear-gradient(135deg, #10122a 0%, #1b1f3f 100%);
-  color: #ffffff;
+  background: var(--dashboard-card-bg);
+  color: var(--app-text);
   padding: 3rem 2.5rem;
-  box-shadow: 0 24px 80px rgba(20, 21, 45, 0.22);
+  box-shadow: 0 24px 80px rgba(20, 21, 45, 0.16);
   position: relative;
   overflow: hidden;
 }
@@ -26,8 +23,8 @@ body.dark .gs {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top left, rgba(88, 101, 255, 0.22), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(84, 255, 255, 0.16), transparent 22%);
+  background: radial-gradient(circle at top left, color-mix(in srgb, var(--app-accent) 18%, transparent), transparent 28%),
+    radial-gradient(circle at bottom right, color-mix(in srgb, var(--app-accent-2) 14%, transparent), transparent 22%);
   pointer-events: none;
 }
 
@@ -45,7 +42,7 @@ body.dark .gs {
   text-transform: uppercase;
   letter-spacing: 0.24em;
   font-size: 0.8rem;
-  color: rgba(248, 250, 252, 0.72);
+  color: var(--app-text-muted);
   margin-bottom: 1rem;
 }
 
@@ -59,7 +56,7 @@ body.dark .gs {
 .gs-hero-copy {
   max-width: 640px;
   margin-top: 1rem;
-  color: rgba(248, 250, 252, 0.84);
+  color: var(--app-text-muted);
   line-height: 1.8;
   font-size: 1rem;
 }
@@ -88,16 +85,17 @@ body.dark .gs {
 }
 
 .gs-button-accent {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #f8fafc;
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
 }
 
 .gs-panel {
   width: 100%;
-  background: linear-gradient(180deg, rgba(10, 12, 20, 0.98), rgba(15, 18, 33, 0.95));
+  background: var(--app-surface);
   border-radius: 28px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
   padding: 32px;
+  border: 1px solid var(--app-border);
 }
 
 .gs-panel-header {
@@ -112,12 +110,12 @@ body.dark .gs {
   margin: 0;
   font-size: 1.35rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--app-text);
 }
 
 .gs-panel-copy {
   margin: 8px 0 0;
-  color: rgba(248, 250, 252, 0.72);
+  color: var(--app-text-muted);
   line-height: 1.8;
 }
 
@@ -128,8 +126,8 @@ body.dark .gs {
 }
 
 .gs-card {
-  background: linear-gradient(180deg, rgba(12, 14, 24, 0.98), rgba(19, 23, 40, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
   border-radius: 26px;
   padding: 28px;
   display: flex;
@@ -141,29 +139,29 @@ body.dark .gs {
 
 .gs-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
 }
 
 .gs-card-icon {
   width: 56px;
   height: 56px;
   border-radius: 18px;
-  background: rgba(79, 70, 229, 0.18);
+  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
   display: grid;
   place-items: center;
-  color: #e0e7ff;
+  color: var(--app-accent);
 }
 
 .gs-card h3 {
   font-size: 1.05rem;
   margin: 0;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--app-text);
 }
 
 .gs-card p {
   margin: 0;
-  color: rgba(248, 250, 252, 0.72);
+  color: var(--app-text-muted);
   line-height: 1.75;
 }
 
@@ -172,32 +170,28 @@ body.dark .gs {
   padding: 12px 20px;
   border-radius: 999px;
   border: none;
-  background: #4543b5;
-  color: #f8fafc;
+  background: var(--app-accent);
+  color: var(--primary-foreground);
   font-weight: 700;
   cursor: pointer;
   text-align: center;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .gs-card-button:hover {
-  background: #3b3abd;
+  transform: translateY(-1px);
+  background: var(--app-accent-2);
 }
 
 .gs-card-highlight {
-  background: linear-gradient(180deg, rgba(79, 70, 229, 0.18), rgba(15, 23, 42, 0.96));
-  color: #f8fafc;
-  border-color: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--app-accent) 12%, var(--app-card));
+  color: var(--app-text);
+  border-color: var(--app-border);
 }
 
 .gs-card-highlight .gs-card-icon {
-  background: rgba(79, 70, 229, 0.22);
-  color: #f8fafc;
-}
-
-.gs-card-highlight h3,
-.gs-card-highlight p {
-  color: #f8fafc;
+  background: color-mix(in srgb, var(--app-accent) 22%, transparent);
+  color: var(--app-accent);
 }
 
 .gs-card-highlight-label {
@@ -205,7 +199,7 @@ body.dark .gs {
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.72);
+  color: var(--app-text-muted);
 }
 
 .gs-card-avatars {
@@ -221,46 +215,24 @@ body.dark .gs {
   display: grid;
   place-items: center;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--primary-foreground);
 }
 
 .avatar-one {
-  background: rgba(79, 70, 229, 0.22);
+  background: color-mix(in srgb, var(--app-accent) 22%, transparent);
 }
 
 .avatar-two {
-  background: rgba(20, 184, 166, 0.18);
+  background: color-mix(in srgb, #14b8a6 18%, transparent);
 }
 
 .avatar-three {
-  background: rgba(236, 72, 153, 0.18);
+  background: color-mix(in srgb, #ec4899 18%, transparent);
 }
 
 .gs-card-button-light {
-  background: #111827;
-  color: #f8fafc;
-}
-
-body.dark .gs-panel,
-body.dark .gs-card {
-  background: rgba(15, 23, 42, 0.96);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-body.dark .gs-panel-title,
-body.dark .gs-panel-copy,
-body.dark .gs-card h3,
-body.dark .gs-card p,
-body.dark .gs-button {
-  color: #f5f5f7;
-}
-
-body.dark .gs-card-button {
-  background: #6366f1;
-}
-
-body.dark .gs-card-button:hover {
-  background: #4f46e5;
+  background: var(--app-panel);
+  color: var(--app-text);
 }
 
 @media (max-width: 1080px) {

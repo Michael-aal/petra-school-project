@@ -31,7 +31,7 @@
 }
 
 .menu-btn:hover {
-  background: rgba(139, 92, 246, 0.18);
+  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
 }
 
 .top-welcome {
@@ -55,7 +55,7 @@
 }
 
 .icon-btn:hover {
-  background: rgba(59, 130, 246, 0.16);
+  background: color-mix(in srgb, var(--app-accent-2) 16%, transparent);
 }
 
 .user-info {
@@ -79,8 +79,8 @@
   width: 36px;
   height: 36px;
   overflow: hidden;
-  color: #fff;
-  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
 }
 
 .user-role {
@@ -171,7 +171,7 @@
   border: none;
   border-radius: 14px;
   background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: #ffffff;
+  color: var(--primary-foreground);
   font-weight: 700;
   padding: 12px 16px;
   cursor: pointer;
@@ -197,7 +197,7 @@
 }
 
 .logo {
-  color: white;
+  color: var(--primary-foreground);
 }
 
 .account-dropdown-header {
@@ -205,7 +205,7 @@
   align-items: center;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .account-dropdown-header strong,
@@ -225,7 +225,7 @@
 .account-dropdown-body {
   display: grid;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--app-text);
   padding: 12px 0;
 }
 
@@ -233,13 +233,13 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.86);
+  color: var(--app-text);
 }
 
 .account-dropdown-actions {
   display: grid;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--app-text);
 }
 
 .account-dropdown-actions button {
@@ -258,7 +258,7 @@
 
 .account-dropdown-actions button:hover {
   background: var(--dashboard-accent-gradient);
-  color: #ffffff;
+  color: var(--primary-foreground);
 }
 
 .user-avatar {
@@ -266,8 +266,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-  color: #fff;
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
   flex-shrink: 0;
 }
 

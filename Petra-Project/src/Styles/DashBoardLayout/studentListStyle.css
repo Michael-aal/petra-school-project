@@ -2,10 +2,10 @@
    1. PAGE LAYOUT & HEADER
    ========================================= */
 .students-page {
-  background-color: oklch(0.12 0.02 260);
-  color: oklch(0.93 0.01 240);
+  background: var(--app-bg);
+  color: var(--app-text);
   padding: 32px;
-  min-height:  100vh;
+  min-height: 100vh;
   max-height: fit-content;
   padding-bottom: 8em;
 }
@@ -30,19 +30,19 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background-color: oklch(0.3 0.08 264);
-  color: oklch(0.85 0.05 264);
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+  color: var(--app-accent);
 }
 
 .page-title-group h3 {
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0 0 4px 0;
 }
 
 .page-title-group h4 {
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   font-size: 0.875rem;
   font-weight: 400;
   margin: 0;
@@ -62,8 +62,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
   padding: 20px;
 }
@@ -78,22 +78,22 @@
   flex-shrink: 0;
 }
 
-.stat-icon-blue { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
-.stat-icon-green { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.stat-icon-red { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.stat-icon-blue { background-color: color-mix(in srgb, var(--app-accent) 16%, transparent); color: var(--app-accent); }
+.stat-icon-green { background-color: color-mix(in srgb, #14b8a6 16%, transparent); color: #14b8a6; }
+.stat-icon-red { background-color: color-mix(in srgb, #ef4444 16%, transparent); color: #ef4444; }
 
 .stat-number {
   display: block;
   font-size: 1.5rem;
   font-weight: 700;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   line-height: 1.2;
 }
 
 .stat-label {
   display: block;
   font-size: 0.8rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   font-weight: 500;
 }
 
@@ -101,8 +101,8 @@
    3. CONTROLS & BUTTONS
    ========================================= */
 .btn-primary {
-  background-color: oklch(0.62 0.2 264);
-  color: oklch(0.98 0 0);
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
@@ -123,25 +123,25 @@
 }
 
 .search-wrapper { position: relative; flex: 1; max-width: 360px; }
-.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: oklch(0.6 0.02 250); pointer-events: none; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--app-text-muted); pointer-events: none; }
 
 .search-input {
   width: 100%;
-  background-color: oklch(1 0 0 / 12%);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
   padding: 10px 16px 10px 40px;
   border-radius: 8px;
   font-size: 0.875rem;
   outline: none;
 }
-.search-input::placeholder { color: oklch(0.6 0.02 250); }
-.search-input:focus { border-color: oklch(0.62 0.2 264); box-shadow: 0 0 0 2px oklch(0.62 0.2 264 / 20%); }
+.search-input::placeholder { color: var(--app-text-muted); }
+.search-input:focus { border-color: var(--app-accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-accent) 20%, transparent); }
 
 .btn-secondary {
-  background-color: oklch(0.25 0.04 260);
-  color: oklch(0.93 0.01 240);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-card);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
   padding: 10px 16px;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -151,43 +151,43 @@
   gap: 8px;
   cursor: pointer;
 }
-.btn-secondary:hover { background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); }
+.btn-secondary:hover { background: var(--dashboard-muted-surface); color: var(--app-text); }
 
 /* =========================================
    4. DATA TABLE
    ========================================= */
 .table-container {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
-  overflow-x: auto; /* Changed to allow dropdowns to overflow vertically */
+  overflow-x: auto;
 }
 
 table { width: 100%; border-collapse: collapse; }
 
 th {
-  background-color: oklch(0.25 0.04 260);
-  color: oklch(0.6 0.02 250);
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text-muted);
   text-align: left;
   padding: 16px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid oklch(1 0 0 / 10%);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .text-right { text-align: right; }
 
 td {
   padding: 16px;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   font-size: 0.875rem;
-  border-bottom: 1px solid oklch(1 0 0 / 10%);
+  border-bottom: 1px solid var(--app-border);
 }
 
 tr:last-child td { border-bottom: none; }
-tr:hover td { background-color: oklch(0.25 0.04 260); }
+tr:hover td { background: var(--dashboard-muted-surface); }
 
 .student-cell { display: flex; align-items: center; gap: 12px; }
 
@@ -195,8 +195,8 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: oklch(0.3 0.08 264);
-  color: oklch(0.85 0.05 264);
+  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
+  color: var(--app-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,10 +218,10 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   font-weight: 500;
 }
 
-.status-paid { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.status-unpaid { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
-.status-partial { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
-.status-active { background-color: oklch(0.65 0.15 180 / 15%); color: oklch(0.65 0.15 180); }
+.status-paid { background-color: color-mix(in srgb, #14b8a6 16%, transparent); color: #14b8a6; }
+.status-unpaid { background-color: color-mix(in srgb, #ef4444 16%, transparent); color: #ef4444; }
+.status-partial { background-color: color-mix(in srgb, #f59e0b 16%, transparent); color: #f59e0b; }
+.status-active { background-color: color-mix(in srgb, var(--app-accent) 16%, transparent); color: var(--app-accent); }
 
 /* =========================================
    5. ACTION DROPDOWN
@@ -235,11 +235,11 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   right: 0;
   z-index: 60;
   min-width: 200px;
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 10px;
   padding: 6px;
-  box-shadow: 0 16px 40px -8px oklch(0 0 0 / 60%);
+  box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.2);
   animation: dropdownFadeIn 0.15s ease-out;
 }
 
@@ -257,27 +257,27 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   border: none;
   background: none;
   border-radius: 8px;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
 }
-.dropdown-item:hover { background-color: oklch(0.25 0.04 260); }
-.dropdown-item svg { color: oklch(0.6 0.02 250); flex-shrink: 0; }
-.dropdown-item:hover svg { color: oklch(0.93 0.01 240); }
+.dropdown-item:hover { background: var(--dashboard-muted-surface); }
+.dropdown-item svg { color: var(--app-text-muted); flex-shrink: 0; }
+.dropdown-item:hover svg { color: var(--app-text); }
 
-.dropdown-divider { height: 1px; background-color: oklch(1 0 0 / 10%); margin: 4px 8px; }
+.dropdown-divider { height: 1px; background: var(--app-border); margin: 4px 8px; }
 
-.dropdown-item-danger { color: oklch(0.65 0.22 27); }
-.dropdown-item-danger svg { color: oklch(0.65 0.22 27); }
-.dropdown-item-danger:hover { background-color: oklch(0.65 0.22 27 / 12%); color: oklch(0.75 0.22 27); }
-.dropdown-item-danger:hover svg { color: oklch(0.75 0.22 27); }
+.dropdown-item-danger { color: #ef4444; }
+.dropdown-item-danger svg { color: #ef4444; }
+.dropdown-item-danger:hover { background: color-mix(in srgb, #ef4444 12%, transparent); color: #ef4444; }
+.dropdown-item-danger:hover svg { color: #ef4444; }
 
 .action-btn {
   background: none;
   border: none;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   cursor: pointer;
   padding: 6px;
   border-radius: 6px;
@@ -285,7 +285,7 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   align-items: center;
   justify-content: center;
 }
-.action-btn:hover { background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); }
+.action-btn:hover { background: var(--dashboard-muted-surface); color: var(--app-text); }
 
 /* =========================================
    6. MODALS & FORMS
@@ -293,7 +293,7 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: oklch(0.12 0.02 260 / 80%);
+  background: color-mix(in srgb, var(--app-bg) 80%, transparent);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -303,12 +303,12 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
 }
 
 .modal-content {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 16px;
   width: 100%;
   max-width: 520px;
-  box-shadow: 0 25px 50px -12px oklch(0 0 0 / 50%);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
   animation: modalSlideIn 0.2s ease-out;
 }
 
@@ -325,18 +325,18 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   margin-bottom: 24px;
 }
 
-.modal-header h2 { color: oklch(0.93 0.01 240); font-size: 1.25rem; font-weight: 600; margin: 0; }
+.modal-header h2 { color: var(--app-text); font-size: 1.25rem; font-weight: 600; margin: 0; }
 
 .modal-close {
   background: none;
   border: none;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   cursor: pointer;
   padding: 6px;
   border-radius: 6px;
   display: flex;
 }
-.modal-close:hover { background-color: oklch(0.25 0.04 260); color: oklch(0.93 0.01 240); }
+.modal-close:hover { background: var(--dashboard-muted-surface); color: var(--app-text); }
 
 .modal-body { padding: 0 24px; }
 
@@ -344,20 +344,20 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
 .form-group { display: flex; flex-direction: column; gap: 8px; }
 .form-group.full-width { grid-column: 1 / -1; }
 
-.form-label { color: oklch(0.93 0.01 240); font-size: 0.875rem; font-weight: 500; }
+.form-label { color: var(--app-text); font-size: 0.875rem; font-weight: 500; }
 
 .form-input, .form-select {
-  background-color: oklch(1 0 0 / 12%);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 0.875rem;
   outline: none;
 }
 .form-select { cursor: pointer; }
-.form-input::placeholder { color: oklch(0.6 0.02 250); }
-.form-input:focus, .form-select:focus { border-color: oklch(0.62 0.2 264); box-shadow: 0 0 0 2px oklch(0.62 0.2 264 / 20%); }
+.form-input::placeholder { color: var(--app-text-muted); }
+.form-input:focus, .form-select:focus { border-color: var(--app-accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-accent) 20%, transparent); }
 
 .modal-footer {
   display: flex;
@@ -365,20 +365,20 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   gap: 12px;
   margin-top: 32px;
   padding: 24px;
-  border-top: 1px solid oklch(1 0 0 / 10%);
+  border-top: 1px solid var(--app-border);
 }
 
 .btn-ghost {
   background: none;
   border: none;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
 }
-.btn-ghost:hover { color: oklch(0.93 0.01 240); background-color: oklch(0.25 0.04 260); }
+.btn-ghost:hover { color: var(--app-text); background: var(--dashboard-muted-surface); }
 
 /* =========================================
    7. PROFILE VIEW (Inside Modal)
@@ -393,14 +393,14 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
   gap: 12px;
 }
 
-.profile-header h3 { font-size: 1.25rem; font-weight: 600; color: oklch(0.93 0.01 240); margin: 0; }
-.profile-header p { font-size: 0.875rem; color: oklch(0.6 0.02 250); margin: 0; }
+.profile-header h3 { font-size: 1.25rem; font-weight: 600; color: var(--app-text); margin: 0; }
+.profile-header p { font-size: 0.875rem; color: var(--app-text-muted); margin: 0; }
 
 .profile-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  background-color: oklch(0.25 0.04 260);
+  background: var(--dashboard-muted-surface);
   padding: 20px;
   border-radius: 12px;
 }
@@ -410,9 +410,9 @@ tr:hover td { background-color: oklch(0.25 0.04 260); }
 .info-label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.info-value { font-size: 0.95rem; font-weight: 500; color: oklch(0.93 0.01 240); }
+.info-value { font-size: 0.95rem; font-weight: 500; color: var(--app-text); }
