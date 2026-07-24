@@ -1,0 +1,84 @@
+.generic-list-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 32px;
+  min-height: 100vh;
+}
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+.page-title-group { display: flex; align-items: center; gap: 16px; }
+.title-icon-box { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); }
+.page-title-group h3 { color: oklch(0.93 0.01 240); font-size: 1.5rem; font-weight: 600; margin: 0 0 4px 0; }
+.page-title-group h4 { color: oklch(0.6 0.02 250); font-size: 0.875rem; font-weight: 400; margin: 0; }
+
+.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { display: flex; align-items: center; gap: 14px; background-color: oklch(0.18 0.03 260); border: 1px solid oklch(1 0 0 / 10%); border-radius: 12px; padding: 20px; }
+.stat-icon { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; }
+.stat-icon-blue { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.stat-icon-green { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.stat-icon-red { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.stat-number { display: block; font-size: 1.5rem; font-weight: 700; color: oklch(0.93 0.01 240); line-height: 1.2; }
+.stat-label { display: block; font-size: 0.8rem; color: oklch(0.6 0.02 250); font-weight: 500; }
+
+.btn-primary { background-color: oklch(0.62 0.2 264); color: oklch(0.98 0 0); border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.9; }
+.page-controls { display: flex; gap: 12px; margin-bottom: 24px; }
+.search-wrapper { position: relative; flex: 1; max-width: 360px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: oklch(0.6 0.02 250); pointer-events: none; }
+.search-input { width: 100%; background-color: oklch(1 0 0 / 12%); border: 1px solid oklch(1 0 0 / 10%); color: oklch(0.93 0.01 240); padding: 10px 16px 10px 40px; border-radius: 8px; font-size: 0.875rem; outline: none; }
+.search-input::placeholder { color: oklch(0.6 0.02 250); }
+.search-input:focus { border-color: oklch(0.62 0.2 264); box-shadow: 0 0 0 2px oklch(0.62 0.2 264 / 20%); }
+.btn-secondary { background-color: oklch(0.25 0.04 260); color: oklch(0.93 0.01 240); border: 1px solid oklch(1 0 0 / 10%); padding: 10px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.btn-secondary:hover { background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); }
+
+.table-container { background-color: oklch(0.18 0.03 260); border: 1px solid oklch(1 0 0 / 10%); border-radius: 12px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { background-color: oklch(0.25 0.04 260); color: oklch(0.6 0.02 250); text-align: left; padding: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid oklch(1 0 0 / 10%); }
+.text-right { text-align: right; }
+td { padding: 16px; color: oklch(0.93 0.01 240); font-size: 0.875rem; border-bottom: 1px solid oklch(1 0 0 / 10%); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background-color: oklch(0.25 0.04 260); }
+.empty-state { text-align: center; padding: 32px !important; color: oklch(0.6 0.02 250) !important; }
+
+.student-cell { display: flex; align-items: center; gap: 12px; }
+.student-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; flex-shrink: 0; }
+.student-name { font-weight: 500; }
+.status-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+.status-paid, .status-active { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.status-unpaid { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.status-partial { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
+
+.action-cell { position: relative; }
+.dropdown-wrapper { position: relative; display: inline-block; }
+.dropdown-menu { position: absolute; top: 100%; right: 0; z-index: 60; min-width: 200px; background-color: oklch(0.18 0.03 260); border: 1px solid oklch(1 0 0 / 10%); border-radius: 10px; padding: 6px; box-shadow: 0 16px 40px -8px oklch(0 0 0 / 60%); animation: dropdownFadeIn 0.15s ease-out; }
+@keyframes dropdownFadeIn { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dropdown-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: none; background: none; border-radius: 8px; color: oklch(0.93 0.01 240); font-size: 0.875rem; font-weight: 500; cursor: pointer; text-align: left; }
+.dropdown-item:hover { background-color: oklch(0.25 0.04 260); }
+.dropdown-item svg { color: oklch(0.6 0.02 250); flex-shrink: 0; }
+.dropdown-item:hover svg { color: oklch(0.93 0.01 240); }
+.dropdown-item-danger { color: oklch(0.65 0.22 27); }
+.dropdown-item-danger svg { color: oklch(0.65 0.22 27); }
+.dropdown-item-danger:hover { background-color: oklch(0.65 0.22 27 / 12%); color: oklch(0.75 0.22 27); }
+.dropdown-item-danger:hover svg { color: oklch(0.75 0.22 27); }
+.action-btn { background: none; border: none; color: oklch(0.6 0.02 250); cursor: pointer; padding: 6px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; }
+.action-btn:hover { background-color: oklch(0.3 0.08 264); color: oklch(0.85 0.05 264); }
+
+.modal-overlay { position: fixed; inset: 0; background-color: oklch(0.12 0.02 260 / 80%); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+.modal-content { background-color: oklch(0.18 0.03 260); border: 1px solid oklch(1 0 0 / 10%); border-radius: 16px; width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px oklch(0 0 0 / 50%); animation: modalSlideIn 0.2s ease-out; }
+@keyframes modalSlideIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 0 24px; margin-bottom: 24px; }
+.modal-header h2 { color: oklch(0.93 0.01 240); font-size: 1.25rem; font-weight: 600; margin: 0; }
+.modal-close { background: none; border: none; color: oklch(0.6 0.02 250); cursor: pointer; padding: 6px; border-radius: 6px; display: flex; }
+.modal-close:hover { background-color: oklch(0.25 0.04 260); color: oklch(0.93 0.01 240); }
+.modal-body { padding: 0 24px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group.full-width { grid-column: 1 / -1; }
+.form-label { color: oklch(0.93 0.01 240); font-size: 0.875rem; font-weight: 500; }
+.form-input, .form-select { background-color: oklch(1 0 0 / 12%); border: 1px solid oklch(1 0 0 / 10%); color: oklch(0.93 0.01 240); padding: 10px 12px; border-radius: 8px; font-size: 0.875rem; outline: none; }
+.form-select { cursor: pointer; }
+.form-input::placeholder { color: oklch(0.6 0.02 250); }
+.form-input:focus, .form-select:focus { border-color: oklch(0.62 0.2 264); box-shadow: 0 0 0 2px oklch(0.62 0.2 264 / 20%); }
+.modal-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; padding: 24px; border-top: 1px solid oklch(1 0 0 / 10%); }
+.btn-ghost { background: none; border: none; color: oklch(0.6 0.02 250); padding: 10px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
+.btn-ghost:hover { color: oklch(0.93 0.01 240); background-color: oklch(0.25 0.04 260); }

@@ -1,2 +1,363 @@
 /* Styles for SupportPage */
-.support-page{ padding:18px; }
+/* =========================================
+   1. PAGE LAYOUT & HEADER
+   ========================================= */
+.support-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 32px;
+  min-height: 100vh;
+}
+
+.support-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.support-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.support-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: oklch(0.3 0.08 264);
+  color: oklch(0.85 0.05 264);
+}
+
+.support-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.support-header p {
+  font-size: 0.875rem;
+  margin: 0;
+  color: oklch(0.6 0.02 250);
+}
+
+/* =========================================
+   2. QUICK LINKS
+   ========================================= */
+.support-quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.quick-link-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.quick-link-card:hover {
+  border-color: oklch(0.62 0.2 264);
+  transform: translateY(-2px);
+}
+
+.ql-icon {
+  flex-shrink: 0;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.ql-icon.blue { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.ql-icon.green { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.ql-icon.orange { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
+
+.quick-link-card h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.quick-link-card p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: oklch(0.6 0.02 250);
+}
+
+/* =========================================
+   3. MAIN GRID LAYOUT
+   ========================================= */
+.support-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.support-card {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: oklch(0.93 0.01 240);
+}
+
+/* =========================================
+   4. FAQ ACCORDION
+   ========================================= */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background-color: oklch(0.25 0.04 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faq-item.active {
+  border-color: oklch(0.62 0.2 264 / 50%);
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background: none;
+  border: none;
+  color: oklch(0.93 0.01 240);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  gap: 16px;
+}
+
+.faq-chevron {
+  color: oklch(0.6 0.02 250);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faq-chevron.rotated {
+  transform: rotate(180deg);
+  color: oklch(0.62 0.2 264);
+}
+
+.faq-answer {
+  padding: 0 16px 16px 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.faq-answer p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: oklch(0.75 0.02 250);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   5. TICKET FORM
+   ========================================= */
+.success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: oklch(0.7 0.18 140 / 15%);
+  color: oklch(0.7 0.18 140);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: oklch(0.93 0.01 240);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background-color: oklch(1 0 0 / 12%);
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.93 0.01 240);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: oklch(0.5 0.02 250);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: oklch(0.62 0.2 264);
+}
+
+.submit-ticket-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  align-self: flex-start;
+}
+
+.submit-ticket-btn:hover {
+  opacity: 0.9;
+}
+
+/* =========================================
+   6. RECENT TICKETS SIDEBAR
+   ========================================= */
+.tickets-card {
+  position: sticky;
+  top: 32px;
+  height: fit-content;
+}
+
+.tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticket-item {
+  background-color: oklch(0.25 0.04 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 10px;
+  padding: 14px;
+  transition: background-color 0.2s;
+}
+
+.ticket-item:hover {
+  background-color: oklch(0.28 0.04 260);
+}
+
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ticket-subject {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: oklch(0.93 0.01 240);
+  line-height: 1.3;
+}
+
+.ticket-status {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.status-open { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
+.status-in-progress { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.status-resolved { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+
+.ticket-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: oklch(0.6 0.02 250);
+}
+
+.empty-tickets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: oklch(0.6 0.02 250);
+  text-align: center;
+  gap: 8px;
+}

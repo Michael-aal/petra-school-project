@@ -23,12 +23,19 @@ export default function SignIn() {
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
+  // Replace the old useEffect with this:
+  const { authReady, userInfo } = useContext(UserContext);
+
   useEffect(() => {
-    authApi
-      .me()
-      .then(() => navigate("/dashboard", { replace: true }))
-      .catch(() => setCheckingSession(false));
-  }, [navigate]);
+    if (authReady) {
+      // If we have a valid user, redirect to dashboard
+      if (userInfo?.email) {
+        navigate("/dashboard", { replace: true });
+      } else {
+        setCheckingSession(false);
+      }
+    }
+  }, [authReady, userInfo, navigate]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;

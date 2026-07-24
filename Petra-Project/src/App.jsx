@@ -124,7 +124,10 @@ function App() {
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/get-started" element={<Navigate to="/signin" replace />} />
+        <Route
+          path="/get-started"
+          element={<Navigate to="/signin" replace />}
+        />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/solution" element={<Solution />} />
@@ -139,7 +142,10 @@ function App() {
           <Route path="/solution/performance" element={<Performance />} />
           <Route path="/solution/ai-study-app" element={<AIStudyApp />} />
           <Route path="/solution/learning-hub" element={<LearningHub />} />
-          <Route path="/solution/digital-library" element={<DigitalLibrary />} />
+          <Route
+            path="/solution/digital-library"
+            element={<DigitalLibrary />}
+          />
           <Route
             path="/solution/teacher-workspace"
             element={<TeacherWorkspace />}
@@ -149,7 +155,10 @@ function App() {
             path="/solution/assessment-tools"
             element={<AssessmentTools />}
           />
-          <Route path="/solution/school-analytics" element={<SchoolAnalytics />} />
+          <Route
+            path="/solution/school-analytics"
+            element={<SchoolAnalytics />}
+          />
           <Route path="/solution/admissions" element={<Admissions />} />
           <Route
             path="/solution/communication-hub"

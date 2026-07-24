@@ -1,13 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import {
-  ArrowRightLeft,
-  Banknote,
-  CreditCard,
-  Landmark,
-  Send,
-  ShieldCheck,
-  Wallet as WalletIcon,
+  ArrowRightLeft, Banknote, CreditCard, Landmark, Send, ShieldCheck, Wallet as WalletIcon,
 } from "lucide-react";
+import { UserContext } from "../../../../context/UserContext";
 import { walletApi } from "../../../../services/walletApi";
 import "../page-styles/WalletPage.css";
 
@@ -19,6 +14,7 @@ const formatCurrency = (value) =>
   }).format(value || 0);
 
 export default function WalletPage() {
+  const { userInfo } = useContext(UserContext);
   const [wallet, setWallet] = useState(null);
   const [summary, setSummary] = useState({});
   const [transactions, setTransactions] = useState([]);
@@ -28,6 +24,9 @@ export default function WalletPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
+
+  // DYNAMIC: Get school name for wallet branding
+  const schoolName = userInfo?.institution || "School";
 
   const loadWallet = async () => {
     setError(null);
@@ -55,7 +54,6 @@ export default function WalletPage() {
     setError(null);
     setMessage(null);
     setLoading(true);
-
     try {
       await walletApi.withdraw({ amount: form.amount, description: form.note });
       setMessage("Withdrawal successful. Your balance has been updated.");
@@ -73,7 +71,6 @@ export default function WalletPage() {
     setError(null);
     setMessage(null);
     setLoading(true);
-
     try {
       await walletApi.transfer({ recipient: form.recipient, amount: form.amount, note: form.note });
       setMessage("Transfer completed successfully.");
@@ -91,7 +88,6 @@ export default function WalletPage() {
     setError(null);
     setMessage(null);
     setLoading(true);
-
     try {
       const data = await walletApi.initializePaystack(fundAmount);
       if (data?.session?.authorization_url) {
@@ -118,23 +114,12 @@ export default function WalletPage() {
 
   const quickStats = useMemo(
     () => [
-      {
-        label: "Wallet ID",
-        value: wallet?.accountNumber || "XXXXXXXXXX",
-        icon: CreditCard,
-      },
-      {
-        label: "Bank",
-        value: wallet?.bankName || "Petra Bank",
-        icon: Landmark,
-      },
-      {
-        label: "Secure",
-        value: "Protected operations",
-        icon: ShieldCheck,
-      },
+      { label: "Wallet ID", value: wallet?.accountNumber || "XXXXXXXXXX", icon: CreditCard },
+      // DYNAMIC: Uses school name instead of "Petra Bank"
+      { label: "Bank", value: wallet?.bankName || `${schoolName} Bank`, icon: Landmark },
+      { label: "Secure", value: "Protected operations", icon: ShieldCheck },
     ],
-    [wallet],
+    [wallet, schoolName],
   );
 
   return (
@@ -142,7 +127,8 @@ export default function WalletPage() {
       <section className="wallet-hero">
         <div className="wallet-hero-copy">
           <p className="dashboard-page-label">Wallet Dashboard</p>
-          <h1>Petra Wallet</h1>
+          {/* DYNAMIC: Uses school name */}
+          <h1>{schoolName} Wallet</h1>
           <p className="dashboard-page-copy">
             Monitor balances, move funds, and review transaction history from one clean control center.
           </p>
@@ -154,7 +140,8 @@ export default function WalletPage() {
           </div>
           <div className="wallet-hero-chip wallet-hero-chip-ghost">
             <Landmark size={15} />
-            <span>{wallet?.bankName || "Petra Bank"}</span>
+            {/* DYNAMIC: Uses school name */}
+            <span>{wallet?.bankName || `${schoolName} Bank`}</span>
           </div>
         </div>
       </section>
@@ -178,7 +165,7 @@ export default function WalletPage() {
             <div className="wallet-account-id">
               <span>Account Number</span>
               <strong>{wallet?.accountNumber || "XXXXXXXXXX"}</strong>
-              <small>{wallet?.bankName || "Petra Bank"}</small>
+              <small>{wallet?.bankName || `${schoolName} Bank`}</small>
             </div>
           </div>
 
@@ -228,8 +215,8 @@ export default function WalletPage() {
             <button type="button" className={activeTab === "fund" ? "active" : ""} onClick={() => setActiveTab("fund")}>Fund</button>
           </div>
 
-          {message ? <div className="dashboard-alert success">{message}</div> : null}
-          {error ? <div className="dashboard-alert error">{error}</div> : null}
+          {message && <div className="dashboard-alert success">{message}</div>}
+          {error && <div className="dashboard-alert error">{error}</div>}
 
           {activeTab === "summary" && (
             <div className="wallet-summary-stack">
@@ -250,7 +237,7 @@ export default function WalletPage() {
               <div className="wallet-action-card">
                 <div>
                   <h4>Bank name</h4>
-                  <p>{wallet?.bankName || "Petra Bank"}</p>
+                  <p>{wallet?.bankName || `${schoolName} Bank`}</p>
                 </div>
                 <div className="wallet-action-icon"><Landmark size={18} /></div>
               </div>

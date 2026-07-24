@@ -1,17 +1,8 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
-  ArrowRight,
-  Banknote,
-  Bell,
-  BookOpen,
-  CalendarDays,
-  CheckCircle2,
-  CreditCard,
-  Download,
-  Send,
-  ShieldAlert,
-  Wallet,
+  ArrowRight, Banknote, Bell, BookOpen, CalendarDays, CheckCircle2,
+  CreditCard, Download, Send, ShieldAlert, Wallet,
 } from "lucide-react";
 import { UserContext } from "../../../context/UserContext";
 import { getFirstName } from "../../../utils/userProfile";
@@ -19,59 +10,21 @@ import "./page-styles/DashboardHomePage.css";
 
 const summaryCards = [
   {
-    id: 1,
-    label: "NGN Balance",
-    value: "₦0.00",
-    accent: "blue",
-    icon: Wallet,
-    action: "Withdraw Balance",
-    link: "/dashboard/finance/wallet",
+    id: 1, label: "NGN Balance", value: "₦0.00", accent: "blue", icon: Wallet, action: "Withdraw Balance", link: "/dashboard/finance/wallet",
   },
   {
-    id: 2,
-    label: "Balance Payouts",
-    value: "₦0.00",
-    accent: "teal",
-    icon: Download,
-    action: "View History",
-    link: "/dashboard/finance/cashflow",
+    id: 2, label: "Balance Payouts", value: "₦0.00", accent: "teal", icon: Download, action: "View History", link: "/dashboard/finance/cashflow",
   },
   {
-    id: 3,
-    label: "Cashflow",
-    value: "₦0.00",
-    accent: "rose",
-    icon: Send,
-    action: "Get Cashflow",
-    link: "/dashboard/finance/cashflow",
+    id: 3, label: "Cashflow", value: "₦0.00", accent: "rose", icon: Send, action: "Get Cashflow", link: "/dashboard/finance/cashflow",
   },
 ];
 
 const actionTiles = [
-  {
-    id: 1,
-    label: "Withdraw",
-    icon: Banknote,
-    link: "/dashboard/finance/wallet",
-  },
-  {
-    id: 2,
-    label: "Transfer",
-    icon: Send,
-    link: "/dashboard/finance/wallet",
-  },
-  {
-    id: 3,
-    label: "Statement",
-    icon: CreditCard,
-    link: "/dashboard/finance/wallet",
-  },
-  {
-    id: 4,
-    label: "Pay Bills (coming soon)",
-    icon: Wallet,
-    link: "/dashboard/finance/wallet",
-  },
+  { id: 1, label: "Withdraw", icon: Banknote, link: "/dashboard/finance/wallet" },
+  { id: 2, label: "Transfer", icon: Send, link: "/dashboard/finance/wallet" },
+  { id: 3, label: "Statement", icon: CreditCard, link: "/dashboard/finance/wallet" },
+  { id: 4, label: "Pay Bills (coming soon)", icon: Wallet, link: "/dashboard/finance/wallet" },
 ];
 
 const accountSummary = [
@@ -93,15 +46,14 @@ const transactionStats = [
 
 export default function DashboardHomePage() {
   const { userInfo } = useContext(UserContext);
-  const firstName = getFirstName(userInfo) || "Temiloluwa";
+  const firstName = getFirstName(userInfo) || "Admin";
   const today = new Date();
-  const sessionLabel = userInfo?.activeSession || "3rd Term • 2025/2026";
+  
+  // DYNAMIC: Uses user's active session or a generic fallback
+  const sessionLabel = userInfo?.activeSession || "Current Term • 2025/2026";
 
   const formattedDate = today.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
   return (
@@ -141,7 +93,6 @@ export default function DashboardHomePage() {
                   <Icon size={18} />
                 </div>
               </div>
-
               <Link to={item.link} className={`dashboard-home-summary-action tone-${item.accent}`}>
                 <span>{item.action}</span>
                 <ArrowRight size={14} />
@@ -201,7 +152,7 @@ export default function DashboardHomePage() {
       </section>
 
       <footer className="dashboard-home-footer">
-        <span>© 2026 All rights reserved by Acceede.com</span>
+        <span>© {new Date().getFullYear()} All rights reserved by Acceede.com</span>
         <span>{formattedDate}</span>
       </footer>
     </div>

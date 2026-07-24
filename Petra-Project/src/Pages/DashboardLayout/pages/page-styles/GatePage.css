@@ -1,2 +1,399 @@
 /* Styles for GatePage */
-.gate-page{ padding:18px; }
+/* =========================================
+   1. PAGE LAYOUT & HEADER
+   ========================================= */
+.gate-monitoring-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 32px;
+  min-height: 100vh;
+}
+
+.gate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.gate-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.gate-title-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.gate-title-group svg {
+  color: oklch(0.62 0.2 264);
+}
+
+.gate-title-group h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.gate-title-group p {
+  font-size: 0.875rem;
+  margin: 4px 0 0 0;
+  color: oklch(0.6 0.02 250);
+}
+
+/* Pulsing Live Badge */
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: oklch(0.7 0.18 140 / 15%);
+  color: oklch(0.7 0.18 140);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background-color: oklch(0.7 0.18 140);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 oklch(0.7 0.18 140 / 70%); }
+  70% { box-shadow: 0 0 0 10px oklch(0.7 0.18 140 / 0%); }
+  100% { box-shadow: 0 0 0 0 oklch(0.7 0.18 140 / 0%); }
+}
+
+.gate-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gate-search svg {
+  position: absolute;
+  left: 14px;
+  color: oklch(0.6 0.02 250);
+  pointer-events: none;
+}
+
+.gate-search input {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.93 0.01 240);
+  padding: 10px 16px 10px 42px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  width: 280px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.gate-search input:focus {
+  border-color: oklch(0.62 0.2 264);
+}
+
+/* =========================================
+   2. STATS CARDS
+   ========================================= */
+.gate-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.gate-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.gate-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.entry-icon { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.exit-icon { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.campus-icon { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+
+.gate-stat-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: oklch(0.93 0.01 240);
+  line-height: 1.2;
+}
+
+.gate-stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+  font-weight: 500;
+}
+
+/* =========================================
+   3. MAIN CONTENT GRID
+   ========================================= */
+.gate-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .gate-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.feed-count {
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+  background: oklch(0.25 0.04 260);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* =========================================
+   4. LIVE FEED LIST
+   ========================================= */
+.gate-feed-panel {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.gate-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.gate-event-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: oklch(0.25 0.04 260);
+  border-radius: 10px;
+  border-left: 4px solid transparent;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.gate-event-item:hover {
+  background-color: oklch(0.28 0.04 260);
+}
+
+.event-entry { border-left-color: oklch(0.7 0.18 140); }
+.event-exit { border-left-color: oklch(0.65 0.22 27); }
+
+.event-direction-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.icon-entry { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.icon-exit { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+
+.event-details {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.event-student-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-student-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: oklch(0.93 0.01 240);
+}
+
+.event-student-class {
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+}
+
+.event-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+}
+
+.event-time {
+  font-weight: 500;
+  color: oklch(0.85 0.05 264);
+}
+
+.event-status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-entry { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.badge-exit { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+
+.empty-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: oklch(0.6 0.02 250);
+  text-align: center;
+  gap: 12px;
+}
+
+/* =========================================
+   5. MANUAL OVERRIDE PANEL
+   ========================================= */
+.gate-manual-panel {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 12px;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 32px;
+}
+
+.manual-description {
+  font-size: 0.875rem;
+  color: oklch(0.6 0.02 250);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.manual-log-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: oklch(0.93 0.01 240);
+}
+
+.form-group input,
+.form-group select {
+  background-color: oklch(1 0 0 / 12%);
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.93 0.01 240);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: oklch(0.62 0.2 264);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.manual-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 8px;
+}
+
+.manual-submit-btn:hover {
+  opacity: 0.9;
+}
+
+.security-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 12px;
+  background-color: oklch(0.72 0.18 60 / 10%);
+  border: 1px solid oklch(0.72 0.18 60 / 20%);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: oklch(0.72 0.18 60);
+}
