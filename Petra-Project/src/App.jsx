@@ -11,6 +11,9 @@ import About from "./Pages/About";
 import Home from "./Pages/Home";
 import SignIn from "./Pages/Sigin/SignIn";
 import Register from "./Pages/Sigin/Register";
+import RegistrationEntry from "./Pages/Sigin/RegistrationEntry";
+import StaffRegister from "./Pages/Sigin/StaffRegister";
+import ParentRegister from "./Pages/Sigin/ParentRegister";
 import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
 import GetStarted from "./Pages/DashboardLayout/pages/GetStarted";
 import SchoolSetupPage from "./Pages/DashboardLayout/pages/SchoolSetupPage";
@@ -124,7 +127,9 @@ function App() {
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/get-started" element={<Navigate to="/signin" replace />} />
+        <Route path="/staff/register" element={<StaffRegister />} />
+        <Route path="/parent/register" element={<ParentRegister />} />
+        <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/solution" element={<Solution />} />

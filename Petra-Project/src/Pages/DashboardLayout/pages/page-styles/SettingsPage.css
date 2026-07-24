@@ -166,10 +166,136 @@
   transform: translateY(-1px);
 }
 
+.settings-delete-button {
+  margin-top: 10px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--primary)));
+}
+
 .settings-status {
   margin: 14px 2px 0;
   color: var(--muted-foreground);
   font-size: 0.92rem;
+}
+
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: color-mix(in srgb, var(--background) 72%, #000 28%);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+}
+
+.settings-modal {
+  width: min(100%, 520px);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: 0 24px 54px rgba(15, 23, 42, 0.24);
+  padding: 18px;
+}
+
+.settings-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.settings-modal-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.settings-modal-header p {
+  margin: 6px 0 0;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.settings-modal-close {
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.settings-modal-body {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-password-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--input);
+  background: var(--background);
+}
+
+.settings-password-wrap input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+}
+
+.settings-delete-error {
+  margin: 0;
+  color: var(--destructive);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.settings-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.settings-modal-cancel,
+.settings-modal-delete {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-weight: 700;
+}
+
+.settings-modal-cancel {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.settings-modal-delete {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--primary)));
+  color: var(--primary-foreground);
+  border-color: transparent;
+}
+
+.settings-spinner {
+  animation: settings-spin 1s linear infinite;
+}
+
+@keyframes settings-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 body.dark .settings-page {
@@ -219,6 +345,10 @@ body.dark .settings-field select {
 
 @media (max-width: 640px) {
   .settings-page {
+    padding: 16px;
+  }
+
+  .settings-modal {
     padding: 16px;
   }
 }

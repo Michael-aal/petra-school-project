@@ -560,6 +560,48 @@ body.dark .auth-link {
   color: #f5f5f7;
 }
 
+.registration-choice-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.registration-choice-card {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-muted);
+  display: grid;
+  gap: 10px;
+}
+
+.registration-choice-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.registration-choice-card h3 {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+.registration-choice-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-size: 0.94rem;
+}
+
+.registration-choice-button {
+  text-decoration: none;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

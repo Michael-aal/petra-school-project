@@ -5,6 +5,7 @@ import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { normalizeUser, splitFullName } from "../../utils/userProfile";
+import { normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
@@ -18,6 +19,7 @@ const initialForm = {
   state: "",
   city: "",
   hearAbout: "",
+  role: "",
 };
 
 export default function Register() {
@@ -34,7 +36,10 @@ export default function Register() {
   useEffect(() => {
     authApi
       .me()
-      .then(() => navigate("/dashboard", { replace: true }))
+      .then((response) => {
+        const role = normalizeRole(response?.user?.role);
+        navigate(role === "parent" || role === "student" ? "/portal/dashboard" : role === "teacher" || role === "staff" ? "/staff/dashboard" : "/dashboard", { replace: true });
+      })
       .catch(() => setCheckingSession(false));
   }, [navigate]);
 
@@ -88,6 +93,10 @@ export default function Register() {
         nextUser.city = value;
       }
 
+      if (name === "role") {
+        nextUser.role = value;
+      }
+
       return normalizeUser(nextUser);
     });
   };
@@ -96,6 +105,7 @@ export default function Register() {
     const nextErrors = {};
     if (!form.fullName.trim()) nextErrors.fullName = "Full name is required.";
     if (!form.email.trim()) nextErrors.email = "Email address is required.";
+    if (!form.role) nextErrors.role = "Please select a role.";
     if (!form.password) nextErrors.password = "Password is required.";
     if (form.password.length < 8) nextErrors.password = "Password must be at least 8 characters.";
     if (!form.confirmPassword) nextErrors.confirmPassword = "Please confirm your password.";
@@ -146,6 +156,7 @@ export default function Register() {
         state: form.state,
         city: form.city,
         hearAbout: form.hearAbout,
+        role: form.role,
       });
 
       const registeredUser = response?.user || {};
@@ -157,7 +168,14 @@ export default function Register() {
         fullName: storedFullName,
         email: storedEmail,
       });
-      navigate("/dashboard", { replace: true });
+      navigate(
+        form.role === "parent" || form.role === "student"
+          ? "/portal/dashboard"
+          : form.role === "teacher" || form.role === "staff"
+            ? "/staff/dashboard"
+            : "/dashboard",
+        { replace: true },
+      );
     } catch (error) {
       const apiErrors = error.data?.errors;
       if (Array.isArray(apiErrors) && apiErrors.length > 0) {
@@ -225,6 +243,20 @@ export default function Register() {
               autoComplete="tel"
             />
           </div>
+        </label>
+
+        <label className="auth-field">
+          <span>Role</span>
+          <div className="auth-input-wrap">
+            <UserRound size={18} />
+            <select name="role" value={form.role} onChange={handleChange}>
+              <option value="">Select Role</option>
+              <option value="principal">Admin / Principal</option>
+              <option value="staff">Staff / Teacher</option>
+              <option value="parent">Parent / Student</option>
+            </select>
+          </div>
+          {errors.role ? <small>{errors.role}</small> : null}
         </label>
 
         <label className="auth-field">

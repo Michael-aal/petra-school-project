@@ -28,6 +28,26 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  staffPending: (payload) =>
+    request("/api/auth/staff/pending", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  staffActivate: (payload) =>
+    request("/api/auth/staff/activate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  parentRegister: (payload) =>
+    request("/api/auth/parent/register", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  linkChild: (payload) =>
+    request("/api/auth/parent/link-child", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   login: (payload) =>
     request("/api/auth/login", {
       method: "POST",
@@ -40,6 +60,11 @@ export const authApi = {
   logout: () =>
     request("/api/auth/logout", {
       method: "POST",
+    }),
+  deleteAccount: (payload) =>
+    request("/api/auth/account", {
+      method: "DELETE",
+      body: JSON.stringify(payload),
     }),
 };
 

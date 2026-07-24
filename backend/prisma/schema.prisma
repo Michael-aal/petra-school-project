@@ -17,7 +17,14 @@ model User {
   state     String?
   city      String?
   hearAbout String?
-  role      String   @default("user")
+  role      String   @default("parent")
+  accountStatus String @default("active")
+  staffRegistrationCode String? @unique
+  staffRegistrationCodeUsed Boolean @default(false)
+  parentAccessCode String? @unique
+  parentAccessCodeUsed Boolean @default(false)
+  linkedStudentId String?
+  linkedStudent   Student? @relation(fields: [linkedStudentId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -92,6 +99,17 @@ model Student {
 
   schoolId Int
   school   School @relation(fields: [schoolId], references: [id])
+  admissionNumber String? @unique
+  gender String?
+  className String?
+  dob DateTime?
+  guardianName String?
+  parentPhone String?
+  parentEmail String?
+  parentAccessCode String? @unique
+  parentAccessCodeUsed Boolean @default(false)
+  parentId String?
+  parent User? @relation(fields: [parentId], references: [id])
 }
 
 model Parent {

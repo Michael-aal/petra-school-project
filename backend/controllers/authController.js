@@ -37,6 +37,52 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
+export const createPendingStaff = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.createPendingStaff(req.body);
+    return res.status(201).json({ success: true, message: "Staff created successfully", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const activateStaff = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.activateStaff(req.body);
+    res.cookie("petra_token", result.token, authCookieOptions);
+    return res.status(200).json({ success: true, message: "Staff account activated", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const registerParent = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.registerParent(req.body);
+    res.cookie("petra_token", result.token, authCookieOptions);
+    return res.status(201).json({ success: true, message: "Parent registered successfully", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const linkChild = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.linkStudentToParent({ userId: req.user.id, accessCode: req.body.accessCode });
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const loginUser = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);
@@ -76,4 +122,29 @@ export const logoutUser = async (_req, res) => {
     success: true,
     message: "Logout successful",
   });
+};
+
+export const deleteUserAccount = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.deleteAccount({
+      userId: req.user.id,
+      password: req.body.password,
+    });
+
+    res.clearCookie("petra_token", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

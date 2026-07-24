@@ -5,6 +5,7 @@ import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { normalizeUser } from "../../utils/userProfile";
+import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
@@ -26,7 +27,7 @@ export default function SignIn() {
   useEffect(() => {
     authApi
       .me()
-      .then(() => navigate("/dashboard", { replace: true }))
+      .then((response) => navigate(getDashboardPathForRole(response?.user?.role), { replace: true }))
       .catch(() => setCheckingSession(false));
   }, [navigate]);
 
@@ -66,7 +67,7 @@ export default function SignIn() {
           ...loggedInUser,
           fullName: loggedInUser.fullName || form.email,
           email: loggedInUser.email || form.email,
-          role: loggedInUser.role || "user",
+          role: normalizeRole(loggedInUser.role),
         }),
       );
 
@@ -76,7 +77,7 @@ export default function SignIn() {
         window.localStorage.removeItem("petra_remember_email");
       }
 
-      navigate("/dashboard", { replace: true });
+      navigate(getDashboardPathForRole(loggedInUser.role), { replace: true });
     } catch (error) {
       const apiErrors = error.data?.errors;
       if (Array.isArray(apiErrors) && apiErrors.length > 0) {
