@@ -8,8 +8,11 @@ import "./config/loadEnv.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
+import academicRoutes from "./routes/academicRoutes.js";
+import financeRoutes from "./routes/financeRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import paystackRoutes from "./routes/paystackRoutes.js";
+import teacherRoutes from "./routes/teacherRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -50,8 +53,11 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/academic", academicRoutes);
+app.use("/api/finance", financeRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
+app.use("/api/teacher", teacherRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

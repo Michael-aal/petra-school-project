@@ -143,10 +143,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 28px;
+  height: 36px;
   padding: 0 14px;
   border: 0;
-  border-radius: 4px;
+  border-radius: 8px;
   background: linear-gradient(90deg, #4f7cff, #4f6dff);
   color: var(--primary-foreground);
   font-size: 0.86rem;
@@ -155,6 +155,12 @@
   white-space: nowrap;
   letter-spacing: 0;
   box-shadow: 0 10px 18px color-mix(in srgb, var(--primary) 18%, transparent);
+  cursor: pointer;
+}
+
+.settings-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .settings-button span {
@@ -169,6 +175,68 @@
 .settings-delete-button {
   margin-top: 10px;
   background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--primary)));
+}
+
+.settings-danger-card {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.settings-danger-copy {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.settings-info-list {
+  display: grid;
+  gap: 10px;
+}
+
+.settings-info-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--secondary) 28%, transparent);
+}
+
+.settings-info-item span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settings-info-item strong {
+  font-size: 0.92rem;
+  color: var(--foreground);
+  text-align: right;
+}
+
+.settings-select-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.settings-select-wrap select {
+  min-width: 160px;
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--input);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.settings-error {
+  color: var(--destructive);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .settings-status {
@@ -337,6 +405,10 @@ body.dark .settings-field select {
   border-color: var(--input);
 }
 
+body.dark .settings-info-item {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 @media (max-width: 900px) {
   .settings-grid {
     grid-template-columns: 1fr;
@@ -350,5 +422,15 @@ body.dark .settings-field select {
 
   .settings-modal {
     padding: 16px;
+  }
+
+  .settings-info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .settings-info-item strong {
+    text-align: left;
   }
 }

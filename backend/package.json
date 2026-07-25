@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "predev": "prisma generate",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "prestart": "prisma generate",
+    "start": "node server.js",
+    "postinstall": "prisma generate"
   },
   "repository": {
     "type": "git",

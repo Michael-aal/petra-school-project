@@ -6,11 +6,11 @@ export const userModel = {
   findById: (id) => prisma.user.findUnique({ where: { id } }),
   update: (id, data) => prisma.user.update({ where: { id }, data }),
   findStaffInvitationByCode: (registrationCode) =>
-    prisma.staffInvitation.findUnique({ where: { registrationCode }, include: { staffUser: true } }),
+    prisma.staffInvitation.findUnique({ where: { registrationCode } }),
   findStaffInvitationByEmail: (email) =>
-    prisma.staffInvitation.findUnique({ where: { email }, include: { staffUser: true } }),
+    prisma.staffInvitation.findUnique({ where: { email } }),
   listStaffInvitations: () =>
-    prisma.staffInvitation.findMany({ orderBy: { generatedAt: "desc" }, include: { staffUser: true } }),
+    prisma.staffInvitation.findMany({ orderBy: { generatedAt: "desc" } }),
   createStaffInvitation: (data) => prisma.staffInvitation.create({ data }),
   updateStaffInvitation: (id, data) => prisma.staffInvitation.update({ where: { id }, data }),
   findStudentByAccessCode: (accessCode) =>
@@ -22,6 +22,11 @@ export const userModel = {
     ]),
   deleteAccount: async (userId) => {
     return prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        throw new Error("User not found");
+      }
+
       const wallet = await tx.wallet.findUnique({ where: { userId } });
 
       await tx.transaction.deleteMany({ where: { userId } });
@@ -30,6 +35,18 @@ export const userModel = {
         await tx.transaction.deleteMany({ where: { walletId: wallet.id } });
         await tx.wallet.delete({ where: { userId } });
       }
+
+      await tx.attendance.deleteMany({ where: { teacherId: userId } });
+      await tx.assessment.deleteMany({ where: { teacherId: userId } });
+      await tx.result.deleteMany({ where: { teacherId: userId } });
+      await tx.staffInvitation.updateMany({
+        where: { staffUserId: userId },
+        data: { staffUserId: null, status: "unused", usedAt: null },
+      });
+      await tx.student.updateMany({
+        where: { parentId: userId },
+        data: { parentId: null, parentAccessCodeUsed: false },
+      });
 
       return tx.user.delete({ where: { id: userId } });
     });

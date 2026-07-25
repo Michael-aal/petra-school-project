@@ -58,3 +58,14 @@ export const requirePrincipal = (req, res, next) => {
 
   return next();
 };
+
+export const requireTeacher = (req, res, next) => {
+  if (req.user?.role !== "staff") {
+    return res.status(403).json({
+      success: false,
+      message: "Not authorized, teacher access required",
+    });
+  }
+
+  return next();
+};

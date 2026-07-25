@@ -23,6 +23,7 @@ import ParentSectionPage from "./Pages/DashboardLayout/pages/parent/ParentSectio
 import DeleteAccountButton from "./components/DeleteAccountButton";
 import StaffManagementPage from "./Pages/DashboardLayout/pages/staff/StaffManagementPage";
 import TeacherSectionPage from "./Pages/DashboardLayout/pages/staff/TeacherSectionPage";
+import TeacherWorkspacePage from "./Pages/DashboardLayout/pages/staff/TeacherWorkspacePage";
 import SchoolSetupPage from "./Pages/DashboardLayout/pages/SchoolSetupPage";
 import StudentsListPage from "./Pages/DashboardLayout/pages/students/StudentsListPage";
 import AcademicsPage from "./Pages/DashboardLayout/pages/AcademicsPage";
@@ -278,19 +279,16 @@ function App() {
           <Route path="/dashboard/settings" element={<SettingsPage />} />
 
           <Route path="/staff" element={<Navigate to="/staff/dashboard" replace />} />
-          <Route path="/staff/dashboard" element={<StaffDashboard />} />
-          <Route path="/staff/classes" element={<TeacherSectionPage route="classes" />} />
-          <Route path="/staff/students" element={<TeacherSectionPage route="students" />} />
-          <Route path="/staff/attendance" element={<TeacherSectionPage route="attendance" />} />
-          <Route path="/staff/assignments" element={<TeacherSectionPage route="assignments" />} />
-          <Route path="/staff/results" element={<TeacherSectionPage route="results" />} />
-          <Route path="/staff/lesson-plans" element={<TeacherSectionPage route="lessonPlans" />} />
-          <Route path="/staff/timetable" element={<TeacherSectionPage route="timetable" />} />
-          <Route path="/staff/announcements" element={<TeacherSectionPage route="announcements" />} />
-          <Route path="/staff/messages" element={<TeacherSectionPage route="messages" />} />
-          <Route path="/staff/resources" element={<TeacherSectionPage route="resources" />} />
-          <Route path="/staff/profile" element={<TeacherSectionPage route="profile" />} />
-          <Route path="/staff/settings" element={<TeacherSectionPage route="settings" />} />
+          <Route path="/staff/dashboard" element={<TeacherWorkspacePage />} />
+          <Route path="/staff/classes" element={<TeacherWorkspacePage activeView="classes" />} />
+          <Route path="/staff/classes/:classId" element={<TeacherWorkspacePage activeView="classDetails" />} />
+          <Route path="/staff/students" element={<TeacherWorkspacePage activeView="students" />} />
+          <Route path="/staff/attendance" element={<TeacherWorkspacePage activeView="attendance" />} />
+          <Route path="/staff/assessments" element={<TeacherWorkspacePage activeView="assessments" />} />
+          <Route path="/staff/results" element={<TeacherWorkspacePage activeView="results" />} />
+          <Route path="/staff/announcements" element={<TeacherWorkspacePage activeView="announcements" />} />
+          <Route path="/staff/profile" element={<TeacherWorkspacePage activeView="profile" />} />
+          <Route path="/staff/settings" element={<TeacherWorkspacePage activeView="settings" />} />
 
           <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} />
           <Route path="/portal/dashboard" element={<ParentDashboard />} />
@@ -542,34 +540,7 @@ function App() {
               ],
             })}
           />
-          <Route
-            path="/portal/settings"
-            element={parentSection({
-              title: "Portal Settings",
-              description: "Set your portal preferences for alerts, language, and appearance.",
-              heroTitle: "Preferences",
-              heroDescription: "Tailor the parent portal to match the way you prefer to receive updates.",
-              heroChips: ["Light mode", "Email updates", "Weekly digest"],
-              summaryCards: [
-                { icon: Bell, label: "Alerts", value: "On", meta: "Daily updates", tone: "tone-blue" },
-                { icon: BookOpen, label: "Theme", value: "Light", meta: "Preferred view", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Preferences",
-                  items: [
-                    { title: "Email updates", meta: "Enabled" },
-                    { title: "Theme", meta: "Light mode" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Bell, title: "Manage alerts", meta: "Switch preferences" },
-                { icon: BookOpen, title: "Change language", meta: "Pick a display language" },
-              ],
-              footerAction: <DeleteAccountButton />,
-            })}
-          />
+          <Route path="/portal/settings" element={<SettingsPage role="parent" />} />
         </Route>
       </Routes>
     </Router>

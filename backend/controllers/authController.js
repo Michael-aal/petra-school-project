@@ -169,6 +169,42 @@ export const logoutUser = async (_req, res) => {
   });
 };
 
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.updateProfile(req.user.id, req.body);
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeUserPassword = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.changePassword({
+      userId: req.user.id,
+      currentPassword: req.body.currentPassword,
+      newPassword: req.body.newPassword,
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteUserAccount = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);

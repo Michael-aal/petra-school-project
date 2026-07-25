@@ -12,6 +12,7 @@ model User {
   email     String   @unique
   password  String
   phone     String?
+  profileImage String?
   institution String?
   institutionType String?
   state     String?
@@ -19,22 +20,25 @@ model User {
   hearAbout String?
   role      String   @default("parent")
   accountStatus String @default("active")
-  staffRegistrationCode String? @unique
-  staffRegistrationCodeUsed Boolean @default(false)
+  schoolId Int?
   staffRole String?
   staffDepartment String?
   staffClassAssigned String?
   staffSubjectsAssigned String[] @default([])
-  staffInvitation StaffInvitation? @relation("StaffInvitationUser")
+  staffPosition String?
+  staffRegistrationCode String? @unique
+  staffRegistrationCodeUsed Boolean @default(false)
   parentAccessCode String? @unique
   parentAccessCodeUsed Boolean @default(false)
-  linkedStudentId String? @unique
-  linkedStudent   Student? @relation("UserLinkedStudent", fields: [linkedStudentId], references: [id])
+  linkedStudentId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   wallet       Wallet?
   transactions Transaction[]
+  teacherAttendances Attendance[] @relation("TeacherAttendance")
+  teacherAssessments Assessment[] @relation("TeacherAssessment")
+  teacherResults Result[] @relation("TeacherResult")
 }
 
 model Wallet {
@@ -80,6 +84,19 @@ model School {
   teachers  Teacher[]
   students  Student[]
   parents   Parent[]
+  academicSessions AcademicSession[]
+  academicClasses  AcademicClass[]
+  academicSubjects AcademicSubject[]
+  timetableEntries TimetableEntry[]
+  feeCategories FeeCategory[]
+  feeStructures FeeStructure[]
+  studentFees StudentFee[]
+  invoices Invoice[]
+  payments Payment[]
+  receipts Receipt[]
+  installmentPlans InstallmentPlan[]
+  expenseCategories ExpenseCategory[]
+  expenses Expense[]
 }
 
 model Admin {
@@ -111,13 +128,79 @@ model Student {
   guardianName String?
   parentPhone String?
   parentEmail String?
-  address String?
-  status String @default("active")
-  deletedAt DateTime?
   parentAccessCode String? @unique
   parentAccessCodeUsed Boolean @default(false)
-  parentId String? @unique
-  parent User? @relation("UserLinkedStudent")
+  parentId String?
+  attendances Attendance[]
+  results Result[]
+  studentFees StudentFee[]
+  invoices Invoice[]
+  payments Payment[]
+  installmentPlans InstallmentPlan[]
+}
+
+model Attendance {
+  id String @id @default(cuid())
+  teacherId String
+  teacher User @relation("TeacherAttendance", fields: [teacherId], references: [id])
+  studentId String
+  student Student @relation(fields: [studentId], references: [id])
+  className String
+  date DateTime
+  status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Assessment {
+  id String @id @default(cuid())
+  teacherId String
+  teacher User @relation("TeacherAssessment", fields: [teacherId], references: [id])
+  title String
+  subject String
+  className String
+  maxScore Int
+  date DateTime
+  description String?
+  results Result[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Result {
+  id String @id @default(cuid())
+  teacherId String
+  teacher User @relation("TeacherResult", fields: [teacherId], references: [id])
+  studentId String
+  student Student @relation(fields: [studentId], references: [id])
+  assessmentId String?
+  assessment Assessment? @relation(fields: [assessmentId], references: [id])
+  subject String
+  className String
+  score Float
+  maxScore Int
+  published Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StaffInvitation {
+  id String @id @default(cuid())
+  staffName String
+  email String @unique
+  role String?
+  department String?
+  assignedClass String?
+  assignedSubjects String[] @default([])
+  employmentStatus String? @default("active")
+  registrationCode String @unique
+  generatedBy String?
+  status String @default("unused")
+  revokedAt DateTime?
+  usedAt DateTime?
+  staffUserId String?
+  generatedAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Parent {
@@ -128,21 +211,240 @@ model Parent {
   school   School @relation(fields: [schoolId], references: [id])
 }
 
-model StaffInvitation {
-  id String @id @default(cuid())
-  staffName String
-  email String @unique
-  role String
-  department String
-  assignedClass String?
-  assignedSubjects String[] @default([])
-  employmentStatus String @default("active")
-  registrationCode String @unique
-  generatedAt DateTime @default(now())
-  generatedBy String
-  status String @default("unused")
-  usedAt DateTime?
-  revokedAt DateTime?
-  staffUserId String? @unique
-  staffUser User? @relation("StaffInvitationUser", fields: [staffUserId], references: [id])
+model AcademicSession {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  name        String
+  term        String
+  startsAt    DateTime
+  endsAt      DateTime
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([schoolId, isActive])
+}
+
+model AcademicClass {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  name        String
+  arm         String?
+  level       String?
+  teacherName String?
+  capacity    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([schoolId, name])
+}
+
+model AcademicSubject {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  name        String
+  code        String?
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([schoolId, name])
+}
+
+model TimetableEntry {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  className   String
+  subjectName String
+  dayOfWeek   String
+  startTime   String
+  endTime     String
+  room        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([schoolId, className, dayOfWeek])
+}
+
+model FeeCategory {
+  id        String   @id @default(cuid())
+  schoolId  Int
+  school    School   @relation(fields: [schoolId], references: [id])
+  name      String
+  description String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  feeStructures FeeStructure[]
+
+  @@index([schoolId, name])
+}
+
+model FeeStructure {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  feeCategoryId String?
+  feeCategory FeeCategory? @relation(fields: [feeCategoryId], references: [id])
+  className   String?
+  session     String?
+  term        String?
+  amount      Float
+  dueDate     DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  studentFees StudentFee[]
+
+  @@index([schoolId, className])
+}
+
+model StudentFee {
+  id            String   @id @default(cuid())
+  schoolId      Int
+  school        School   @relation(fields: [schoolId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  feeStructureId String?
+  feeStructure  FeeStructure? @relation(fields: [feeStructureId], references: [id])
+  amount        Float
+  outstandingBalance Float @default(0)
+  status        String   @default("Unpaid")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([schoolId, studentId])
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  schoolId      Int
+  school        School   @relation(fields: [schoolId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  invoiceNumber String   @unique
+  status        String   @default("Unpaid")
+  dueDate       DateTime?
+  totalAmount   Float
+  outstandingBalance Float @default(0)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         InvoiceItem[]
+  payments      Payment[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int      @default(1)
+  unitPrice   Float
+  amount      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  schoolId      Int
+  school        School   @relation(fields: [schoolId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  invoiceId     String?
+  invoice       Invoice? @relation(fields: [invoiceId], references: [id])
+  receipt       Receipt?
+  method        String
+  status        String
+  amount        Float
+  paidAt        DateTime
+  reference     String   @unique
+  note          String?
+  createdById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([schoolId, status])
+  @@index([schoolId, paidAt])
+}
+
+model Receipt {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  paymentId   String   @unique
+  payment     Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  receiptNumber String @unique
+  issuedAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InstallmentPlan {
+  id            String   @id @default(cuid())
+  schoolId      Int
+  school        School   @relation(fields: [schoolId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  session       String?
+  term          String?
+  totalAmount   Float
+  installments  Int      @default(1)
+  startDate     DateTime?
+  endDate       DateTime?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payments      InstallmentPayment[]
+}
+
+model InstallmentPayment {
+  id            String   @id @default(cuid())
+  planId        String
+  plan          InstallmentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  amount        Float
+  dueDate       DateTime
+  paidAt        DateTime?
+  status        String   @default("Pending")
+  reference     String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ExpenseCategory {
+  id          String   @id @default(cuid())
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  expenses Expense[]
+
+  @@index([schoolId, name])
+}
+
+model Expense {
+  id              String   @id @default(cuid())
+  schoolId        Int
+  school          School   @relation(fields: [schoolId], references: [id])
+  expenseCategoryId String?
+  category        ExpenseCategory? @relation(fields: [expenseCategoryId], references: [id])
+  title           String
+  amount          Float
+  occurredAt      DateTime
+  note            String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([schoolId, occurredAt])
 }

@@ -75,6 +75,16 @@ export const authApi = {
     }).finally(() => {
       clearAuthToken();
     }),
+  updateProfile: (payload) =>
+    request("/api/auth/profile", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  changePassword: (payload) =>
+    request("/api/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   deleteAccount: (payload) =>
     request("/api/auth/account", {
       method: "DELETE",

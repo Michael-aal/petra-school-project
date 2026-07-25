@@ -294,6 +294,57 @@ export const authService = {
     return safeUser(user);
   },
 
+  updateProfile: async (userId, payload = {}) => {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const nextEmail = payload.email?.trim();
+    if (nextEmail && nextEmail !== user.email) {
+      const existingUser = await userModel.findByEmail(nextEmail);
+      if (existingUser && existingUser.id !== userId) {
+        const error = new Error("Email already in use");
+        error.statusCode = 409;
+        throw error;
+      }
+    }
+
+    const updateData = {};
+    if (payload.fullName !== undefined) updateData.fullName = payload.fullName.trim();
+    if (payload.phoneNumber !== undefined) updateData.phone = payload.phoneNumber.trim();
+    if (nextEmail) updateData.email = nextEmail;
+    if (payload.profileImage !== undefined) updateData.profileImage = payload.profileImage.trim();
+    if (payload.password) updateData.password = await hashPassword(payload.password);
+
+    const updatedUser = await userModel.update(userId, updateData);
+    return { user: safeUser(updatedUser) };
+  },
+
+  changePassword: async ({ userId, currentPassword, newPassword }) => {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const isMatch = await comparePassword(currentPassword, user.password);
+    if (!isMatch) {
+      const error = new Error("Current password is incorrect");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    await userModel.update(userId, { password: await hashPassword(newPassword) });
+
+    return {
+      message: "Password updated successfully",
+    };
+  },
+
   deleteAccount: async ({ userId, password }) => {
     const user = await userModel.findById(userId);
     if (!user) {
