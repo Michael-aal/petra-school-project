@@ -111,6 +111,9 @@ model Student {
   guardianName String?
   parentPhone String?
   parentEmail String?
+  address String?
+  status String @default("active")
+  deletedAt DateTime?
   parentAccessCode String? @unique
   parentAccessCodeUsed Boolean @default(false)
   parentId String? @unique

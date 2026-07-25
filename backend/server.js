@@ -7,6 +7,7 @@ import morgan from "morgan";
 import "./config/loadEnv.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import paystackRoutes from "./routes/paystackRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -48,6 +49,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/students", studentRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
 
@@ -90,4 +92,3 @@ process.on("SIGTERM", () => {
 });
 
 start();
-
