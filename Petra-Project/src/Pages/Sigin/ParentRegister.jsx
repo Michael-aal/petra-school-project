@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Eye, EyeOff, LoaderCircle, Mail, Lock, UserRound, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
-import { authApi } from "../../services/authApi";
+import { authApi, writeAuthToken } from "../../services/authApi";
 import { normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
 
@@ -41,7 +41,8 @@ export default function ParentRegister() {
     if (Object.keys(nextErrors).length) return;
     setLoading(true);
     try {
-      await authApi.parentRegister(form);
+      const response = await authApi.parentRegister(form);
+      writeAuthToken(response?.token);
       navigate("/signin", { replace: true });
     } catch (error) {
       setServerError(error.data?.message || error.message || "Registration failed");

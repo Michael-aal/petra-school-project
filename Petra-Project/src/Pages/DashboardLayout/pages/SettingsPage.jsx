@@ -1,15 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Globe, Bell, Shield, Settings2, ArrowRight, Moon, Sun, Trash2, X, LoaderCircle, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Globe, Bell, Shield, Settings2, ArrowRight, Moon, Sun } from "lucide-react";
 import { UserContext } from "../../../context/UserContext";
 import { getDisplayName, normalizeUser, splitFullName } from "../../../utils/userProfile";
 import { applyTheme, getInitialTheme } from "../../../utils/theme";
-import { authApi } from "../../../services/authApi";
+import DeleteAccountButton from "../../../components/DeleteAccountButton";
 import "./page-styles/SettingsPage.css";
 
 export default function SettingsPage() {
   const { userInfo, setUserInfo } = useContext(UserContext);
-  const navigate = useNavigate();
   const [themeMode, setThemeMode] = useState(() => {
     return getInitialTheme();
   });
@@ -25,10 +23,6 @@ export default function SettingsPage() {
     maxLoginAttempts: "5",
   }));
   const [statusMessage, setStatusMessage] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteError, setDeleteError] = useState("");
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     setFormData((current) => ({
@@ -62,37 +56,6 @@ export default function SettingsPage() {
     );
     setStatusMessage(message);
     window.setTimeout(() => setStatusMessage(""), 2500);
-  };
-
-  const resetDeleteState = () => {
-    setShowDeleteModal(false);
-    setDeletePassword("");
-    setDeleteError("");
-    setDeleteLoading(false);
-  };
-
-  const handleDeleteAccount = async (event) => {
-    event.preventDefault();
-    setDeleteError("");
-
-    if (!deletePassword.trim()) {
-      setDeleteError("Current password is required.");
-      return;
-    }
-
-    setDeleteLoading(true);
-    try {
-      await authApi.deleteAccount({ password: deletePassword });
-      window.localStorage.removeItem("petra_user_info");
-      window.localStorage.removeItem("petra_remember_email");
-      setUserInfo({});
-      resetDeleteState();
-      navigate("/", { replace: true });
-    } catch (error) {
-      setDeleteError(error.data?.message || error.message || "Unable to delete account.");
-    } finally {
-      setDeleteLoading(false);
-    }
   };
 
   return (
@@ -228,78 +191,11 @@ export default function SettingsPage() {
             <span>Save Security</span>
           </button>
 
-          <button
-            type="button"
-            className="settings-button settings-delete-button"
-            onClick={() => {
-              setDeleteError("");
-              setShowDeleteModal(true);
-            }}
-          >
-            <Trash2 size={14} />
-            <span>Delete Account</span>
-          </button>
+          <DeleteAccountButton className="settings-delete-button" />
         </article>
       </section>
 
       <p className="settings-status">{statusMessage || `Signed in as ${getDisplayName(userInfo)}`}</p>
-
-      {showDeleteModal ? (
-        <div className="settings-modal-backdrop" role="presentation" onClick={() => !deleteLoading && resetDeleteState()}>
-          <div
-            className="settings-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-account-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="settings-modal-header">
-              <div>
-                <h3 id="delete-account-title">Delete Account</h3>
-                <p>Are you sure you want to permanently delete your account? This action cannot be undone.</p>
-              </div>
-              <button type="button" className="settings-modal-close" onClick={resetDeleteState} aria-label="Close delete dialog" disabled={deleteLoading}>
-                <X size={16} />
-              </button>
-            </div>
-
-            <form className="settings-modal-body" onSubmit={handleDeleteAccount}>
-              <label className="settings-field">
-                <span>Current Password</span>
-                <div className="settings-password-wrap">
-                  <Lock size={16} />
-                  <input
-                    type="password"
-                    value={deletePassword}
-                    onChange={(event) => setDeletePassword(event.target.value)}
-                    placeholder="Enter your current password"
-                    autoComplete="current-password"
-                    disabled={deleteLoading}
-                  />
-                </div>
-              </label>
-
-              {deleteError ? <p className="settings-delete-error">{deleteError}</p> : null}
-
-              <div className="settings-modal-actions">
-                <button type="button" className="settings-modal-cancel" onClick={resetDeleteState} disabled={deleteLoading}>
-                  Cancel
-                </button>
-                <button type="submit" className="settings-modal-delete" disabled={deleteLoading}>
-                  {deleteLoading ? (
-                    <>
-                      <LoaderCircle size={16} className="settings-spinner" />
-                      Deleting...
-                    </>
-                  ) : (
-                    "Delete Account"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }

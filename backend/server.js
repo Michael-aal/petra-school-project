@@ -1,17 +1,15 @@
-import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 
+import "./config/loadEnv.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import paystackRoutes from "./routes/paystackRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -92,3 +90,4 @@ process.on("SIGTERM", () => {
 });
 
 start();
+

@@ -3,13 +3,15 @@ import { userModel } from "../models/userModel.js";
 
 export const protect = async (req, res, next) => {
   let token;
+  const authHeader = req.headers.authorization;
+  const cookieHeader = req.headers.cookie;
 
-  if (req.headers.authorization?.startsWith("Bearer ")) {
-    token = req.headers.authorization.split(" ")[1];
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
   }
 
-  if (!token && req.headers.cookie) {
-    const cookieValue = req.headers.cookie
+  if (!token && cookieHeader) {
+    const cookieValue = cookieHeader
       .split(";")
       .map((item) => item.trim())
       .find((item) => item.startsWith("petra_token="));
@@ -37,9 +39,22 @@ export const protect = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error("JWT Verification Error:", error);
+
     return res.status(401).json({
       success: false,
       message: "Not authorized, token failed",
     });
   }
+};
+
+export const requirePrincipal = (req, res, next) => {
+  if (req.user?.role !== "principal") {
+    return res.status(403).json({
+      success: false,
+      message: "Not authorized, insufficient permissions",
+    });
+  }
+
+  return next();
 };

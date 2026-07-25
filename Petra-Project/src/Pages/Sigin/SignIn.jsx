@@ -3,7 +3,7 @@ import { Eye, EyeOff, Lock, Mail, LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
-import { authApi } from "../../services/authApi";
+import { authApi, writeAuthToken } from "../../services/authApi";
 import { normalizeUser } from "../../utils/userProfile";
 import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
@@ -62,6 +62,7 @@ export default function SignIn() {
       });
 
       const loggedInUser = response?.user || {};
+      writeAuthToken(response?.token);
       setUserInfo(
         normalizeUser({
           ...loggedInUser,

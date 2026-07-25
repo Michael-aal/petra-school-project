@@ -3,7 +3,7 @@ import { Eye, EyeOff, Lock, Mail, LoaderCircle, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
-import { authApi } from "../../services/authApi";
+import { authApi, writeAuthToken } from "../../services/authApi";
 import { normalizeUser, splitFullName } from "../../utils/userProfile";
 import { normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
@@ -160,6 +160,7 @@ export default function Register() {
       });
 
       const registeredUser = response?.user || {};
+      writeAuthToken(response?.token);
       const storedFullName = registeredUser.fullName || form.fullName;
       const storedEmail = registeredUser.email || form.email;
 

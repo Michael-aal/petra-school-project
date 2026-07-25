@@ -1,2 +1,5 @@
-import RoleDashboardShell from "../../RoleDashboardShell";
-export default function StaffDashboard() { return <RoleDashboardShell role="staff" />; }
+import TeacherSectionPage from "./TeacherSectionPage";
+
+export default function StaffDashboard() {
+  return <TeacherSectionPage route="dashboard" />;
+}

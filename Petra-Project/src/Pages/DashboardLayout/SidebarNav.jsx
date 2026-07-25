@@ -25,6 +25,7 @@ import {
   UserCheck,
   PlusCircle,
   X,
+  LogOut,
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -123,6 +124,11 @@ const navGroups = [
       { label: "Teachers", icon: UserCog, href: "/dashboard/staff/teachers" },
       { label: "Admins", icon: UserCog, href: "/dashboard/staff/admins" },
       {
+        label: "Staff Management",
+        icon: UserCog,
+        href: "/dashboard/staff/management",
+      },
+      {
         label: "Attendance",
         icon: ClipboardCheck,
         href: "/dashboard/staff/attendance",
@@ -176,15 +182,52 @@ const navGroups = [
   },
 ];
 
+const staffNavGroups = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/staff/dashboard" },
+  { label: "My Classes", icon: School, href: "/staff/classes" },
+  { label: "Students", icon: GraduationCap, href: "/staff/students" },
+  { label: "Attendance", icon: ClipboardCheck, href: "/staff/attendance" },
+  { label: "Assignments", icon: ClipboardList, href: "/staff/assignments" },
+  { label: "Results", icon: FileText, href: "/staff/results" },
+  { label: "Lesson Plans", icon: BookOpen, href: "/staff/lesson-plans" },
+  { label: "Timetable", icon: Calendar, href: "/staff/timetable" },
+  { label: "Announcements", icon: Bell, href: "/staff/announcements" },
+  { label: "Messages", icon: Bell, href: "/staff/messages" },
+  { label: "Resources", icon: BookOpen, href: "/staff/resources" },
+  { label: "Profile", icon: UserCog, href: "/staff/profile" },
+  { label: "Settings", icon: Settings, href: "/staff/settings" },
+  { label: "Logout", icon: LogOut, href: "/signin" },
+];
+
+const portalNavGroups = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/portal/dashboard" },
+  { label: "Children", icon: GraduationCap, href: "/portal/children" },
+  { label: "Attendance", icon: ClipboardCheck, href: "/portal/attendance" },
+  { label: "Results", icon: FileText, href: "/portal/results" },
+  { label: "Assignments", icon: ClipboardList, href: "/portal/assignments" },
+  { label: "Fees", icon: CreditCard, href: "/portal/fees" },
+  { label: "Announcements", icon: Bell, href: "/portal/announcements" },
+  { label: "Messages", icon: Bell, href: "/portal/messages" },
+  { label: "Downloads", icon: FileText, href: "/portal/downloads" },
+  { label: "Profile", icon: UserCog, href: "/portal/profile" },
+  { label: "Settings", icon: Settings, href: "/portal/settings" },
+  { label: "Logout", icon: LogOut, href: "/signin" },
+];
+
 const FIXED_NAV = navGroups;
 
 export function SidebarNav({ onNavigate, collapsed = false }) {
   const location = useLocation();
+  const navItems = location.pathname.startsWith("/staff")
+    ? staffNavGroups
+    : location.pathname.startsWith("/portal")
+      ? portalNavGroups
+      : FIXED_NAV;
 
   const [openGroups, setOpenGroups] = useState(() => {
     const initial = {};
 
-    FIXED_NAV.forEach((group) => {
+    navItems.forEach((group) => {
       if (
         group.children?.some((child) =>
           location.pathname.startsWith(child.href),
@@ -231,7 +274,7 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
       </div>
 
       <nav className="sidebar-nav">
-        {FIXED_NAV.map((item) => {
+        {navItems.map((item) => {
           if (!item.children) {
             const active = isActive(item.href);
 

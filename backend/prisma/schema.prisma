@@ -21,10 +21,15 @@ model User {
   accountStatus String @default("active")
   staffRegistrationCode String? @unique
   staffRegistrationCodeUsed Boolean @default(false)
+  staffRole String?
+  staffDepartment String?
+  staffClassAssigned String?
+  staffSubjectsAssigned String[] @default([])
+  staffInvitation StaffInvitation? @relation("StaffInvitationUser")
   parentAccessCode String? @unique
   parentAccessCodeUsed Boolean @default(false)
-  linkedStudentId String?
-  linkedStudent   Student? @relation(fields: [linkedStudentId], references: [id])
+  linkedStudentId String? @unique
+  linkedStudent   Student? @relation("UserLinkedStudent", fields: [linkedStudentId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -108,8 +113,8 @@ model Student {
   parentEmail String?
   parentAccessCode String? @unique
   parentAccessCodeUsed Boolean @default(false)
-  parentId String?
-  parent User? @relation(fields: [parentId], references: [id])
+  parentId String? @unique
+  parent User? @relation("UserLinkedStudent")
 }
 
 model Parent {
@@ -118,4 +123,23 @@ model Parent {
 
   schoolId Int
   school   School @relation(fields: [schoolId], references: [id])
+}
+
+model StaffInvitation {
+  id String @id @default(cuid())
+  staffName String
+  email String @unique
+  role String
+  department String
+  assignedClass String?
+  assignedSubjects String[] @default([])
+  employmentStatus String @default("active")
+  registrationCode String @unique
+  generatedAt DateTime @default(now())
+  generatedBy String
+  status String @default("unused")
+  usedAt DateTime?
+  revokedAt DateTime?
+  staffUserId String? @unique
+  staffUser User? @relation("StaffInvitationUser", fields: [staffUserId], references: [id])
 }

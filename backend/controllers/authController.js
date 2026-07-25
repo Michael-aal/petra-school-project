@@ -48,6 +48,51 @@ export const createPendingStaff = async (req, res, next) => {
   }
 };
 
+export const createStaffInvitation = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.createStaffInvitation({
+      ...req.body,
+      generatedBy: req.user?.fullName || req.user?.email || req.user?.id,
+    });
+    return res.status(201).json({ success: true, message: "Staff invitation created successfully", invitation: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listStaffInvitations = async (_req, res, next) => {
+  try {
+    const invitations = await authService.listStaffInvitations();
+    return res.status(200).json({ success: true, invitations });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const revokeStaffInvitation = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const invitation = await authService.revokeStaffInvitation({ registrationCode: req.body.registrationCode });
+    return res.status(200).json({ success: true, message: "Staff invitation revoked", invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const regenerateStaffInvitationCode = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const invitation = await authService.regenerateStaffInvitationCode({ registrationCode: req.body.registrationCode });
+    return res.status(200).json({ success: true, message: "Registration code regenerated", invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const activateStaff = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);
