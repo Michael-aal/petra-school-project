@@ -9,7 +9,10 @@ import { normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
-  fullName: "",
+  firstName: "",
+  middleName: "",
+  lastName: "",
+  username: "",
   email: "",
   password: "",
   confirmPassword: "",
@@ -103,11 +106,13 @@ export default function Register() {
 
   const validate = () => {
     const nextErrors = {};
-    if (!form.fullName.trim()) nextErrors.fullName = "Full name is required.";
+    if (!form.firstName.trim()) nextErrors.firstName = "First name is required.";
+    if (!form.lastName.trim()) nextErrors.lastName = "Last name is required.";
+    if (!form.username.trim()) nextErrors.username = "Username is required.";
     if (!form.email.trim()) nextErrors.email = "Email address is required.";
     if (!form.role) nextErrors.role = "Please select a role.";
     if (!form.password) nextErrors.password = "Password is required.";
-    if (form.password.length < 8) nextErrors.password = "Password must be at least 8 characters.";
+    if (form.password.length < 12) nextErrors.password = "Password must be at least 12 characters.";
     if (!form.confirmPassword) nextErrors.confirmPassword = "Please confirm your password.";
     if (form.password !== form.confirmPassword) {
       nextErrors.confirmPassword = "Passwords do not match.";
@@ -147,7 +152,11 @@ export default function Register() {
     setLoading(true);
     try {
       const response = await authApi.register({
-        fullName: form.fullName,
+        firstName: form.firstName,
+        middleName: form.middleName,
+        lastName: form.lastName,
+        username: form.username,
+        fullName: [form.firstName, form.middleName, form.lastName].filter(Boolean).join(" "),
         email: form.email,
         password: form.password,
         phone: form.phone,
@@ -161,11 +170,15 @@ export default function Register() {
 
       const registeredUser = response?.user || {};
       writeAuthToken(response?.token);
-      const storedFullName = registeredUser.fullName || form.fullName;
+      const storedFullName = registeredUser.fullName || [form.firstName, form.middleName, form.lastName].filter(Boolean).join(" ");
       const storedEmail = registeredUser.email || form.email;
 
       persistRegistrationUser({
         ...registeredUser,
+        firstName: registeredUser.firstName || form.firstName,
+        middleName: registeredUser.middleName || form.middleName,
+        lastName: registeredUser.lastName || form.lastName,
+        username: registeredUser.username || form.username,
         fullName: storedFullName,
         email: storedEmail,
       });
@@ -215,20 +228,46 @@ export default function Register() {
 
         {serverError ? <div className="auth-alert">{serverError}</div> : null}
 
+        <div style={{ display: "flex", gap: 12 }}>
+          <label className="auth-field" style={{ flex: 1 }}>
+            <span>First Name</span>
+            <div className="auth-input-wrap">
+              <UserRound size={18} />
+              <input name="firstName" type="text" placeholder="Enter first name" value={form.firstName} onChange={handleChange} autoComplete="given-name" />
+            </div>
+            {errors.firstName ? <small>{errors.firstName}</small> : null}
+          </label>
+          <label className="auth-field" style={{ flex: 1 }}>
+            <span>Middle Name</span>
+            <div className="auth-input-wrap">
+              <UserRound size={18} />
+              <input name="middleName" type="text" placeholder="Middle name (optional)" value={form.middleName} onChange={handleChange} autoComplete="additional-name" />
+            </div>
+          </label>
+          <label className="auth-field" style={{ flex: 1 }}>
+            <span>Last Name</span>
+            <div className="auth-input-wrap">
+              <UserRound size={18} />
+              <input name="lastName" type="text" placeholder="Enter last name" value={form.lastName} onChange={handleChange} autoComplete="family-name" />
+            </div>
+            {errors.lastName ? <small>{errors.lastName}</small> : null}
+          </label>
+        </div>
+
         <label className="auth-field">
-          <span>Full Name</span>
+          <span>Username</span>
           <div className="auth-input-wrap">
             <UserRound size={18} />
             <input
-              name="fullName"
+              name="username"
               type="text"
-              placeholder="Enter your full name"
-              value={form.fullName}
+              placeholder="Choose a username"
+              value={form.username}
               onChange={handleChange}
-              autoComplete="name"
+              autoComplete="username"
             />
           </div>
-          {errors.fullName ? <small>{errors.fullName}</small> : null}
+          {errors.username ? <small>{errors.username}</small> : null}
         </label>
 
         <label className="auth-field">

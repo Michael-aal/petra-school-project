@@ -64,6 +64,9 @@ export function UserProvider({ children }) {
       .catch((error) => {
         if (!active) return;
         setAuthError(error);
+        if (error?.status === 401) {
+          window.localStorage.removeItem("petra_user_info");
+        }
         setUserInfo((current) =>
           normalizeUser({
             ...current,

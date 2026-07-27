@@ -13,6 +13,7 @@ import financeRoutes from "./routes/financeRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import paystackRoutes from "./routes/paystackRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -58,6 +59,7 @@ app.use("/api/finance", financeRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
 app.use("/api/teacher", teacherRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

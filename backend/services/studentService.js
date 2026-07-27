@@ -24,7 +24,7 @@ const toNumber = (value, fallback) => {
 
 const safeStudent = (student) => ({
   id: student.id,
-  name: student.name || "",
+  name: student.user?.fullName || student.admissionNumber || `Student ${String(student.id || "").slice(-4)}`,
   admissionNumber: student.admissionNumber || "",
   gender: student.gender || "",
   className: student.className || "",
@@ -32,22 +32,19 @@ const safeStudent = (student) => ({
   guardianName: student.guardianName || "",
   parentPhone: student.parentPhone || "",
   parentEmail: student.parentEmail || "",
-  address: student.address || "",
-  status: normalizeStatus(student.status),
-  deletedAt: student.deletedAt,
   parentAccessCode: student.parentAccessCode || "",
   parentAccessCodeUsed: Boolean(student.parentAccessCodeUsed),
   parentId: student.parentId || "",
+  createdAt: student.createdAt,
+  updatedAt: student.updatedAt,
+  profile: student.profile || null,
+  medicalInfo: student.medicalInfo || null,
   parent: student.parent || null,
 });
 
 const buildWhere = ({ search, className, gender, status, includeDeleted = false } = {}) => {
   const where = {};
   const trimmedSearch = String(search || "").trim();
-
-  if (!includeDeleted) {
-    where.deletedAt = null;
-  }
 
   if (className) {
     where.className = className;
@@ -63,7 +60,6 @@ const buildWhere = ({ search, className, gender, status, includeDeleted = false 
 
   if (trimmedSearch) {
     where.OR = [
-      { name: { contains: trimmedSearch, mode: "insensitive" } },
       { admissionNumber: { contains: trimmedSearch, mode: "insensitive" } },
       { guardianName: { contains: trimmedSearch, mode: "insensitive" } },
       { parentPhone: { contains: trimmedSearch, mode: "insensitive" } },
@@ -104,10 +100,16 @@ export const studentService = {
       studentModel.count(where),
       studentModel.findMany({
         where,
-        orderBy: { id: "desc" },
+        orderBy: { createdAt: "desc" },
         skip: (currentPage - 1) * pageSize,
         take: pageSize,
-        include: { parent: true },
+        include: {
+          user: {
+            select: { id: true, fullName: true, email: true },
+          },
+          profile: true,
+          medicalInfo: true,
+        },
       }),
     ]);
 
@@ -129,8 +131,17 @@ export const studentService = {
     studentService.list({ className, gender, status, page, limit }),
 
   getById: async (id) => {
-    const student = await studentModel.findUnique({ id });
-    if (!student || student.deletedAt) {
+    const student = await studentModel.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true },
+        },
+        profile: true,
+        medicalInfo: true,
+      },
+    });
+    if (!student) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -143,8 +154,8 @@ export const studentService = {
     const email = String(payload.parentEmail || "").trim().toLowerCase();
     const phone = String(payload.parentPhone || "").trim();
 
-    if (!payload.name?.trim()) {
-      const error = new Error("Student name is required");
+    if (!payload.admissionNumber?.trim()) {
+      const error = new Error("Admission number is required");
       error.statusCode = 400;
       throw error;
     }
@@ -176,7 +187,6 @@ export const studentService = {
 
     const student = await studentModel.create({
       data: {
-        name: payload.name.trim(),
         admissionNumber,
         gender: normalizeGender(payload.gender),
         dob: payload.dob ? new Date(payload.dob) : null,
@@ -184,21 +194,25 @@ export const studentService = {
         guardianName: payload.guardianName || "",
         parentPhone: phone || "",
         parentEmail: email || "",
-        address: payload.address || "",
-        status: normalizeStatus(payload.status),
+        schoolId: await resolveSchoolId(payload.schoolId),
         parentAccessCode: makeParentAccessCode(),
         parentAccessCodeUsed: false,
-        schoolId: await resolveSchoolId(payload.schoolId),
       },
-      include: { parent: true },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true },
+        },
+        profile: true,
+        medicalInfo: true,
+      },
     });
 
     return safeStudent(student);
   },
 
   update: async (id, payload) => {
-    const existing = await studentModel.findUnique({ id });
-    if (!existing || existing.deletedAt) {
+    const existing = await studentModel.findUnique({ where: { id } });
+    if (!existing) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -222,15 +236,19 @@ export const studentService = {
     const updated = await studentModel.update({
       where: { id },
       data: {
-        name: payload.name?.trim(),
         gender: payload.gender ? normalizeGender(payload.gender) : undefined,
         dob: payload.dob ? new Date(payload.dob) : payload.dob === null ? null : undefined,
         className: payload.className,
         guardianName: payload.guardianName,
         parentPhone: nextPhone,
         parentEmail: nextEmail,
-        address: payload.address,
-        status: payload.status ? normalizeStatus(payload.status) : undefined,
+      },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true },
+        },
+        profile: true,
+        medicalInfo: true,
       },
     });
 
@@ -238,8 +256,8 @@ export const studentService = {
   },
 
   remove: async (id) => {
-    const existing = await studentModel.findUnique({ id });
-    if (!existing || existing.deletedAt) {
+    const existing = await studentModel.findUnique({ where: { id } });
+    if (!existing) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -248,8 +266,14 @@ export const studentService = {
     const updated = await studentModel.update({
       where: { id },
       data: {
-        deletedAt: new Date(),
-        status: "inactive",
+        parentAccessCodeUsed: false,
+      },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true },
+        },
+        profile: true,
+        medicalInfo: true,
       },
     });
 
@@ -257,8 +281,8 @@ export const studentService = {
   },
 
   generateParentAccessCode: async (id) => {
-    const existing = await studentModel.findUnique({ id });
-    if (!existing || existing.deletedAt) {
+    const existing = await studentModel.findUnique({ where: { id } });
+    if (!existing) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -276,6 +300,13 @@ export const studentService = {
       data: {
         parentAccessCode: code,
         parentAccessCodeUsed: false,
+      },
+      include: {
+        user: {
+          select: { id: true, fullName: true, email: true },
+        },
+        profile: true,
+        medicalInfo: true,
       },
     });
 

@@ -12,6 +12,38 @@ const normalizeRole = (role = "") => {
   return "parent";
 };
 
+const normalizeUsername = (username = "") =>
+  String(username || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "");
+
+const splitNameParts = (input = {}) => {
+  const firstName = String(input.firstName || "").trim();
+  const middleName = String(input.middleName || "").trim();
+  const lastName = String(input.lastName || "").trim();
+  const fullName = String(input.fullName || `${firstName} ${middleName} ${lastName}`.trim())
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return { firstName, middleName, lastName, fullName };
+};
+
+const buildPasswordError = (message) => {
+  const error = new Error(message);
+  error.statusCode = 400;
+  return error;
+};
+
+const validatePasswordStrength = (password = "") => {
+  const value = String(password || "");
+  if (value.length < 12) throw buildPasswordError("Password must be at least 12 characters long");
+  if (!/[A-Z]/.test(value)) throw buildPasswordError("Password must include at least one uppercase letter");
+  if (!/[a-z]/.test(value)) throw buildPasswordError("Password must include at least one lowercase letter");
+  if (!/[0-9]/.test(value)) throw buildPasswordError("Password must include at least one number");
+  if (!/[^A-Za-z0-9]/.test(value)) throw buildPasswordError("Password must include at least one special character");
+};
+
 const getNameParts = (fullName = "") => {
   const trimmed = fullName.trim();
   const parts = trimmed.split(/\s+/).filter(Boolean);
@@ -31,9 +63,11 @@ const safeUser = (user) => {
 
   return {
     id: user.id,
-    fullName: user.fullName || "",
     firstName: user.firstName || firstName,
+    middleName: user.middleName || "",
     lastName: user.lastName || lastName,
+    username: user.username || "",
+    fullName: user.fullName || "",
     email: user.email,
     role: normalizeRole(user.role),
     phone: user.phone || "",
@@ -60,25 +94,81 @@ const makeCode = (prefix) =>
 const makeInvitationCode = () => `PET-STAFF-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 
 export const authService = {
-  register: async ({ fullName, email, password, phone, institution, institutionType, state, city, hearAbout, role, ...rest }) => {
+  register: async ({
+    firstName,
+    middleName,
+    lastName,
+    username,
+    fullName,
+    email,
+    password,
+    phone,
+    institution,
+    institutionType,
+    state,
+    city,
+    hearAbout,
+    role,
+    ...rest
+  }) => {
     if (normalizeRole(role) === "staff") {
       const error = new Error("Staff accounts must be created through an invitation");
       error.statusCode = 403;
       throw error;
     }
-    const existingUser = await userModel.findByEmail(email);
-    if (existingUser) {
+    validatePasswordStrength(password);
+
+    const normalizedUsername = normalizeUsername(username || `${String(email || "").split("@")[0]}`);
+    const nameParts = splitNameParts({ firstName, middleName, lastName, fullName });
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPhone = String(phone || "").trim() || null;
+
+    if (!nameParts.firstName || !nameParts.lastName) {
+      const error = new Error("First name and last name are required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!normalizedUsername) {
+      const error = new Error("Username is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const duplicateChecks = await Promise.all([
+      userModel.findByEmail(normalizedEmail),
+      userModel.findByUsername(normalizedUsername),
+      normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null),
+    ]);
+
+    if (duplicateChecks[0]) {
       const error = new Error("Email already in use");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    if (duplicateChecks[1]) {
+      const error = new Error("Username already in use");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    if (duplicateChecks[2]) {
+      const error = new Error("Phone number already in use");
       error.statusCode = 409;
       throw error;
     }
 
     const hashed = await hashPassword(password);
     const user = await userModel.create({
-      fullName,
-      email,
+      firstName: nameParts.firstName,
+      middleName: nameParts.middleName || null,
+      lastName: nameParts.lastName,
+      username: normalizedUsername,
+      fullName: nameParts.fullName,
+      email: normalizedEmail,
       password: hashed,
-      phone,
+      phone: normalizedPhone,
       institution,
       institutionType,
       state,
@@ -124,7 +214,12 @@ export const authService = {
     }
 
     const staffRegistrationCode = makeCode("PET-STAFF");
+    const { firstName, lastName } = getNameParts(fullName || "");
     const user = await userModel.create({
+      firstName,
+      middleName: null,
+      lastName: lastName || firstName,
+      username: normalizeUsername(email.split("@")[0]),
       fullName,
       email,
       password: await hashPassword(makeCode("TEMP-PASS")),
@@ -239,6 +334,10 @@ export const authService = {
 
     const hashed = await hashPassword(password);
     const created = await userModel.create({
+      firstName: getNameParts(invitation.staffName).firstName,
+      middleName: null,
+      lastName: getNameParts(invitation.staffName).lastName,
+      username: normalizeUsername(email.split("@")[0]),
       fullName: invitation.staffName,
       email: invitation.email,
       password: hashed,
@@ -266,17 +365,41 @@ export const authService = {
   },
 
   registerParent: async ({ fullName, email, password, phone }) => {
-    const existingUser = await userModel.findByEmail(email);
-    if (existingUser) {
+    validatePasswordStrength(password);
+    const { firstName, lastName } = getNameParts(fullName);
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPhone = String(phone || "").trim() || null;
+    const normalizedUsername = normalizeUsername(normalizedEmail.split("@")[0]);
+
+    const duplicateChecks = await Promise.all([
+      userModel.findByEmail(normalizedEmail),
+      userModel.findByUsername(normalizedUsername),
+      normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null),
+    ]);
+    if (duplicateChecks[0]) {
       const error = new Error("Email already in use");
       error.statusCode = 409;
       throw error;
     }
+    if (duplicateChecks[1]) {
+      const error = new Error("Username already in use");
+      error.statusCode = 409;
+      throw error;
+    }
+    if (duplicateChecks[2]) {
+      const error = new Error("Phone number already in use");
+      error.statusCode = 409;
+      throw error;
+    }
     const user = await userModel.create({
+      firstName,
+      middleName: null,
+      lastName,
+      username: normalizedUsername,
       fullName,
-      email,
+      email: normalizedEmail,
       password: await hashPassword(password),
-      phone,
+      phone: normalizedPhone,
       role: "parent",
       accountStatus: "active",
     });
