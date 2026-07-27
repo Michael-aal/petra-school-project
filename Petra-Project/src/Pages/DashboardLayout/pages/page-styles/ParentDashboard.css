@@ -1,0 +1,133 @@
+.parent-dashboard {
+  display: grid;
+  gap: 16px;
+}
+
+.parent-hero {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+}
+
+.parent-hero-card {
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--app-surface) 0%, color-mix(in srgb, var(--app-accent) 8%, var(--app-surface)) 100%);
+  padding: 18px;
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--app-accent) 10%, transparent);
+}
+
+.parent-hero-card.accent {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--app-accent) 16%, var(--app-surface)) 0%, color-mix(in srgb, var(--app-accent-2) 10%, var(--app-surface)) 100%);
+}
+
+.parent-hero-card h3 {
+  margin: 0 0 8px;
+  color: var(--app-text);
+  font-size: 1rem;
+}
+
+.parent-hero-card p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.parent-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.parent-chip {
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--app-accent) 14%, transparent);
+  color: var(--app-accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.parent-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.parent-list {
+  display: grid;
+  gap: 10px;
+}
+
+.parent-list-item {
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  background: var(--app-surface);
+  padding: 12px 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.parent-list-item strong {
+  display: block;
+  color: var(--app-text);
+  margin-bottom: 3px;
+}
+
+.parent-list-item p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--app-text-muted);
+}
+
+.parent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+  color: var(--app-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.parent-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.parent-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  padding: 12px 13px;
+  background: var(--app-surface);
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+.parent-action-btn:hover {
+  border-color: var(--app-accent);
+  transform: translateY(-1px);
+}
+
+.parent-action-btn span {
+  font-size: 0.82rem;
+  color: var(--app-text-muted);
+}
+
+@media (max-width: 1000px) {
+  .parent-hero,
+  .parent-grid {
+    grid-template-columns: 1fr;
+  }
+}

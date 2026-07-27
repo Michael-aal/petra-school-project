@@ -1,210 +1,351 @@
-import { useContext, useState, useRef, useEffect } from "react";
-import { UserContext } from "../../../../context/UserContext";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  FilterIcon, GraduationCap, Search, X, MoreHorizontal,
-  Eye, ArrowRightLeft, CreditCard, Trash2, Users
+  ArrowRightLeft,
+  CheckCircle2,
+  FilterIcon,
+  GraduationCap,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  RefreshCcw,
+  Search,
+  Trash2,
+  Users,
+  X,
 } from "lucide-react";
 import "../../../../Styles/DashBoardLayout/studentListStyle.css";
+import "../page-styles/StudentsListPage.css";
+import { studentApi } from "../../../../services/studentApi";
 
-import '../page-styles/StudentsListPage.css';
+const emptyForm = {
+  name: "",
+  admissionNumber: "",
+  gender: "Male",
+  className: "SS1",
+  dob: "",
+  guardianName: "",
+  parentPhone: "",
+  parentEmail: "",
+  address: "",
+  status: "active",
+};
+
+const toForm = (student) => ({
+  name: student?.name || "",
+  admissionNumber: student?.admissionNumber || "",
+  gender: student?.gender || "Male",
+  className: student?.className || "SS1",
+  dob: student?.dob ? String(student.dob).slice(0, 10) : "",
+  guardianName: student?.guardianName || "",
+  parentPhone: student?.parentPhone || "",
+  parentEmail: student?.parentEmail || "",
+  address: student?.address || "",
+  status: student?.status || "active",
+});
+
+const initials = (name = "") =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || "")
+    .join("") || "ST";
 
 export default function StudentsListPage() {
-  // 1. Get global students and setters from Context
-  const { students, setStudents, userInfo, setUserInfo } = useContext(UserContext);
-  
+  const [students, setStudents] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [classFilter, setClassFilter] = useState("");
+  const [genderFilter, setGenderFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [activeModal, setActiveModal] = useState({ type: null, student: null });
+  const [form, setForm] = useState(emptyForm);
+  const [saving, setSaving] = useState(false);
   const dropdownRef = useRef(null);
 
-  // 2. SEARCH FUNCTIONALITY ADDED HERE
-  const [searchQuery, setSearchQuery] = useState("");
-  
-  const filteredStudents = students.filter((student) =>
-    student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.studentClass.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const loadStudents = async (page = pagination.page) => {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await studentApi.list({
+        page,
+        limit: pagination.limit,
+        search: searchQuery,
+        className: classFilter,
+        gender: genderFilter,
+        status: statusFilter,
+      });
+      setStudents(data.students || []);
+      setPagination(data.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 });
+    } catch (err) {
+      setError(err.message || "Failed to load students");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Modals State
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editModal, setEditModal] = useState({ isOpen: false, type: '', student: null });
-  const [editValue, setEditValue] = useState('');
-
-  // Add Student Form State
-  const [newStudent, setNewStudent] = useState({
-    studentName: '', studentClass: 'SS1', studentParentName: '', 
-    studentFeeStatus: 'Unpaid', studentGender: 'Male'
-  });
-
-  // Live Stats (calculated from the global students array)
-  const totalStudents = students.length;
-  const paidCount = students.filter(s => s.studentFeeStatus === "Paid").length;
-  const unpaidCount = students.filter(s => s.studentFeeStatus === "Unpaid").length;
-
-  // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+    loadStudents(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const onClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpenDropdown(null);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  // Handlers
-  const handleAddStudent = () => {
-    if (!newStudent.studentName || !newStudent.studentParentName) {
-      alert("Please fill in Student Name and Parent Name");
-      return;
+  const stats = useMemo(() => {
+    const total = pagination.total || students.length;
+    const active = students.filter((item) => item.status === "active").length;
+    const male = students.filter((item) => String(item.gender).toLowerCase() === "male").length;
+    const female = students.filter((item) => String(item.gender).toLowerCase() === "female").length;
+    return { total, active, male, female };
+  }, [pagination.total, students]);
+
+  const submitStudent = async () => {
+    setSaving(true);
+    try {
+      if (activeModal.type === "create") {
+        await studentApi.create(form);
+      } else if (activeModal.type === "edit" && activeModal.student?.id) {
+        await studentApi.update(activeModal.student.id, form);
+      }
+      setActiveModal({ type: null, student: null });
+      setForm(emptyForm);
+      await loadStudents(pagination.page);
+    } catch (err) {
+      setError(err.message || "Unable to save student");
+    } finally {
+      setSaving(false);
     }
-    const initials = newStudent.studentName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    const addedStudent = {
-      id: Date.now(),
-      ...newStudent,
-      studentNameLogo: initials,
-      studentStatus: 'Active'
-    };
-    
-    const updatedStudents = [...students, addedStudent];
-    setStudents(updatedStudents);
-    setUserInfo(prev => ({ ...prev, totalStudent: updatedStudents.length })); // Sync context
-    
-    setNewStudent({ studentName: '', studentClass: 'SS1', studentParentName: '', studentFeeStatus: 'Unpaid', studentGender: 'Male' });
-    setIsAddModalOpen(false);
   };
 
-  const handleRemove = (student) => {
-    if (window.confirm(`Are you sure you want to remove ${student.studentName}?`)) {
-      const updatedStudents = students.filter(s => s.id !== student.id);
-      setStudents(updatedStudents);
-      setUserInfo(prev => ({ ...prev, totalStudent: updatedStudents.length })); // Sync context
+  const removeStudent = async (student) => {
+    if (!window.confirm(`Remove ${student.name}?`)) return;
+    try {
+      await studentApi.remove(student.id);
+      await loadStudents(pagination.page);
+    } catch (err) {
+      setError(err.message || "Unable to remove student");
     }
+  };
+
+  const regenerateCode = async (student) => {
+    try {
+      await studentApi.regenerateAccessCode(student.id);
+      await loadStudents(pagination.page);
+    } catch (err) {
+      setError(err.message || "Unable to regenerate access code");
+    }
+  };
+
+  const openCreateModal = () => {
+    setForm(emptyForm);
+    setActiveModal({ type: "create", student: null });
+  };
+
+  const openEditModal = (student) => {
+    setForm(toForm(student));
+    setActiveModal({ type: "edit", student });
     setOpenDropdown(null);
   };
 
-  const handleOpenEdit = (type, student) => {
-    const val = type === 'class' ? student.studentClass : student.studentFeeStatus;
-    setEditValue(val);
-    setEditModal({ isOpen: true, type, student });
+  const openViewModal = (student) => {
+    setActiveModal({ type: "view", student });
     setOpenDropdown(null);
   };
 
-  const handleSaveEdit = () => {
-    const key = editModal.type === 'class' ? 'studentClass' : 'studentFeeStatus';
-    const updatedStudents = students.map(s => 
-      s.id === editModal.student.id ? { ...s, [key]: editValue } : s
-    );
-    setStudents(updatedStudents);
-    setEditModal({ isOpen: false, type: '', student: null });
+  const applyFilters = async () => {
+    await loadStudents(1);
   };
 
-  const closeEditModal = () => setEditModal({ isOpen: false, type: '', student: null });
+  const canPrev = pagination.page > 1;
+  const canNext = pagination.page < pagination.totalPages;
 
   return (
     <div className="students-page">
-      {/* Page Header */}
       <div className="page-header">
         <div className="page-title-group">
-          <div className="title-icon-box"><GraduationCap size={24} /></div>
+          <div className="title-icon-box">
+            <GraduationCap size={24} />
+          </div>
           <div>
             <h3>Students</h3>
             <h4>Manage all registered students</h4>
           </div>
         </div>
-        <button className="btn-primary" onClick={() => setIsAddModalOpen(true)}>+ Add Student</button>
+        <button className="btn-primary" onClick={openCreateModal}>
+          <Plus size={18} />
+          Add Student
+        </button>
       </div>
 
-      {/* Live Stats Bar */}
       <div className="stats-bar">
         <div className="stat-card">
-          <div className="stat-icon stat-icon-blue"><Users size={18} /></div>
+          <div className="stat-icon stat-icon-blue">
+            <Users size={18} />
+          </div>
           <div>
-            <span className="stat-number">{totalStudents}</span>
+            <span className="stat-number">{stats.total}</span>
             <span className="stat-label">Total Students</span>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon stat-icon-green"><CreditCard size={18} /></div>
+          <div className="stat-icon stat-icon-green">
+            <CheckCircle2 size={18} />
+          </div>
           <div>
-            <span className="stat-number">{paidCount}</span>
-            <span className="stat-label">Fees Paid</span>
+            <span className="stat-number">{stats.active}</span>
+            <span className="stat-label">Active Students</span>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon stat-icon-red"><CreditCard size={18} /></div>
+          <div className="stat-icon stat-icon-blue">
+            <ArrowRightLeft size={18} />
+          </div>
           <div>
-            <span className="stat-number">{unpaidCount}</span>
-            <span className="stat-label">Fees Unpaid</span>
+            <span className="stat-number">{stats.male}</span>
+            <span className="stat-label">Male Students</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon stat-icon-red">
+            <ArrowRightLeft size={18} />
+          </div>
+          <div>
+            <span className="stat-number">{stats.female}</span>
+            <span className="stat-label">Female Students</span>
           </div>
         </div>
       </div>
 
-      {/* Controls (SEARCH IS NOW WIRED UP) */}
       <div className="page-controls">
         <div className="search-wrapper">
           <Search size={18} className="search-icon" />
-          <input 
-            type="text" 
-            placeholder="Search student by name or class..." 
-            className="search-input" 
+          <input
+            type="text"
+            placeholder="Search student by name, admission number, parent..."
+            className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") applyFilters();
+            }}
           />
         </div>
-        <button className="btn-secondary"><FilterIcon size={18} /> Filter</button>
+        <select className="form-select" value={classFilter} onChange={(e) => setClassFilter(e.target.value)}>
+          <option value="">All Classes</option>
+          <option value="JSS1">JSS1</option>
+          <option value="JSS2">JSS2</option>
+          <option value="JSS3">JSS3</option>
+          <option value="SS1">SS1</option>
+          <option value="SS2">SS2</option>
+          <option value="SS3">SS3</option>
+        </select>
+        <select className="form-select" value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)}>
+          <option value="">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="suspended">Suspended</option>
+        </select>
+        <button className="btn-secondary" onClick={applyFilters}>
+          <FilterIcon size={18} />
+          Filter
+        </button>
+        <button className="btn-secondary" onClick={() => loadStudents(pagination.page)}>
+          <RefreshCcw size={18} />
+          Refresh
+        </button>
       </div>
 
-      {/* Data Table (Maps over filteredStudents) */}
+      {error ? <div className="students-inline-alert">{error}</div> : null}
+
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th>Student</th><th>Class</th><th>Parent</th><th>Fee Status</th><th>Status</th><th className="text-right">Actions</th>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Parent</th>
+              <th>Gender</th>
+              <th>Status</th>
+              <th className="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredStudents.length > 0 ? (
-              filteredStudents.map((item) => (
-                <tr key={item.id}>
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="students-empty-state">
+                  Loading students...
+                </td>
+              </tr>
+            ) : students.length ? (
+              students.map((student) => (
+                <tr key={student.id}>
                   <td>
                     <div className="student-cell">
-                      <div className="student-avatar">{item.studentNameLogo}</div>
-                      <span className="student-name">{item.studentName}</span>
+                      <div className="student-avatar">
+                        {initials(student.name)}
+                      </div>
+                      <div>
+                        <div className="student-name">{student.name}</div>
+                        <div className="student-subtitle">{student.admissionNumber}</div>
+                      </div>
                     </div>
                   </td>
-                  <td>{item.studentClass}</td>
-                  <td>{item.studentParentName}</td>
-                  <td><span className={`status-badge status-${item.studentFeeStatus.toLowerCase()}`}>{item.studentFeeStatus}</span></td>
-                  <td><span className="status-badge status-active">{item.studentStatus}</span></td>
+                  <td>{student.className || "-"}</td>
+                  <td>{student.guardianName || "-"}</td>
+                  <td>{student.gender || "-"}</td>
+                  <td>
+                    <span className={`status-badge status-${student.status || "active"}`}>{student.status || "active"}</span>
+                  </td>
                   <td className="text-right action-cell">
-                    <div className="dropdown-wrapper" ref={openDropdown === item.id ? dropdownRef : null}>
-                      <button className="action-btn" onClick={() => setOpenDropdown(openDropdown === item.id ? null : item.id)}>
+                    <div className="dropdown-wrapper" ref={openDropdown === student.id ? dropdownRef : null}>
+                      <button className="action-btn" onClick={() => setOpenDropdown(openDropdown === student.id ? null : student.id)}>
                         <MoreHorizontal size={18} />
                       </button>
-                      {openDropdown === item.id && (
+                      {openDropdown === student.id ? (
                         <div className="dropdown-menu">
-                          <button className="dropdown-item" onClick={() => handleOpenEdit('profile', item)}>
-                            <Eye size={16} /><span>View Profile</span>
+                          <button className="dropdown-item" onClick={() => openViewModal(student)}>
+                            <CheckCircle2 size={16} />
+                            <span>View Profile</span>
                           </button>
-                          <button className="dropdown-item" onClick={() => handleOpenEdit('class', item)}>
-                            <ArrowRightLeft size={16} /><span>Change Class</span>
+                          <button className="dropdown-item" onClick={() => openEditModal(student)}>
+                            <Pencil size={16} />
+                            <span>Edit Student</span>
                           </button>
-                          <button className="dropdown-item" onClick={() => handleOpenEdit('feeStatus', item)}>
-                            <CreditCard size={16} /><span>Change Fee Status</span>
+                          <button className="dropdown-item" onClick={() => regenerateCode(student)}>
+                            <ArrowRightLeft size={16} />
+                            <span>Regenerate Code</span>
                           </button>
-                          <div className="dropdown-divider"></div>
-                          <button className="dropdown-item dropdown-item-danger" onClick={() => handleRemove(item)}>
-                            <Trash2 size={16} /><span>Remove Student</span>
+                          <div className="dropdown-divider" />
+                          <button className="dropdown-item dropdown-item-danger" onClick={() => removeStudent(student)}>
+                            <Trash2 size={16} />
+                            <span>Remove Student</span>
                           </button>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", padding: "32px", color: "oklch(0.6 0.02 250)" }}>
-                  No students found matching "{searchQuery}"
+                <td colSpan={6} className="students-empty-state">
+                  No students found.
                 </td>
               </tr>
             )}
@@ -212,117 +353,159 @@ export default function StudentsListPage() {
         </table>
       </div>
 
-      {/* ADD STUDENT MODAL */}
-      {isAddModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+      <div className="students-pagination">
+        <button className="btn-secondary" disabled={!canPrev} onClick={() => loadStudents(pagination.page - 1)}>
+          Previous
+        </button>
+        <span>
+          Page {pagination.page} of {pagination.totalPages}
+        </span>
+        <button className="btn-secondary" disabled={!canNext} onClick={() => loadStudents(pagination.page + 1)}>
+          Next
+        </button>
+      </div>
+
+      {activeModal.type === "create" || activeModal.type === "edit" ? (
+        <div className="modal-overlay" onClick={() => setActiveModal({ type: null, student: null })}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Add New Student</h2>
-              <button className="modal-close" onClick={() => setIsAddModalOpen(false)}><X size={20} /></button>
+              <h2>{activeModal.type === "create" ? "Add New Student" : "Edit Student"}</h2>
+              <button className="modal-close" onClick={() => setActiveModal({ type: null, student: null })}>
+                <X size={20} />
+              </button>
             </div>
             <div className="modal-body">
               <div className="form-grid">
                 <div className="form-group full-width">
                   <label className="form-label">Full Name</label>
-                  <input type="text" placeholder="e.g. John Doe" className="form-input" value={newStudent.studentName} onChange={e => setNewStudent({...newStudent, studentName: e.target.value})} />
+                  <input className="form-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Class</label>
-                  <select className="form-select" value={newStudent.studentClass} onChange={e => setNewStudent({...newStudent, studentClass: e.target.value})}>
-                    <option value="JSS1">JSS1</option><option value="JSS2">JSS2</option><option value="JSS3">JSS3</option>
-                    <option value="SS1">SS1</option><option value="SS2">SS2</option><option value="SS3">SS3</option>
-                  </select>
+                  <label className="form-label">Admission Number</label>
+                  <input
+                    className="form-input"
+                    value={form.admissionNumber}
+                    disabled={activeModal.type === "edit"}
+                    onChange={(e) => setForm({ ...form, admissionNumber: e.target.value })}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Gender</label>
-                  <select className="form-select" value={newStudent.studentGender} onChange={e => setNewStudent({...newStudent, studentGender: e.target.value})}>
-                    <option value="Male">Male</option><option value="Female">Female</option>
+                  <select className="form-select" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Class</label>
+                  <select className="form-select" value={form.className} onChange={(e) => setForm({ ...form, className: e.target.value })}>
+                    <option value="JSS1">JSS1</option>
+                    <option value="JSS2">JSS2</option>
+                    <option value="JSS3">JSS3</option>
+                    <option value="SS1">SS1</option>
+                    <option value="SS2">SS2</option>
+                    <option value="SS3">SS3</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Date of Birth</label>
+                  <input className="form-input" type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Status</label>
+                  <select className="form-select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
                   </select>
                 </div>
                 <div className="form-group full-width">
-                  <label className="form-label">Parent/Guardian Name</label>
-                  <input type="text" placeholder="e.g. Mr. Ogunleye" className="form-input" value={newStudent.studentParentName} onChange={e => setNewStudent({...newStudent, studentParentName: e.target.value})} />
+                  <label className="form-label">Parent / Guardian</label>
+                  <input className="form-input" value={form.guardianName} onChange={(e) => setForm({ ...form, guardianName: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Parent Phone</label>
+                  <input className="form-input" value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Parent Email</label>
+                  <input className="form-input" value={form.parentEmail} onChange={(e) => setForm({ ...form, parentEmail: e.target.value })} />
                 </div>
                 <div className="form-group full-width">
-                  <label className="form-label">Fee Status</label>
-                  <select className="form-select" value={newStudent.studentFeeStatus} onChange={e => setNewStudent({...newStudent, studentFeeStatus: e.target.value})}>
-                    <option value="Unpaid">Unpaid</option><option value="Paid">Paid</option><option value="Partial">Partial</option>
-                  </select>
+                  <label className="form-label">Address</label>
+                  <input className="form-input" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
                 </div>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn-ghost" onClick={() => setIsAddModalOpen(false)}>Cancel</button>
-              <button className="btn-primary" onClick={handleAddStudent}>Add Student</button>
+              <button className="btn-ghost" onClick={() => setActiveModal({ type: null, student: null })}>
+                Cancel
+              </button>
+              <button className="btn-primary" onClick={submitStudent} disabled={saving}>
+                {saving ? "Saving..." : "Save Student"}
+              </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {/* EDIT / VIEW PROFILE MODAL */}
-      {editModal.isOpen && (
-        <div className="modal-overlay" onClick={closeEditModal}>
+      {activeModal.type === "view" && activeModal.student ? (
+        <div className="modal-overlay" onClick={() => setActiveModal({ type: null, student: null })}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>
-                {editModal.type === 'class' ? 'Change Class' : editModal.type === 'feeStatus' ? 'Change Fee Status' : 'Student Profile'}
-              </h2>
-              <button className="modal-close" onClick={closeEditModal}><X size={20} /></button>
+              <h2>Student Profile</h2>
+              <button className="modal-close" onClick={() => setActiveModal({ type: null, student: null })}>
+                <X size={20} />
+              </button>
             </div>
             <div className="modal-body">
-              {editModal.type === 'profile' ? (
-                <div className="profile-view">
-                  <div className="profile-header">
-                    <div className="student-avatar large">{editModal.student.studentNameLogo}</div>
-                    <h3>{editModal.student.studentName}</h3>
-                    <p>{editModal.student.studentClass} • {editModal.student.studentGender}</p>
+              <div className="profile-view">
+                <div className="profile-header">
+                  <div className="student-avatar large">{initials(activeModal.student.name)}</div>
+                  <h3>{activeModal.student.name}</h3>
+                  <p>
+                    {activeModal.student.className || "-"} • {activeModal.student.gender || "-"}
+                  </p>
+                </div>
+                <div className="profile-info-grid">
+                  <div className="info-item">
+                    <span className="info-label">Admission Number</span>
+                    <span className="info-value">{activeModal.student.admissionNumber || "-"}</span>
                   </div>
-                  <div className="profile-info-grid">
-                    <div className="info-item">
-                      <span className="info-label">Parent/Guardian</span>
-                      <span className="info-value">{editModal.student.studentParentName}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Fee Status</span>
-                      <span className={`status-badge status-${editModal.student.studentFeeStatus.toLowerCase()}`}>{editModal.student.studentFeeStatus}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Enrollment Status</span>
-                      <span className="status-badge status-active">{editModal.student.studentStatus}</span>
-                    </div>
+                  <div className="info-item">
+                    <span className="info-label">Status</span>
+                    <span className={`status-badge status-${activeModal.student.status || "active"}`}>
+                      {activeModal.student.status || "active"}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Parent / Guardian</span>
+                    <span className="info-value">{activeModal.student.guardianName || "-"}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Access Code</span>
+                    <span className="info-value">{activeModal.student.parentAccessCode || "-"}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Parent Email</span>
+                    <span className="info-value">{activeModal.student.parentEmail || "-"}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Parent Phone</span>
+                    <span className="info-value">{activeModal.student.parentPhone || "-"}</span>
                   </div>
                 </div>
-              ) : (
-                <div className="form-group">
-                  <label className="form-label">
-                    {editModal.type === 'class' ? 'Select New Class' : 'Select New Fee Status'}
-                  </label>
-                  <select className="form-select" value={editValue} onChange={e => setEditValue(e.target.value)}>
-                    {editModal.type === 'class' ? (
-                      <>
-                        <option value="JSS1">JSS1</option><option value="JSS2">JSS2</option><option value="JSS3">JSS3</option>
-                        <option value="SS1">SS1</option><option value="SS2">SS2</option><option value="SS3">SS3</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="Paid">Paid</option><option value="Unpaid">Unpaid</option><option value="Partial">Partial</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-              )}
+              </div>
             </div>
             <div className="modal-footer">
-              <button className="btn-ghost" onClick={closeEditModal}>
-                {editModal.type === 'profile' ? 'Close' : 'Cancel'}
+              <button className="btn-ghost" onClick={() => setActiveModal({ type: null, student: null })}>
+                Close
               </button>
-              {editModal.type !== 'profile' && (
-                <button className="btn-primary" onClick={handleSaveEdit}>Save Changes</button>
-              )}
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
+

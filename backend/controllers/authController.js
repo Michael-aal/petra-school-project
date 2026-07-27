@@ -37,6 +37,97 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
+export const createPendingStaff = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.createPendingStaff(req.body);
+    return res.status(201).json({ success: true, message: "Staff created successfully", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createStaffInvitation = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.createStaffInvitation({
+      ...req.body,
+      generatedBy: req.user?.fullName || req.user?.email || req.user?.id,
+    });
+    return res.status(201).json({ success: true, message: "Staff invitation created successfully", invitation: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listStaffInvitations = async (_req, res, next) => {
+  try {
+    const invitations = await authService.listStaffInvitations();
+    return res.status(200).json({ success: true, invitations });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const revokeStaffInvitation = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const invitation = await authService.revokeStaffInvitation({ registrationCode: req.body.registrationCode });
+    return res.status(200).json({ success: true, message: "Staff invitation revoked", invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const regenerateStaffInvitationCode = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const invitation = await authService.regenerateStaffInvitationCode({ registrationCode: req.body.registrationCode });
+    return res.status(200).json({ success: true, message: "Registration code regenerated", invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const activateStaff = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.activateStaff(req.body);
+    res.cookie("petra_token", result.token, authCookieOptions);
+    return res.status(200).json({ success: true, message: "Staff account activated", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const registerParent = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.registerParent(req.body);
+    res.cookie("petra_token", result.token, authCookieOptions);
+    return res.status(201).json({ success: true, message: "Parent registered successfully", ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const linkChild = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+    const result = await authService.linkStudentToParent({ userId: req.user.id, accessCode: req.body.accessCode });
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const loginUser = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);
@@ -76,4 +167,65 @@ export const logoutUser = async (_req, res) => {
     success: true,
     message: "Logout successful",
   });
+};
+
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.updateProfile(req.user.id, req.body);
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeUserPassword = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.changePassword({
+      userId: req.user.id,
+      currentPassword: req.body.currentPassword,
+      newPassword: req.body.newPassword,
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUserAccount = async (req, res, next) => {
+  try {
+    const validationResponse = handleValidation(req, res);
+    if (validationResponse) return validationResponse;
+
+    const result = await authService.deleteAccount({
+      userId: req.user.id,
+      password: req.body.password,
+    });
+
+    res.clearCookie("petra_token", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

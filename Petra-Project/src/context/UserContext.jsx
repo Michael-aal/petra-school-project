@@ -42,7 +42,20 @@ export function UserProvider({ children }) {
       })
       .catch(() => {
         if (!active) return;
+<<<<<<< HEAD
         setUserInfo((current) => normalizeUser({ ...current, totalStudent: defaultStudents.length }));
+=======
+        setAuthError(error);
+        if (error?.status === 401) {
+          window.localStorage.removeItem("petra_user_info");
+        }
+        setUserInfo((current) =>
+          normalizeUser({
+            ...current,
+            totalStudent: defaultStudents.length,
+          }),
+        );
+>>>>>>> feature/authenticated-theme-pages
       })
       .finally(() => {
         if (active) setAuthReady(true);

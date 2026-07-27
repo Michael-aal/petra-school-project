@@ -1,10 +1,38 @@
 import { useState, useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
+<<<<<<< HEAD
   LayoutDashboard, School, BookOpen, GraduationCap, Users, Bus,
   ClipboardCheck, FileText, BarChart2, UserCog, CreditCard, Receipt,
   Wallet, TrendingUp, Bell, HelpCircle, Settings, ChevronDown,
   ChevronRight, Calendar, ClipboardList, UserCheck, PlusCircle, X,
+=======
+  LayoutDashboard,
+  School,
+  BookOpen,
+  GraduationCap,
+  Users,
+  Bus,
+  ClipboardCheck,
+  FileText,
+  BarChart2,
+  UserCog,
+  CreditCard,
+  Receipt,
+  Wallet,
+  TrendingUp,
+  Bell,
+  HelpCircle,
+  Settings,
+  ChevronDown,
+  ChevronRight,
+  Calendar,
+  ClipboardList,
+  UserCheck,
+  PlusCircle,
+  X,
+  LogOut,
+>>>>>>> feature/authenticated-theme-pages
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -53,7 +81,20 @@ const navGroups = [
     children: [
       { label: "Teachers", icon: UserCog, href: "/dashboard/staff/teachers" },
       { label: "Admins", icon: UserCog, href: "/dashboard/staff/admins" },
+<<<<<<< HEAD
       { label: "Attendance", icon: ClipboardCheck, href: "/dashboard/staff/attendance" },
+=======
+      {
+        label: "Staff Management",
+        icon: UserCog,
+        href: "/dashboard/staff/management",
+      },
+      {
+        label: "Attendance",
+        icon: ClipboardCheck,
+        href: "/dashboard/staff/attendance",
+      },
+>>>>>>> feature/authenticated-theme-pages
     ],
   },
   {
@@ -77,6 +118,7 @@ const navGroups = [
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
+<<<<<<< HEAD
 export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const location = useLocation();
   const { userInfo } = useContext(UserContext);
@@ -86,6 +128,55 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
     const initial = {};
     navGroups.forEach((group) => {
       if (group.children?.some((child) => location.pathname.startsWith(child.href))) {
+=======
+const staffNavGroups = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/staff/dashboard" },
+  { label: "My Classes", icon: School, href: "/staff/classes" },
+  { label: "Students", icon: GraduationCap, href: "/staff/students" },
+  { label: "Attendance", icon: ClipboardCheck, href: "/staff/attendance" },
+  { label: "Assessments", icon: ClipboardList, href: "/staff/assessments" },
+  { label: "Results", icon: FileText, href: "/staff/results" },
+  { label: "Announcements", icon: Bell, href: "/staff/announcements" },
+  { label: "Profile", icon: UserCog, href: "/staff/profile" },
+  { label: "Settings", icon: Settings, href: "/staff/settings" },
+  { label: "Logout", icon: LogOut, href: "/signin" },
+];
+
+const portalNavGroups = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/portal/dashboard" },
+  { label: "Children", icon: GraduationCap, href: "/portal/children" },
+  { label: "Attendance", icon: ClipboardCheck, href: "/portal/attendance" },
+  { label: "Results", icon: FileText, href: "/portal/results" },
+  { label: "Assignments", icon: ClipboardList, href: "/portal/assignments" },
+  { label: "Fees", icon: CreditCard, href: "/portal/fees" },
+  { label: "Announcements", icon: Bell, href: "/portal/announcements" },
+  { label: "Messages", icon: Bell, href: "/portal/messages" },
+  { label: "Downloads", icon: FileText, href: "/portal/downloads" },
+  { label: "Profile", icon: UserCog, href: "/portal/profile" },
+  { label: "Settings", icon: Settings, href: "/portal/settings" },
+  { label: "Logout", icon: LogOut, href: "/signin" },
+];
+
+const FIXED_NAV = navGroups;
+
+export function SidebarNav({ onNavigate, collapsed = false }) {
+  const location = useLocation();
+  const navItems = location.pathname.startsWith("/staff")
+    ? staffNavGroups
+    : location.pathname.startsWith("/portal")
+      ? portalNavGroups
+      : FIXED_NAV;
+
+  const [openGroups, setOpenGroups] = useState(() => {
+    const initial = {};
+
+    navItems.forEach((group) => {
+      if (
+        group.children?.some((child) =>
+          location.pathname.startsWith(child.href),
+        )
+      ) {
+>>>>>>> feature/authenticated-theme-pages
         initial[group.label] = true;
       }
     });
@@ -121,7 +212,11 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
       </div>
 
       <nav className="sidebar-nav">
+<<<<<<< HEAD
         {navGroups.map((item) => {
+=======
+        {navItems.map((item) => {
+>>>>>>> feature/authenticated-theme-pages
           if (!item.children) {
             const active = isActive(item.href);
             return (

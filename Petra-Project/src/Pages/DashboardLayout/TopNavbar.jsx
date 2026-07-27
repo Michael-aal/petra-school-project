@@ -1,6 +1,17 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { Bell, ChevronDown, LogOut, Menu, Settings, User as UserIcon, X } from "lucide-react";
+=======
+import {
+  Bell,
+  ChevronDown,
+  LogOut,
+  Menu,
+  Settings,
+  User as UserIcon,
+} from "lucide-react";
+>>>>>>> feature/authenticated-theme-pages
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { getDisplayName, getFirstName } from "../../utils/userProfile";
@@ -42,7 +53,11 @@ export default function TopNavbar({ onToggle }) {
     <header className="top-navbar">
       <div className="top-left">
         <button className="menu-btn" onClick={handleMenuClick} aria-label="Toggle menu">
+<<<<<<< HEAD
           <Menu size={20} />
+=======
+          <Menu />
+>>>>>>> feature/authenticated-theme-pages
         </button>
         <div className="top-welcome">Welcome, {getFirstName(userInfo)}</div>
       </div>
@@ -61,14 +76,28 @@ export default function TopNavbar({ onToggle }) {
             <div className="notification-dropdown" role="menu">
               <div className="notification-header">
                 <strong>Notifications</strong>
+<<<<<<< HEAD
                 <button type="button" className="notification-close" onClick={() => setShowNotifications(false)}>
                   <X size={18} />
+=======
+                <button
+                  type="button"
+                  className="notification-close"
+                  onClick={() => setShowNotifications(false)}
+                  aria-label="Close notifications"
+                >
+                  ×
+>>>>>>> feature/authenticated-theme-pages
                 </button>
               </div>
               <div className="notification-body">
                 <p className="notification-empty">No new notifications</p>
               </div>
-              <button type="button" className="notification-action" onClick={() => setShowNotifications(false)}>
+              <button
+                type="button"
+                className="notification-action"
+                onClick={() => setShowNotifications(false)}
+              >
                 See all Notifications
               </button>
             </div>

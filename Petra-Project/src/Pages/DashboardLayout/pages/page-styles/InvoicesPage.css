@@ -1,2 +1,131 @@
 /* Styles for InvoicesPage */
 .invoices-page{ padding:18px; }
+
+.finance-module-page,
+.module-grid,
+.module-header,
+.module-meta,
+.module-values,
+.finance-cashflow-summary,
+.finance-cashflow-grid,
+.finance-cashflow-list {
+  display: grid;
+  gap: 16px;
+}
+
+.module-header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.module-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--dashboard-accent-gradient);
+  color: #fff;
+  font-weight: 600;
+}
+
+.module-button:disabled {
+  opacity: 0.6;
+}
+
+.module-alert,
+.module-empty,
+.module-card {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+}
+
+.module-alert {
+  padding: 14px 16px;
+}
+
+.module-alert-error {
+  border-color: rgba(239, 68, 68, 0.24);
+  color: #b91c1c;
+  background: rgba(254, 226, 226, 0.72);
+}
+
+.module-empty {
+  padding: 24px;
+}
+
+.module-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 16px;
+}
+
+.module-card {
+  padding: 18px;
+}
+
+.module-card-title,
+.module-meta span,
+.module-values div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.module-card-title {
+  margin-bottom: 10px;
+}
+
+.module-values {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.module-values span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.finance-cashflow-summary {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.finance-cashflow-summary article,
+.finance-cashflow-panel {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+  padding: 16px;
+}
+
+.finance-cashflow-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  margin-top: 16px;
+}
+
+.finance-cashflow-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.finance-cashflow-item:last-child {
+  border-bottom: 0;
+}
+
+.finance-cashflow-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.finance-cashflow-amount-negative {
+  color: #b91c1c;
+}
