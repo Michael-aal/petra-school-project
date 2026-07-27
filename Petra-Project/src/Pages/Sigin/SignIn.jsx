@@ -15,7 +15,7 @@ const initialForm = {
 };
 
 export default function SignIn() {
-  const { setUserInfo } = useContext(UserContext);
+  const { setUserInfo, authReady, userInfo } = useContext(UserContext);
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,27 +24,18 @@ export default function SignIn() {
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
-  // Replace the old useEffect with this:
-  const { authReady, userInfo } = useContext(UserContext);
-
   useEffect(() => {
-<<<<<<< HEAD
-    if (authReady) {
-      // If we have a valid user, redirect to dashboard
-      if (userInfo?.email) {
-        navigate("/dashboard", { replace: true });
-      } else {
-        setCheckingSession(false);
-      }
-    }
-  }, [authReady, userInfo, navigate]);
-=======
     authApi
       .me()
       .then((response) => navigate(getDashboardPathForRole(response?.user?.role), { replace: true }))
       .catch(() => setCheckingSession(false));
   }, [navigate]);
->>>>>>> feature/authenticated-theme-pages
+
+  useEffect(() => {
+    if (authReady && userInfo?.email) {
+      navigate(getDashboardPathForRole(userInfo.role), { replace: true });
+    }
+  }, [authReady, userInfo, navigate]);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;

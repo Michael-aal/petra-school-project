@@ -1,12 +1,6 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-<<<<<<< HEAD
-  LayoutDashboard, School, BookOpen, GraduationCap, Users, Bus,
-  ClipboardCheck, FileText, BarChart2, UserCog, CreditCard, Receipt,
-  Wallet, TrendingUp, Bell, HelpCircle, Settings, ChevronDown,
-  ChevronRight, Calendar, ClipboardList, UserCheck, PlusCircle, X,
-=======
   LayoutDashboard,
   School,
   BookOpen,
@@ -32,7 +26,6 @@ import {
   PlusCircle,
   X,
   LogOut,
->>>>>>> feature/authenticated-theme-pages
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -43,7 +36,8 @@ const navGroups = [
   { label: "Get Started", icon: LayoutDashboard, href: "/dashboard/get-started" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   {
-    label: "School Setup", icon: School,
+    label: "School Setup",
+    icon: School,
     children: [
       { label: "School Profile", icon: School, href: "/dashboard/setup/profile" },
       { label: "Academic Session", icon: Calendar, href: "/dashboard/setup/sessions" },
@@ -52,7 +46,8 @@ const navGroups = [
     ],
   },
   {
-    label: "Students", icon: GraduationCap,
+    label: "Students",
+    icon: GraduationCap,
     children: [
       { label: "Students", icon: GraduationCap, href: "/dashboard/students" },
       { label: "Enrollment", icon: UserCheck, href: "/dashboard/students/enrollment" },
@@ -61,7 +56,8 @@ const navGroups = [
     ],
   },
   {
-    label: "Academics", icon: BookOpen,
+    label: "Academics",
+    icon: BookOpen,
     children: [
       { label: "Timetable", icon: Calendar, href: "/dashboard/academics/timetable" },
       { label: "School Bus", icon: Bus, href: "/dashboard/academics/bus" },
@@ -69,7 +65,8 @@ const navGroups = [
     ],
   },
   {
-    label: "Examination", icon: FileText,
+    label: "Examination",
+    icon: FileText,
     children: [
       { label: "CBT", icon: ClipboardList, href: "/dashboard/examination/cbt" },
       { label: "Results", icon: BarChart2, href: "/dashboard/examination/results" },
@@ -77,28 +74,18 @@ const navGroups = [
     ],
   },
   {
-    label: "Staff", icon: UserCog,
+    label: "Staff",
+    icon: UserCog,
     children: [
       { label: "Teachers", icon: UserCog, href: "/dashboard/staff/teachers" },
       { label: "Admins", icon: UserCog, href: "/dashboard/staff/admins" },
-<<<<<<< HEAD
+      { label: "Staff Management", icon: UserCog, href: "/dashboard/staff/management" },
       { label: "Attendance", icon: ClipboardCheck, href: "/dashboard/staff/attendance" },
-=======
-      {
-        label: "Staff Management",
-        icon: UserCog,
-        href: "/dashboard/staff/management",
-      },
-      {
-        label: "Attendance",
-        icon: ClipboardCheck,
-        href: "/dashboard/staff/attendance",
-      },
->>>>>>> feature/authenticated-theme-pages
     ],
   },
   {
-    label: "Finance", icon: CreditCard,
+    label: "Finance",
+    icon: CreditCard,
     children: [
       { label: "Payments", icon: CreditCard, href: "/dashboard/finance/payments" },
       { label: "Invoices", icon: Receipt, href: "/dashboard/finance/invoices" },
@@ -109,7 +96,8 @@ const navGroups = [
     ],
   },
   {
-    label: "Communication", icon: Bell,
+    label: "Communication",
+    icon: Bell,
     children: [
       { label: "Notifications", icon: Bell, href: "/dashboard/communication/notifications" },
       { label: "Support", icon: HelpCircle, href: "/dashboard/communication/support" },
@@ -118,17 +106,6 @@ const navGroups = [
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
-<<<<<<< HEAD
-export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
-  const location = useLocation();
-  const { userInfo } = useContext(UserContext);
-  const schoolName = userInfo?.institution?.split(" ")[0] ?? "Petra";
-
-  const [openGroups, setOpenGroups] = useState(() => {
-    const initial = {};
-    navGroups.forEach((group) => {
-      if (group.children?.some((child) => location.pathname.startsWith(child.href))) {
-=======
 const staffNavGroups = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/staff/dashboard" },
   { label: "My Classes", icon: School, href: "/staff/classes" },
@@ -157,26 +134,20 @@ const portalNavGroups = [
   { label: "Logout", icon: LogOut, href: "/signin" },
 ];
 
-const FIXED_NAV = navGroups;
-
-export function SidebarNav({ onNavigate, collapsed = false }) {
+export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const location = useLocation();
+  const { userInfo } = useContext(UserContext);
+  const schoolName = userInfo?.institution?.split(" ")[0] ?? "Petra";
   const navItems = location.pathname.startsWith("/staff")
     ? staffNavGroups
     : location.pathname.startsWith("/portal")
       ? portalNavGroups
-      : FIXED_NAV;
+      : navGroups;
 
   const [openGroups, setOpenGroups] = useState(() => {
     const initial = {};
-
     navItems.forEach((group) => {
-      if (
-        group.children?.some((child) =>
-          location.pathname.startsWith(child.href),
-        )
-      ) {
->>>>>>> feature/authenticated-theme-pages
+      if (group.children?.some((child) => location.pathname.startsWith(child.href))) {
         initial[group.label] = true;
       }
     });
@@ -187,7 +158,6 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
     setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
-  // FIXED: Prevents "Dashboard" from staying active on all sub-pages
   const isActive = (href) => {
     if (href === "/dashboard" || href === "/") {
       return location.pathname === "/dashboard" || location.pathname === "/";
@@ -205,26 +175,20 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
           <h2 className="brand-title">{schoolName.toUpperCase()}</h2>
           <h3 className="brand-sub">SCHOOL PLATFORM</h3>
         </div>
-        {/* FIXED: Added onClick handler for mobile close */}
         <button className="sidebar-close" onClick={onClose} aria-label="Close sidebar">
           <X size={20} />
         </button>
       </div>
 
       <nav className="sidebar-nav">
-<<<<<<< HEAD
-        {navGroups.map((item) => {
-=======
         {navItems.map((item) => {
->>>>>>> feature/authenticated-theme-pages
           if (!item.children) {
-            const active = isActive(item.href);
             return (
               <NavLink
                 key={item.label}
                 to={item.href}
                 onClick={onNavigate}
-                className={`sidebar-link ${active ? "active" : ""}`}
+                className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
               >
                 <item.icon className="sidebar-icon" />
                 <span className="sidebar-label">{item.label}</span>
@@ -247,24 +211,21 @@ export function SidebarNav({ onNavigate, collapsed = false }) {
                 {isOpen ? <ChevronDown className="arrow-icon" /> : <ChevronRight className="arrow-icon" />}
               </button>
 
-              {isOpen && (
+              {isOpen ? (
                 <div className="sidebar-children">
-                  {item.children.map((child) => {
-                    const active = isActive(child.href);
-                    return (
-                      <NavLink
-                        key={child.href}
-                        to={child.href}
-                        onClick={onNavigate}
-                        className={`sidebar-child ${active ? "active" : ""}`}
-                      >
-                        <child.icon className="child-icon" />
-                        <span className="child-label">{child.label}</span>
-                      </NavLink>
-                    );
-                  })}
+                  {item.children.map((child) => (
+                    <NavLink
+                      key={child.href}
+                      to={child.href}
+                      onClick={onNavigate}
+                      className={`sidebar-child ${isActive(child.href) ? "active" : ""}`}
+                    >
+                      <child.icon className="child-icon" />
+                      <span className="child-label">{child.label}</span>
+                    </NavLink>
+                  ))}
                 </div>
-              )}
+              ) : null}
             </div>
           );
         })}

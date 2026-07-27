@@ -1,17 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import { Bell, ChevronDown, LogOut, Menu, Settings, User as UserIcon, X } from "lucide-react";
-=======
-import {
-  Bell,
-  ChevronDown,
-  LogOut,
-  Menu,
-  Settings,
-  User as UserIcon,
-} from "lucide-react";
->>>>>>> feature/authenticated-theme-pages
+import { Bell, ChevronDown, LogOut, Menu, Settings, User as UserIcon } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { getDisplayName, getFirstName } from "../../utils/userProfile";
@@ -26,16 +15,20 @@ export default function TopNavbar({ onToggle }) {
   const notifRef = useRef(null);
   const navigate = useNavigate();
 
-  // FIXED: Simplified to just call the parent's toggle function
   const handleMenuClick = () => {
     if (onToggle) onToggle();
   };
 
   useEffect(() => {
     const handleOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) setShowMenu(false);
-      if (notifRef.current && !notifRef.current.contains(event.target)) setShowNotifications(false);
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
     };
+
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
@@ -53,11 +46,7 @@ export default function TopNavbar({ onToggle }) {
     <header className="top-navbar">
       <div className="top-left">
         <button className="menu-btn" onClick={handleMenuClick} aria-label="Toggle menu">
-<<<<<<< HEAD
           <Menu size={20} />
-=======
-          <Menu />
->>>>>>> feature/authenticated-theme-pages
         </button>
         <div className="top-welcome">Welcome, {getFirstName(userInfo)}</div>
       </div>
@@ -68,18 +57,16 @@ export default function TopNavbar({ onToggle }) {
             className="icon-btn"
             aria-label="Notifications"
             onClick={() => setShowNotifications((current) => !current)}
+            aria-expanded={showNotifications}
+            aria-haspopup="menu"
           >
             <Bell size={20} />
           </button>
 
-          {showNotifications && (
+          {showNotifications ? (
             <div className="notification-dropdown" role="menu">
               <div className="notification-header">
                 <strong>Notifications</strong>
-<<<<<<< HEAD
-                <button type="button" className="notification-close" onClick={() => setShowNotifications(false)}>
-                  <X size={18} />
-=======
                 <button
                   type="button"
                   className="notification-close"
@@ -87,7 +74,6 @@ export default function TopNavbar({ onToggle }) {
                   aria-label="Close notifications"
                 >
                   ×
->>>>>>> feature/authenticated-theme-pages
                 </button>
               </div>
               <div className="notification-body">
@@ -101,7 +87,7 @@ export default function TopNavbar({ onToggle }) {
                 See all Notifications
               </button>
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="user-menu" ref={menuRef}>
@@ -109,6 +95,8 @@ export default function TopNavbar({ onToggle }) {
             type="button"
             className="user-info"
             onClick={() => setShowMenu((current) => !current)}
+            aria-expanded={showMenu}
+            aria-haspopup="menu"
           >
             <UserAvatar user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} />
             <div className="user-meta">
@@ -121,7 +109,7 @@ export default function TopNavbar({ onToggle }) {
             </div>
           </button>
 
-          {showMenu && (
+          {showMenu ? (
             <div className="account-dropdown" role="menu">
               <div className="account-dropdown-header">
                 <UserAvatar user={userInfo} size={44} />
@@ -152,7 +140,7 @@ export default function TopNavbar({ onToggle }) {
                 </button>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </header>

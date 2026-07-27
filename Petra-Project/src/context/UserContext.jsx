@@ -7,21 +7,23 @@ export const UserContext = createContext();
 const defaultStudents = [
   { id: 1, studentName: "Ogunleye Kayode", studentNameLogo: "OK", studentClass: "SS2", studentParentName: "Ogunleye", studentFeeStatus: "Paid", studentStatus: "Active", studentGender: "Male" },
   { id: 2, studentName: "Adebayo Vitor", studentNameLogo: "AV", studentClass: "SS2", studentParentName: "Adebayo", studentFeeStatus: "Unpaid", studentStatus: "Active", studentGender: "Female" },
-  { id: 3, studentName: "Feyishikemi Ifekorode", studentNameLogo: "FI", studentClass: "SS2", studentParentName: "Fakorade", studentFeeStatus: "Partial", studentStatus: "Active", studentGender: "Female" }
+  { id: 3, studentName: "Feyishikemi Ifekorode", studentNameLogo: "FI", studentClass: "SS2", studentParentName: "Fakorade", studentFeeStatus: "Partial", studentStatus: "Active", studentGender: "Female" },
 ];
 
 export function UserProvider({ children }) {
   const [userInfo, setUserInfo] = useState(() => {
     try {
       const cached = window.localStorage.getItem("petra_user_info");
-      return cached ? normalizeUser(JSON.parse(cached)) : normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
+      return cached
+        ? normalizeUser(JSON.parse(cached))
+        : normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
     } catch {
       return normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
     }
   });
-  
   const [authReady, setAuthReady] = useState(false);
   const [students, setStudents] = useState(defaultStudents);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
     window.localStorage.setItem("petra_user_info", JSON.stringify(userInfo));
@@ -29,22 +31,23 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     let active = true;
-    authApi.me()
+
+    authApi
+      .me()
       .then((response) => {
         if (!active) return;
-        setUserInfo((current) => normalizeUser({
-          ...current,
-          ...response.user,
-          profileImage: response.user?.profileImage || response.user?.profilePicture || current.profileImage,
-          // FIXED: Use API total if available, otherwise fallback
-          totalStudent: response.user?.totalStudent ?? defaultStudents.length, 
-        }));
+        setAuthError(null);
+        setUserInfo((current) =>
+          normalizeUser({
+            ...current,
+            ...response.user,
+            profileImage: response.user?.profileImage || response.user?.profilePicture || current.profileImage,
+            totalStudent: response.user?.totalStudent ?? defaultStudents.length,
+          }),
+        );
       })
-      .catch(() => {
+      .catch((error) => {
         if (!active) return;
-<<<<<<< HEAD
-        setUserInfo((current) => normalizeUser({ ...current, totalStudent: defaultStudents.length }));
-=======
         setAuthError(error);
         if (error?.status === 401) {
           window.localStorage.removeItem("petra_user_info");
@@ -55,23 +58,24 @@ export function UserProvider({ children }) {
             totalStudent: defaultStudents.length,
           }),
         );
->>>>>>> feature/authenticated-theme-pages
       })
       .finally(() => {
         if (active) setAuthReady(true);
       });
 
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   const userInfoWithTotals = useMemo(
     () => ({ ...userInfo, totalStudent: students.length }),
-    [userInfo, students.length]
+    [userInfo, students.length],
   );
 
   const value = useMemo(
-    () => ({ userInfo: userInfoWithTotals, setUserInfo, students, setStudents, authReady }),
-    [userInfoWithTotals, students, authReady]
+    () => ({ userInfo: userInfoWithTotals, setUserInfo, students, setStudents, authReady, authError }),
+    [userInfoWithTotals, students, authReady, authError],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
