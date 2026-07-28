@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel.js";
+import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
 
 const extractToken = (req) => {
   const authHeader = req.get("authorization") || "";
@@ -45,6 +46,24 @@ const resolveTokenClaims = (decoded = {}) => {
   const email = normalizeId(decoded.email || decoded.user?.email || decoded.data?.email);
 
   return { userId, email };
+};
+
+const requireRole = (allowedRoles = []) => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, user not found",
+    });
+  }
+
+  if (!hasRoleAccess(req.user, allowedRoles)) {
+    return res.status(403).json({
+      success: false,
+      message: "Not authorized, insufficient permissions",
+    });
+  }
+
+  return next();
 };
 
 export const protect = async (req, res, next) => {
@@ -103,24 +122,9 @@ export const protect = async (req, res, next) => {
   }
 };
 
-export const requirePrincipal = (req, res, next) => {
-  if (req.user?.role !== "principal") {
-    return res.status(403).json({
-      success: false,
-      message: "Not authorized, insufficient permissions",
-    });
-  }
+export const requirePrincipal = requireRole(["principal"]);
+export const requireTeacher = requireRole(["teacher"]);
+export const requireParent = requireRole(["parent"]);
+export const requireStudent = requireRole(["student"]);
 
-  return next();
-};
-
-export const requireTeacher = (req, res, next) => {
-  if (req.user?.role !== "staff") {
-    return res.status(403).json({
-      success: false,
-      message: "Not authorized, teacher access required",
-    });
-  }
-
-  return next();
-};
+export { requireRole };

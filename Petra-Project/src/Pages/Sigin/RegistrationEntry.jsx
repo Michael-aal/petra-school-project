@@ -5,22 +5,22 @@ import "../../Styles/Sigin/auth.css";
 
 const options = [
   {
-    title: "Register School",
-    description: "Create a new school account for your institution.",
-    href: "/register",
-    icon: Building2,
+    title: "Parent",
+    description: "Register as a parent to monitor your child's academic progress, attendance, payments, and school activities.",
+    href: "/register/parent",
+    icon: UserRound,
   },
   {
-    title: "Staff Registration",
-    description: "Teachers and staff should activate accounts using the code from the school administrator.",
-    href: "/staff/register",
+    title: "Staff",
+    description: "Register as a staff member to manage classes, attendance, assessments, and other assigned responsibilities.",
+    href: "/register/staff",
     icon: Users,
   },
   {
-    title: "Parent Registration",
-    description: "Parents can create an account to access child information after the school links the student.",
-    href: "/parent/register",
-    icon: UserRound,
+    title: "School Administrator",
+    description: "Register your school and manage staff, students, parents, finance, academics, and school operations.",
+    href: "/register/admin",
+    icon: Building2,
   },
 ];
 
@@ -28,11 +28,15 @@ export default function RegistrationEntry() {
   return (
     <AuthShell
       eyebrow="Choose your path"
-      title="Choose Registration Type"
-      subtitle="Select how you would like to join Petra School Management System."
-      footnote="Already have an account? Continue to the Login page."
+      title="Choose Your Registration Type"
+      subtitle="Select how you want to register to continue."
+      footnote="Already have an account? Sign in below."
     >
       <div className="auth-form">
+        <Link to="/" className="auth-link" style={{ marginBottom: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+          ← Back to Home
+        </Link>
+
         <div className="registration-choice-grid">
           {options.map((item) => {
             const Icon = item.icon;
@@ -52,7 +56,7 @@ export default function RegistrationEntry() {
         </div>
 
         <p className="auth-switch">
-          Already have an account? <Link to="/signin">Login</Link>
+          Already have an account? <Link to="/signin">Sign In</Link>
         </p>
       </div>
     </AuthShell>

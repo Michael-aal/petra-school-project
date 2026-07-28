@@ -62,6 +62,10 @@ export const authApi = {
     request("/api/auth/staff/invitations", {
       method: "GET",
     }),
+  staffInvitationDetails: (token) =>
+    request(`/api/auth/staff/invitations/${encodeURIComponent(token)}`, {
+      method: "GET",
+    }),
   createStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations", payload),
   revokeStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations/revoke", payload),
   regenerateStaffInvitationCode: (payload) => authRequest("/api/auth/staff/invitations/regenerate", payload),

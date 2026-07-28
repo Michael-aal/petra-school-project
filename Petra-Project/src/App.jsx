@@ -14,6 +14,7 @@ import Register from "./Pages/Sigin/Register";
 import RegistrationEntry from "./Pages/Sigin/RegistrationEntry";
 import StaffRegister from "./Pages/Sigin/StaffRegister";
 import ParentRegister from "./Pages/Sigin/ParentRegister";
+import AdminRegister from "./Pages/Sigin/AdminRegister";
 import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
 import GetStarted from "./Pages/DashboardLayout/pages/GetStarted";
 import RoleDashboardShell from "./Pages/DashboardLayout/RoleDashboardShell";
@@ -149,8 +150,13 @@ function App() {
     <Router>
       <Routes>
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/get-started" element={<Navigate to="/signin" replace />} />
+        <Route path="/register" element={<RegistrationEntry />} />
+        <Route path="/register/select" element={<RegistrationEntry />} />
+        <Route path="/register/admin" element={<AdminRegister />} />
+        <Route path="/register/parent" element={<ParentRegister />} />
+        <Route path="/register/staff" element={<StaffRegister />} />
+        <Route path="/register/teacher" element={<Register rolePreset="teacher" />} />
+        <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/solution" element={<Solution />} />

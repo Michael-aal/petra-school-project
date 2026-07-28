@@ -71,6 +71,15 @@ export const listStaffInvitations = async (_req, res, next) => {
   }
 };
 
+export const getStaffInvitation = async (req, res, next) => {
+  try {
+    const invitation = await authService.getStaffInvitation(req.params.token);
+    return res.status(200).json({ success: true, invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const revokeStaffInvitation = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);

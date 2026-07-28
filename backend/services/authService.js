@@ -2,14 +2,25 @@ import { userModel } from "../models/userModel.js";
 import { hashPassword } from "../utils/hashPassword.js";
 import { comparePassword } from "../utils/comparePassword.js";
 import { generateToken } from "../utils/generateToken.js";
+import { normalizeRole } from "../utils/roleUtils.js";
 import crypto from "crypto";
 
-const normalizeRole = (role = "") => {
-  const normalized = String(role || "").trim().toLowerCase();
-  if (normalized === "admin" || normalized === "principal") return "principal";
-  if (normalized === "teacher" || normalized === "staff") return "staff";
-  if (normalized === "parent" || normalized === "student") return "parent";
-  return "parent";
+const resolvePublicRole = (role) => {
+  const normalizedRole = normalizeRole(role);
+
+  if (normalizedRole === "super_admin") {
+    const error = new Error("Super Admin accounts cannot be created through public registration");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (!["student", "teacher", "parent", "principal"].includes(normalizedRole)) {
+    const error = new Error("Invalid role selected");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return normalizedRole;
 };
 
 const normalizeUsername = (username = "") =>
@@ -37,7 +48,8 @@ const buildPasswordError = (message) => {
 
 const validatePasswordStrength = (password = "") => {
   const value = String(password || "");
-  if (value.length < 12) throw buildPasswordError("Password must be at least 12 characters long");
+  if (value.length < 8) throw buildPasswordError("Password must be at least 8 characters long");
+  if (value.length > 128) throw buildPasswordError("Password must be at most 128 characters long");
   if (!/[A-Z]/.test(value)) throw buildPasswordError("Password must include at least one uppercase letter");
   if (!/[a-z]/.test(value)) throw buildPasswordError("Password must include at least one lowercase letter");
   if (!/[0-9]/.test(value)) throw buildPasswordError("Password must include at least one number");
@@ -102,6 +114,7 @@ export const authService = {
     fullName,
     email,
     password,
+    confirmPassword,
     phone,
     institution,
     institutionType,
@@ -111,11 +124,7 @@ export const authService = {
     role,
     ...rest
   }) => {
-    if (normalizeRole(role) === "staff") {
-      const error = new Error("Staff accounts must be created through an invitation");
-      error.statusCode = 403;
-      throw error;
-    }
+    const resolvedRole = resolvePublicRole(role);
     validatePasswordStrength(password);
 
     const normalizedUsername = normalizeUsername(username || `${String(email || "").split("@")[0]}`);
@@ -174,7 +183,7 @@ export const authService = {
       state,
       city,
       hearAbout,
-      role: normalizeRole(role),
+      role: resolvedRole,
       ...rest,
     });
 
@@ -267,6 +276,29 @@ export const authService = {
   },
 
   listStaffInvitations: async () => userModel.listStaffInvitations(),
+
+  getStaffInvitation: async (registrationCode) => {
+    const invitation = await userModel.findStaffInvitationByCode(registrationCode);
+    if (!invitation) {
+      const error = new Error("Staff invitation not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (invitation.status === "used") {
+      const error = new Error("Registration code has already been used");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    if (invitation.status === "revoked") {
+      const error = new Error("Registration code has been revoked");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return invitation;
+  },
 
   revokeStaffInvitation: async ({ registrationCode }) => {
     const invitation = await userModel.findStaffInvitationByCode(registrationCode);
@@ -364,12 +396,19 @@ export const authService = {
     };
   },
 
-  registerParent: async ({ fullName, email, password, phone }) => {
+  registerParent: async ({ fullName, email, password, phone, role }) => {
     validatePasswordStrength(password);
     const { firstName, lastName } = getNameParts(fullName);
     const normalizedEmail = String(email || "").trim().toLowerCase();
     const normalizedPhone = String(phone || "").trim() || null;
     const normalizedUsername = normalizeUsername(normalizedEmail.split("@")[0]);
+    const selectedRole = normalizeRole(role || "parent");
+
+    if (selectedRole === "super_admin") {
+      const error = new Error("Super admin accounts cannot be created through public registration");
+      error.statusCode = 403;
+      throw error;
+    }
 
     const duplicateChecks = await Promise.all([
       userModel.findByEmail(normalizedEmail),
@@ -400,7 +439,7 @@ export const authService = {
       email: normalizedEmail,
       password: await hashPassword(password),
       phone: normalizedPhone,
-      role: "parent",
+      role: selectedRole,
       accountStatus: "active",
     });
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role }) };

@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Eye, EyeOff, LoaderCircle, Mail, Lock, UserRound, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
+import { UserContext } from "../../context/UserContext";
 import { authApi, writeAuthToken } from "../../services/authApi";
-import { normalizeRole } from "../../utils/roleAccess";
+import { normalizeUser } from "../../utils/userProfile";
+import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = { fullName: "", email: "", phone: "", password: "", confirmPassword: "" };
 
 export default function ParentRegister() {
+  const { setUserInfo } = useContext(UserContext);
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,9 +44,15 @@ export default function ParentRegister() {
     if (Object.keys(nextErrors).length) return;
     setLoading(true);
     try {
-      const response = await authApi.parentRegister(form);
+      const response = await authApi.parentRegister({ ...form, role: "parent" });
       writeAuthToken(response?.token);
-      navigate("/signin", { replace: true });
+      setUserInfo(
+        normalizeUser({
+          ...(response?.user || {}),
+          role: normalizeRole(response?.user?.role || "parent"),
+        }),
+      );
+      navigate(getDashboardPathForRole(response?.user?.role || "parent"), { replace: true });
     } catch (error) {
       setServerError(error.data?.message || error.message || "Registration failed");
     } finally {

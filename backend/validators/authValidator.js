@@ -2,7 +2,8 @@ import { z } from "zod";
 
 const passwordSchema = z
   .string()
-  .min(12, "Password must be at least 12 characters long")
+  .min(8, "Password must be at least 8 characters long")
+  .max(128, "Password must be at most 128 characters long")
   .regex(/[A-Z]/, "Password must include at least one uppercase letter")
   .regex(/[a-z]/, "Password must include at least one lowercase letter")
   .regex(/[0-9]/, "Password must include at least one number")
@@ -39,8 +40,8 @@ const registerSchema = z
     email: emailSchema,
     phone: phoneSchema.optional().or(z.literal("")),
     password: passwordSchema,
-    confirmPassword: z.string().min(12, "Confirm password must match the password policy"),
-    role: z.enum(["principal", "staff", "parent"]),
+    confirmPassword: z.string().min(8, "Confirm password must match the password policy").max(128, "Confirm password must be at most 128 characters long"),
+    role: z.string().trim().min(1, "Please select a role").transform((value) => value.toLowerCase()),
     institution: z.string().trim().max(120, "Institution name is too long").optional().or(z.literal("")),
     institutionType: z.string().trim().max(60, "Institution type is too long").optional().or(z.literal("")),
     state: z.string().trim().max(60, "State is too long").optional().or(z.literal("")),
@@ -48,6 +49,16 @@ const registerSchema = z
     hearAbout: z.string().trim().max(120, "This field is too long").optional().or(z.literal("")),
   })
   .superRefine((value, ctx) => {
+    const allowedRoles = ["student", "teacher", "parent", "principal", "school_admin", "school administrator", "school-admin", "schooladministrator", "school_administrator"];
+
+    if (!allowedRoles.includes(value.role)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["role"],
+        message: "Please select a supported role",
+      });
+    }
+
     if (value.password !== value.confirmPassword) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -58,8 +69,18 @@ const registerSchema = z
   });
 
 const validateWithZod = (schema) => (req, res, next) => {
+  // Debug: log incoming request body to help identify missing/undefined fields
+  // (temporary - remove after fixing the validation issue)
+  try {
+    console.log("[ZOD VALIDATION] incoming request body:", JSON.stringify(req.body));
+  } catch (err) {
+    console.log("[ZOD VALIDATION] incoming request body (unserializable):", req.body);
+  }
+
   const result = schema.safeParse(req.body);
   if (!result.success) {
+    // Log detailed zod error to help identify which field failed validation
+    console.error("[ZOD VALIDATION] errors:", result.error.format ? result.error.format() : result.error);
     return res.status(400).json({
       success: false,
       message: "Validation failed",

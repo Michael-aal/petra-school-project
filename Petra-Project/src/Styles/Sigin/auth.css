@@ -436,6 +436,16 @@ body.dark .auth-alert {
   color: var(--text-dark);
 }
 
+/* Prevent flex children from growing beyond container and causing horizontal scroll */
+.auth-input-wrap input,
+.auth-input-wrap select,
+.auth-input-wrap textarea,
+.auth-input-wrap input[type="file"] {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .auth-input-wrap input::placeholder {
   color: var(--text-muted);
 }
@@ -573,6 +583,13 @@ body.dark .auth-link {
   background: var(--surface-muted);
   display: grid;
   gap: 10px;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.registration-choice-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .registration-choice-icon {
@@ -621,6 +638,7 @@ body.dark .auth-link {
 @media (max-width: 640px) {
   .auth-page {
     padding: 6rem 0.9rem 1.2rem;
+    overflow-x: hidden;
   }
 
   .auth-visual,

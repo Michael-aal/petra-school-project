@@ -7,15 +7,15 @@ import {
   transferWallet,
   initializePaystack,
 } from "../controllers/walletController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, requireRole } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-router.get("/", protect, getWallet);
-router.get("/transactions", protect, getTransactions);
-router.get("/statement", protect, getStatement);
-router.post("/withdraw", protect, withdrawWallet);
-router.post("/transfer", protect, transferWallet);
-router.post("/paystack/initialize", protect, initializePaystack);
+router.get("/", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), getWallet);
+router.get("/transactions", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), getTransactions);
+router.get("/statement", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), getStatement);
+router.post("/withdraw", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), withdrawWallet);
+router.post("/transfer", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), transferWallet);
+router.post("/paystack/initialize", protect, requireRole(["student", "teacher", "parent", "principal", "super_admin"]), initializePaystack);
 
 export default router;

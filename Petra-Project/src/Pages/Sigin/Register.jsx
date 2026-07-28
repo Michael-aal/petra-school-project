@@ -10,7 +10,6 @@ import "../../Styles/Sigin/auth.css";
 
 const initialForm = {
   firstName: "",
-  middleName: "",
   lastName: "",
   username: "",
   email: "",
@@ -25,9 +24,9 @@ const initialForm = {
   role: "",
 };
 
-export default function Register() {
+export default function Register({ rolePreset = "" }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(() => ({ ...initialForm, role: rolePreset || "" }));
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,6 +44,10 @@ export default function Register() {
       })
       .catch(() => setCheckingSession(false));
   }, [navigate]);
+
+  useEffect(() => {
+    setForm((current) => ({ ...current, role: rolePreset || current.role }));
+  }, [rolePreset]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -110,9 +113,10 @@ export default function Register() {
     if (!form.lastName.trim()) nextErrors.lastName = "Last name is required.";
     if (!form.username.trim()) nextErrors.username = "Username is required.";
     if (!form.email.trim()) nextErrors.email = "Email address is required.";
-    if (!form.role) nextErrors.role = "Please select a role.";
+    if (!form.role && !rolePreset) nextErrors.role = "Please select a role.";
     if (!form.password) nextErrors.password = "Password is required.";
-    if (form.password.length < 12) nextErrors.password = "Password must be at least 12 characters.";
+    if (form.password.length < 8) nextErrors.password = "Password must be at least 8 characters.";
+    if (form.password.length > 128) nextErrors.password = "Password must be at most 128 characters.";
     if (!form.confirmPassword) nextErrors.confirmPassword = "Please confirm your password.";
     if (form.password !== form.confirmPassword) {
       nextErrors.confirmPassword = "Passwords do not match.";
@@ -153,11 +157,11 @@ export default function Register() {
     try {
       const response = await authApi.register({
         firstName: form.firstName,
-        middleName: form.middleName,
         lastName: form.lastName,
         username: form.username,
-        fullName: [form.firstName, form.middleName, form.lastName].filter(Boolean).join(" "),
+        fullName: [form.firstName, form.lastName].filter(Boolean).join(" "),
         email: form.email,
+        confirmPassword: form.confirmPassword,
         password: form.password,
         phone: form.phone,
         institution: form.institution,
@@ -165,27 +169,28 @@ export default function Register() {
         state: form.state,
         city: form.city,
         hearAbout: form.hearAbout,
-        role: form.role,
+        role: rolePreset || form.role,
       });
 
       const registeredUser = response?.user || {};
       writeAuthToken(response?.token);
-      const storedFullName = registeredUser.fullName || [form.firstName, form.middleName, form.lastName].filter(Boolean).join(" ");
+      const selectedRole = normalizeRole(registeredUser.role || form.role || "student");
+      const storedFullName = registeredUser.fullName || [form.firstName, form.lastName].filter(Boolean).join(" ");
       const storedEmail = registeredUser.email || form.email;
 
       persistRegistrationUser({
         ...registeredUser,
         firstName: registeredUser.firstName || form.firstName,
-        middleName: registeredUser.middleName || form.middleName,
         lastName: registeredUser.lastName || form.lastName,
         username: registeredUser.username || form.username,
         fullName: storedFullName,
         email: storedEmail,
+        role: selectedRole,
       });
       navigate(
-        form.role === "parent" || form.role === "student"
+        selectedRole === "parent" || selectedRole === "student"
           ? "/portal/dashboard"
-          : form.role === "teacher" || form.role === "staff"
+          : selectedRole === "teacher"
             ? "/staff/dashboard"
             : "/dashboard",
         { replace: true },
@@ -216,8 +221,8 @@ export default function Register() {
   return (
     <AuthShell
       eyebrow="Create your account"
-      title="Join Petra School"
-      subtitle="Set up your account to access the school dashboard, modules, and secure tools."
+      title={rolePreset === "principal" ? "Register as School Administrator" : rolePreset === "teacher" ? "Register as Staff" : "Join Petra School"}
+      subtitle={rolePreset === "principal" ? "Create your school administration account and start managing your institution." : rolePreset === "teacher" ? "Create your staff account and begin managing your school responsibilities." : "Set up your account to access the school dashboard, modules, and secure tools."}
       footnote="Already enrolled? Use the login link below to return to your account."
     >
       <form className="auth-form" onSubmit={handleSubmit}>
@@ -237,13 +242,7 @@ export default function Register() {
             </div>
             {errors.firstName ? <small>{errors.firstName}</small> : null}
           </label>
-          <label className="auth-field" style={{ flex: 1 }}>
-            <span>Middle Name</span>
-            <div className="auth-input-wrap">
-              <UserRound size={18} />
-              <input name="middleName" type="text" placeholder="Middle name (optional)" value={form.middleName} onChange={handleChange} autoComplete="additional-name" />
-            </div>
-          </label>
+
           <label className="auth-field" style={{ flex: 1 }}>
             <span>Last Name</span>
             <div className="auth-input-wrap">
@@ -285,19 +284,30 @@ export default function Register() {
           </div>
         </label>
 
-        <label className="auth-field">
-          <span>Role</span>
-          <div className="auth-input-wrap">
-            <UserRound size={18} />
-            <select name="role" value={form.role} onChange={handleChange}>
-              <option value="">Select Role</option>
-              <option value="principal">Admin / Principal</option>
-              <option value="staff">Staff / Teacher</option>
-              <option value="parent">Parent / Student</option>
-            </select>
+        {rolePreset ? (
+          <div className="auth-field">
+            <span>Registration Type</span>
+            <div className="auth-input-wrap" style={{ justifyContent: "space-between", padding: "0 14px" }}>
+              <span>{rolePreset === "principal" ? "School Administrator" : "Staff / Teacher"}</span>
+              <span style={{ color: "var(--primary)", fontWeight: 700, fontSize: "0.9rem" }}>Selected</span>
+            </div>
           </div>
-          {errors.role ? <small>{errors.role}</small> : null}
-        </label>
+        ) : (
+          <label className="auth-field">
+            <span>Register As</span>
+            <div className="auth-input-wrap">
+              <UserRound size={18} />
+              <select name="role" value={form.role} onChange={handleChange}>
+                <option value="">Select Role</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+                <option value="principal">School Administrator</option>
+              </select>
+            </div>
+            {errors.role ? <small>{errors.role}</small> : null}
+          </label>
+        )}
 
         <label className="auth-field">
           <span>Name of Institution</span>

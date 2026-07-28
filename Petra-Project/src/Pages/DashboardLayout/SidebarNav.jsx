@@ -29,7 +29,9 @@ import {
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
-import { getDisplayName } from "../../utils/userProfile";
+import { useNavigate } from "react-router-dom";
+import { authApi } from "../../services/authApi";
+import { getDisplayName, normalizeUser } from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
 
 const navGroups = [
@@ -136,7 +138,8 @@ const portalNavGroups = [
 
 export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const location = useLocation();
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate();
   const schoolName = userInfo?.institution?.split(" ")[0] ?? "Petra";
   const navItems = location.pathname.startsWith("/staff")
     ? staffNavGroups
@@ -165,6 +168,22 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
     return location.pathname.startsWith(href);
   };
 
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch (err) {
+      // ignore errors during logout
+    } finally {
+      window.localStorage.removeItem("petra_user_info");
+      try {
+        setUserInfo(normalizeUser({}));
+      } catch (e) {
+        // ignore
+      }
+      navigate("/signin", { replace: true });
+    }
+  };
+
   return (
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
@@ -183,6 +202,16 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
       <nav className="sidebar-nav">
         {navItems.map((item) => {
           if (!item.children) {
+            // Render a logout button that calls the logout handler instead of a plain link
+            if (item.label === "Logout") {
+              return (
+                <button key={item.label} onClick={() => { if (onNavigate) onNavigate(); handleLogout(); }} className={`sidebar-link`}>
+                  <item.icon className="sidebar-icon" />
+                  <span className="sidebar-label">{item.label}</span>
+                </button>
+              );
+            }
+
             return (
               <NavLink
                 key={item.label}
