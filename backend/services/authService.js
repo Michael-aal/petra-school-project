@@ -244,14 +244,17 @@ export const authService = {
   },
 
   createStaffInvitation: async ({ staffName, email, role, department, assignedClass, assignedSubjects, employmentStatus, generatedBy }) => {
-    const existingUser = await userModel.findByEmail(email);
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedStaffName = String(staffName || "").trim();
+
+    const existingUser = await userModel.findByEmail(normalizedEmail);
     if (existingUser) {
       const error = new Error("Email already in use");
       error.statusCode = 409;
       throw error;
     }
 
-    const existingInvitation = await userModel.findStaffInvitationByEmail(email);
+    const existingInvitation = await userModel.findStaffInvitationByEmail(normalizedEmail);
     if (existingInvitation) {
       const error = new Error("A staff invitation already exists for this email");
       error.statusCode = 409;
@@ -260,8 +263,8 @@ export const authService = {
 
     const registrationCode = makeInvitationCode();
     const invitation = await userModel.createStaffInvitation({
-      staffName,
-      email,
+      staffName: normalizedStaffName,
+      email: normalizedEmail,
       role,
       department,
       assignedClass: assignedClass || null,

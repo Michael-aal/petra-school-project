@@ -80,14 +80,24 @@ const validateWithZod = (schema) => (req, res, next) => {
   const result = schema.safeParse(req.body);
   if (!result.success) {
     // Log detailed zod error to help identify which field failed validation
-    console.error("[ZOD VALIDATION] errors:", result.error.format ? result.error.format() : result.error);
+    const formatted = result.error.format ? result.error.format() : result.error;
+    console.error("[ZOD VALIDATION] errors:", formatted);
+
+    const issues = result.error.issues.map((issue) => ({
+      path: issue.path.join(".") || "body",
+      msg: issue.message,
+    }));
+
+    // Build a short human-friendly message using the first issue
+    const first = issues[0];
+    const topMessage = first ? `${first.path}: ${first.msg}` : "Validation failed";
+
     return res.status(400).json({
       success: false,
-      message: "Validation failed",
-      errors: result.error.issues.map((issue) => ({
-        path: issue.path.join(".") || "body",
-        msg: issue.message,
-      })),
+      message: topMessage,
+      errors: issues,
+      // include a debug object during development to aid diagnosis (remove in production)
+      debug: process.env.NODE_ENV === "development" ? { zod: formatted } : undefined,
     });
   }
 

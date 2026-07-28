@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, LogOut, Menu, Settings, User as UserIcon } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
-import { getDisplayName, getFirstName } from "../../utils/userProfile";
+import { getDisplayName, getFirstName, normalizeUser } from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
 
 export default function TopNavbar({ onToggle }) {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const [showMenu, setShowMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const menuRef = useRef(null);
@@ -38,6 +38,11 @@ export default function TopNavbar({ onToggle }) {
       await authApi.logout();
     } finally {
       window.localStorage.removeItem("petra_user_info");
+      try {
+        setUserInfo(normalizeUser({}));
+      } catch (e) {
+        // ignore
+      }
       navigate("/signin", { replace: true });
     }
   };

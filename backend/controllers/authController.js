@@ -11,10 +11,13 @@ const authCookieOptions = {
 const handleValidation = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    const issues = errors.array().map((e) => ({ param: e.param, msg: e.msg }));
+    const first = issues[0];
+    const topMessage = first ? `${first.param}: ${first.msg}` : "Validation failed";
     return res.status(400).json({
       success: false,
-      message: "Validation failed",
-      errors: errors.array(),
+      message: topMessage,
+      errors: issues,
     });
   }
   return null;
@@ -54,7 +57,8 @@ export const createStaffInvitation = async (req, res, next) => {
     if (validationResponse) return validationResponse;
     const result = await authService.createStaffInvitation({
       ...req.body,
-      generatedBy: req.user?.fullName || req.user?.email || req.user?.id,
+      // store the administrative user id as the generator for reliable association
+      generatedBy: req.user?.id || req.user?.email || req.user?.fullName,
     });
     return res.status(201).json({ success: true, message: "Staff invitation created successfully", invitation: result });
   } catch (error) {
