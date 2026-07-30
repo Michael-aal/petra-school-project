@@ -4,7 +4,6 @@ import {
   CalendarDays,
   ClipboardCheck,
   FileText,
-  GraduationCap,
   LayoutDashboard,
   MessageSquare,
   Settings,

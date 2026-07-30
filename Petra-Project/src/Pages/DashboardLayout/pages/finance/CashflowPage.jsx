@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RefreshCcw, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react";
+import { RefreshCcw, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { financeApi } from "../../../../services/financeApi";
 import "../page-styles/CashflowPage.css";
 

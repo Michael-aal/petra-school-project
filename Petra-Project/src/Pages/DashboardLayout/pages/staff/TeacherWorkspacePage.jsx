@@ -9,7 +9,6 @@ import {
   ClipboardCheck,
   FileText,
   GraduationCap,
-  Loader2,
   RefreshCw,
   UserCircle2,
   Users,
@@ -77,7 +76,6 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
   const [resultForm, setResultForm] = useState(initialResultForm);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [genderFilter, setGenderFilter] = useState("All");
   const [attendanceFilter, setAttendanceFilter] = useState("All");
@@ -90,11 +88,7 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
   const assignedClasses = useMemo(() => (dashboard?.assignedClasses?.length ? dashboard.assignedClasses : profile?.classAssigned ? [profile.classAssigned] : []), [dashboard, profile]);
 
   const loadData = async (showSpinner = true) => {
-    if (showSpinner) {
-      setLoading(true);
-    } else {
-      setRefreshing(true);
-    }
+    if (showSpinner) setLoading(true);
 
     try {
       const [dashboardResponse, classesResponse, studentsResponse, attendanceResponse, assessmentsResponse, resultsResponse, announcementsResponse, profileResponse] = await Promise.all([
@@ -129,7 +123,6 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
       setError(requestError.message || "Unable to load your teacher dashboard right now.");
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   };
 

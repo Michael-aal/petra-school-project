@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, RefreshCcw, Save, Trash2 } from "lucide-react";
+import { RefreshCcw, Save, Trash2 } from "lucide-react";
 import { academicApi } from "../../../../services/academicApi";
 import "../page-styles/TimetablePage.css";
 

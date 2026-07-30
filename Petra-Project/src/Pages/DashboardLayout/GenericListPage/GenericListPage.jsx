@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  Search, X, MoreHorizontal, Eye, Trash2, PlusCircle, FilterIcon
+  Search, X, MoreHorizontal, PlusCircle, FilterIcon
 } from "lucide-react";
 import "./GenericListPage.css";
 

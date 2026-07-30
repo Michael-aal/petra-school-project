@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowRight, Bell, Lock, Moon, Settings2, Shield, Sun, User2, X } from "lucide-react";
+import { AlertTriangle, Bell, Lock, Moon, Settings2, Shield, Sun, User2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../../context/UserContext";
 import { authApi, clearAuthToken } from "../../../services/authApi";

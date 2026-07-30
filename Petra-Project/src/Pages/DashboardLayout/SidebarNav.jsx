@@ -171,13 +171,13 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const handleLogout = async () => {
     try {
       await authApi.logout();
-    } catch (err) {
+    } catch {
       // ignore errors during logout
     } finally {
       window.localStorage.removeItem("petra_user_info");
       try {
         setUserInfo(normalizeUser({}));
-      } catch (e) {
+      } catch {
         // ignore
       }
       navigate("/signin", { replace: true });

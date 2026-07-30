@@ -2,7 +2,7 @@ import '../page-styles/SupportPage.css';
  import { useState } from "react";
 import { 
   HelpCircle, MessageSquare, Mail, Phone, BookOpen, ChevronDown, 
-  Send, AlertCircle, CheckCircle2, Clock, Search, LifeBuoy 
+  Send, AlertCircle, CheckCircle2, Clock, LifeBuoy 
 } from "lucide-react";
 
 // Mock FAQ Data

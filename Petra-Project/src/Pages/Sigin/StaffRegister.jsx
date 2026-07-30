@@ -28,7 +28,6 @@ export default function StaffRegister() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
-  const [invitation, setInvitation] = useState(null);
   const [invitationError, setInvitationError] = useState("");
   const [invitationLoading, setInvitationLoading] = useState(false);
   const navigate = useNavigate();
@@ -50,7 +49,6 @@ export default function StaffRegister() {
       setInvitationLoading(true);
       try {
         const response = await authApi.staffInvitationDetails(code);
-        setInvitation(response?.invitation || null);
         setForm((current) => ({
           ...current,
           invitationCode: code,
@@ -87,7 +85,6 @@ export default function StaffRegister() {
     setInvitationLoading(true);
     try {
       const response = await authApi.staffInvitationDetails(code.trim());
-      setInvitation(response?.invitation || null);
       setForm((current) => ({
         ...current,
         fullName: response?.invitation?.staffName || "",
@@ -103,7 +100,6 @@ export default function StaffRegister() {
       });
     } catch (error) {
       setErrors((e) => ({ ...e, token: error.data?.message || error.message || "Invitation invalid or expired." }));
-      setInvitation(null);
     } finally {
       setInvitationLoading(false);
     }
@@ -156,7 +152,7 @@ export default function StaffRegister() {
         });
         try {
           payload.profilePicture = await toBase64(form.profilePicture);
-        } catch (err) {
+        } catch {
           payload.profilePicture = "";
         }
       } else {

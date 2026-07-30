@@ -40,7 +40,7 @@ export default function TopNavbar({ onToggle }) {
       window.localStorage.removeItem("petra_user_info");
       try {
         setUserInfo(normalizeUser({}));
-      } catch (e) {
+      } catch {
         // ignore
       }
       navigate("/signin", { replace: true });

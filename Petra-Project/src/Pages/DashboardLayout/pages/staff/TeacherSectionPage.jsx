@@ -8,6 +8,7 @@ import {
   FileText,
   GraduationCap,
   MessageSquare,
+  School,
   Settings,
   Sparkles,
   UserCircle2,
@@ -17,7 +18,7 @@ import { useContext } from "react";
 import { default as DeleteAccountButton } from "../../../../components/DeleteAccountButton";
 import UserAvatar from "../../../../components/UserAvatar";
 import { UserContext } from "../../../../context/UserContext";
-import { getDisplayName, getUserInitials } from "../../../../utils/userProfile";
+import { getDisplayName } from "../../../../utils/userProfile";
 import "../page-styles/TeacherDashboard.css";
 
 const routeConfig = {

@@ -1,16 +1,10 @@
 import {
   ArrowRight,
-  Bell,
   BookOpen,
-  Briefcase,
-  CalendarDays,
-  CheckCircle2,
   ClipboardCheck,
   FileText,
   GraduationCap,
   MessageSquare,
-  Receipt,
-  School,
   UserCircle2,
   Wallet,
 } from "lucide-react";

@@ -1,4 +1,4 @@
-import { Bell, Search, Send, Users, GraduationCap, CreditCard, BookOpen } from "lucide-react";
+import { Bell, Search, Send, Users, CreditCard, BookOpen } from "lucide-react";
 import "../page-styles/NotificationsPage.css";
 
 const notifications = [

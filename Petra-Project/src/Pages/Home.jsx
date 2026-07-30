@@ -1,6 +1,5 @@
-      import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Star, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
+      import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
 import "../Styles/Home.css";
 import MarqueeModule from "react-fast-marquee";
 

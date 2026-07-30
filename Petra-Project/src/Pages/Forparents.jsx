@@ -1,4 +1,4 @@
-import {Users, Smartphone, CreditCard, PiggyBank, GraduationCap, Heart, Clock, CircleCheck, Wallet, ArrowRight } from "lucide-react";
+import {Users, Smartphone, CreditCard, PiggyBank, GraduationCap, Heart, Clock, CircleCheck, ArrowRight } from "lucide-react";
  import { NavLink } from "react-router-dom";
 
   const ForParentBtn =["Download App", "Learn More"] 

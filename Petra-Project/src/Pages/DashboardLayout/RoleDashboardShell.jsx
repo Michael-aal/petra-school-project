@@ -1,8 +1,7 @@
 import { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   ArrowRight,
-  CalendarDays,
   CheckCircle2,
   ClipboardList,
   FileText,

@@ -1,5 +1,5 @@
 import '../page-styles/GatePage.css';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { 
   LogIn, LogOut, ShieldCheck, Clock, Users, Search, 
   AlertTriangle, PlusCircle, ArrowRight 

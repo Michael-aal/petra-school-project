@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import "../../Styles/components/Footer.css";
 import { School, MapPin, Mail, Phone } from "lucide-react";
 

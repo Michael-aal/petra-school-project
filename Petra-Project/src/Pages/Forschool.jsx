@@ -57,8 +57,6 @@ const topSchoolInfo = [
     },
 ]
 
-const Modernie = ["Ready to Modernize Your School?", "Join hundreds of forward-thinking institutions that trust Acceede. Schedule a personalized walkthrough today.", "Book Your Demo"]
-
 export default function ForSchool() {
   return (
     <section className="fsos">
