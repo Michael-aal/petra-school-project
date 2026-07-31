@@ -163,16 +163,16 @@ export default function PaymentsPage() {
           <h1>Payments</h1>
           <p>View, record, edit, and review student payment transactions.</p>
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button type="button" className="dashboard-home-summary-action tone-blue" onClick={() => loadPayments(pagination.page)} disabled={loading}>
-            <RefreshCcw size={14} />
+        <div style={{ display: "flex", gap: 15, flexWrap: "wrap" }}>
+          <button style={{ width: 100 , padding: 10}} type="button" className="dashboard-home-summary-action tone-blue" onClick={() => loadPayments(pagination.page)} disabled={loading}>
+            <RefreshCcw size={20} />
             <span>{loading ? "Loading..." : "Refresh"}</span>
           </button>
-          <button type="button" className="dashboard-home-summary-action tone-teal" onClick={() => window.print()}>
+          <button style={{ width: 100 , padding: 10}} type="button" className="dashboard-home-summary-action tone-teal" onClick={() => window.print()}>
             <Download size={14} />
             <span>Export</span>
           </button>
-          <button type="button" className="dashboard-home-summary-action" onClick={openCreate}>
+          <button style={{ width: 190 , padding: 10}} type="button" className="dashboard-home-summary-action" onClick={openCreate}>
             <Plus size={14} />
             <span>Record Payment</span>
           </button>
