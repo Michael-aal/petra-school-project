@@ -1,4 +1,5 @@
 import { userModel } from "../models/userModel.js";
+import { prisma } from "../config/db.js";
 import { hashPassword } from "../utils/hashPassword.js";
 import { comparePassword } from "../utils/comparePassword.js";
 import { generateToken } from "../utils/generateToken.js";
@@ -93,6 +94,7 @@ const safeUser = (user) => {
     staffClassAssigned: user.staffClassAssigned || "",
     staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [],
     accountStatus: user.accountStatus || "active",
+      schoolId: user.schoolId || null,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     profilePicture: user.profilePicture || "",
@@ -456,7 +458,22 @@ export const authService = {
       throw error;
     }
 
-    return safeUser(user);
+    // include school information when available so the frontend can render school name
+    let school = null;
+    try {
+      if (user.schoolId) {
+        school = await prisma.school.findUnique({ where: { id: Number(user.schoolId) } });
+      }
+    } catch (err) {
+      // ignore DB lookup errors here; frontend will fallback to user's institution field
+      console.error("Failed to load school info for user profile:", err.message);
+    }
+
+    const base = safeUser(user);
+    return {
+      ...base,
+      school: school ? { id: school.id, name: school.name } : null,
+    };
   },
 
   updateProfile: async (userId, payload = {}) => {

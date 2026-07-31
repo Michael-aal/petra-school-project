@@ -82,6 +82,8 @@ export function normalizeUser(user = {}) {
     profileImage: user.profileImage || user.profilePicture || "",
     phoneNumber: user.phoneNumber || user.phone || "",
     institution: user.institution || "",
+    schoolId: user.schoolId || (user.school && user.school.id) || null,
+    schoolName: (user.school && user.school.name) || user.institution || "",
     institutionType: user.institutionType || "",
     state: user.state || "",
     city: user.city || "",
