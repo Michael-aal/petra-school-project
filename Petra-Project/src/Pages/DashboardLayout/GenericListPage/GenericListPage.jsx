@@ -182,7 +182,7 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                         <span className={`status-badge status-${String(item[col.key]).toLowerCase()}`}>
                           {item[col.key]}
                         </span>
-                      ) : col.key === "actions" ? (
+                      )   : col.key === "actions" ? (
                         <div className="dropdown-wrapper" ref={openDropdownId === item.id ? dropdownRef : null}>
                           <button className="action-btn" onClick={() => setOpenDropdownId(openDropdownId === item.id ? null : item.id)}>
                             <MoreHorizontal size={18} />
@@ -191,6 +191,28 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                             <div className="dropdown-menu">
                               {config.actions.map((action, aIdx) => {
                                 const ActionIcon = action.icon;
+
+                                // 1. Handle "Send Link" Action
+                                if (action.type === "sendLink") {
+                                  return (
+                                    <button 
+                                      key={aIdx} 
+                                      className="dropdown-item" 
+                                      onClick={() => {
+                                        const loginUrl = `${window.location.origin}/signin`;
+                                        const subject = `Your Parent Portal Access for ${item.parentName || item.fullName || "Your Child"}`;
+                                        const body = `Hello,\n\nYour school has activated your parent portal. You can now view your children's results, attendance, and fees.\n\nPlease go to: ${loginUrl}\nand log in using this email address: ${item.email}\n\nIf you have any issues, please contact the school admin.`;
+                                        
+                                        window.location.href = `mailto:${item.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                      }}
+                                    >
+                                      <ActionIcon size={16} />
+                                      <span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
+                                // 2. Handle "Delete" Action
                                 if (action.type === "delete") {
                                   return (
                                     <button key={aIdx} className="dropdown-item dropdown-item-danger" onClick={() => handleDelete(item)}>
@@ -198,6 +220,8 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                                     </button>
                                   );
                                 }
+                                
+                                // 3. Handle all other actions (View, Edit, etc.)
                                 return (
                                   <button key={aIdx} className="dropdown-item" onClick={() => handleOpenEdit(item)}>
                                     <ActionIcon size={16} /><span>{action.label}</span>

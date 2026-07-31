@@ -59,6 +59,7 @@ import NotificationsPage from "./Pages/DashboardLayout/pages/communication/Notif
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
+import { UserContext } from "./context/UserContext";
 import {
   BrowserRouter as Router,
   Routes,
@@ -95,6 +96,7 @@ import AssessmentTools from "./Pages/solutions/AssessmentTools";
 import SchoolAnalytics from "./Pages/solutions/SchoolAnalytics";
 import Admissions from "./Pages/solutions/Admissions";
 import CommunicationHub from "./Pages/solutions/CommunicationHub";
+import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLinksPage";
 
 function PublicLayout() {
   return (
@@ -140,6 +142,37 @@ function DashboardLay() {
         </div>
       </div>
     </div>
+  );
+}
+
+function DynamicParentSection(props) {
+  const { userInfo } = useContext(UserContext);
+  const myChildren = userInfo?.children || [];
+
+  // Dynamically build the data based on the real user
+  const dynamicSummaryCards = [
+    { icon: props.icons?.children || School, label: "Children", value: myChildren.length.toString(), meta: "Active learners", tone: "tone-blue" },
+    // Add more dynamic cards here
+  ];
+
+  const dynamicSections = [
+    {
+      title: "Current learner status",
+      items: myChildren.map(child => ({
+        title: child.name,
+        meta: `${child.class} • ${child.teacher || "Assigned Teacher"}`,
+        value: child.status || "On Track"
+      }))
+    }
+  ];
+
+  // Pass the dynamic data into your existing ParentSectionPage
+  return (
+    <ParentSectionPage 
+      {...props} 
+      summaryCards={dynamicSummaryCards}
+      sections={dynamicSections}
+    />
   );
 }
 
@@ -285,7 +318,7 @@ function App() {
             path="/dashboard/communication/support"
             element={<SupportPage />}
           />
-
+          <Route path="/dashboard/students/parent-links" element={<PortalLinksPage />} />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
 
           <Route path="/staff" element={<Navigate to="/staff/dashboard" replace />} />
@@ -302,35 +335,21 @@ function App() {
 
           <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} />
           <Route path="/portal/dashboard" element={<ParentDashboard />} />
-          <Route
-            path="/portal/children"
-            element={parentSection({
-              title: "Children Overview",
-              description: "A calm snapshot of each child’s class, teacher, and current progress.",
-              heroTitle: "Your children at a glance",
-              heroDescription: "Keep track of performance, wellbeing, and next steps without leaving the portal.",
-              heroChips: ["2 children enrolled", "1 needs support", "Weekly check-ins"],
-              summaryCards: [
-                { icon: School, label: "Children", value: "2", meta: "Active learners", tone: "tone-blue" },
-                { icon: BookOpen, label: "Classes", value: "2", meta: "Across two year groups", tone: "tone-teal" },
-                { icon: UserCircle2, label: "Teachers", value: "2", meta: "Connected this term", tone: "tone-rose" },
-              ],
-              sections: [
-                {
-                  title: "Current learner status",
-                  items: [
-                    { title: "Ayo Ogunleye", meta: "SS2A • Mrs. Adeyemi", value: "On Track" },
-                    { title: "Tolu Ogunleye", meta: "JSS1B • Mr. Yusuf", value: "Needs Support" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: FileText, title: "View child profile", meta: "Open the latest school summary" },
-                { icon: MessageSquare, title: "Send a message", meta: "Contact the teacher quickly" },
-              ],
-              footerAction: <DeleteAccountButton />,
-            })}
-          />
+          <Route 
+  path="/portal/children" 
+  element={
+    <DynamicParentSection
+      title="Children Overview"
+      description="A calm snapshot of each child’s class, teacher, and current progress."
+      heroTitle="Your children at a glance"
+      heroDescription="Keep track of performance, wellbeing, and next steps."
+      icons={{ children: School }} // Pass icons if needed
+      actions={[
+        { icon: FileText, title: "View child profile", meta: "Open the latest school summary" },
+      ]}
+    />
+  } 
+/>
           <Route
             path="/portal/attendance"
             element={parentSection({
