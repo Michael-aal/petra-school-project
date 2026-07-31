@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { href, NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   School,
@@ -26,6 +26,7 @@ import {
   PlusCircle,
   X,
   LogOut,
+  ShieldCheck
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -105,6 +106,7 @@ const navGroups = [
       { label: "Support", icon: HelpCircle, href: "/dashboard/communication/support" },
     ],
   },
+  {label: "Links", icon: ShieldCheck, href: "/dashboard/students/parent-links"},
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
