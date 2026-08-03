@@ -1,4 +1,8 @@
 /* Styles for InvoicesPage */
+body{
+  margin: 0px;
+}
+
 .invoices-page{ padding:18px; }
 
 .finance-module-page,
@@ -11,11 +15,13 @@
 .finance-cashflow-list {
   display: grid;
   gap: 16px;
+  padding: 10px;
 }
 
 .module-header {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+  /* font-size: 1px; */
 }
 
 .module-button {
@@ -27,6 +33,7 @@
   border-radius: 14px;
   background: var(--dashboard-accent-gradient);
   color: #fff;
+
   font-weight: 600;
 }
 
@@ -39,7 +46,7 @@
 .module-card {
   border-radius: 18px;
   border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(2, 20, 48, 0.82);
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
 }
 
@@ -50,7 +57,7 @@
 .module-alert-error {
   border-color: rgba(239, 68, 68, 0.24);
   color: #b91c1c;
-  background: rgba(254, 226, 226, 0.72);
+  background: rgba(40, 35, 35, 0.72);
 }
 
 .module-empty {
@@ -96,7 +103,7 @@
 .finance-cashflow-panel {
   border-radius: 18px;
   border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(0, 0, 0, 0.82);
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
   padding: 16px;
 }

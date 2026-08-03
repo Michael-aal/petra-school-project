@@ -29,7 +29,6 @@ export const registerUser = async (req, res, next) => {
     if (validationResponse) return validationResponse;
 
     const result = await authService.register(req.body);
-    res.cookie("petra_token", result.token, authCookieOptions);
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -111,7 +110,6 @@ export const activateStaff = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.activateStaff(req.body);
-    res.cookie("petra_token", result.token, authCookieOptions);
     return res.status(200).json({ success: true, message: "Staff account activated", ...result });
   } catch (error) {
     next(error);
@@ -123,7 +121,6 @@ export const registerParent = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.registerParent(req.body);
-    res.cookie("petra_token", result.token, authCookieOptions);
     return res.status(201).json({ success: true, message: "Parent registered successfully", ...result });
   } catch (error) {
     next(error);
@@ -147,7 +144,6 @@ export const loginUser = async (req, res, next) => {
     if (validationResponse) return validationResponse;
 
     const result = await authService.login(req.body);
-    res.cookie("petra_token", result.token, authCookieOptions);
     return res.status(200).json({
       success: true,
       message: "Login successful",

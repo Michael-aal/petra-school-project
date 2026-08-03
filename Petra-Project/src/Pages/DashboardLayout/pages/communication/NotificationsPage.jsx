@@ -1,4 +1,5 @@
 import { Bell, Search, Send, Users, GraduationCap, CreditCard, BookOpen } from "lucide-react";
+import { useEffect, useState } from "react";
 import "../page-styles/NotificationsPage.css";
 
 const notifications = [
@@ -35,6 +36,13 @@ const notifications = [
 ];
 
 export default function NotificationsPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setLoading(false), 450);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <div className="notifications-page dashboard-page">
       <section className="notifications-hero">
@@ -76,7 +84,23 @@ export default function NotificationsPage() {
       </section>
 
       <section className="notifications-list" aria-label="Notification list">
-        {notifications.map((item) => {
+        {loading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <article key={index} className="notification-card">
+              <div className="notification-card-icon skeleton" style={{ width: 36, height: 36 }} />
+              <div className="notification-card-body">
+                <div className="notification-card-main">
+                  <div style={{ flex: 1 }}>
+                    <div className="skeleton" style={{ height: 18, width: "42%", marginBottom: 10 }} />
+                    <div className="skeleton" style={{ height: 12, width: "88%", marginBottom: 8 }} />
+                    <div className="skeleton" style={{ height: 12, width: "68%" }} />
+                  </div>
+                  <div className="skeleton" style={{ height: 28, width: 78, borderRadius: 999 }} />
+                </div>
+              </div>
+            </article>
+          ))
+        ) : notifications.length ? notifications.map((item) => {
           const Icon = item.icon;
 
           return (
@@ -103,7 +127,17 @@ export default function NotificationsPage() {
               </div>
             </article>
           );
-        })}
+        }) : (
+          <article className="notification-card notification-empty-state">
+            <div className="notification-card-icon tone-blue">
+              <Bell size={18} />
+            </div>
+            <div className="notification-card-body">
+              <h2>No notifications yet</h2>
+              <p>Once payments, messages, or announcements are sent, they will appear here with full context.</p>
+            </div>
+          </article>
+        )}
       </section>
     </div>
   );

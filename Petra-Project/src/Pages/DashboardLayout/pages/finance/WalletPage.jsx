@@ -1,10 +1,20 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import {
-  ArrowRightLeft, Banknote, CreditCard, Landmark, Send, ShieldCheck, Wallet as WalletIcon,
+  ArrowRightLeft,
+  Banknote,
+  ChartNoAxesCombined,
+  Clock,
+  CreditCard,
+  Landmark,
+  RefreshCcw,
+  Send,
+  ShieldCheck,
+  Wallet as WalletIcon,
+  BarChart3,
 } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
 import { walletApi } from "../../../../services/walletApi";
-import "../page-styles/WalletPage.css";
+import "./page-styles/WalletPage.css";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-NG", {
@@ -18,7 +28,10 @@ export default function WalletPage() {
   const [wallet, setWallet] = useState(null);
   const [summary, setSummary] = useState({});
   const [transactions, setTransactions] = useState([]);
-  const [activeTab, setActiveTab] = useState("summary");
+  const [bankDetails, setBankDetails] = useState({});
+  const [refunds, setRefunds] = useState([]);
+  const [settings, setSettings] = useState([]);
+  const [activeTab, setActiveTab] = useState("overview");
   const [form, setForm] = useState({ amount: "", recipient: "", note: "" });
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -31,10 +44,13 @@ export default function WalletPage() {
   const loadWallet = async () => {
     setError(null);
     try {
-      const data = await walletApi.getWallet();
-      setWallet(data.wallet);
+      const data = await walletApi.getAdminWallet();
+      setWallet(data.wallet || data.summary?.wallet || null);
       setSummary(data.summary || {});
-      setTransactions(data.transactions || []);
+      setTransactions(data.recentPayments || data.transactions || []);
+      setBankDetails(data.bankDetails || {});
+      setRefunds(data.refunds || []);
+      setSettings(data.settings || []);
     } catch (err) {
       setError(err.data?.message || err.message || "Unable to load wallet data.");
     }
@@ -115,11 +131,10 @@ export default function WalletPage() {
   const quickStats = useMemo(
     () => [
       { label: "Wallet ID", value: wallet?.accountNumber || "XXXXXXXXXX", icon: CreditCard },
-      // DYNAMIC: Uses school name instead of "Petra Bank"
-      { label: "Bank", value: wallet?.bankName || `${schoolName} Bank`, icon: Landmark },
-      { label: "Secure", value: "Protected operations", icon: ShieldCheck },
+      { label: "Bank", value: bankDetails?.bankName || wallet?.bankName || `${schoolName} Bank`, icon: Landmark },
+      { label: "Status", value: "Live analytics", icon: ShieldCheck },
     ],
-    [wallet, schoolName],
+    [wallet, bankDetails, schoolName],
   );
 
   return (
@@ -207,40 +222,169 @@ export default function WalletPage() {
             <span className="wallet-panel-status">{activeTab.toUpperCase()}</span>
           </div>
 
-          <div className="wallet-action-buttons" role="tablist" aria-label="Wallet actions">
-            <button type="button" className={activeTab === "summary" ? "active" : ""} onClick={() => setActiveTab("summary")}>Summary</button>
-            <button type="button" className={activeTab === "withdraw" ? "active" : ""} onClick={() => setActiveTab("withdraw")}>Withdraw</button>
-            <button type="button" className={activeTab === "transfer" ? "active" : ""} onClick={() => setActiveTab("transfer")}>Transfer</button>
-            <button type="button" className={activeTab === "statement" ? "active" : ""} onClick={() => setActiveTab("statement")}>Statement</button>
-            <button type="button" className={activeTab === "fund" ? "active" : ""} onClick={() => setActiveTab("fund")}>Fund</button>
+              <div className="wallet-action-buttons" role="tablist" aria-label="Wallet actions">
+            <button type="button" className={activeTab === "overview" ? "active" : ""} onClick={() => setActiveTab("overview")}>Overview</button>
+            <button type="button" className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}>Transaction History</button>
+            <button type="button" className={activeTab === "analytics" ? "active" : ""} onClick={() => setActiveTab("analytics")}>Revenue Analytics</button>
+            <button type="button" className={activeTab === "settings" ? "active" : ""} onClick={() => setActiveTab("settings")}>Payment Settings</button>
+            <button type="button" className={activeTab === "bank" ? "active" : ""} onClick={() => setActiveTab("bank")}>Bank Details</button>
+            <button type="button" className={activeTab === "refunds" ? "active" : ""} onClick={() => setActiveTab("refunds")}>Refunds</button>
           </div>
 
           {message && <div className="dashboard-alert success">{message}</div>}
           {error && <div className="dashboard-alert error">{error}</div>}
 
-          {activeTab === "summary" && (
+          {activeTab === "overview" && (
             <div className="wallet-summary-stack">
               <div className="wallet-action-card">
                 <div>
-                  <h4>Balance available</h4>
-                  <p>{formatCurrency(wallet?.balance)}</p>
+                  <h4>Available balance</h4>
+                  <p>{formatCurrency(summary?.availableBalance)}</p>
                 </div>
                 <div className="wallet-action-icon"><WalletIcon size={18} /></div>
               </div>
               <div className="wallet-action-card">
                 <div>
-                  <h4>Account number</h4>
-                  <p>{wallet?.accountNumber || "Not created yet"}</p>
+                  <h4>Pending payments</h4>
+                  <p>{formatCurrency(summary?.pendingBalance)}</p>
                 </div>
-                <div className="wallet-action-icon"><CreditCard size={18} /></div>
+                <div className="wallet-action-icon"><Clock size={18} /></div>
               </div>
               <div className="wallet-action-card">
                 <div>
-                  <h4>Bank name</h4>
-                  <p>{wallet?.bankName || `${schoolName} Bank`}</p>
+                  <h4>Outstanding fees</h4>
+                  <p>{formatCurrency(summary?.outstandingFees)}</p>
                 </div>
-                <div className="wallet-action-icon"><Landmark size={18} /></div>
+                <div className="wallet-action-icon"><Banknote size={18} /></div>
               </div>
+            </div>
+          )}
+
+          {activeTab === "history" && (
+            <div className="wallet-transaction-list">
+              <p className="dashboard-page-copy">Recent wallet and payment activity.</p>
+              {transactions.length === 0 ? (
+                <p className="wallet-empty-state">No recent transactions available yet.</p>
+              ) : (
+                <table className="wallet-table">
+                  <thead>
+                    <tr>
+                      <th>Reference</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.reference || item.id}</td>
+                        <td>{formatCurrency(item.amount)}</td>
+                        <td>{item.status || item.type || "—"}</td>
+                        <td>{new Date(item.paidAt || item.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {activeTab === "analytics" && (
+            <div className="wallet-summary-stack">
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Total revenue</h4>
+                  <p>{formatCurrency(summary?.totalRevenue)}</p>
+                </div>
+                <div className="wallet-action-icon"><BarChart3 size={18} /></div>
+              </div>
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Today's revenue</h4>
+                  <p>{formatCurrency(summary?.todaysRevenue)}</p>
+                </div>
+                <div className="wallet-action-icon"><RefreshCcw size={18} /></div>
+              </div>
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Monthly revenue</h4>
+                  <p>{formatCurrency(summary?.monthlyRevenue)}</p>
+                </div>
+                <div className="wallet-action-icon"><ChartNoAxesCombined size={18} /></div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "settings" && (
+            <div className="wallet-action-form">
+              <p className="dashboard-page-copy">Payment settings and bank transfer options managed by the school.</p>
+              {settings.length === 0 ? (
+                <p>No payment settings configured yet.</p>
+              ) : (
+                settings.map((setting) => (
+                  <div key={setting.key} className="wallet-action-card">
+                    <div>
+                      <h4>{setting.key}</h4>
+                      <p>{setting.value}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {activeTab === "bank" && (
+            <div className="wallet-action-form">
+              <p className="dashboard-page-copy">School bank details for direct payments and refunds.</p>
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Bank name</h4>
+                  <p>{bankDetails?.bankName || wallet?.bankName || `${schoolName} Bank`}</p>
+                </div>
+              </div>
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Account number</h4>
+                  <p>{bankDetails?.accountNumber || wallet?.accountNumber || "Not available"}</p>
+                </div>
+              </div>
+              <div className="wallet-action-card">
+                <div>
+                  <h4>Account name</h4>
+                  <p>{bankDetails?.accountName || wallet?.accountName || "Petra School Wallet"}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "refunds" && (
+            <div className="wallet-transaction-list">
+              <p className="dashboard-page-copy">Recent refunded payments.</p>
+              {refunds.length === 0 ? (
+                <p className="wallet-empty-state">No refunded payments yet.</p>
+              ) : (
+                <table className="wallet-table">
+                  <thead>
+                    <tr>
+                      <th>Reference</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {refunds.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.reference}</td>
+                        <td>{formatCurrency(item.amount)}</td>
+                        <td>{item.status}</td>
+                        <td>{new Date(item.paidAt || item.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
 

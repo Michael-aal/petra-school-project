@@ -1,0 +1,193 @@
+/* Parent Fees page spacing, alignment, and responsive layout */
+.parent-dashboard {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.parent-hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+.parent-hero-card {
+  padding: var(--space-5);
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.parent-hero-card.accent {
+  background: rgba(129, 140, 248, 0.08);
+}
+.parent-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.parent-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+.parent-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: var(--space-5);
+}
+.dashboard-home-panel {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.module-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.module-card-title strong {
+  font-size: 1rem;
+}
+.parent-list {
+  display: grid;
+  gap: var(--space-4);
+}
+.parent-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.parent-list-item > div:first-child {
+  min-width: 0;
+}
+.parent-list-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+.dashboard-home-account-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.parent-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.parent-action-btn input {
+  margin: 0;
+}
+.dashboard-home-summary-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.fees-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.fees-form label {
+  display: grid;
+  gap: var(--space-2);
+}
+.fees-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+.fees-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.module-button {
+  padding: 14px 18px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  min-height: 48px;
+}
+.module-button.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+.dashboard-alert {
+  padding: var(--space-4) var(--space-5);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+.dashboard-alert.success {
+  border-color: rgba(34, 197, 94, 0.18);
+}
+.dashboard-alert.error {
+  border-color: rgba(244, 63, 94, 0.18);
+}
+.parent-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.status-success { background: rgba(34, 197, 94, 0.16); color: #22c55e; }
+.status-pending { background: rgba(245, 158, 11, 0.16); color: #f59e0b; }
+.status-failed { background: rgba(244, 63, 94, 0.16); color: #f43f5e; }
+.status-refunded { background: rgba(14, 165, 233, 0.16); color: #0ea5e9; }
+.status-default { background: rgba(148, 163, 184, 0.16); color: #94a3b8; }
+@media (max-width: 1024px) {
+  .parent-hero,
+  .parent-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .parent-dashboard {
+    padding: var(--space-4);
+  }
+  .parent-hero-card,
+  .dashboard-home-panel {
+    padding: 16px;
+  }
+  .parent-list-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dashboard-home-account-row {
+    justify-content: space-between;
+  }
+}

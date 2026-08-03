@@ -93,5 +93,9 @@ export function normalizeUser(user = {}) {
     address: user.address || "",
     country: user.country || "",
     totalStudent: user.totalStudent || 0,
+    children: Array.isArray(user.children) ? user.children : [],
+    primaryChildId: user.primaryChildId || null,
+    childCount: typeof user.childCount === "number" ? user.childCount : Array.isArray(user.children) ? user.children.length : 0,
+    linkedStudentId: user.linkedStudentId || null,
   };
 }

@@ -560,7 +560,9 @@ model Student {
   id                    String   @id @default(cuid())
   userId                String?  @unique
   schoolId              Int
+  name                  String?
   admissionNumber       String?  @unique
+  status                String   @default("active")
   gender                String?
   className             String?
   dob                   DateTime?

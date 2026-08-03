@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: var(--space-3) var(--space-4);
   background: var(--dashboard-topbar-bg);
   color: var(--dashboard-topbar-text);
   border-bottom: 1px solid var(--app-border);
@@ -15,7 +15,7 @@
 .top-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .menu-btn {
@@ -42,7 +42,7 @@
 .top-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
 }
 
 .icon-btn {
@@ -52,17 +52,35 @@
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
+  position: relative;
 }
 
 .icon-btn:hover {
   background: color-mix(in srgb, var(--app-accent-2) 16%, transparent);
 }
 
+.nav-badge {
+  position: absolute;
+  top: -3px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 8px 14px rgba(239, 68, 68, 0.3);
+}
+
 .user-info {
   text-transform: capitalize;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--space-4);
   background: transparent;
   border: none;
   color: inherit;
@@ -117,7 +135,7 @@
 .notification-dropdown {
   position: absolute;
   right: 0;
-  top: calc(100% + 10px);
+  top: calc(100% + var(--space-2));
   min-width: 300px;
   max-width: 340px;
   background: var(--app-surface);
@@ -132,8 +150,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .notification-header strong {

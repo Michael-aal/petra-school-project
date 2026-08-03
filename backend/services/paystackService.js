@@ -19,7 +19,7 @@ const getPaystackHeaders = () => {
 };
 
 export const paystackService = {
-  initializePayment: async ({ amount, email, userId }) => {
+  initializePayment: async ({ amount, email, userId, reference, metadata = {}, callbackUrl }) => {
     const parsedAmount = Number(amount);
     if (!parsedAmount || parsedAmount <= 0) {
       const error = new Error("Amount must be a positive number");
@@ -33,9 +33,9 @@ export const paystackService = {
       body: JSON.stringify({
         email,
         amount: Math.round(parsedAmount * 100),
-        reference: buildReference(),
-        metadata: { userId },
-        callback_url: process.env.PAYSTACK_CALLBACK_URL || undefined,
+        reference: reference || buildReference(),
+        metadata: { userId, ...metadata },
+        callback_url: callbackUrl || process.env.PAYSTACK_CALLBACK_URL || undefined,
       }),
     });
 

@@ -16,31 +16,53 @@ import {
 import "../../../../Styles/DashBoardLayout/studentListStyle.css";
 import "../page-styles/StudentsListPage.css";
 import { studentApi } from "../../../../services/studentApi";
+import { getStudentDisplayName } from "../../../../utils/studentDisplay";
 
 const emptyForm = {
   name: "",
-  admissionNumber: "",
   gender: "Male",
   className: "SS1",
+  sessionId: "",
   dob: "",
-  guardianName: "",
-  parentPhone: "",
-  parentEmail: "",
-  address: "",
   status: "active",
+  parentName: "",
+  parentRelationship: "Mother",
+  parentEmail: "",
+  parentPhone: "",
+  parentAltPhone: "",
+  parentAddress: "",
+  passportPhoto: "",
+  bloodGroup: "",
+  house: "",
+  nationality: "",
+  religion: "",
+  medicalNotes: "",
+  previousSchool: "",
+  studentAddress: "",
+  address: "",
 };
 
 const toForm = (student) => ({
-  name: student?.name || "",
-  admissionNumber: student?.admissionNumber || "",
+  name: getStudentDisplayName(student) || "",
   gender: student?.gender || "Male",
   className: student?.className || "SS1",
+  sessionId: student?.sessionId || "",
   dob: student?.dob ? String(student.dob).slice(0, 10) : "",
-  guardianName: student?.guardianName || "",
-  parentPhone: student?.parentPhone || "",
-  parentEmail: student?.parentEmail || "",
-  address: student?.address || "",
   status: student?.status || "active",
+  parentName: student?.guardianName || "",
+  parentEmail: student?.parentEmail || "",
+  parentPhone: student?.parentPhone || "",
+  parentAltPhone: student?.parentAltPhone || "",
+  parentAddress: student?.parentAddress || "",
+  passportPhoto: student?.passportPhoto || "",
+  bloodGroup: student?.bloodGroup || "",
+  house: student?.house || "",
+  nationality: student?.nationality || "",
+  religion: student?.religion || "",
+  medicalNotes: student?.medicalNotes || "",
+  previousSchool: student?.previousSchool || "",
+  studentAddress: student?.address || "",
+  address: student?.address || "",
 });
 
 const initials = (name = "") =>
@@ -114,7 +136,7 @@ export default function StudentsListPage() {
     setSaving(true);
     try {
       if (activeModal.type === "create") {
-        await studentApi.create(form);
+        await studentApi.create({ ...form, admissionNumber: "" });
       } else if (activeModal.type === "edit" && activeModal.student?.id) {
         await studentApi.update(activeModal.student.id, form);
       }
@@ -129,7 +151,7 @@ export default function StudentsListPage() {
   };
 
   const removeStudent = async (student) => {
-    if (!window.confirm(`Remove ${student.name}?`)) return;
+    if (!window.confirm(`Remove ${getStudentDisplayName(student)}?`)) return;
     try {
       await studentApi.remove(student.id);
       await loadStudents(pagination.page);
@@ -232,7 +254,7 @@ export default function StudentsListPage() {
           <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Search student by name, admission number, parent..."
+            placeholder="Search student by name, class, or parent..."
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -286,6 +308,9 @@ export default function StudentsListPage() {
             </tr>
           </thead>
           <tbody>
+
+
+            
             {loading ? (
               <tr>
                 <td colSpan={6} className="students-empty-state">
@@ -293,19 +318,24 @@ export default function StudentsListPage() {
                 </td>
               </tr>
             ) : students.length ? (
-              students.map((student) => (
-                <tr key={student.id}>
-                  <td>
-                    <div className="student-cell">
-                      <div className="student-avatar">
-                        {initials(student.name)}
+              students.map((student) => {
+                
+                const studentDisplayName = getStudentDisplayName(student);
+                return (
+                  <tr key={student.id}>
+                    <td>
+                      <div className="student-cell">
+                        <div className="student-avatar">
+                          {initials(studentDisplayName)}
+                        </div>
+                        <div>
+                          <div className="student-name">{studentDisplayName}</div>
+                          <div className="student-subtitle">
+                            {student.guardianName ? `Guardian: ${student.guardianName}` : student.className || student.gender || "-"}
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="student-name">{student.name}</div>
-                        <div className="student-subtitle">{student.admissionNumber}</div>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
                   <td>{student.className || "-"}</td>
                   <td>{student.guardianName || "-"}</td>
                   <td>{student.gender || "-"}</td>
@@ -340,8 +370,9 @@ export default function StudentsListPage() {
                       ) : null}
                     </div>
                   </td>
-                </tr>
-              ))
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={6} className="students-empty-state">
@@ -381,15 +412,6 @@ export default function StudentsListPage() {
                   <input className="form-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Admission Number</label>
-                  <input
-                    className="form-input"
-                    value={form.admissionNumber}
-                    disabled={activeModal.type === "edit"}
-                    onChange={(e) => setForm({ ...form, admissionNumber: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
                   <label className="form-label">Gender</label>
                   <select className="form-select" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}>
                     <option value="Male">Male</option>
@@ -420,20 +442,36 @@ export default function StudentsListPage() {
                   </select>
                 </div>
                 <div className="form-group full-width">
-                  <label className="form-label">Parent / Guardian</label>
-                  <input className="form-input" value={form.guardianName} onChange={(e) => setForm({ ...form, guardianName: e.target.value })} />
+                  <label className="form-label">Parent / Guardian Full Name</label>
+                  <input className="form-input" value={form.parentName} onChange={(e) => setForm({ ...form, parentName: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Relationship</label>
+                  <select className="form-select" value={form.parentRelationship} onChange={(e) => setForm({ ...form, parentRelationship: e.target.value })}>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Guardian">Guardian</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Parent Phone</label>
                   <input className="form-input" value={form.parentPhone} onChange={(e) => setForm({ ...form, parentPhone: e.target.value })} />
                 </div>
                 <div className="form-group">
+                  <label className="form-label">Alternative Phone</label>
+                  <input className="form-input" value={form.parentAltPhone} onChange={(e) => setForm({ ...form, parentAltPhone: e.target.value })} />
+                </div>
+                <div className="form-group">
                   <label className="form-label">Parent Email</label>
                   <input className="form-input" value={form.parentEmail} onChange={(e) => setForm({ ...form, parentEmail: e.target.value })} />
                 </div>
                 <div className="form-group full-width">
-                  <label className="form-label">Address</label>
-                  <input className="form-input" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
+                  <label className="form-label">Parent Address</label>
+                  <input className="form-input" value={form.parentAddress} onChange={(e) => setForm({ ...form, parentAddress: e.target.value })} />
+                </div>
+                <div className="form-group full-width">
+                  <label className="form-label">Student Address</label>
+                  <input className="form-input" value={form.studentAddress} onChange={(e) => setForm({ ...form, studentAddress: e.target.value })} />
                 </div>
               </div>
             </div>
@@ -461,16 +499,16 @@ export default function StudentsListPage() {
             <div className="modal-body">
               <div className="profile-view">
                 <div className="profile-header">
-                  <div className="student-avatar large">{initials(activeModal.student.name)}</div>
-                  <h3>{activeModal.student.name}</h3>
+                  <div className="student-avatar large">{initials(getStudentDisplayName(activeModal.student))}</div>
+                  <h3>{getStudentDisplayName(activeModal.student)}</h3>
                   <p>
                     {activeModal.student.className || "-"} • {activeModal.student.gender || "-"}
                   </p>
                 </div>
                 <div className="profile-info-grid">
                   <div className="info-item">
-                    <span className="info-label">Admission Number</span>
-                    <span className="info-value">{activeModal.student.admissionNumber || "-"}</span>
+                    <span className="info-label">Class</span>
+                    <span className="info-value">{activeModal.student.className || "-"}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Status</span>

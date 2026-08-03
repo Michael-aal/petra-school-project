@@ -12,6 +12,7 @@ import academicRoutes from "./routes/academicRoutes.js";
 import financeRoutes from "./routes/financeRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import paystackRoutes from "./routes/paystackRoutes.js";
+import parentRoutes from "./routes/parentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -58,6 +59,7 @@ app.use("/api/academic", academicRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
+app.use("/api/parent", parentRoutes);
 app.use("/api/teacher", teacherRoutes);
 app.use("/api/admin", adminRoutes);
 

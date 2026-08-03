@@ -114,7 +114,7 @@ export default function AttendancePage() {
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Search size={16} />
               <input
-                placeholder="Search student, admission number, or class"
+                placeholder="Search student or class"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
@@ -180,7 +180,6 @@ export default function AttendancePage() {
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Admission</th>
                 <th>Class</th>
                 <th>Status</th>
                 <th>Date</th>
@@ -196,7 +195,6 @@ export default function AttendancePage() {
                 attendance.map((item) => (
                   <tr key={item.id}>
                     <td>{item.student?.name || "Student"}</td>
-                    <td>{item.student?.admissionNumber || "—"}</td>
                     <td>{item.className}</td>
                     <td>{item.status}</td>
                     <td>{new Date(item.date).toLocaleDateString()}</td>
@@ -205,7 +203,7 @@ export default function AttendancePage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="teacher-empty-copy">
+                  <td colSpan="5" className="teacher-empty-copy">
                     {hasFilters
                       ? "No records match the selected filters."
                       : "No attendance records found. This database currently has no attendance rows to display."}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Download, Filter, Plus, RefreshCcw, Search, ReceiptText, Pencil, Trash2, Eye } from "lucide-react";
 import { financeApi } from "../../../../services/financeApi";
 import { studentApi } from "../../../../services/studentApi";
+import { useToasts } from "../../../../context/ToastContext";
 import "../page-styles/PaymentsPage.css";
 
 const emptyForm = {
@@ -22,6 +23,7 @@ const formatCurrency = (value) =>
   new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 2 }).format(value || 0);
 
 export default function PaymentsPage() {
+  const { success, error: showError, warning } = useToasts();
   const [payments, setPayments] = useState([]);
   const [students, setStudents] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 25, total: 0, totalPages: 1 });
@@ -65,6 +67,7 @@ export default function PaymentsPage() {
       setPagination(data.pagination || { page: 1, limit: 25, total: 0, totalPages: 1 });
     } catch (requestError) {
       setError(requestError.message || "Failed to load payments");
+      warning("Payments", requestError.message || "Failed to load payments");
     } finally {
       setLoading(false);
     }
@@ -116,15 +119,18 @@ export default function PaymentsPage() {
       if (activeModal.type === "create") {
         await financeApi.createPayment(payload);
         setMessage("Payment recorded successfully.");
+        success("Payment saved", "The payment record was created.");
       } else if (activeModal.type === "edit" && activeModal.payment?.id) {
         await financeApi.updatePayment(activeModal.payment.id, payload);
         setMessage("Payment updated successfully.");
+        success("Payment updated", "The payment record was updated.");
       }
       setActiveModal({ type: null, payment: null });
       setForm(emptyForm);
       await loadPayments(1);
     } catch (requestError) {
       setError(requestError.message || "Unable to save payment");
+      showError("Payment error", requestError.message || "Unable to save payment");
     } finally {
       setSaving(false);
     }
@@ -136,9 +142,11 @@ export default function PaymentsPage() {
     try {
       await financeApi.deletePayment(payment.id);
       setMessage("Payment deleted successfully.");
+      success("Payment deleted", `Reference ${payment.reference} was removed.`);
       await loadPayments(pagination.page);
     } catch (requestError) {
       setError(requestError.message || "Unable to delete payment");
+      showError("Delete failed", requestError.message || "Unable to delete payment");
     }
   };
 

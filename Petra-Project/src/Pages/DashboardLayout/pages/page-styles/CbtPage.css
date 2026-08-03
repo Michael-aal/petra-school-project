@@ -1,2 +1,322 @@
-/* Styles for CbtPage */
-.cbt-page{ padding:18px; }
+/* Styles for CBT page */
+.cbt-page {
+  padding: 18px;
+  color: var(--app-text);
+  --cbt-surface: var(--app-surface);
+  --cbt-surface-strong: var(--app-surface-strong);
+  --cbt-panel: var(--app-panel);
+  --cbt-border: var(--app-border);
+  --cbt-text-primary: var(--app-text);
+  --cbt-text-secondary: var(--app-text-muted);
+  --cbt-accent: var(--app-accent);
+  --cbt-accent-strong: var(--app-accent-2);
+  --cbt-danger: #dc2626;
+  --cbt-danger-surface: rgba(248, 113, 113, 0.18);
+  --cbt-danger-border: rgba(239, 68, 68, 0.24);
+  --cbt-success-text: #16a34a;
+  --cbt-success-surface: rgba(34, 197, 94, 0.16);
+  --cbt-muted-surface: rgba(148, 163, 184, 0.18);
+}
+
+.cbt-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cbt-refresh-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.9rem 1.2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--cbt-border);
+  background: var(--cbt-surface);
+  color: var(--cbt-text-primary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.cbt-refresh-button:hover {
+  background: var(--cbt-surface-strong);
+}
+
+.cbt-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem;
+  margin-bottom: 20px;
+  border-radius: 1rem;
+  background: var(--cbt-danger-surface);
+  color: var(--cbt-danger);
+  border: 1px solid var(--cbt-danger-border);
+}
+
+.cbt-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 0;
+  color: var(--cbt-text-secondary);
+}
+
+.cbt-loading .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cbt-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cbt-summary-card {
+  padding: 18px;
+  border-radius: 1rem;
+  background: var(--cbt-panel);
+  border: 1px solid var(--cbt-border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cbt-summary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 1rem;
+  background: var(--cbt-surface-strong);
+}
+
+.cbt-summary-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--cbt-text-secondary);
+}
+
+.cbt-summary-card strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.45rem;
+  color: var(--cbt-text-primary);
+}
+
+.cbt-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr;
+  gap: 24px;
+}
+
+.cbt-panel {
+  padding: 22px;
+  border-radius: 1.25rem;
+  background: var(--cbt-panel);
+  border: 1px solid var(--cbt-border);
+}
+
+.cbt-form-panel {
+  min-width: 280px;
+}
+
+.cbt-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cbt-panel-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.cbt-panel-head span {
+  color: var(--cbt-text-secondary);
+  font-size: 0.95rem;
+}
+
+.cbt-list,
+.cbt-results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.cbt-list-item,
+.cbt-results-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 1rem;
+  background: var(--cbt-surface);
+  border: 1px solid var(--cbt-border);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.cbt-list-item:hover,
+.cbt-results-item:hover {
+  background: var(--cbt-surface-strong);
+}
+
+.cbt-list-item p,
+.cbt-results-item p {
+  margin: 6px 0 0;
+  color: var(--cbt-text-secondary);
+  font-size: 0.9rem;
+}
+
+.cbt-list-meta,
+.cbt-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cbt-icon-button,
+.cbt-small-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cbt-border);
+  background: transparent;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  color: var(--cbt-text-primary);
+  font-size: 0.9rem;
+}
+
+.cbt-icon-button:hover,
+.cbt-small-button:hover {
+  background: var(--cbt-surface-strong);
+}
+
+.cbt-form {
+  display: grid;
+  gap: 14px;
+}
+
+.cbt-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--cbt-text-secondary);
+}
+
+.cbt-form input,
+.cbt-form textarea,
+.cbt-form select {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--cbt-border);
+  background: var(--cbt-surface);
+  color: var(--cbt-text-primary);
+  caret-color: var(--cbt-text-primary);
+}
+
+.cbt-form input:focus,
+.cbt-form textarea:focus,
+.cbt-form select:focus {
+  outline: none;
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.cbt-form input:disabled,
+.cbt-form textarea:disabled,
+.cbt-form select:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.cbt-form input::placeholder,
+.cbt-form textarea::placeholder,
+.cbt-form select::placeholder {
+  color: var(--cbt-text-secondary);
+  opacity: 1;
+}
+
+.cbt-form textarea {
+  resize: vertical;
+}
+
+.cbt-submit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.95rem 1.2rem;
+  border-radius: 1rem;
+  border: none;
+  background: var(--cbt-accent);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cbt-submit-button:hover {
+  background: var(--cbt-accent-strong);
+}
+
+.cbt-submit-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.cbt-empty {
+  color: var(--cbt-text-secondary);
+  line-height: 1.7;
+}
+
+.cbt-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cbt-pill-success {
+  background: var(--cbt-success-surface);
+  color: var(--cbt-success-text);
+}
+
+.cbt-pill-muted {
+  background: var(--cbt-muted-surface);
+  color: var(--cbt-text-secondary);
+}
+
+@media (max-width: 1120px) {
+  .cbt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .cbt-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cbt-refresh-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -125,7 +125,6 @@ const staffNavGroups = [
 
 const portalNavGroups = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/portal/dashboard" },
-  { label: "Children", icon: GraduationCap, href: "/portal/children" },
   { label: "Attendance", icon: ClipboardCheck, href: "/portal/attendance" },
   { label: "Results", icon: FileText, href: "/portal/results" },
   { label: "Assignments", icon: ClipboardList, href: "/portal/assignments" },
@@ -176,7 +175,12 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
     } catch (err) {
       // ignore errors during logout
     } finally {
-      window.localStorage.removeItem("petra_user_info");
+      try {
+        window.sessionStorage.removeItem("petra_user_info");
+      } catch (e) {}
+      try {
+        window.localStorage.removeItem("petra_user_info");
+      } catch (e) {}
       try {
         setUserInfo(normalizeUser({}));
       } catch (e) {

@@ -57,6 +57,7 @@ import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
 import WalletPage from "./Pages/DashboardLayout/pages/finance/WalletPage";
 import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
+import ParentFeesPage from "./Pages/DashboardLayout/pages/parent/ParentFeesPage";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
 import { UserContext } from "./context/UserContext";
@@ -434,33 +435,7 @@ function App() {
               ],
             })}
           />
-          <Route
-            path="/portal/fees"
-            element={parentSection({
-              title: "Fees and Payments",
-              description: "Monitor pending balances and payment deadlines with clarity.",
-              heroTitle: "Fee reminders",
-              heroDescription: "Pay what is pending quickly so there are no surprises later in the term.",
-              heroChips: ["₦48,000 outstanding", "₦7,500 transport", "Due this week"],
-              summaryCards: [
-                { icon: CreditCard, label: "School Fees", value: "₦48,000", meta: "Outstanding balance", tone: "tone-blue" },
-                { icon: Wallet, label: "Transport", value: "₦7,500", meta: "Pending this term", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Payment status",
-                  items: [
-                    { title: "School Fees", meta: "Balance outstanding", value: "₦48,000" },
-                    { title: "Transport", meta: "Pending this term", value: "₦7,500" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Wallet, title: "Pay now", meta: "Settle fees securely" },
-                { icon: FileText, title: "Download invoice", meta: "Keep a copy for records" },
-              ],
-            })}
-          />
+          <Route path="/portal/fees" element={<ParentFeesPage />} />
           <Route
             path="/portal/announcements"
             element={parentSection({

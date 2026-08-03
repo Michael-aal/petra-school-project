@@ -5,6 +5,7 @@ import { comparePassword } from "../utils/comparePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import { normalizeRole } from "../utils/roleUtils.js";
 import crypto from "crypto";
+import { logger } from "../utils/logger.js";
 
 const resolvePublicRole = (role) => {
   const normalizedRole = normalizeRole(role);
@@ -94,13 +95,29 @@ const safeUser = (user) => {
     staffClassAssigned: user.staffClassAssigned || "",
     staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [],
     accountStatus: user.accountStatus || "active",
-      schoolId: user.schoolId || null,
+    schoolId: user.schoolId || null,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     profilePicture: user.profilePicture || "",
     profileImage: user.profileImage || user.profilePicture || "",
+    linkedStudentId: user.linkedStudentId || null,
   };
 };
+
+const mapChild = (student) => ({
+  id: student.id,
+  name:
+    student.name ||
+    student.user?.fullName ||
+    [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") ||
+    student.admissionNumber ||
+    `Student ${String(student.id || "").slice(-4)}`,
+  className: student.className || "",
+  admissionNumber: student.admissionNumber || "",
+  gender: student.gender || "",
+  status: student.profile?.status || "active",
+  parentId: student.parentId || "",
+});
 
 const makeCode = (prefix) =>
   `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -210,11 +227,14 @@ export const authService = {
       throw error;
     }
 
+    logger.info("authService.login: user authenticated", { userId: user.id, role: user.role });
+
     return {
       user: safeUser(user),
       token: generateToken({ id: user.id, email: user.email, role: user.role }),
     };
   },
+
 
   createPendingStaff: async ({ fullName, email, position, department }) => {
     const existingUser = await userModel.findByEmail(email);
@@ -469,10 +489,28 @@ export const authService = {
       console.error("Failed to load school info for user profile:", err.message);
     }
 
+    let children = [];
+    if (["parent", "guardian"].includes(String(user.role || "").toLowerCase())) {
+      try {
+        children = (await userModel.listChildrenByParentUserId(userId)).map(mapChild);
+        if (children.length) {
+          logger.info("authService.profile: children loaded for parent", { userId, count: children.length });
+        } else {
+          logger.info("authService.profile: no children found for parent", { userId });
+        }
+      } catch (childError) {
+        logger.error("authService.profile: failed to load children", { userId, error: childError.message });
+        children = [];
+      }
+    }
     const base = safeUser(user);
     return {
       ...base,
       school: school ? { id: school.id, name: school.name } : null,
+      children,
+      linkedStudentId: user.linkedStudentId || null,
+      primaryChildId: children[0]?.id || user.linkedStudentId || null,
+      childCount: children.length,
     };
   },
 
@@ -499,6 +537,12 @@ export const authService = {
     if (payload.phoneNumber !== undefined) updateData.phone = payload.phoneNumber.trim();
     if (nextEmail) updateData.email = nextEmail;
     if (payload.profileImage !== undefined) updateData.profileImage = payload.profileImage.trim();
+    if (payload.profilePicture !== undefined) updateData.profileImage = payload.profilePicture.trim();
+    if (payload.institution !== undefined) updateData.institution = payload.institution.trim();
+    if (payload.institutionType !== undefined) updateData.institutionType = payload.institutionType.trim();
+    if (payload.state !== undefined) updateData.state = payload.state.trim();
+    if (payload.city !== undefined) updateData.city = payload.city.trim();
+    if (payload.hearAbout !== undefined) updateData.hearAbout = payload.hearAbout.trim();
     if (payload.password) updateData.password = await hashPassword(payload.password);
 
     const updatedUser = await userModel.update(userId, updateData);
@@ -556,7 +600,7 @@ export const authService = {
       error.statusCode = 400;
       throw error;
     }
-    await userModel.linkParentToStudent({ parentId: userId, studentId: student.id });
+    await userModel.linkParentToStudent({ parentUserId: userId, studentId: student.id });
     return { message: "Child linked successfully" };
   },
 };

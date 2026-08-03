@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { normalizeRole } from "../utils/roleUtils.js";
 
 const normalizeClassList = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -10,8 +11,6 @@ const normalizeClassList = (value) => {
   }
   return [];
 };
-
-const normalizeRole = (value) => (value === "staff" ? "staff" : "staff");
 
 const buildTeacherScope = (user) => {
   const classNames = normalizeClassList(user?.staffClassAssigned || user?.assignedClass || user?.classAssigned);
@@ -48,6 +47,8 @@ const safeStudent = (student) => ({
   parentEmail: student.parentEmail || "",
   status: student.status || "active",
 });
+
+const isAdminUser = (user) => ["principal", "super_admin"].includes(normalizeRole(user.role));
 
 const safeProfile = (user) => ({
   id: user.id,
@@ -266,8 +267,12 @@ export const teacherService = {
   },
 
   listAssessments: async (user) => {
+    const where = isAdminUser(user)
+      ? { schoolId: user.schoolId ? Number(user.schoolId) : undefined }
+      : { teacherId: user.id };
+
     const assessments = await prisma.assessment.findMany({
-      where: { teacherId: user.id },
+      where,
       orderBy: { date: "desc" },
     });
     return assessments;
@@ -290,7 +295,7 @@ export const teacherService = {
 
   updateAssessment: async (user, id, payload) => {
     const existing = await prisma.assessment.findUnique({ where: { id } });
-    if (!existing || existing.teacherId !== user.id) {
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
       const error = new Error("Assessment not found");
       error.statusCode = 404;
       throw error;
@@ -301,7 +306,7 @@ export const teacherService = {
 
   deleteAssessment: async (user, id) => {
     const existing = await prisma.assessment.findUnique({ where: { id } });
-    if (!existing || existing.teacherId !== user.id) {
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
       const error = new Error("Assessment not found");
       error.statusCode = 404;
       throw error;
@@ -310,8 +315,12 @@ export const teacherService = {
   },
 
   listResults: async (user) => {
+    const where = isAdminUser(user)
+      ? { schoolId: user.schoolId ? Number(user.schoolId) : undefined }
+      : { teacherId: user.id };
+
     const results = await prisma.result.findMany({
-      where: { teacherId: user.id },
+      where,
       include: { student: true },
       orderBy: { createdAt: "desc" },
     });
@@ -344,7 +353,7 @@ export const teacherService = {
 
   updateResult: async (user, id, payload) => {
     const existing = await prisma.result.findUnique({ where: { id } });
-    if (!existing || existing.teacherId !== user.id) {
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
       const error = new Error("Result not found");
       error.statusCode = 404;
       throw error;

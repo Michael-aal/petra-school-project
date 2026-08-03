@@ -69,14 +69,14 @@ export default function SignIn() {
 
       const loggedInUser = response?.user || {};
       writeAuthToken(response?.token);
-      setUserInfo(
-        normalizeUser({
-          ...loggedInUser,
-          fullName: loggedInUser.fullName || form.email,
-          email: loggedInUser.email || form.email,
-          role: normalizeRole(loggedInUser.role),
-        }),
-      );
+
+      const profileResponse = await authApi.me();
+      setUserInfo(normalizeUser(profileResponse.user || {
+        ...loggedInUser,
+        fullName: loggedInUser.fullName || form.email,
+        email: loggedInUser.email || form.email,
+        role: normalizeRole(loggedInUser.role),
+      }));
 
       if (form.rememberMe) {
         window.localStorage.setItem("petra_remember_email", form.email);
@@ -84,7 +84,7 @@ export default function SignIn() {
         window.localStorage.removeItem("petra_remember_email");
       }
 
-      navigate(getDashboardPathForRole(loggedInUser.role), { replace: true });
+      navigate(getDashboardPathForRole(profileResponse.user?.role || loggedInUser.role), { replace: true });
     } catch (error) {
       const apiErrors = error.data?.errors;
       if (Array.isArray(apiErrors) && apiErrors.length > 0) {
