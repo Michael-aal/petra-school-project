@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "./Pages/components/Footer";
 import ForSchool from "./Pages/Forschool";
 import ForStudents from "./Pages/Forstusents";
@@ -66,6 +66,7 @@ import {
   Route,
   Outlet,
   Navigate,
+  useParams,
 } from "react-router-dom";
 import {
   Bell,
@@ -97,6 +98,12 @@ import SchoolAnalytics from "./Pages/solutions/SchoolAnalytics";
 import Admissions from "./Pages/solutions/Admissions";
 import CommunicationHub from "./Pages/solutions/CommunicationHub";
 import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLinksPage";
+import {
+  getParentPortalProfile,
+  getSavedParentPortalId,
+  parentPortalProfiles,
+  setSavedParentPortalId,
+} from "./utils/parentPortalData";
 
 function PublicLayout() {
   return (
@@ -146,39 +153,582 @@ function DashboardLay() {
 }
 
 function DynamicParentSection(props) {
-  const { userInfo } = useContext(UserContext);
-  const myChildren = userInfo?.children || [];
+  const { parentId } = useParams();
+  const [activeParentId, setActiveParentId] = useState(() =>
+    getSavedParentPortalId(),
+  );
+  const selectedParent =
+    getParentPortalProfile(parentId || activeParentId) ||
+    parentPortalProfiles[0];
+  const myChildren = selectedParent?.children || [];
 
-  // Dynamically build the data based on the real user
+  useEffect(() => {
+    if (selectedParent?.id) {
+      setSavedParentPortalId(selectedParent.id);
+      setActiveParentId(String(selectedParent.id));
+    }
+  }, [selectedParent?.id]);
+
   const dynamicSummaryCards = [
-    { icon: props.icons?.children || School, label: "Children", value: myChildren.length.toString(), meta: "Active learners", tone: "tone-blue" },
-    // Add more dynamic cards here
+    {
+      icon: props.icons?.children || School,
+      label: "Children",
+      value: myChildren.length.toString(),
+      meta: "Active learners",
+      tone: "tone-blue",
+    },
   ];
 
   const dynamicSections = [
     {
       title: "Current learner status",
-      items: myChildren.map(child => ({
+      items: myChildren.map((child) => ({
         title: child.name,
         meta: `${child.class} • ${child.teacher || "Assigned Teacher"}`,
-        value: child.status || "On Track"
-      }))
-    }
+        value: child.status || "On Track",
+      })),
+    },
   ];
 
-  // Pass the dynamic data into your existing ParentSectionPage
   return (
-    <ParentSectionPage 
-      {...props} 
+    <ParentSectionPage
+      {...props}
       summaryCards={dynamicSummaryCards}
       sections={dynamicSections}
     />
   );
 }
 
-function App() {
-  const parentSection = (props) => <ParentSectionPage {...props} />;
+function ParentPortalView({ viewType }) {
+  const { parentId } = useParams();
+  const [activeParentId, setActiveParentId] = useState(() =>
+    getSavedParentPortalId(),
+  );
+  const selectedParent =
+    getParentPortalProfile(parentId || activeParentId) ||
+    parentPortalProfiles[0];
 
+  useEffect(() => {
+    if (selectedParent?.id) {
+      setSavedParentPortalId(selectedParent.id);
+      setActiveParentId(String(selectedParent.id));
+    }
+  }, [selectedParent?.id]);
+
+  const children = selectedParent?.children || [];
+  const firstChild = children[0];
+
+  const viewContent = (() => {
+    switch (viewType) {
+      case "children":
+        return {
+          title: "Children Overview",
+          description:
+            "A calm snapshot of each child’s class, teacher, and current progress.",
+          heroTitle: "Your children at a glance",
+          heroDescription:
+            "Keep track of performance, wellbeing, and next steps.",
+          heroChips: [
+            `${children.length} child${children.length === 1 ? "" : "ren"} linked`,
+          ],
+          summaryCards: [
+            {
+              icon: School,
+              label: "Children",
+              value: String(children.length),
+              meta: "Linked learners",
+              tone: "tone-blue",
+            },
+            {
+              icon: CheckCircle2,
+              label: "Status",
+              value: firstChild?.status || "On Track",
+              meta: "Current standing",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Current learner status",
+              items: children.map((child) => ({
+                title: child.name,
+                meta: `${child.class} • ${child.teacher || "Assigned Teacher"}`,
+                value: child.status || "On Track",
+              })),
+            },
+          ],
+          actions: [
+            {
+              icon: FileText,
+              title: "View child profile",
+              meta: "Open the latest school summary",
+            },
+          ],
+        };
+      case "attendance":
+        return {
+          title: "Attendance Summary",
+          description:
+            "See how each child is doing in terms of punctuality and school presence.",
+          heroTitle: "Attendance at a glance",
+          heroDescription:
+            "A healthy attendance record is visible right away for each child.",
+          heroChips: children.map(
+            (child) => `${child.name}: ${child.attendance?.average || "—"}`,
+          ),
+          summaryCards: [
+            {
+              icon: CalendarDays,
+              label: "Average Attendance",
+              value: firstChild?.attendance?.average || "—",
+              meta: "Current term",
+              tone: "tone-blue",
+            },
+            {
+              icon: CheckCircle2,
+              label: "Present",
+              value: firstChild?.attendance?.present || "—",
+              meta: "This period",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Attendance record",
+              items: children.map((child) => ({
+                title: child.name,
+                meta: `${child.attendance?.note || "Attendance updated"} • Late ${child.attendance?.late || 0}`,
+                value: child.attendance?.average || "—",
+              })),
+            },
+          ],
+          actions: [
+            {
+              icon: FileText,
+              title: "Download attendance",
+              meta: "Save a printable overview",
+            },
+            {
+              icon: Bell,
+              title: "Set reminder",
+              meta: "Get a weekly attendance note",
+            },
+          ],
+        };
+      case "results":
+        return {
+          title: "Latest Results",
+          description:
+            "Track the most recent assessment outcomes and academic growth.",
+          heroTitle: "Academic updates",
+          heroDescription:
+            "Review recent scores before the next parent-teacher conversation.",
+          heroChips: children.flatMap(
+            (child) =>
+              child.results?.subjects
+                ?.slice(0, 1)
+                .map(
+                  (subject) =>
+                    `${child.name}: ${subject.name} ${subject.score}`,
+                ) || [],
+          ),
+          summaryCards: [
+            {
+              icon: FileText,
+              label: "Average",
+              value: firstChild?.results?.average || "—",
+              meta: "Latest average",
+              tone: "tone-blue",
+            },
+            {
+              icon: BookOpen,
+              label: "Top Subject",
+              value: firstChild?.results?.subjects?.[0]?.name || "—",
+              meta: firstChild?.results?.subjects?.[0]?.score || "—",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Recent scores",
+              items: children.flatMap((child) =>
+                (child.results?.subjects || []).map((subject) => ({
+                  title: `${child.name} • ${subject.name}`,
+                  meta: `Trend ${subject.trend}`,
+                  value: subject.score,
+                })),
+              ),
+            },
+          ],
+          actions: [
+            {
+              icon: Download,
+              title: "Download report card",
+              meta: "Keep a copy for your records",
+            },
+            {
+              icon: MessageSquare,
+              title: "Talk to teacher",
+              meta: "Ask for support tips",
+            },
+          ],
+        };
+      case "assignments":
+        return {
+          title: "Assignments and Homework",
+          description:
+            "Stay on top of due dates and upcoming tasks for each child.",
+          heroTitle: "Stay prepared",
+          heroDescription: "See what is due soon and keep the week organised.",
+          heroChips: children.flatMap(
+            (child) =>
+              child.assignments
+                ?.slice(0, 1)
+                .map((assignment) => `${child.name}: ${assignment.title}`) ||
+              [],
+          ),
+          summaryCards: [
+            {
+              icon: BookOpen,
+              label: "Pending Tasks",
+              value: String(
+                children.reduce(
+                  (total, child) => total + (child.assignments?.length || 0),
+                  0,
+                ),
+              ),
+              meta: "Across children",
+              tone: "tone-blue",
+            },
+            {
+              icon: CalendarDays,
+              label: "Next Due",
+              value: firstChild?.assignments?.[0]?.due || "—",
+              meta: firstChild?.assignments?.[0]?.title || "No pending work",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Upcoming tasks",
+              items: children.flatMap((child) =>
+                (child.assignments || []).map((assignment) => ({
+                  title: `${child.name} • ${assignment.title}`,
+                  meta: `Due ${assignment.due}`,
+                  value: assignment.status,
+                })),
+              ),
+            },
+          ],
+          actions: [
+            {
+              icon: BookOpen,
+              title: "Open homework guide",
+              meta: "Review learning instructions",
+            },
+            {
+              icon: Bell,
+              title: "Set task reminder",
+              meta: "Receive a gentle nudge",
+            },
+          ],
+        };
+      case "fees":
+        return {
+          title: "Fees and Payments",
+          description:
+            "Monitor pending balances and payment deadlines with clarity.",
+          heroTitle: "Fee reminders",
+          heroDescription:
+            "Pay what is pending quickly so there are no surprises later in the term.",
+          heroChips: children.flatMap(
+            (child) =>
+              child.fees
+                ?.slice(0, 1)
+                .map((fee) => `${child.name}: ${fee.amount}`) || [],
+          ),
+          summaryCards: [
+            {
+              icon: CreditCard,
+              label: "Outstanding",
+              value: children
+                .flatMap((child) => child.fees || [])
+                .filter((fee) => fee.status === "Pending")
+                .length.toString(),
+              meta: "Pending items",
+              tone: "tone-blue",
+            },
+            {
+              icon: Wallet,
+              label: "Top Fee",
+              value: firstChild?.fees?.[0]?.amount || "—",
+              meta: firstChild?.fees?.[0]?.title || "No pending fee",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Payment status",
+              items: children.flatMap((child) =>
+                (child.fees || []).map((fee) => ({
+                  title: `${child.name} • ${fee.title}`,
+                  meta: fee.status,
+                  value: fee.amount,
+                })),
+              ),
+            },
+          ],
+          actions: [
+            { icon: Wallet, title: "Pay now", meta: "Settle fees securely" },
+            {
+              icon: FileText,
+              title: "Download invoice",
+              meta: "Keep a copy for records",
+            },
+          ],
+        };
+      case "announcements":
+        return {
+          title: "School Announcements",
+          description:
+            "Stay updated with school notices and important family updates.",
+          heroTitle: "Latest notices",
+          heroDescription:
+            "Be informed about meetings, events, and changes in school routine.",
+          heroChips: children.flatMap(
+            (child) =>
+              child.announcements
+                ?.slice(0, 1)
+                .map(
+                  (announcement) => `${child.name}: ${announcement.title}`,
+                ) || [],
+          ),
+          summaryCards: [
+            {
+              icon: Bell,
+              label: "Notices",
+              value: String(
+                children.reduce(
+                  (total, child) => total + (child.announcements?.length || 0),
+                  0,
+                ),
+              ),
+              meta: "Current updates",
+              tone: "tone-blue",
+            },
+            {
+              icon: School,
+              label: "Latest",
+              value: firstChild?.announcements?.[0]?.title || "—",
+              meta: firstChild?.announcements?.[0]?.detail || "—",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Announcements",
+              items: children.flatMap((child) =>
+                (child.announcements || []).map((announcement) => ({
+                  title: `${child.name} • ${announcement.title}`,
+                  meta: announcement.detail,
+                })),
+              ),
+            },
+          ],
+          actions: [
+            {
+              icon: Bell,
+              title: "Turn on alerts",
+              meta: "Receive updates instantly",
+            },
+            { icon: FileText, title: "Read details", meta: "Open full notice" },
+          ],
+        };
+      case "messages":
+        return {
+          title: "Messages from Teachers",
+          description:
+            "Read the latest teacher notes and school updates for your children.",
+          heroTitle: "Stay connected",
+          heroDescription:
+            "A simple view for important messages from teachers and school offices.",
+          heroChips: children.flatMap(
+            (child) =>
+              child.messages
+                ?.slice(0, 1)
+                .map((message) => `${child.name}: ${message.from}`) || [],
+          ),
+          summaryCards: [
+            {
+              icon: MessageSquare,
+              label: "Messages",
+              value: String(
+                children.reduce(
+                  (total, child) => total + (child.messages?.length || 0),
+                  0,
+                ),
+              ),
+              meta: "Latest notes",
+              tone: "tone-blue",
+            },
+            {
+              icon: Bell,
+              label: "Latest",
+              value: firstChild?.messages?.[0]?.from || "—",
+              meta: firstChild?.messages?.[0]?.note || "—",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Recent messages",
+              items: children.flatMap((child) =>
+                (child.messages || []).map((message) => ({
+                  title: `${child.name} • ${message.from}`,
+                  meta: message.note,
+                })),
+              ),
+            },
+          ],
+          actions: [
+            {
+              icon: MessageSquare,
+              title: "Reply now",
+              meta: "Send a note back",
+            },
+            {
+              icon: FileText,
+              title: "View thread",
+              meta: "Open the full conversation",
+            },
+          ],
+        };
+      case "downloads":
+        return {
+          title: "Downloads and Documents",
+          description:
+            "Access school forms, notices, and lesson resources from one place.",
+          heroTitle: "Useful documents",
+          heroDescription:
+            "Download the records you need without hunting through email.",
+          heroChips: [
+            `${children.length} linked child${children.length === 1 ? "" : "ren"}`,
+            "Updated this term",
+          ],
+          summaryCards: [
+            {
+              icon: Download,
+              label: "Reports",
+              value: String(children.length),
+              meta: "Ready to download",
+              tone: "tone-blue",
+            },
+            {
+              icon: FileText,
+              label: "Forms",
+              value: String(children.length),
+              meta: "Available now",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Available resources",
+              items: children.map((child) => ({
+                title: `${child.name} report card`,
+                meta: `PDF • Updated for ${child.class}`,
+                value: "Download",
+              })),
+            },
+          ],
+          actions: [
+            {
+              icon: Download,
+              title: "Download all",
+              meta: "Save the latest files",
+            },
+            {
+              icon: FileText,
+              title: "Open folder",
+              meta: "Browse school documents",
+            },
+          ],
+        };
+      case "profile":
+        return {
+          title: "Parent Profile",
+          description:
+            "Review the parent account details and preferred contact settings.",
+          heroTitle: "Account overview",
+          heroDescription:
+            "Make sure your profile details stay current for school communication.",
+          heroChips: [
+            `Primary guardian`,
+            `${selectedParent?.linkedStudents || 0} linked child${selectedParent?.linkedStudents === 1 ? "" : "ren"}`,
+          ],
+          summaryCards: [
+            {
+              icon: UserCircle2,
+              label: "Profile",
+              value: "Active",
+              meta: "Verified account",
+              tone: "tone-blue",
+            },
+            {
+              icon: Bell,
+              label: "Contacts",
+              value: selectedParent?.phoneNumber || "—",
+              meta: selectedParent?.email || "—",
+              tone: "tone-teal",
+            },
+          ],
+          sections: [
+            {
+              title: "Profile details",
+              items: [
+                {
+                  title: "Parent name",
+                  meta: selectedParent?.parentName || "—",
+                },
+                { title: "Phone", meta: selectedParent?.phoneNumber || "—" },
+                { title: "Email", meta: selectedParent?.email || "—" },
+              ],
+            },
+          ],
+          actions: [
+            {
+              icon: UserCircle2,
+              title: "Edit profile",
+              meta: "Update your details",
+            },
+            {
+              icon: Bell,
+              title: "Notification settings",
+              meta: "Adjust alerts",
+            },
+          ],
+        };
+      default:
+        return {
+          title: "Children Overview",
+          description:
+            "A calm snapshot of each child’s class, teacher, and current progress.",
+          heroTitle: "Your children at a glance",
+          heroDescription:
+            "Keep track of performance, wellbeing, and next steps.",
+          heroChips: [
+            `${children.length} child${children.length === 1 ? "" : "ren"} linked`,
+          ],
+          summaryCards: [],
+          sections: [],
+        };
+    }
+  })();
+
+  return <ParentSectionPage {...viewContent} />;
+}
+
+function App() {
   return (
     <Router>
       <Routes>
@@ -188,7 +738,10 @@ function App() {
         <Route path="/register/admin" element={<AdminRegister />} />
         <Route path="/register/parent" element={<ParentRegister />} />
         <Route path="/register/staff" element={<StaffRegister />} />
-        <Route path="/register/teacher" element={<Register rolePreset="teacher" />} />
+        <Route
+          path="/register/teacher"
+          element={<Register rolePreset="teacher" />}
+        />
         <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
@@ -318,258 +871,117 @@ function App() {
             path="/dashboard/communication/support"
             element={<SupportPage />}
           />
-          <Route path="/dashboard/students/parent-links" element={<PortalLinksPage />} />
+          <Route
+            path="/dashboard/students/parent-links"
+            element={<PortalLinksPage />}
+          />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
 
-          <Route path="/staff" element={<Navigate to="/staff/dashboard" replace />} />
+          <Route
+            path="/staff"
+            element={<Navigate to="/staff/dashboard" replace />}
+          />
           <Route path="/staff/dashboard" element={<TeacherWorkspacePage />} />
-          <Route path="/staff/classes" element={<TeacherWorkspacePage activeView="classes" />} />
-          <Route path="/staff/classes/:classId" element={<TeacherWorkspacePage activeView="classDetails" />} />
-          <Route path="/staff/students" element={<TeacherWorkspacePage activeView="students" />} />
-          <Route path="/staff/attendance" element={<TeacherWorkspacePage activeView="attendance" />} />
-          <Route path="/staff/assessments" element={<TeacherWorkspacePage activeView="assessments" />} />
-          <Route path="/staff/results" element={<TeacherWorkspacePage activeView="results" />} />
-          <Route path="/staff/announcements" element={<TeacherWorkspacePage activeView="announcements" />} />
-          <Route path="/staff/profile" element={<TeacherWorkspacePage activeView="profile" />} />
-          <Route path="/staff/settings" element={<TeacherWorkspacePage activeView="settings" />} />
+          <Route
+            path="/staff/classes"
+            element={<TeacherWorkspacePage activeView="classes" />}
+          />
+          <Route
+            path="/staff/classes/:classId"
+            element={<TeacherWorkspacePage activeView="classDetails" />}
+          />
+          <Route
+            path="/staff/students"
+            element={<TeacherWorkspacePage activeView="students" />}
+          />
+          <Route
+            path="/staff/attendance"
+            element={<TeacherWorkspacePage activeView="attendance" />}
+          />
+          <Route
+            path="/staff/assessments"
+            element={<TeacherWorkspacePage activeView="assessments" />}
+          />
+          <Route
+            path="/staff/results"
+            element={<TeacherWorkspacePage activeView="results" />}
+          />
+          <Route
+            path="/staff/announcements"
+            element={<TeacherWorkspacePage activeView="announcements" />}
+          />
+          <Route
+            path="/staff/profile"
+            element={<TeacherWorkspacePage activeView="profile" />}
+          />
+          <Route
+            path="/staff/settings"
+            element={<TeacherWorkspacePage activeView="settings" />}
+          />
 
-          <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} />
-          <Route path="/portal/dashboard" element={<ParentDashboard />} />
-          <Route 
-  path="/portal/children" 
-  element={
-    <DynamicParentSection
-      title="Children Overview"
-      description="A calm snapshot of each child’s class, teacher, and current progress."
-      heroTitle="Your children at a glance"
-      heroDescription="Keep track of performance, wellbeing, and next steps."
-      icons={{ children: School }} // Pass icons if needed
-      actions={[
-        { icon: FileText, title: "View child profile", meta: "Open the latest school summary" },
-      ]}
-    />
-  } 
-/>
           <Route
-            path="/portal/attendance"
-            element={parentSection({
-              title: "Attendance Summary",
-              description: "See how each child is doing in terms of punctuality and school presence.",
-              heroTitle: "Attendance at a glance",
-              heroDescription: "A healthy attendance record is visible right away for both children.",
-              heroChips: ["92% so far", "2 late arrivals", "3 absences"],
-              summaryCards: [
-                { icon: CalendarDays, label: "Present", value: "92%", meta: "This term", tone: "tone-blue" },
-                { icon: CheckCircle2, label: "Late", value: "2", meta: "This week", tone: "tone-teal" },
-                { icon: FileText, label: "Absence", value: "3", meta: "Recorded this month", tone: "tone-rose" },
-              ],
-              sections: [
-                {
-                  title: "Attendance record",
-                  items: [
-                    { title: "Ayo Ogunleye", meta: "Present on 18 of 20 days", value: "90%" },
-                    { title: "Tolu Ogunleye", meta: "Present on 17 of 20 days", value: "85%" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: FileText, title: "Download attendance", meta: "Save a printable overview" },
-                { icon: Bell, title: "Set reminder", meta: "Get a weekly attendance note" },
-              ],
-            })}
+            path="/portal"
+            element={<Navigate to="/portal/dashboard" replace />}
           />
           <Route
-            path="/portal/results"
-            element={parentSection({
-              title: "Latest Results",
-              description: "Track the most recent assessment outcomes and academic growth.",
-              heroTitle: "Academic updates",
-              heroDescription: "Review recent scores before the next parent-teacher conversation.",
-              heroChips: ["English 81%", "Math 74%", "Biology 79%"],
-              summaryCards: [
-                { icon: FileText, label: "English", value: "81%", meta: "Excellent comprehension", tone: "tone-blue" },
-                { icon: BookOpen, label: "Mathematics", value: "74%", meta: "Needs revision", tone: "tone-teal" },
-                { icon: School, label: "Biology", value: "79%", meta: "Strong practical work", tone: "tone-rose" },
-              ],
-              sections: [
-                {
-                  title: "Recent scores",
-                  items: [
-                    { title: "English", meta: "Ayo improved in comprehension", value: "81%" },
-                    { title: "Science", meta: "Tolu completed practicals", value: "76%" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Download, title: "Download report card", meta: "Keep a copy for your records" },
-                { icon: MessageSquare, title: "Talk to teacher", meta: "Ask for support tips" },
-              ],
-            })}
+            path="/portal/dashboard/:parentId?"
+            element={<ParentDashboard />}
           />
           <Route
-            path="/portal/assignments"
-            element={parentSection({
-              title: "Assignments and Homework",
-              description: "Stay on top of due dates and upcoming tasks for both children.",
-              heroTitle: "Stay prepared",
-              heroDescription: "See what is due soon and keep the week organised.",
-              heroChips: ["3 tasks due", "1 due tomorrow", "2 due next week"],
-              summaryCards: [
-                { icon: BookOpen, label: "Science Homework", value: "Tomorrow", meta: "Due 08:00", tone: "tone-blue" },
-                { icon: FileText, label: "Reading Log", value: "Friday", meta: "Due 15:00", tone: "tone-teal" },
-                { icon: CalendarDays, label: "Math Practice", value: "Monday", meta: "Due 12:00", tone: "tone-rose" },
-              ],
-              sections: [
-                {
-                  title: "Upcoming tasks",
-                  items: [
-                    { title: "Science Homework", meta: "Due tomorrow • 08:00" },
-                    { title: "Reading Log", meta: "Due Friday • 15:00" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: BookOpen, title: "Open homework guide", meta: "Review learning instructions" },
-                { icon: Bell, title: "Set task reminder", meta: "Receive a gentle nudge" },
-              ],
-            })}
+            path="/portal/children/:parentId?"
+            element={
+              <DynamicParentSection
+                title="Children Overview"
+                description="A calm snapshot of each child’s class, teacher, and current progress."
+                heroTitle="Your children at a glance"
+                heroDescription="Keep track of performance, wellbeing, and next steps."
+                icons={{ children: School }}
+                actions={[
+                  {
+                    icon: FileText,
+                    title: "View child profile",
+                    meta: "Open the latest school summary",
+                  },
+                ]}
+              />
+            }
           />
           <Route
-            path="/portal/fees"
-            element={parentSection({
-              title: "Fees and Payments",
-              description: "Monitor pending balances and payment deadlines with clarity.",
-              heroTitle: "Fee reminders",
-              heroDescription: "Pay what is pending quickly so there are no surprises later in the term.",
-              heroChips: ["₦48,000 outstanding", "₦7,500 transport", "Due this week"],
-              summaryCards: [
-                { icon: CreditCard, label: "School Fees", value: "₦48,000", meta: "Outstanding balance", tone: "tone-blue" },
-                { icon: Wallet, label: "Transport", value: "₦7,500", meta: "Pending this term", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Payment status",
-                  items: [
-                    { title: "School Fees", meta: "Balance outstanding", value: "₦48,000" },
-                    { title: "Transport", meta: "Pending this term", value: "₦7,500" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Wallet, title: "Pay now", meta: "Settle fees securely" },
-                { icon: FileText, title: "Download invoice", meta: "Keep a copy for records" },
-              ],
-            })}
+            path="/portal/attendance/:parentId?"
+            element={<ParentPortalView viewType="attendance" />}
           />
           <Route
-            path="/portal/announcements"
-            element={parentSection({
-              title: "School Announcements",
-              description: "Stay updated with school notices and important family updates.",
-              heroTitle: "Latest notices",
-              heroDescription: "Be informed about meetings, events, and changes in school routine.",
-              heroChips: ["Parent-teacher meeting", "Mid-term revision", "Open day"],
-              summaryCards: [
-                { icon: Bell, label: "Meetings", value: "1", meta: "This week", tone: "tone-blue" },
-                { icon: School, label: "Events", value: "2", meta: "Upcoming", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Announcements",
-                  items: [
-                    { title: "Parent-Teacher Meeting", meta: "Thursday • 10:00" },
-                    { title: "Mid-Term Revision", meta: "Friday • 14:00" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Bell, title: "Turn on alerts", meta: "Receive updates instantly" },
-                { icon: FileText, title: "Read details", meta: "Open full notice" },
-              ],
-            })}
+            path="/portal/results/:parentId?"
+            element={<ParentPortalView viewType="results" />}
           />
           <Route
-            path="/portal/messages"
-            element={parentSection({
-              title: "Messages from Teachers",
-              description: "Read the latest teacher notes and school updates for your children.",
-              heroTitle: "Stay connected",
-              heroDescription: "A simple view for important messages from teachers and school offices.",
-              heroChips: ["2 unread", "1 new note", "Quick replies"],
-              summaryCards: [
-                { icon: MessageSquare, label: "New messages", value: "2", meta: "Last 24 hours", tone: "tone-blue" },
-                { icon: Bell, label: "Teacher notes", value: "3", meta: "This week", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Recent messages",
-                  items: [
-                    { title: "Mrs. Adeyemi", meta: "Your child improved in reading" },
-                    { title: "School Admin", meta: "Fee reminder for the next installment" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: MessageSquare, title: "Reply now", meta: "Send a note back" },
-                { icon: FileText, title: "View thread", meta: "Open the full conversation" },
-              ],
-            })}
+            path="/portal/assignments/:parentId?"
+            element={<ParentPortalView viewType="assignments" />}
           />
           <Route
-            path="/portal/downloads"
-            element={parentSection({
-              title: "Downloads and Documents",
-              description: "Access school forms, notices, and lesson resources from one place.",
-              heroTitle: "Useful documents",
-              heroDescription: "Download the records you need without hunting through email.",
-              heroChips: ["4 available", "2 recent", "Ready to save"],
-              summaryCards: [
-                { icon: Download, label: "Reports", value: "2", meta: "Ready to download", tone: "tone-blue" },
-                { icon: FileText, label: "Forms", value: "2", meta: "Available now", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Available resources",
-                  items: [
-                    { title: "Term report card", meta: "PDF • Updated today", value: "Download" },
-                    { title: "Transport form", meta: "PDF • For the next trip", value: "Download" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Download, title: "Download all", meta: "Save the latest files" },
-                { icon: FileText, title: "Open folder", meta: "Browse school documents" },
-              ],
-            })}
+            path="/portal/fees/:parentId?"
+            element={<ParentPortalView viewType="fees" />}
           />
           <Route
-            path="/portal/profile"
-            element={parentSection({
-              title: "Parent Profile",
-              description: "Review the parent account details and preferred contact settings.",
-              heroTitle: "Account overview",
-              heroDescription: "Make sure your profile details stay current for school communication.",
-              heroChips: ["Primary guardian", "Verified account", "Notifications on"],
-              summaryCards: [
-                { icon: UserCircle2, label: "Profile", value: "Active", meta: "Verified account", tone: "tone-blue" },
-                { icon: Bell, label: "Contacts", value: "2", meta: "Preferred channels", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Profile details",
-                  items: [
-                    { title: "Name", meta: "Mrs. Temitope Ogunleye" },
-                    { title: "Phone", meta: "+234 812 345 6789" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: UserCircle2, title: "Edit profile", meta: "Update your details" },
-                { icon: Bell, title: "Notification settings", meta: "Adjust alerts" },
-              ],
-            })}
+            path="/portal/announcements/:parentId?"
+            element={<ParentPortalView viewType="announcements" />}
           />
-          <Route path="/portal/settings" element={<SettingsPage role="parent" />} />
+          <Route
+            path="/portal/messages/:parentId?"
+            element={<ParentPortalView viewType="messages" />}
+          />
+          <Route
+            path="/portal/downloads/:parentId?"
+            element={<ParentPortalView viewType="downloads" />}
+          />
+          <Route
+            path="/portal/profile/:parentId?"
+            element={<ParentPortalView viewType="profile" />}
+          />
+          <Route
+            path="/portal/settings"
+            element={<SettingsPage role="parent" />}
+          />
         </Route>
       </Routes>
     </Router>

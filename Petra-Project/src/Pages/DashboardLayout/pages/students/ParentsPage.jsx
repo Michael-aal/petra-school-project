@@ -1,73 +1,193 @@
-import { Users, UserCheck, Phone, Mail, Eye, Trash2, Edit, Link as LinkIcon } from "lucide-react";
-import GenericListPage from "../../GenericListPage/GenericListPage"; // Adjust path as needed
+import { useMemo, useState } from "react";
+import {
+  Users,
+  UserCheck,
+  Mail,
+  Eye,
+  Trash2,
+  Edit,
+  Link as LinkIcon,
+} from "lucide-react";
+import GenericListPage from "../../GenericListPage/GenericListPage";
+import {
+  parentPortalProfiles,
+  saveParentPortalRecords,
+} from "../../../../utils/parentPortalData";
 
-// 1. Initial Mock Data (Just for the Admin UI to look good right now)
 const initialParents = [
-  { id: 1, parentName: "Mr. Ogunleye Kayode", phoneNumber: "+234 801 234 5678", email: "ogunleye.k@gmail.com", linkedStudents: 2 },
-  { id: 2, parentName: "Mrs. Adebayo Vitor", phoneNumber: "+234 802 345 6789", email: "vitor.adebayo@yahoo.com", linkedStudents: 1 },
-  { id: 3, parentName: "Chief Fakorade", phoneNumber: "+234 803 456 7890", email: "fakorade.chief@outlook.com", linkedStudents: 3 },
+  {
+    id: 1,
+    parentName: "Mr. Ogunleye Kayode",
+    phoneNumber: "+234 801 234 5678",
+    email: "ogunleye.k@gmail.com",
+    linkedStudents: 2,
+    assignedStudents: ["Ayo Ogunleye", "Tolu Ogunleye"],
+  },
+  {
+    id: 2,
+    parentName: "Mrs. Adebayo Vitor",
+    phoneNumber: "+234 802 345 6789",
+    email: "vitor.adebayo@yahoo.com",
+    linkedStudents: 1,
+    assignedStudents: ["Dare Adebayo"],
+  },
+  {
+    id: 3,
+    parentName: "Chief Fakorade",
+    phoneNumber: "+234 803 456 7890",
+    email: "fakorade.chief@outlook.com",
+    linkedStudents: 3,
+    assignedStudents: ["Emeka Fakorade", "Ife Fakorade", "Kemi Fakorade"],
+  },
 ];
 
-// 2. The Configuration
-const parentsConfig = {
-  title: "Parents & Guardians",
-  singularName: "Parent",
-  description: "Manage parent contacts and send them portal access links.",
-  icon: Users,
-  
-  stats: [
-    { label: "Total Parents", value: (data) => data.length, icon: Users, color: "blue" },
-    { label: "Total Wards", value: (data) => data.reduce((sum, p) => sum + (Number(p.linkedStudents) || 0), 0), icon: UserCheck, color: "green" },
-  ],
+function loadParentsFromStorage() {
+  if (typeof window === "undefined") {
+    return initialParents;
+  }
 
-  columns: [
-    { key: "avatar", label: "Parent Name" },
-    { 
-      key: "email", 
-      label: "Email Address",
-      render: (item) => (
-        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", color: "oklch(0.85 0.05 264)" }}>
-          <Mail size={14} style={{ color: "oklch(0.6 0.02 250)" }} /> {item.email}
-        </span>
-      )
-    },
-    { 
-      key: "linkedStudents", 
-      label: "Linked Wards",
-      render: (item) => (
-        <span style={{ 
-          display: "inline-flex", alignItems: "center", gap: "6px", 
-          background: "oklch(0.3 0.08 264)", color: "oklch(0.85 0.05 264)", 
-          padding: "4px 12px", borderRadius: "999px", fontSize: "0.8rem", fontWeight: "600" 
-        }}>
-          <UserCheck size={14} /> {item.linkedStudents || 0} Wards
-        </span>
-      )
-    },
-    { key: "actions", label: "Actions", align: "right" },
-  ],
-
-  formFields: [
-    { name: "parentName", label: "Full Name", type: "text", placeholder: "e.g., Mr. John Doe", fullWidth: true },
-    { name: "email", label: "Email Address", type: "email", placeholder: "parent@email.com" },
-    { name: "phoneNumber", label: "Phone Number", type: "tel", placeholder: "+234 800 000 0000" },
-    { name: "linkedStudents", label: "Number of Wards", type: "number", placeholder: "e.g., 2" },
-  ],
-
-  actions: [
-    { label: "View Profile", icon: Eye, type: "view" },
-    { label: "Edit Details", icon: Edit, type: "edit" },
-    // 👇 ADD THIS NEW ACTION 👇
-    { label: "Send Portal Link", icon: LinkIcon, type: "sendLink" },
-    { label: "Remove Parent", icon: Trash2, type: "delete" },
-  ],
-};
+  try {
+    const stored = window.localStorage.getItem("petra_parent_portal_records");
+    return stored ? JSON.parse(stored) : initialParents;
+  } catch {
+    return initialParents;
+  }
+}
 
 export default function ParentsPage() {
+  const [parents, setParents] = useState(loadParentsFromStorage);
+
+  const studentOptions = useMemo(() => {
+    const names = parentPortalProfiles
+      .flatMap((profile) => profile.children || [])
+      .map((child) => child.name);
+    return [...new Set(names)];
+  }, []);
+
+  const parentsConfig = {
+    title: "Parents & Guardians",
+    singularName: "Parent",
+    description:
+      "Manage parent contacts, assign students, and send them portal access links.",
+    icon: Users,
+    stats: [
+      {
+        label: "Total Parents",
+        value: (data) => data.length,
+        icon: Users,
+        color: "blue",
+      },
+      {
+        label: "Total Wards",
+        value: (data) =>
+          data.reduce((sum, p) => sum + (Number(p.linkedStudents) || 0), 0),
+        icon: UserCheck,
+        color: "green",
+      },
+    ],
+    columns: [
+      { key: "avatar", label: "Parent Name" },
+      {
+        key: "email",
+        label: "Email Address",
+        render: (item) => (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "0.85rem",
+              color: "oklch(0.85 0.05 264)",
+            }}
+          >
+            <Mail size={14} style={{ color: "oklch(0.6 0.02 250)" }} />{" "}
+            {item.email}
+          </span>
+        ),
+      },
+      {
+        key: "linkedStudents",
+        label: "Linked Wards",
+        render: (item) => (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "oklch(0.3 0.08 264)",
+              color: "oklch(0.85 0.05 264)",
+              padding: "4px 12px",
+              borderRadius: "999px",
+              fontSize: "0.8rem",
+              fontWeight: "600",
+            }}
+          >
+            <UserCheck size={14} /> {item.linkedStudents || 0} Wards
+          </span>
+        ),
+      },
+      { key: "actions", label: "Actions", align: "right" },
+    ],
+    formFields: [
+      {
+        name: "parentName",
+        label: "Full Name",
+        type: "text",
+        placeholder: "e.g., Mr. John Doe",
+        fullWidth: true,
+      },
+      {
+        name: "email",
+        label: "Email Address",
+        type: "email",
+        placeholder: "parent@email.com",
+      },
+      {
+        name: "phoneNumber",
+        label: "Phone Number",
+        type: "tel",
+        placeholder: "+234 800 000 0000",
+      },
+      {
+        name: "assignedStudents",
+        label: "Assign Student(s)",
+        type: "multiselect",
+        options: studentOptions,
+        fullWidth: true,
+      },
+    ],
+    actions: [
+      { label: "View Profile", icon: Eye, type: "view" },
+      { label: "Edit Details", icon: Edit, type: "edit" },
+      { label: "Send Portal Link", icon: LinkIcon, type: "sendLink" },
+      { label: "Remove Parent", icon: Trash2, type: "delete" },
+    ],
+  };
+
+  const handleDataChange = (nextData) => {
+    const normalizedData = nextData.map((item, index) => ({
+      ...item,
+      id: Number(item.id || index + 1),
+      linkedStudents: Number(
+        item.linkedStudents ??
+          (Array.isArray(item.assignedStudents)
+            ? item.assignedStudents.length
+            : 0),
+      ),
+      assignedStudents: Array.isArray(item.assignedStudents)
+        ? item.assignedStudents.filter(Boolean)
+        : [],
+    }));
+
+    setParents(normalizedData);
+    saveParentPortalRecords(normalizedData);
+  };
+
   return (
-    <GenericListPage 
-      config={parentsConfig} 
-      initialData={initialParents} 
+    <GenericListPage
+      config={parentsConfig}
+      initialData={parents}
+      onDataChange={handleDataChange}
     />
   );
 }

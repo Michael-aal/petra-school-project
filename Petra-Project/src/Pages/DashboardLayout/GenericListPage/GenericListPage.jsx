@@ -29,7 +29,7 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
   // Sync with parent context if onDataChange is provided
   useEffect(() => {
     if (onDataChange) onDataChange(data);
-  }, [data, onDataChange]);
+  }, [data]);
 
   // Filter data based on search query
   const filteredData = data.filter((item) => {
@@ -52,13 +52,32 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
 
   // --- Handlers ---
   const handleFormChange = (e) => {
+    if (e.target.type === "select-multiple") {
+      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
+      setFormData({ ...formData, [e.target.name]: selectedValues });
+      return;
+    }
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleAdd = () => {
+    const normalizedFormData = {
+      ...formData,
+      linkedStudents: formData.linkedStudents ?? (Array.isArray(formData.assignedStudents) ? formData.assignedStudents.length : 0),
+      assignedStudents: Array.isArray(formData.assignedStudents)
+        ? formData.assignedStudents.filter(Boolean)
+        : formData.assignedStudents
+          ? String(formData.assignedStudents)
+              .split(",")
+              .map((value) => value.trim())
+              .filter(Boolean)
+          : [],
+    };
+
     const newItem = {
       id: Date.now(),
-      ...formData,
+      ...normalizedFormData,
       // Auto-generate initials if a name field exists
       avatarInitials: formData.fullName || formData.name || formData.studentName 
         ? getInitials(formData.fullName || formData.name || formData.studentName) 
@@ -85,7 +104,20 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
   };
 
   const handleSaveEdit = () => {
-    const updatedData = data.map((d) => (d.id === editModal.item.id ? { ...d, ...formData } : d));
+    const normalizedFormData = {
+      ...formData,
+      linkedStudents: formData.linkedStudents ?? (Array.isArray(formData.assignedStudents) ? formData.assignedStudents.length : 0),
+      assignedStudents: Array.isArray(formData.assignedStudents)
+        ? formData.assignedStudents.filter(Boolean)
+        : formData.assignedStudents
+          ? String(formData.assignedStudents)
+              .split(",")
+              .map((value) => value.trim())
+              .filter(Boolean)
+          : [],
+    };
+
+    const updatedData = data.map((d) => (d.id === editModal.item.id ? { ...d, ...normalizedFormData } : d));
     setData(updatedData);
     setEditModal({ isOpen: false, item: null });
     setFormData({});
@@ -270,6 +302,18 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                         onChange={handleFormChange}
                       >
                         <option value="">Select {field.label}</option>
+                        {field.options.map((opt, oIdx) => (
+                          <option key={oIdx} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    ) : field.type === "multiselect" ? (
+                      <select
+                        name={field.name}
+                        className="form-select"
+                        multiple
+                        value={Array.isArray(formData[field.name]) ? formData[field.name] : []}
+                        onChange={handleFormChange}
+                      >
                         {field.options.map((opt, oIdx) => (
                           <option key={oIdx} value={opt}>{opt}</option>
                         ))}
