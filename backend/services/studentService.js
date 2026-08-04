@@ -1,7 +1,6 @@
 import crypto from "crypto";
 import { prisma } from "../config/db.js";
 import { studentModel } from "../models/studentModel.js";
-import { hashPassword } from "../utils/hashPassword.js";
 import { logger } from "../utils/logger.js";
 
 const normalizeStatus = (value = "") => {
@@ -246,79 +245,10 @@ export const studentService = {
       });
       logger.info("studentService.create: student created", { studentId: student.id, admissionNumber: resolvedAdmissionNumber });
 
-      let parentUser = await tx.user.findFirst({ where: { email } });
-      logger.info("studentService.create: parentUser lookup", { email, found: Boolean(parentUser) });
-      if (!parentUser) {
-        const tempPassword = crypto.randomBytes(6).toString("hex") + "A1!";
-        parentUser = await tx.user.create({
-          data: {
-            firstName: parentName.split(" ")[0] || parentName,
-            lastName: parentName.split(" ").slice(1).join(" ") || parentName,
-            username: String(email).split("@")[0],
-            fullName: parentName,
-            email,
-            password: await hashPassword(tempPassword),
-            phone,
-            role: "parent",
-            accountStatus: "pending",
-            parentAccessCode: crypto.randomBytes(3).toString("hex").toUpperCase(),
-          },
-        });
-        logger.info("studentService.create: parentUser created", { parentUserId: parentUser.id });
-      } else {
-        parentUser = await tx.user.update({
-          where: { id: parentUser.id },
-          data: {
-            fullName: parentName || parentUser.fullName,
-            phone: phone || parentUser.phone,
-            accountStatus: parentUser.accountStatus === "active" ? parentUser.accountStatus : "pending",
-          },
-        });
-        logger.info("studentService.create: parentUser updated", { parentUserId: parentUser.id });
-      }
-
-      let parent = await tx.parent.findFirst({ where: { userId: parentUser.id } });
-      logger.info("studentService.create: parent record lookup", { parentUserId: parentUser.id, found: Boolean(parent) });
-      if (!parent) {
-        parent = await tx.parent.create({
-          data: {
-            userId: parentUser.id,
-            schoolId,
-            name: parentName,
-            phone,
-            email,
-            address: payload.parentAddress || "",
-          },
-        });
-        logger.info("studentService.create: parent record created", { parentId: parent.id, parentUserId: parentUser.id });
-      } else {
-        parent = await tx.parent.update({
-          where: { id: parent.id },
-          data: {
-            name: parentName || parent.name,
-            phone: phone || parent.phone,
-            email: email || parent.email,
-            address: payload.parentAddress || parent.address,
-          },
-        });
-        logger.info("studentService.create: parent record updated", { parentId: parent.id, parentUserId: parentUser.id });
-      }
-
-      await tx.studentParent.upsert({
-        where: { studentId_parentId: { studentId: student.id, parentId: parent.id } },
-        update: { relation: payload.parentRelationship || "Guardian" },
-        create: {
-          studentId: student.id,
-          parentId: parent.id,
-          relation: payload.parentRelationship || "Guardian",
-        },
-      });
-      logger.info("studentService.create: studentParent upserted", { studentId: student.id, parentId: parent.id });
-
       await tx.student.update({
         where: { id: student.id },
         data: {
-          parentId: parentUser?.id || null,
+          parentId: null,
         },
       });
 
@@ -326,21 +256,14 @@ export const studentService = {
         where: { schoolId },
         select: { userId: true },
       });
-      const notificationTargets = [
-        ...adminUsers.map((admin) => admin.userId).filter(Boolean),
-        parentUser.id,
-      ];
       await Promise.all([
-        ...notificationTargets.map((userId) =>
+        ...adminUsers.map((admin) =>
           tx.notification.create({
             data: {
               schoolId,
-              userId,
-              title: userId === parentUser.id ? "Account created" : "Student admitted successfully",
-              body:
-                userId === parentUser.id
-                  ? `Your parent portal account has been created for ${studentName}. Please activate your account.`
-                  : `A new student, ${studentName}, has been admitted and linked to ${parentName}.`,
+              userId: admin.userId,
+              title: "Student admitted successfully",
+              body: `A new student, ${studentName}, has been admitted. Guardian details were stored for future parent registration.`,
             },
           }),
         ),
@@ -353,7 +276,7 @@ export const studentService = {
         parentEmail: email,
         parentPhone: phone,
         parentAccessCodeUsed: false,
-        parentId: parentUser.id,
+        parentId: null,
         profile: studentProfile,
       });
     });

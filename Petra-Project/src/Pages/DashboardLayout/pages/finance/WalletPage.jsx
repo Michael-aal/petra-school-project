@@ -120,10 +120,10 @@ export default function WalletPage() {
 
   const summaryCards = useMemo(
     () => [
-      { label: "Available Balance", value: wallet?.balance ?? 0, accent: "indigo", icon: WalletIcon },
-      { label: "Total Deposits", value: summary?.totalDeposits ?? 0, accent: "emerald", icon: Banknote },
-      { label: "Withdrawals", value: summary?.totalWithdrawals ?? 0, accent: "rose", icon: ArrowRightLeft },
-      { label: "Transfers", value: summary?.totalTransfers ?? 0, accent: "amber", icon: Send },
+      { label: "Available Balance", value: wallet?.balance ?? 0, icon: WalletIcon },
+      { label: "Total Deposits", value: summary?.totalDeposits ?? 0, icon: Banknote },
+      { label: "Withdrawals", value: summary?.totalWithdrawals ?? 0, icon: ArrowRightLeft },
+      { label: "Transfers", value: summary?.totalTransfers ?? 0, icon: Send },
     ],
     [wallet, summary],
   );
@@ -142,21 +142,39 @@ export default function WalletPage() {
       <section className="wallet-hero">
         <div className="wallet-hero-copy">
           <p className="dashboard-page-label">Wallet Dashboard</p>
-          {/* DYNAMIC: Uses school name */}
           <h1>{schoolName} Wallet</h1>
           <p className="dashboard-page-copy">
             Monitor balances, move funds, and review transaction history from one clean control center.
           </p>
+
+          <div className="wallet-hero-metrics">
+            <div>
+              <span>Balance</span>
+              <strong>{formatCurrency(wallet?.balance)}</strong>
+            </div>
+            <div>
+              <span>Available</span>
+              <strong>{formatCurrency(summary?.availableBalance ?? wallet?.balance)}</strong>
+            </div>
+            <div>
+              <span>Pending</span>
+              <strong>{formatCurrency(summary?.pendingBalance)}</strong>
+            </div>
+          </div>
         </div>
+
         <div className="wallet-hero-meta">
           <div className="wallet-hero-chip">
-            <ShieldCheck size={15} />
+            <ShieldCheck size={16} />
             <span>Bank-grade secure</span>
           </div>
           <div className="wallet-hero-chip wallet-hero-chip-ghost">
-            <Landmark size={15} />
-            {/* DYNAMIC: Uses school name */}
+            <Landmark size={16} />
             <span>{wallet?.bankName || `${schoolName} Bank`}</span>
+          </div>
+          <div className="wallet-hero-chip wallet-hero-chip-ghost">
+            <Clock size={16} />
+            <span>Updated now</span>
           </div>
         </div>
       </section>
@@ -175,7 +193,7 @@ export default function WalletPage() {
             <div className="wallet-balance-copy">
               <span>Current Balance</span>
               <h2>{formatCurrency(wallet?.balance)}</h2>
-              <p>Funds available for withdrawals and transfers.</p>
+              <p>Funds available for withdrawals, transfers, and wallet operations.</p>
             </div>
             <div className="wallet-account-id">
               <span>Account Number</span>
@@ -186,13 +204,13 @@ export default function WalletPage() {
 
           <div className="wallet-summary-cards">
             {summaryCards.map((item) => (
-              <article key={item.label} className={`wallet-summary-card tone-${item.accent}`}>
-                <div className="wallet-summary-copy">
-                  <p>{item.label}</p>
+              <article key={item.label} className="wallet-summary-card">
+                <div>
+                  <span>{item.label}</span>
                   <strong>{formatCurrency(item.value)}</strong>
                 </div>
-                <div className={`wallet-summary-icon tone-${item.accent}`}>
-                  <item.icon size={16} />
+                <div className="wallet-summary-icon">
+                  <item.icon size={18} />
                 </div>
               </article>
             ))}
@@ -217,18 +235,33 @@ export default function WalletPage() {
           <div className="wallet-panel-header">
             <div>
               <p className="wallet-panel-eyebrow">Actions</p>
-              <h3>Quick Operations</h3>
+              <h3>Quick operations</h3>
             </div>
-            <span className="wallet-panel-status">{activeTab.toUpperCase()}</span>
+            <span className="wallet-panel-status">{activeTab.replace(/([A-Z])/g, " $1").trim()}</span>
           </div>
 
-              <div className="wallet-action-buttons" role="tablist" aria-label="Wallet actions">
-            <button type="button" className={activeTab === "overview" ? "active" : ""} onClick={() => setActiveTab("overview")}>Overview</button>
-            <button type="button" className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}>Transaction History</button>
-            <button type="button" className={activeTab === "analytics" ? "active" : ""} onClick={() => setActiveTab("analytics")}>Revenue Analytics</button>
-            <button type="button" className={activeTab === "settings" ? "active" : ""} onClick={() => setActiveTab("settings")}>Payment Settings</button>
-            <button type="button" className={activeTab === "bank" ? "active" : ""} onClick={() => setActiveTab("bank")}>Bank Details</button>
-            <button type="button" className={activeTab === "refunds" ? "active" : ""} onClick={() => setActiveTab("refunds")}>Refunds</button>
+          <div className="wallet-action-buttons" role="tablist" aria-label="Wallet actions">
+            {[
+              { key: "overview", label: "Overview" },
+              { key: "transfer", label: "Transfer" },
+              { key: "withdraw", label: "Withdraw" },
+              { key: "fund", label: "Fund Wallet" },
+              { key: "history", label: "Transactions" },
+              { key: "analytics", label: "Analytics" },
+              { key: "settings", label: "Settings" },
+              { key: "bank", label: "Bank Info" },
+              { key: "refunds", label: "Refunds" },
+              { key: "statement", label: "Statement" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                className={`wallet-action-pill ${activeTab === tab.key ? "active" : ""}`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {message && <div className="dashboard-alert success">{message}</div>}
@@ -301,7 +334,7 @@ export default function WalletPage() {
               </div>
               <div className="wallet-action-card">
                 <div>
-                  <h4>Today's revenue</h4>
+                  <h4>Today&apos;s revenue</h4>
                   <p>{formatCurrency(summary?.todaysRevenue)}</p>
                 </div>
                 <div className="wallet-action-icon"><RefreshCcw size={18} /></div>
@@ -329,8 +362,8 @@ export default function WalletPage() {
                       <p>{setting.value}</p>
                     </div>
                   </div>
-                ))
-              )}
+                )))}
+              )
             </div>
           )}
 
@@ -391,11 +424,11 @@ export default function WalletPage() {
           {activeTab === "withdraw" && (
             <form className="wallet-action-form" onSubmit={handleWithdraw}>
               <label>
-                Withdraw amount
+                <span>Withdraw amount</span>
                 <input name="amount" type="number" min="0" step="0.01" value={form.amount} onChange={handleChange} placeholder="Enter amount" />
               </label>
               <label>
-                Description
+                <span>Description</span>
                 <input name="note" type="text" value={form.note} onChange={handleChange} placeholder="Optional note" />
               </label>
               <button type="submit" disabled={loading}>
@@ -407,15 +440,15 @@ export default function WalletPage() {
           {activeTab === "transfer" && (
             <form className="wallet-action-form" onSubmit={handleTransfer}>
               <label>
-                Recipient email or account
+                <span>Recipient email or account</span>
                 <input name="recipient" type="text" value={form.recipient} onChange={handleChange} placeholder="Enter recipient email or account number" />
               </label>
               <label>
-                Transfer amount
+                <span>Transfer amount</span>
                 <input name="amount" type="number" min="0" step="0.01" value={form.amount} onChange={handleChange} placeholder="Enter amount" />
               </label>
               <label>
-                Note
+                <span>Note</span>
                 <input name="note" type="text" value={form.note} onChange={handleChange} placeholder="Optional note" />
               </label>
               <button type="submit" disabled={loading}>
@@ -427,7 +460,7 @@ export default function WalletPage() {
           {activeTab === "fund" && (
             <form className="wallet-action-form" onSubmit={handleFund}>
               <label>
-                Fund amount
+                <span>Fund amount</span>
                 <input
                   type="number"
                   min="0"

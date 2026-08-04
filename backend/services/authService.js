@@ -6,6 +6,7 @@ import { generateToken } from "../utils/generateToken.js";
 import { normalizeRole } from "../utils/roleUtils.js";
 import crypto from "crypto";
 import { logger } from "../utils/logger.js";
+import { normalizeParentEmail } from "../utils/parentLinking.js";
 
 const resolvePublicRole = (role) => {
   const normalizedRole = normalizeRole(role);
@@ -441,7 +442,14 @@ export const authService = {
       normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null),
     ]);
     if (duplicateChecks[0]) {
-      const error = new Error("Email already in use");
+      const existingUser = duplicateChecks[0];
+      logger.info("registerParent: duplicate email found", {
+        email: normalizedEmail,
+        userId: existingUser.id,
+        role: existingUser.role,
+        createdAt: existingUser.createdAt,
+      });
+      const error = new Error("Email already in use (existing account)");
       error.statusCode = 409;
       throw error;
     }
@@ -455,18 +463,81 @@ export const authService = {
       error.statusCode = 409;
       throw error;
     }
-    const user = await userModel.create({
-      firstName,
-      middleName: null,
-      lastName,
-      username: normalizedUsername,
-      fullName,
-      email: normalizedEmail,
-      password: await hashPassword(password),
-      phone: normalizedPhone,
-      role: selectedRole,
-      accountStatus: "active",
+    const user = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          firstName,
+          middleName: null,
+          lastName,
+          username: normalizedUsername,
+          fullName,
+          email: normalizedEmail,
+          password: await hashPassword(password),
+          phone: normalizedPhone,
+          role: selectedRole,
+          accountStatus: "active",
+        },
+      });
+
+      if (["parent", "guardian"].includes(String(selectedRole || "").toLowerCase())) {
+        const matchingStudents = await tx.student.findMany({
+          where: { parentEmail: { equals: normalizeParentEmail(normalizedEmail), mode: "insensitive" } },
+          select: { id: true, schoolId: true, parentId: true },
+        });
+
+        const studentIds = matchingStudents.map((student) => student.id);
+        if (studentIds.length) {
+          const parentRecord = await tx.parent.upsert({
+            where: { userId: createdUser.id },
+            update: {
+              name: fullName,
+              phone: normalizedPhone,
+              email: normalizedEmail,
+            },
+            create: {
+              userId: createdUser.id,
+              schoolId: matchingStudents[0]?.schoolId ?? null,
+              name: fullName,
+              phone: normalizedPhone,
+              email: normalizedEmail,
+            },
+          });
+
+          const existingLinks = await tx.studentParent.findMany({
+            where: { parentId: parentRecord.id, studentId: { in: studentIds } },
+            select: { studentId: true },
+          });
+          const existingStudentIds = new Set(existingLinks.map((link) => link.studentId));
+
+          await Promise.all(
+            studentIds
+              .filter((studentId) => !existingStudentIds.has(studentId))
+              .map((studentId) =>
+                tx.studentParent.create({
+                  data: {
+                    studentId,
+                    parentId: parentRecord.id,
+                    relation: "Guardian",
+                  },
+                }),
+              ),
+          );
+
+          await tx.student.updateMany({
+            where: { id: { in: studentIds } },
+            data: { parentId: createdUser.id, parentAccessCodeUsed: true },
+          });
+
+          await tx.user.update({
+            where: { id: createdUser.id },
+            data: { linkedStudentId: studentIds[0] || null },
+          });
+        }
+      }
+
+      return createdUser;
     });
+
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role }) };
   },
 

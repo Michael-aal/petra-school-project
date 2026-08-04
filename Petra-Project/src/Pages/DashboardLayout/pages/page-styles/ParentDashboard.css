@@ -1,6 +1,6 @@
 .parent-dashboard {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .parent-hero {
@@ -120,7 +120,13 @@
 .parent-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  align-items: start;
+}
+
+.parent-section-stack {
+  display: grid;
+  gap: 16px;
 }
 
 .dashboard-home-panel-head {
@@ -217,6 +223,10 @@
 @media (max-width: 1000px) {
   .parent-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .parent-grid {
+    grid-template-columns: 1fr;
   }
 
   .parent-hero-header {
