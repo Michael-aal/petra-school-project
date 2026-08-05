@@ -82,6 +82,7 @@ import {
   Wallet,
 } from "lucide-react";
 import "./Styles/DashBoardLayout/SidebarNav.css";
+// import "./styles/theme.css";
 import SchoolOS from "./Pages/solutions/SchoolOS";
 import FinancialManagement from "./Pages/solutions/FinancialManagement";
 import CBTEngine from "./Pages/solutions/CBTEngine";

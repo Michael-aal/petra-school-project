@@ -18,19 +18,25 @@
   --cbt-muted-surface: rgba(148, 163, 184, 0.18);
 }
 
+.dashboard-page-label{
+  font-size: 40px;
+}
+
 .cbt-hero {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 24px;
+  padding: 30px;
+  border-radius: 30px;
 }
 
 .cbt-refresh-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0.9rem 1.2rem;
+  padding: 0.4rem .2rem;
   border-radius: 0.75rem;
   border: 1px solid var(--cbt-border);
   background: var(--cbt-surface);
@@ -77,11 +83,12 @@
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+  border-radius: 30px;
 }
 
 .cbt-summary-card {
   padding: 18px;
-  border-radius: 1rem;
+  border-radius: 2rem;
   background: var(--cbt-panel);
   border: 1px solid var(--cbt-border);
   display: flex;

@@ -14,7 +14,7 @@
   align-items: center;
   padding: 10px 14px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+  background: var(--surface-accent);
   color: var(--app-accent);
   font-size: 0.82rem;
   font-weight: 700;
@@ -32,7 +32,7 @@
   gap: var(--space-4);
   padding: var(--space-4) var(--space-5);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--app-surface) 88%, var(--background));
+  background: var(--app-surface);
   border: 1px solid var(--app-border);
 }
 
@@ -59,9 +59,9 @@
   gap: 8px;
   padding: 10px 14px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--app-accent) 10%, transparent);
+  background: var(--surface-accent);
   border: 1px solid var(--app-border);
-  color: var(--app-text);
+  color: var(--app-accent);
   cursor: pointer;
 }
 
@@ -108,7 +108,7 @@
 }
 
 .module-button.ghost {
-  background: color-mix(in srgb, var(--app-surface) 88%, var(--background));
+  background: var(--app-surface);
   border: 1px solid var(--app-border);
   color: var(--app-text);
 }
@@ -121,11 +121,11 @@
 }
 
 .dashboard-alert.success {
-  border-color: rgba(34, 197, 94, 0.18);
+  border-color: var(--surface-success);
 }
 
 .dashboard-alert.error {
-  border-color: rgba(244, 63, 94, 0.18);
+  border-color: var(--surface-danger);
 }
 
 .parent-pill {
@@ -133,13 +133,15 @@
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 700;
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
-.status-success { background: rgba(34, 197, 94, 0.16); color: #22c55e; }
-.status-pending { background: rgba(245, 158, 11, 0.16); color: #f59e0b; }
-.status-failed { background: rgba(244, 63, 94, 0.16); color: #f43f5e; }
-.status-refunded { background: rgba(14, 165, 233, 0.16); color: #0ea5e9; }
-.status-default { background: rgba(148, 163, 184, 0.16); color: #94a3b8; }
+.status-success { background: var(--surface-success); color: var(--success); }
+.status-pending { background: var(--surface-warning); color: var(--warning); }
+.status-failed { background: var(--surface-danger); color: var(--danger); }
+.status-refunded { background: var(--surface-muted); color: var(--info); }
+.status-default { background: var(--surface-muted); color: var(--app-text-muted); }
 
 @media (max-width: 640px) {
   .parent-list-item {

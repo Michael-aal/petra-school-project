@@ -36,6 +36,13 @@
   --app-border: rgba(15, 23, 42, 0.08);
   --app-accent: #4f46e5;
   --app-accent-2: #3b82f6;
+  --success: #14b8a6;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --destructive: #ef4444;
+  --icon-primary: var(--app-text);
+  --icon-secondary: var(--app-text-muted);
   --app-card: #ffffff;
   --app-panel: #ffffff;
   --dashboard-sidebar-bg: linear-gradient(145deg, #f8fafc 0%, #eef2ff 45%, #f8fbff 100%);
@@ -54,6 +61,15 @@
   --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
   --dashboard-accent-gradient: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%);
   --dashboard-accent-gradient-strong: linear-gradient(90deg, #4338ca 0%, #2563eb 100%);
+  --surface-muted: rgba(15, 23, 42, 0.04);
+  --surface-muted-strong: rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+  --shadow-soft-dark: 0 18px 40px rgba(0, 0, 0, 0.32);
+  --surface-accent: color-mix(in srgb, var(--app-accent) 16%, transparent);
+  --surface-success: color-mix(in srgb, var(--success) 16%, transparent);
+  --surface-danger: color-mix(in srgb, var(--danger) 16%, transparent);
+  --surface-warning: color-mix(in srgb, var(--warning) 16%, transparent);
+  --button-hover: color-mix(in srgb, var(--app-accent) 10%, var(--app-surface));
 }
 
 html,
@@ -90,6 +106,157 @@ a {
 button:hover,
 a:hover {
   transform: translateY(-1px);
+}
+
+.btn,
+button,
+input,
+select,
+textarea {
+  border-radius: 12px;
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
+  border: 1px solid transparent;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--app-accent) 18%, transparent);
+}
+
+.btn-secondary,
+button:not(.btn-primary):not(.btn-ghost) {
+  background: var(--app-surface);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--app-text-muted);
+}
+
+.btn-ghost:hover {
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text);
+}
+
+.card,
+.panel,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.settings-card,
+.wallet-panel,
+.payments-panel,
+.stat-card,
+.dashboard-page .table-container,
+.modal-content,
+.form-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+body.dark .card,
+body.dark .panel,
+body.dark .dashboard-home-panel,
+body.dark .dashboard-home-summary-card,
+body.dark .settings-card,
+body.dark .wallet-panel,
+body.dark .payments-panel,
+body.dark .stat-card,
+body.dark .dashboard-page .table-container,
+body.dark .modal-content,
+body.dark .form-card {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+.form-input,
+.form-select,
+input,
+select,
+textarea {
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+
+.form-input:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-accent) 20%, transparent);
+}
+
+.data-table,
+.payments-table,
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.payments-table th,
+.table-container th {
+  text-align: left;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.data-table td,
+.payments-table td,
+.table-container td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+
+.data-table tbody tr:hover,
+.payments-table tbody tr:hover,
+.table-container tbody tr:hover {
+  background: var(--dashboard-muted-surface);
+}
+
+.status-badge,
+.badge,
+.dashboard-home-session-pill,
+.wallet-hero-chip,
+.wallet-panel-status,
+.dashboard-home-summary-action {
+  border-radius: 999px;
+}
+
+.status-badge.success,
+.tone-teal,
+.tone-emerald,
+.wallet-quick-stat-icon.success,
+.payments-action-button.success {
+  background: color-mix(in srgb, var(--success) 16%, transparent);
+  color: var(--success);
+}
+
+.status-badge.danger,
+.tone-rose,
+.wallet-quick-stat-icon.danger,
+.payments-action-button.danger {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+
+.status-badge.warning,
+.tone-amber,
+.wallet-quick-stat-icon.warning,
+.payments-action-button.warning {
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  color: var(--warning);
 }
 
 .layout-stack {

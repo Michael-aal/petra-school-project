@@ -3,6 +3,8 @@
   padding: 24px;
   display: grid;
   gap: 24px;
+  background: var(--app-bg);
+  color: var(--app-text);
 }
 .payments-header {
   display: flex;
@@ -14,6 +16,7 @@
 .payments-header h1 {
   margin: 8px 0 8px;
   font-size: clamp(2rem, 2.5vw, 2.6rem);
+  color: var(--app-text);
 }
 .payments-header-actions {
   display: flex;
@@ -40,12 +43,12 @@
   cursor: not-allowed;
 }
 .payments-action-button.tone-blue {
-  background: color-mix(in srgb, var(--app-accent) 14%, transparent);
+  background: var(--surface-accent);
   color: var(--app-accent);
 }
 .payments-action-button.tone-teal {
-  background: color-mix(in srgb, #14b8a6 14%, transparent);
-  color: #14b8a6;
+  background: var(--surface-success);
+  color: var(--success);
 }
 .payments-summary-grid {
   display: grid;
@@ -61,7 +64,7 @@
   border-radius: 20px;
   border: 1px solid var(--app-border);
   background: var(--app-surface);
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 .payments-summary-card span {
   color: var(--app-text-muted);
@@ -81,11 +84,12 @@
   color: var(--app-text);
 }
 .payments-alert-success {
-  border-color: rgba(34, 197, 94, 0.18);
+  border-color: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success);
 }
 .payments-alert-error {
-  border-color: rgba(239, 68, 68, 0.24);
-  color: #b91c1c;
+  border-color: color-mix(in srgb, var(--danger) 24%, transparent);
+  color: var(--danger);
 }
 .payments-panel {
   display: grid;
@@ -96,7 +100,7 @@
   border-radius: 24px;
   border: 1px solid var(--app-border);
   background: var(--app-surface);
-  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 .payments-filter-grid {
   display: grid;

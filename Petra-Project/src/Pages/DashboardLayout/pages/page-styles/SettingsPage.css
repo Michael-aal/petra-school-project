@@ -1,8 +1,8 @@
 .settings-page {
   min-height: 100%;
   padding: 20px 18px 24px;
-  color: var(--foreground);
-  background: transparent;
+  color: var(--app-text);
+  background: var(--app-bg);
 }
 
 .settings-page-hero {
@@ -18,9 +18,9 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--app-accent);
+  background: var(--surface-accent);
+  border: 1px solid color-mix(in srgb, var(--app-accent) 14%, transparent);
   flex-shrink: 0;
 }
 
@@ -29,11 +29,12 @@
   font-size: clamp(1.4rem, 1.8vw, 1.75rem);
   font-weight: 800;
   letter-spacing: -0.03em;
+  color: var(--app-text);
 }
 
 .settings-page-hero p {
   margin: 4px 0 0;
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
   font-size: 0.95rem;
 }
 
@@ -47,9 +48,9 @@
   min-height: 280px;
   padding: 18px;
   border-radius: 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
 }
@@ -61,7 +62,7 @@
   gap: 8px;
   font-size: 1rem;
   font-weight: 800;
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 .settings-field {
@@ -86,12 +87,12 @@
 .settings-theme-copy strong {
   font-size: 0.92rem;
   font-weight: 800;
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 .settings-theme-copy span {
   font-size: 0.84rem;
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
   font-weight: 600;
 }
 
@@ -103,14 +104,14 @@
   padding: 0 12px;
   border: 0;
   border-radius: 4px;
-  background: linear-gradient(90deg, var(--primary), #3b82f6);
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
   color: var(--primary-foreground);
   font-size: 0.84rem;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 10px 18px color-mix(in srgb, var(--primary) 18%, transparent);
+  box-shadow: var(--shadow-soft);
 }
 
 .settings-theme-toggle:hover {
@@ -121,7 +122,7 @@
 .settings-field span {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 .settings-field input,
@@ -130,9 +131,9 @@
   min-height: 34px;
   padding: 0 12px;
   border-radius: 4px;
-  border: 1px solid var(--input);
-  background: var(--background);
-  color: var(--foreground);
+  border: 1px solid var(--app-border);
+  background: var(--app-card);
+  color: var(--app-text);
   outline: none;
   font-size: 0.92rem;
 }
@@ -147,14 +148,14 @@
   padding: 0 14px;
   border: 0;
   border-radius: 8px;
-  background: linear-gradient(90deg, #4f7cff, #4f6dff);
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
   color: var(--primary-foreground);
   font-size: 0.86rem;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
   letter-spacing: 0;
-  box-shadow: 0 10px 18px color-mix(in srgb, var(--primary) 18%, transparent);
+  box-shadow: var(--shadow-soft);
   cursor: pointer;
 }
 
@@ -201,20 +202,20 @@
   gap: 16px;
   padding: 10px 12px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--secondary) 28%, transparent);
+  background: var(--surface-muted);
 }
 
 .settings-info-item span {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .settings-info-item strong {
   font-size: 0.92rem;
-  color: var(--foreground);
+  color: var(--app-text);
   text-align: right;
 }
 
@@ -251,7 +252,7 @@
   display: grid;
   place-items: center;
   padding: 18px;
-  background: color-mix(in srgb, var(--background) 72%, #000 28%);
+  background: color-mix(in srgb, var(--app-bg) 72%, #000 28%);
   backdrop-filter: blur(8px);
   z-index: 100;
 }
@@ -259,9 +260,9 @@
 .settings-modal {
   width: min(100%, 520px);
   border-radius: 18px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  box-shadow: 0 24px 54px rgba(15, 23, 42, 0.24);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  box-shadow: var(--shadow-soft);
   padding: 18px;
 }
 
@@ -277,19 +278,19 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 .settings-modal-header p {
   margin: 6px 0 0;
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
   line-height: 1.5;
 }
 
 .settings-modal-close {
-  border: 1px solid var(--border);
-  background: var(--background);
-  color: var(--foreground);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
   border-radius: 10px;
   width: 36px;
   height: 36px;
@@ -309,8 +310,8 @@
   min-height: 40px;
   padding: 0 12px;
   border-radius: 8px;
-  border: 1px solid var(--input);
-  background: var(--background);
+  border: 1px solid var(--app-border);
+  background: var(--app-card);
 }
 
 .settings-password-wrap input {
@@ -318,7 +319,7 @@
   border: 0;
   outline: none;
   background: transparent;
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 .settings-delete-error {
@@ -341,17 +342,17 @@
   min-height: 38px;
   padding: 0 14px;
   border-radius: 8px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--app-border);
   font-weight: 700;
 }
 
 .settings-modal-cancel {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--app-surface);
+  color: var(--app-text);
 }
 
 .settings-modal-delete {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--primary)));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--app-accent)));
   color: var(--primary-foreground);
   border-color: transparent;
 }
@@ -367,46 +368,46 @@
 }
 
 body.dark .settings-page {
-  color: var(--foreground);
-  background: transparent;
+  color: var(--app-text);
+  background: var(--app-bg);
 }
 
 body.dark .settings-page-hero p,
 body.dark .settings-status {
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
 }
 
 body.dark .settings-page-hero-icon {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 18%, transparent);
-  border-color: color-mix(in srgb, var(--primary) 22%, transparent);
+  color: var(--app-accent);
+  background: color-mix(in srgb, var(--app-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--app-accent) 22%, transparent);
 }
 
 body.dark .settings-card {
-  background: linear-gradient(180deg, rgba(15, 18, 33, 0.98), rgba(22, 28, 52, 0.95));
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+  background: var(--app-surface);
+  border-color: var(--app-border);
+  box-shadow: var(--shadow-soft-dark);
 }
 
 body.dark .settings-card-head h2,
 body.dark .settings-field span,
 body.dark .settings-theme-copy strong {
-  color: var(--foreground);
+  color: var(--app-text);
 }
 
 body.dark .settings-theme-copy span {
-  color: var(--muted-foreground);
+  color: var(--app-text-muted);
 }
 
 body.dark .settings-field input,
 body.dark .settings-field select {
-  background: var(--background);
-  color: var(--foreground);
-  border-color: var(--input);
+  background: var(--app-card);
+  color: var(--app-text);
+  border-color: var(--app-border);
 }
 
 body.dark .settings-info-item {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-muted-strong);
 }
 
 @media (max-width: 900px) {

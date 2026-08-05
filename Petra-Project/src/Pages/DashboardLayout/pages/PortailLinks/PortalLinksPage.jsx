@@ -1,22 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   Link as LinkIcon, Copy, Mail, CheckCircle2, Clock, 
   Users, Search, ShieldCheck, AlertCircle 
 } from "lucide-react";
 import "./PortalLinksPage.css";
+import { studentApi } from "../../../../services/studentApi";
 
-// Mock Data (Replace with API data later)
-const initialParents = [
-  { id: 1, parentName: "Mr. Ogunleye Kayode", email: "ogunleye.k@gmail.com", linkedStudents: 2, inviteStatus: "Active", lastInvited: "2 days ago" },
-  { id: 2, parentName: "Mrs. Adebayo Vitor", email: "vitor.adebayo@yahoo.com", linkedStudents: 1, inviteStatus: "Pending", lastInvited: "5 hours ago" },
-  { id: 3, parentName: "Chif Fakorade", email: "fakorade.chief@outlook.com", linkedStudents: 3, inviteStatus: "Active", lastInvited: "1 week ago" },
-  { id: 4, parentName: "Alhaji Ibrahim", email: "ibrahim.a@gmail.com", linkedStudents: 2, inviteStatus: "Pending", lastInvited: "Just now" },
-];
+const emptyParents = [];
 
 export default function PortalLinksPage() {
-  const [parents, setParents] = useState(initialParents);
+  const [parents, setParents] = useState(emptyParents);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchParents = async () => {
+      try {
+        const response = await studentApi.list({ limit: 200 });
+        const students = (response.students || []).filter((student) => Boolean(student.parentId));
+
+        const parentMap = new Map();
+
+        students.forEach((student) => {
+          const parentKey = student.parentId;
+          const existing = parentMap.get(parentKey) || {
+            id: student.parentId,
+            parentName: student.guardianName || student.parentEmail || "Guardian",
+            email: student.parentEmail || "",
+            linkedStudents: 0,
+            inviteStatus: student.parentAccessCodeUsed ? "Active" : "Pending",
+            lastInvited: student.parentAccessCodeUsed ? "Linked" : "Pending",
+          };
+
+          existing.linkedStudents += 1;
+          if (student.parentAccessCodeUsed) {
+            existing.inviteStatus = "Active";
+            existing.lastInvited = "Linked";
+          }
+
+          parentMap.set(parentKey, existing);
+        });
+
+        if (!active) return;
+        setParents(Array.from(parentMap.values()));
+      } catch (error) {
+        if (!active) return;
+        setParents(emptyParents);
+      } finally {
+        return null;
+      }
+    };
+
+    fetchParents();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Filter parents based on search
   const filteredParents = parents.filter(parent => 
@@ -145,7 +186,7 @@ export default function PortalLinksPage() {
                     onClick={() => handleCopyLink(parent)}
                     title="Copy Login Link"
                   >
-                    {copiedId === parent.id ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                    {copiedId === parent.id ? <CheckCircle2 size={16} /> : <LinkIcon size={16} />}
                     <span>{copiedId === parent.id ? "Copied!" : "Copy Link"}</span>
                   </button>
                   

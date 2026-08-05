@@ -1,2 +1,64 @@
 /* Styles for ParentsPage */
-.parents-page{ padding:18px; }
+.parents-page {
+  background: var(--app-bg);
+  color: var(--app-text);
+  padding: var(--space-6);
+  min-height: 100vh;
+}
+
+.parents-page .generic-list-page {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.parents-page .page-header {
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.parents-page .title-icon-box {
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
+
+.parent-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--app-text-muted);
+}
+
+.parent-email-icon {
+  color: var(--app-accent-2);
+}
+
+.parent-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-text-muted);
+}
+
+.parent-phone-icon {
+  color: var(--success);
+}
+
+.parent-linked-wards {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-success);
+  color: var(--success);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.parents-page .dropdown-item svg,
+.parents-page .dropdown-item-danger svg {
+  color: var(--app-text-muted);
+}
