@@ -3,7 +3,14 @@ import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
 import { parentAccessService } from "./parentAccessService.js";
 
-const getSchoolId = (user) => Number(user?.schoolId || 1);
+const getSchoolId = (user) => {
+  if (!user || user?.schoolId === undefined || user?.schoolId === null) {
+    const err = new Error("School context missing");
+    err.statusCode = 403;
+    throw err;
+  }
+  return Number(user.schoolId);
+};
 const toNumber = (value, fallback) => {
   const parsed = Number.parseInt(String(value), 10);
   return Number.isNaN(parsed) ? fallback : parsed;

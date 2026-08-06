@@ -35,7 +35,7 @@ body.dark .ctc-infoCard p,
 body.dark .ctc-infoCard span,
 body.dark .ctc-formBox p,
 body.dark .ctc-supportBox p {
-  color: #a1a1aa;
+  color: var(--app-text-muted);
 }
 
 body.dark .ctc-info,

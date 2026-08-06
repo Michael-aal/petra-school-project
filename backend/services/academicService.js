@@ -1,6 +1,13 @@
 import { prisma } from "../config/db.js";
 
-const getSchoolId = (user) => Number(user?.schoolId || 1);
+const getSchoolId = (user) => {
+  if (!user || user?.schoolId === undefined || user?.schoolId === null) {
+    const err = new Error("School context missing");
+    err.statusCode = 403;
+    throw err;
+  }
+  return Number(user.schoolId);
+};
 
 const safeSession = (item) => ({ ...item, schoolId: item.schoolId });
 const safeClass = (item) => ({ ...item, schoolId: item.schoolId });

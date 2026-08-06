@@ -192,7 +192,7 @@ body.light .auth-footnote {
 
 .auth-brand-sub {
   margin: 0.25rem 0 0;
-  color: #a1a1aa;
+  color: var(--app-text-muted);
   font-size: 0.95rem;
 }
 
@@ -249,7 +249,7 @@ body.light .auth-eyebrow {
 
 .auth-copy p {
   margin: 0;
-  color: #a1a1aa;
+  color: var(--app-text-muted);
   font-size: 1.02rem;
   line-height: 1.7;
 }
@@ -293,7 +293,7 @@ body.dark .auth-point {
 .auth-point strong,
 .auth-point p,
 .auth-footnote {
-  color: #e4e4e7;
+  color: var(--text-dark);
 }
 
 body.light .auth-point strong,
@@ -309,7 +309,7 @@ body.light .auth-footnote {
 
 .auth-point p {
   margin: 0;
-  color: #a1a1aa;
+  color: var(--app-text-muted);
   line-height: 1.55;
   font-size: 0.92rem;
 }
@@ -380,7 +380,7 @@ body.light .auth-alert {
 
 .auth-form-header p {
   margin: 0;
-  color: #a1a1aa;
+  color: var(--app-text-muted);
   font-size: 0.98rem;
 }
 

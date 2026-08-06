@@ -183,6 +183,14 @@ textarea {
   color: var(--app-text);
 }
 
+/* Ensure placeholders have sufficient contrast and full opacity */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: color-mix(in srgb, var(--app-text) 64%, var(--app-text-muted) 36%);
+  opacity: 1;
+}
+
 .form-input:focus,
 .form-select:focus,
 input:focus,
@@ -205,7 +213,7 @@ textarea:focus {
   text-align: left;
   padding: 16px 18px;
   border-bottom: 1px solid var(--app-border);
-  color: var(--app-text-muted);
+  color: color-mix(in srgb, var(--app-text) 64%, var(--app-text-muted) 36%);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -523,6 +531,8 @@ body.dark input,
 body.dark textarea,
 body.dark select {
   color: inherit;
+  background: var(--card);
+  border-color: var(--border);
 }
 
 body.dark .navbar-container,
@@ -584,7 +594,7 @@ body.dark .feature-text,
 body.dark .testimonial-text,
 body.dark .section8-subtitle,
 body.dark .section3-header p {
-  color: #a1a1aa;
+  color: var(--app-text-muted);
   font-weight: 400;
 }
 
@@ -592,7 +602,8 @@ body.dark .section11-input::placeholder,
 body.dark input::placeholder,
 body.dark textarea::placeholder,
 body.dark select::placeholder {
-  color: #a1a1aa;
+  color: color-mix(in srgb, var(--app-text) 88%, var(--app-text-muted) 12%);
+  opacity: 1;
 }
 
 body.dark .homeSection2,

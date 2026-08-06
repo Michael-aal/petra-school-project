@@ -112,10 +112,12 @@ const resolveSchoolId = async (preferredSchoolId) => {
 };
 
 export const studentService = {
-  list: async ({ page = 1, limit = 10, search = "", className = "", gender = "", status = "" } = {}) => {
+  list: async ({ page = 1, limit = 10, search = "", className = "", gender = "", status = "" } = {}, user) => {
     const currentPage = Math.max(1, toNumber(page, 1));
     const pageSize = Math.max(1, Math.min(50, toNumber(limit, 10)));
     const where = buildWhere({ search, className, gender, status });
+    const schoolId = user?.schoolId;
+    if (schoolId) where.schoolId = schoolId;
     const [total, students] = await Promise.all([
       studentModel.count(where),
       studentModel.findMany({
@@ -150,7 +152,7 @@ export const studentService = {
   filter: async ({ className = "", gender = "", status = "", page = 1, limit = 10 } = {}) =>
     studentService.list({ className, gender, status, page, limit }),
 
-  getById: async (id) => {
+  getById: async (id, user) => {
     const student = await studentModel.findUnique({
       where: { id },
       include: {
@@ -162,6 +164,12 @@ export const studentService = {
       },
     });
     if (!student) {
+      const error = new Error("Student not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(student.schoolId) !== Number(schoolId)) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -252,6 +260,22 @@ export const studentService = {
         },
       });
 
+      // Persist any uploaded documents (expects base64 or file URL in fileData)
+      if (Array.isArray(payload.documents) && payload.documents.length) {
+        await Promise.all(
+          payload.documents.map((doc) =>
+            tx.studentDocument.create({
+              data: {
+                studentId: student.id,
+                documentType: String(doc.documentType || doc.documentType || 'other'),
+                fileUrl: String(doc.fileData || doc.fileUrl || ''),
+                description: doc.fileName || doc.description || null,
+              },
+            }),
+          ),
+        );
+      }
+
       const adminUsers = await tx.admin.findMany({
         where: { schoolId },
         select: { userId: true },
@@ -282,9 +306,15 @@ export const studentService = {
     });
   },
 
-  update: async (id, payload) => {
+  update: async (id, payload, user) => {
     const existing = await studentModel.findUnique({ where: { id } });
     if (!existing) {
+      const error = new Error("Student not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(existing.schoolId) !== Number(schoolId)) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -329,9 +359,15 @@ export const studentService = {
     return safeStudent(updated);
   },
 
-  remove: async (id) => {
+  remove: async (id, user) => {
     const existing = await studentModel.findUnique({ where: { id } });
     if (!existing) {
+      const error = new Error("Student not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(existing.schoolId) !== Number(schoolId)) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
@@ -357,14 +393,19 @@ export const studentService = {
     });
   },
 
-  generateParentAccessCode: async (id) => {
+  generateParentAccessCode: async (id, user) => {
     const existing = await studentModel.findUnique({ where: { id } });
     if (!existing) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
     }
-
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(existing.schoolId) !== Number(schoolId)) {
+      const error = new Error("Student not found");
+      error.statusCode = 404;
+      throw error;
+    }
     let code = makeParentAccessCode();
     let duplicate = await studentModel.findFirst({ parentAccessCode: code });
     while (duplicate) {

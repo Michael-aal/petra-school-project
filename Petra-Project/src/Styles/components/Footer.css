@@ -37,7 +37,7 @@ body.dark .type-info,
 body.dark .footer-2-section,
 body.dark .footer-3-section h2,
 body.dark .last-place {
-    color: #a1a1aa;
+    color: var(--app-text-muted);
 }
 
 .footer-1-section{

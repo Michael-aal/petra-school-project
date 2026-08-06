@@ -33,7 +33,7 @@ export const enrollmentService = {
     const schoolId = user?.schoolId;
     const where = schoolId ? { schoolId } : {};
     const [total, active, pending] = await Promise.all([
-      enrollmentModel.count(where),
+      enrollmentModel.count({ where }),
       enrollmentModel.count({ where: { ...where, status: "active" } }),
       enrollmentModel.count({ where: { ...where, status: "pending" } }),
     ]);
@@ -48,11 +48,13 @@ export const enrollmentService = {
     };
   },
 
-  list: async ({ page = 1, limit = 10, status = "", search = "" } = {}) => {
+  list: async ({ page = 1, limit = 10, status = "", search = "" } = {}, user) => {
     const currentPage = Math.max(1, toNumber(page, 1));
     const pageSize = Math.max(1, Math.min(50, toNumber(limit, 10)));
 
     const where = {};
+    const schoolId = user?.schoolId;
+    if (schoolId) where.schoolId = schoolId;
     if (status) where.status = status;
     if (search) {
       const trimmed = String(search).trim();
@@ -93,7 +95,7 @@ export const enrollmentService = {
     };
   },
 
-  getById: async (id) => {
+  getById: async (id, user) => {
     const enrollment = await enrollmentModel.findUnique({
       where: { id },
       include: {
@@ -108,6 +110,12 @@ export const enrollmentService = {
       },
     });
     if (!enrollment) {
+      const error = new Error("Enrollment not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(enrollment.schoolId) !== Number(schoolId)) {
       const error = new Error("Enrollment not found");
       error.statusCode = 404;
       throw error;
@@ -137,6 +145,7 @@ export const enrollmentService = {
         sectionId: payload.sectionId || null,
         academicYearId: payload.academicYearId || null,
         termId: payload.termId || null,
+        enrolledAt: payload.enrolledAt ? new Date(payload.enrolledAt) : undefined,
         status: payload.status || "active",
       },
       include: {
@@ -154,9 +163,15 @@ export const enrollmentService = {
     return safeEnrollment(enrollment);
   },
 
-  update: async (id, payload) => {
+  update: async (id, payload, user) => {
     const existing = await enrollmentModel.findUnique({ where: { id } });
     if (!existing) {
+      const error = new Error("Enrollment not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(existing.schoolId) !== Number(schoolId)) {
       const error = new Error("Enrollment not found");
       error.statusCode = 404;
       throw error;
@@ -186,9 +201,15 @@ export const enrollmentService = {
     return safeEnrollment(updated);
   },
 
-  remove: async (id) => {
+  remove: async (id, user) => {
     const existing = await enrollmentModel.findUnique({ where: { id } });
     if (!existing) {
+      const error = new Error("Enrollment not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const schoolId = user?.schoolId;
+    if (schoolId && Number(existing.schoolId) !== Number(schoolId)) {
       const error = new Error("Enrollment not found");
       error.statusCode = 404;
       throw error;

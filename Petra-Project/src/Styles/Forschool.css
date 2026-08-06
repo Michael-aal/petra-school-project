@@ -88,7 +88,7 @@ body.dark .fsos-ctaText,
 body.dark .fsu-text,
 body.dark .fsu-cardText,
 body.dark .fsu-footer p {
-    color: #a1a1aa;
+    color: var(--app-text-muted);
 }
 
 body.dark .fsos-btn1,

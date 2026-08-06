@@ -209,7 +209,7 @@ export const authService = {
 
     return {
       user: safeUser(user),
-      token: generateToken({ id: user.id, email: user.email, role: user.role }),
+      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null }),
     };
   },
 
@@ -232,7 +232,7 @@ export const authService = {
 
     return {
       user: safeUser(user),
-      token: generateToken({ id: user.id, email: user.email, role: user.role }),
+      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null }),
     };
   },
 
@@ -418,7 +418,7 @@ export const authService = {
     return {
       invitation: updatedInvitation,
       user: safeUser(created),
-      token: generateToken({ id: created.id, email: created.email, role: created.role }),
+      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId || null }),
     };
   },
 

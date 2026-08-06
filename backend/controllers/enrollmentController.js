@@ -15,7 +15,7 @@ export const listEnrollments = async (req, res, next) => {
       ...req.query,
       page: req.query.page,
       limit: req.query.limit,
-    });
+    }, req.user);
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     return next(error);
@@ -24,7 +24,7 @@ export const listEnrollments = async (req, res, next) => {
 
 export const getEnrollmentById = async (req, res, next) => {
   try {
-    const enrollment = await enrollmentService.getById(req.params.id);
+    const enrollment = await enrollmentService.getById(req.params.id, req.user);
     return res.status(200).json({ success: true, enrollment });
   } catch (error) {
     return next(error);
@@ -45,7 +45,7 @@ export const createEnrollment = async (req, res, next) => {
 
 export const updateEnrollment = async (req, res, next) => {
   try {
-    const enrollment = await enrollmentService.update(req.params.id, req.body);
+    const enrollment = await enrollmentService.update(req.params.id, req.body, req.user);
     return res.status(200).json({ success: true, message: "Enrollment updated successfully", enrollment });
   } catch (error) {
     return next(error);
@@ -54,7 +54,7 @@ export const updateEnrollment = async (req, res, next) => {
 
 export const deleteEnrollment = async (req, res, next) => {
   try {
-    await enrollmentService.remove(req.params.id);
+    await enrollmentService.remove(req.params.id, req.user);
     return res.status(200).json({ success: true, message: "Enrollment deleted successfully" });
   } catch (error) {
     return next(error);

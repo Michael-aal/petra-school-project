@@ -38,6 +38,7 @@ import SessionsPage from "./Pages/DashboardLayout/pages/setup/SessionsPage";
 import ClassesPage from "./Pages/DashboardLayout/pages/setup/ClassesPage";
 import SubjectsPage from "./Pages/DashboardLayout/pages/setup/SubjectsPage";
 import EnrollmentPage from "./Pages/DashboardLayout/pages/students/EnrollmentPage";
+import EnrollmentCreatePage from "./Pages/DashboardLayout/pages/students/EnrollmentCreatePage";
 import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
 import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
 import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
@@ -250,6 +251,10 @@ function App() {
           <Route
             path="/dashboard/students/enrollment"
             element={<EnrollmentPage />}
+          />
+          <Route
+            path="/dashboard/students/enrollment/create"
+            element={<EnrollmentCreatePage />}
           />
           <Route path="/dashboard/students/parents" element={<ParentsPage />} />
           <Route path="/dashboard/students/gate" element={<GatePage />} />

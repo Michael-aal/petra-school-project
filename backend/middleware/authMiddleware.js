@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel.js";
 import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
+import { setCurrentSchoolId, clearCurrentSchoolId } from "../config/db.js";
 
 const extractToken = (req) => {
   const authHeader = req.get("authorization") || "";
@@ -113,6 +114,15 @@ export const protect = async (req, res, next) => {
       email: resolvedEmail,
     };
     req.user = user;
+    // Set tenant context for Prisma middleware to enforce school scoping
+    try {
+      setCurrentSchoolId(user?.schoolId ?? null);
+      res.on("finish", () => clearCurrentSchoolId());
+      res.on("close", () => clearCurrentSchoolId());
+    } catch (e) {
+      // Ignore middleware errors; we still attach req.user
+    }
+
     next();
   } catch (error) {
     return res.status(401).json({
