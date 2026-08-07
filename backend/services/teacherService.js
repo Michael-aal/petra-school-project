@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import { normalizeRole } from "../utils/roleUtils.js";
+import { announcementService } from "./announcementService.js";
 
 const normalizeClassList = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -362,11 +363,11 @@ export const teacherService = {
   },
 
   listAnnouncements: async (user) => {
-    const announcements = await prisma.$queryRaw`SELECT title, description, createdAt FROM (SELECT 'School announcement'::text AS title, 'Class update available'::text AS description, CURRENT_TIMESTAMP AS createdAt) AS announcements`;
-    return announcements;
+    const result = await announcementService.listForUser(user, { page: 1, limit: 20 });
+    return result.announcements;
   },
 
   createAnnouncement: async (user, payload) => {
-    return { title: payload.title, description: payload.description, createdAt: new Date() };
+    return announcementService.createAnnouncement(user, payload);
   },
 };

@@ -58,6 +58,8 @@ import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
 import WalletPage from "./Pages/DashboardLayout/pages/finance/WalletPage";
 import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
+import AnnouncementsPage from "./Pages/DashboardLayout/pages/communication/AnnouncementsPage";
+import MessagesPage from "./Pages/DashboardLayout/pages/communication/MessagesPage";
 import ParentFeesPage from "./Pages/DashboardLayout/pages/parent/ParentFeesPage";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
@@ -320,6 +322,14 @@ function App() {
           <Route
             path="/dashboard/communication/notifications"
             element={<NotificationsPage />}
+          />
+          <Route
+            path="/dashboard/communication/announcements"
+            element={<AnnouncementsPage />}
+          />
+          <Route
+            path="/dashboard/communication/messages"
+            element={<MessagesPage />}
           />
           <Route
             path="/dashboard/communication/support"

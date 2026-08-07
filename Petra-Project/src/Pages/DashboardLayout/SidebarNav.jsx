@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Bell,
   HelpCircle,
+  MessageSquare,
   Settings,
   ChevronDown,
   ChevronRight,
@@ -103,6 +104,8 @@ const navGroups = [
     icon: Bell,
     children: [
       { label: "Notifications", icon: Bell, href: "/dashboard/communication/notifications" },
+      { label: "Announcements", icon: Bell, href: "/dashboard/communication/announcements" },
+      { label: "Messages", icon: MessageSquare, href: "/dashboard/communication/messages" },
       { label: "Support", icon: HelpCircle, href: "/dashboard/communication/support" },
     ],
   },

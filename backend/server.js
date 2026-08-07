@@ -15,6 +15,8 @@ import paystackRoutes from "./routes/paystackRoutes.js";
 import parentRoutes from "./routes/parentRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import announcementRoutes from "./routes/announcementRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
@@ -63,6 +65,8 @@ app.use("/api/paystack", paystackRoutes);
 app.use("/api/parent", parentRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
 app.use("/api/teacher", teacherRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/messages", messageRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFound);

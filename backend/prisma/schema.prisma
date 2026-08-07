@@ -49,6 +49,7 @@ model User {
   activities                 ActivityLog[]
   auditLogs                  AuditLog[]
   notifications              Notification[]
+  announcementRecipients      AnnouncementRecipient[]
   sentMessages               Message[] @relation("SentMessages")
   receivedMessages           Message[] @relation("ReceivedMessages")
   teacherProfile             Teacher?
@@ -257,6 +258,8 @@ model School {
   drivers             Driver[]
   studentTransports   StudentTransport[]
   announcements       Announcement[]
+  announcementRecipients AnnouncementRecipient[]
+  announcementAttachments AnnouncementAttachment[]
   notifications       Notification[]
   messages            Message[]
   emailLogs           EmailLog[]
@@ -1303,11 +1306,73 @@ model Announcement {
   schoolId    Int
   title       String
   body        String
+  priority    AnnouncementPriority @default(NORMAL)
+  audience    AnnouncementAudience  @default(TEACHERS_AND_PARENTS)
+  isDraft     Boolean  @default(false)
+  publishAt   DateTime?
+  expiryAt    DateTime?
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  attachments AnnouncementAttachment[]
+  recipients  AnnouncementRecipient[]
+}
+
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANT
+  URGENT
+}
+
+enum AnnouncementAudience {
+  TEACHERS
+  PARENTS
+  TEACHERS_AND_PARENTS
+}
+
+model AnnouncementRecipient {
+  id             String   @id @default(cuid())
+  announcementId String
+  schoolId       Int
+  userId         String
+  role           String
+  isRead         Boolean  @default(false)
+  readAt         DateTime?
+  reaction       AnnouncementReaction?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  school       School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, announcementId])
+}
+
+enum AnnouncementReaction {
+  ACKNOWLEDGED
+  UNDERSTOOD
+  WILL_ATTEND
+  CANNOT_ATTEND
+  NEED_ASSISTANCE
+}
+
+model AnnouncementAttachment {
+  id             String   @id @default(cuid())
+  announcementId String
+  schoolId       Int
+  filename       String
+  url            String
+  contentType    String?
+  size           Int?
+  createdAt      DateTime @default(now())
+
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  school       School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, announcementId])
 }
 
 model Notification {
