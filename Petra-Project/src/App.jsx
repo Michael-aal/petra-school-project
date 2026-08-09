@@ -102,6 +102,7 @@ import SchoolAnalytics from "./Pages/solutions/SchoolAnalytics";
 import Admissions from "./Pages/solutions/Admissions";
 import CommunicationHub from "./Pages/solutions/CommunicationHub";
 import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLinksPage";
+import SuperAdminDashboard from "./Pages/DashboardLayout/pages/dev/SuperAdminDashboard";
 
 function PublicLayout() {
   return (
@@ -188,6 +189,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/dev/*" element={<SuperAdminDashboard />} />
         <Route path="/register" element={<RegistrationEntry />} />
         <Route path="/register/select" element={<RegistrationEntry />} />
         <Route path="/register/admin" element={<AdminRegister />} />

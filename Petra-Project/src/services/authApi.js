@@ -87,6 +87,11 @@ export const authApi = {
       method: "PUT",
       body: JSON.stringify(payload),
     }),
+  selectSchool: (payload) =>
+    request("/api/auth/select-school", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   changePassword: (payload) =>
     request("/api/auth/change-password", {
       method: "POST",

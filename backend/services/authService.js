@@ -75,6 +75,16 @@ const getNameParts = (fullName = "") => {
 
 const safeUser = (user) => {
   const { firstName, lastName } = getNameParts(user.fullName || "");
+  const fallbackSchoolId =
+    user.schoolId ||
+    user.principalProfile?.schoolId ||
+    user.adminProfile?.schoolId ||
+    user.teacherProfile?.schoolId ||
+    user.staffProfile?.schoolId ||
+    user.parentProfile?.schoolId ||
+    user.guardianProfile?.schoolId ||
+    user.studentProfile?.schoolId ||
+    null;
 
   return {
     id: user.id,
@@ -96,9 +106,7 @@ const safeUser = (user) => {
     staffClassAssigned: user.staffClassAssigned || "",
     staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [],
     accountStatus: user.accountStatus || "active",
-    schoolId: user.schoolId || null,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
+    schoolId: fallbackSchoolId,
     profilePicture: user.profilePicture || "",
     profileImage: user.profileImage || user.profilePicture || "",
     linkedStudentId: user.linkedStudentId || null,
@@ -551,9 +559,24 @@ export const authService = {
 
     // include school information when available so the frontend can render school name
     let school = null;
+    let selectedSchool = null;
+    const fallbackSchoolId =
+      user.schoolId ||
+      user.principalProfile?.schoolId ||
+      user.adminProfile?.schoolId ||
+      user.teacherProfile?.schoolId ||
+      user.staffProfile?.schoolId ||
+      user.parentProfile?.schoolId ||
+      user.guardianProfile?.schoolId ||
+      user.studentProfile?.schoolId ||
+      null;
+
     try {
-      if (user.schoolId) {
-        school = await prisma.school.findUnique({ where: { id: Number(user.schoolId) } });
+      if (fallbackSchoolId) {
+        school = await prisma.school.findUnique({ where: { id: Number(fallbackSchoolId) } });
+      }
+      if (user.selectedSchoolId) {
+        selectedSchool = await prisma.school.findUnique({ where: { id: Number(user.selectedSchoolId) } });
       }
     } catch (err) {
       // ignore DB lookup errors here; frontend will fallback to user's institution field
@@ -578,6 +601,7 @@ export const authService = {
     return {
       ...base,
       school: school ? { id: school.id, name: school.name } : null,
+      selectedSchool: selectedSchool ? { id: selectedSchool.id, name: selectedSchool.name } : null,
       children,
       linkedStudentId: user.linkedStudentId || null,
       primaryChildId: children[0]?.id || user.linkedStudentId || null,
@@ -661,6 +685,28 @@ export const authService = {
 
     return {
       message: "Account deleted successfully",
+    };
+  },
+
+  selectSchool: async ({ userId, schoolId }) => {
+    const user = await userModel.findByIdGlobal(userId);
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const school = await prisma.school.findUnique({ where: { id: Number(schoolId) } });
+    if (!school) {
+      const error = new Error("Selected school not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const updatedUser = await userModel.updateGlobal(userId, { selectedSchoolId: school.id });
+    return {
+      user: safeUser(updatedUser),
+      selectedSchool: { id: school.id, name: school.name },
     };
   },
 

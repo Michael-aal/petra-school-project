@@ -18,6 +18,8 @@ import teacherRoutes from "./routes/teacherRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import schoolRoutes from "./routes/schoolRoutes.js";
+import superAdminRoutes from "./routes/superAdminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -68,6 +70,8 @@ app.use("/api/teacher", teacherRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/schools", schoolRoutes);
+app.use("/api/superadmin", superAdminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

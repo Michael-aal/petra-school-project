@@ -84,6 +84,8 @@ export function normalizeUser(user = {}) {
     institution: user.institution || "",
     schoolId: user.schoolId || (user.school && user.school.id) || null,
     schoolName: (user.school && user.school.name) || user.institution || "",
+    selectedSchoolId: user.selectedSchoolId || (user.selectedSchool && user.selectedSchool.id) || null,
+    selectedSchoolName: (user.selectedSchool && user.selectedSchool.name) || null,
     institutionType: user.institutionType || "",
     state: user.state || "",
     city: user.city || "",

@@ -34,7 +34,10 @@ export function getDashboardPathForRole(role = "") {
   if (normalizedRole === "teacher") {
     return "/staff/dashboard";
   }
-  if (normalizedRole === "principal" || normalizedRole === "super_admin") {
+  if (normalizedRole === "super_admin") {
+    return "/dev";
+  }
+  if (normalizedRole === "principal") {
     return "/dashboard";
   }
   if (normalizedRole === "parent" || normalizedRole === "student") {

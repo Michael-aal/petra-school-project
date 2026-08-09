@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is missing. Check backend/.env before starting the server.");
@@ -9,7 +10,7 @@ const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 });
 
-const prisma =
+const basePrisma =
   globalThis.prisma ||
   new PrismaClient({
     adapter,
@@ -17,72 +18,125 @@ const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") {
-  globalThis.prisma = prisma;
+  globalThis.prisma = basePrisma;
 }
 
-// Current school tenant context (set per incoming request by auth middleware)
-let currentSchoolId = null;
+const schoolContext = new AsyncLocalStorage();
+
+const getSchemaModel = (model) => {
+  if (!model) return null;
+  const candidateNames = [String(model), String(model).slice(0, 1).toUpperCase() + String(model).slice(1)];
+
+  if (basePrisma._dmmf?.modelMap) {
+    for (const name of candidateNames) {
+      if (basePrisma._dmmf.modelMap[name]) {
+        return basePrisma._dmmf.modelMap[name];
+      }
+    }
+  }
+
+  if (basePrisma._runtimeDataModel?.models) {
+    for (const name of candidateNames) {
+      if (basePrisma._runtimeDataModel.models[name]) {
+        return basePrisma._runtimeDataModel.models[name];
+      }
+    }
+  }
+
+  return null;
+};
+
+const modelHasSchoolId = (model) => {
+  try {
+    const schemaModel = getSchemaModel(model);
+    return Boolean(schemaModel?.fields?.some((field) => field.name === "schoolId"));
+  } catch {
+    return false;
+  }
+};
+
+const prisma = basePrisma.$extends({
+  query: {
+    before: async (params) => {
+      const store = schoolContext.getStore();
+      if (store?.skipTenant) {
+        return params;
+      }
+
+      const tenant = store?.schoolId;
+      if (!tenant) {
+        return params;
+      }
+
+      if (!modelHasSchoolId(params.model)) {
+        return params;
+      }
+
+      const action = params.action;
+
+      if (action === "findMany" || action === "findFirst" || action === "count" || action === "findUnique") {
+        params.args = params.args || {};
+        if (!params.args.where) {
+          params.args.where = { schoolId: tenant };
+        } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
+          params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
+        } else {
+          params.args.where.schoolId = tenant;
+        }
+      }
+
+      if (action === "create" || action === "createMany") {
+        if (params.args && params.args.data) {
+          if (Array.isArray(params.args.data)) {
+            params.args.data = params.args.data.map((d) => ({ ...d, schoolId: tenant }));
+          } else {
+            params.args.data.schoolId = tenant;
+          }
+        }
+      }
+
+      if (action === "updateMany" || action === "deleteMany") {
+        params.args = params.args || {};
+        if (!params.args.where) {
+          params.args.where = { schoolId: tenant };
+        } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
+          params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
+        } else {
+          params.args.where.schoolId = tenant;
+        }
+      }
+
+      return params;
+    },
+    after: async (result) => result,
+  },
+});
 
 export const setCurrentSchoolId = (schoolId) => {
-  currentSchoolId = schoolId === undefined || schoolId === null ? null : Number(schoolId);
+  const current = schoolContext.getStore() || {};
+  const nextSchoolId = schoolId === undefined || schoolId === null ? null : Number(schoolId);
+  schoolContext.enterWith({ ...current, schoolId: nextSchoolId, skipTenant: false });
 };
 
 export const clearCurrentSchoolId = () => {
-  currentSchoolId = null;
+  const current = schoolContext.getStore() || {};
+  schoolContext.enterWith({ ...current, schoolId: null, skipTenant: false });
 };
 
-// Prisma middleware: enforce tenant scoping for list/create/updateMany/deleteMany operations
-// This middleware adjusts `where` clauses and `data.schoolId` when a request context sets `currentSchoolId`.
-try {
-  prisma.$use(async (params, next) => {
-    const tenant = currentSchoolId;
-    const action = params.action;
+export const runWithSchoolContext = (schoolId, callback) => {
+  const nextSchoolId = schoolId === undefined || schoolId === null ? null : Number(schoolId);
+  return schoolContext.run({ schoolId: nextSchoolId, skipTenant: false }, callback);
+};
 
-    if (!tenant) {
-      return next(params);
-    }
+export const runWithoutSchoolContext = (callback) => {
+  const current = schoolContext.getStore() || {};
+  return schoolContext.run({ ...current, schoolId: null, skipTenant: true }, callback);
+};
 
-    // Apply tenant filter for list-like queries
-    if (action === "findMany" || action === "findFirst" || action === "count") {
-      params.args = params.args || {};
-      if (!params.args.where) {
-        params.args.where = { schoolId: tenant };
-      } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
-        params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
-      } else {
-        params.args.where.schoolId = tenant;
-      }
-    }
-
-    // Create operations: force data.schoolId to tenant
-    if (action === "create" || action === "createMany") {
-      if (params.args && params.args.data) {
-        if (Array.isArray(params.args.data)) {
-          params.args.data = params.args.data.map((d) => ({ ...d, schoolId: tenant }));
-        } else {
-          params.args.data.schoolId = tenant;
-        }
-      }
-    }
-
-    // UpdateMany/DeleteMany: ensure where includes tenant
-    if (action === "updateMany" || action === "deleteMany") {
-      params.args = params.args || {};
-      if (!params.args.where) {
-        params.args.where = { schoolId: tenant };
-      } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
-        params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
-      } else {
-        params.args.where.schoolId = tenant;
-      }
-    }
-
-    return next(params);
-  });
-} catch (err) {
-  // If middleware cannot be registered, log and continue — this should not happen in normal runs.
-  console.error("Failed to register Prisma tenant middleware:", err.message);
-}
+export const getCurrentSchoolId = () => {
+  const store = schoolContext.getStore();
+  return store?.schoolId ?? null;
+};
 
 const connectDB = async () => {
   try {

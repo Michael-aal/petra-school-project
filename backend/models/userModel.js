@@ -1,40 +1,108 @@
-import { prisma } from "../config/db.js";
+import { prisma, runWithoutSchoolContext } from "../config/db.js";
 import { logger } from "../utils/logger.js";
+
+const userSchoolProfileIncludes = {
+  principalProfile: { select: { schoolId: true } },
+  adminProfile: { select: { schoolId: true } },
+  teacherProfile: { select: { schoolId: true } },
+  staffProfile: { select: { schoolId: true } },
+  parentProfile: { select: { schoolId: true } },
+  guardianProfile: { select: { schoolId: true } },
+  studentProfile: { select: { schoolId: true } },
+};
 
 export const userModel = {
   create: (data) => prisma.user.create({ data }),
-  findByEmail: (email) => prisma.user.findUnique({ where: { email } }),
-  findByUsername: (username) => prisma.user.findUnique({ where: { username } }),
-  findByPhone: (phone) => prisma.user.findUnique({ where: { phone } }),
-  findById: (id) => prisma.user.findUnique({ where: { id } }),
+  findByEmail: (email) =>
+    runWithoutSchoolContext(() =>
+      prisma.user.findUnique({ where: { email }, include: userSchoolProfileIncludes }),
+    ),
+  findByUsername: (username) =>
+    runWithoutSchoolContext(() =>
+      prisma.user.findUnique({ where: { username }, include: userSchoolProfileIncludes }),
+    ),
+  findByPhone: (phone) =>
+    runWithoutSchoolContext(() =>
+      prisma.user.findUnique({ where: { phone }, include: userSchoolProfileIncludes }),
+    ),
+  findById: (id) =>
+    runWithoutSchoolContext(() =>
+      prisma.user.findUnique({ where: { id }, include: userSchoolProfileIncludes }),
+    ),
+  findByIdGlobal: (id) =>
+    runWithoutSchoolContext(() =>
+      prisma.user.findUnique({ where: { id }, include: userSchoolProfileIncludes }),
+    ),
   findByIdentity: async ({ id, email } = {}) => {
     const normalizedId = id ? String(id).trim() : "";
     const normalizedEmail = email ? String(email).trim().toLowerCase() : "";
 
     if (normalizedId) {
-      const user = await prisma.user.findUnique({ where: { id: normalizedId } });
+      const user = await runWithoutSchoolContext(() =>
+        prisma.user.findUnique({ where: { id: normalizedId }, include: userSchoolProfileIncludes }),
+      );
       if (user) return user;
     }
 
     if (normalizedEmail) {
-      const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+      const user = await runWithoutSchoolContext(() =>
+        prisma.user.findUnique({ where: { email: normalizedEmail }, include: userSchoolProfileIncludes }),
+      );
       if (user) return user;
     }
 
     if (normalizedId || normalizedEmail) {
-      return prisma.user.findFirst({
-        where: {
-          OR: [
-            normalizedId ? { id: normalizedId } : undefined,
-            normalizedEmail ? { email: normalizedEmail } : undefined,
-          ].filter(Boolean),
-        },
-      });
+      return runWithoutSchoolContext(() =>
+        prisma.user.findFirst({
+          where: {
+            OR: [
+              normalizedId ? { id: normalizedId } : undefined,
+              normalizedEmail ? { email: normalizedEmail } : undefined,
+            ].filter(Boolean),
+          },
+          include: userSchoolProfileIncludes,
+        }),
+      );
+    }
+
+    return null;
+  },
+  findByIdentityGlobal: async ({ id, email } = {}) => {
+    const normalizedId = id ? String(id).trim() : "";
+    const normalizedEmail = email ? String(email).trim().toLowerCase() : "";
+
+    if (normalizedId) {
+      const user = await runWithoutSchoolContext(() =>
+        prisma.user.findUnique({ where: { id: normalizedId }, include: userSchoolProfileIncludes }),
+      );
+      if (user) return user;
+    }
+
+    if (normalizedEmail) {
+      const user = await runWithoutSchoolContext(() =>
+        prisma.user.findUnique({ where: { email: normalizedEmail }, include: userSchoolProfileIncludes }),
+      );
+      if (user) return user;
+    }
+
+    if (normalizedId || normalizedEmail) {
+      return runWithoutSchoolContext(() =>
+        prisma.user.findFirst({
+          where: {
+            OR: [
+              normalizedId ? { id: normalizedId } : undefined,
+              normalizedEmail ? { email: normalizedEmail } : undefined,
+            ].filter(Boolean),
+          },
+          include: userSchoolProfileIncludes,
+        }),
+      );
     }
 
     return null;
   },
   update: (id, data) => prisma.user.update({ where: { id }, data }),
+  updateGlobal: (id, data) => runWithoutSchoolContext(() => prisma.user.update({ where: { id }, data })),
   findStaffInvitationByCode: (registrationCode) =>
     prisma.staffInvitation.findUnique({ where: { registrationCode } }),
   findStaffInvitationByEmail: (email) =>
