@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import { authApi } from "../services/authApi";
+import { authApi, readAuthToken } from "../services/authApi";
 import { normalizeUser } from "../utils/userProfile";
 
 export const UserContext = createContext();
@@ -17,10 +17,23 @@ export function UserProvider({ children }) {
   };
 
   useEffect(() => {
-    // No "active" cleanup guard here: under StrictMode's double effect
-    // invocation the surviving response can belong to the cleaned-up closure,
-    // which would leave authReady stuck at false. /me is idempotent, so
-    // applying whichever response resolves is always safe.
+    /*
+     * Do not call /api/auth/me when there is no token.
+     *
+     * This is important because UserProvider is loaded globally,
+     * including on the Sign In page.
+     */
+    const token = readAuthToken();
+
+    if (!token) {
+      clearSession();
+      setAuthReady(true);
+      return;
+    }
+
+    /*
+     * A token exists, so it is safe to verify the session.
+     */
     authApi
       .me()
       .then((response) => {
@@ -39,12 +52,18 @@ export function UserProvider({ children }) {
   const value = useMemo(
     () => ({
       userInfo,
+
       setUserInfo: (updater) => {
         setUserInfo((current) => {
-          const nextValue = typeof updater === "function" ? updater(current) : updater;
+          const nextValue =
+            typeof updater === "function"
+              ? updater(current)
+              : updater;
+
           return normalizeUser(nextValue || {});
         });
       },
+
       authReady,
       authError,
       clearSession,
@@ -52,5 +71,9 @@ export function UserProvider({ children }) {
     [userInfo, authReady, authError],
   );
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  );
 }
