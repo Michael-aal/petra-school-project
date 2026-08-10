@@ -236,7 +236,7 @@ export const userModel = {
 
       await tx.user.update({
         where: { id: parentUserId },
-        data: { linkedStudentId: studentId },
+        data: { linkedStudentId: studentId, schoolId: student.schoolId },
       });
 
       await tx.student.update({

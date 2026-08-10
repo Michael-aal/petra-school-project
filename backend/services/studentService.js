@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { prisma } from "../config/db.js";
+import { prisma, runWithoutSchoolContext } from "../config/db.js";
 import { studentModel } from "../models/studentModel.js";
 import { logger } from "../utils/logger.js";
 
@@ -17,9 +17,11 @@ const normalizeGender = (value = "") => {
 };
 
 const makeParentAccessCode = () => `PET-PARENT-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
-const makeAdmissionNumber = async () => {
+// Admission numbers are globally unique in the database, so the sequence must
+// be scoped per school (via the prefix) to avoid cross-school collisions.
+const makeAdmissionNumber = async (schoolId) => {
   const year = new Date().getFullYear();
-  const prefix = `PET-${year}-`;
+  const prefix = `PET-${schoolId}-${year}-`;
   const latest = await prisma.student.findFirst({
     where: { admissionNumber: { startsWith: prefix } },
     orderBy: { admissionNumber: "desc" },
@@ -98,26 +100,25 @@ const resolveSchoolId = async (preferredSchoolId) => {
     }
   }
 
-  const existingSchool = await prisma.school.findFirst({ orderBy: { id: "asc" } });
-  if (existingSchool) return existingSchool.id;
-
-  const createdSchool = await prisma.school.create({
-    data: {
-      name: "Petra School",
-      address: "Main Campus",
-    },
-  });
-
-  return createdSchool.id;
+  // Never fall back to another school's id: that would write records into a
+  // different tenant. The caller must always provide a valid school context.
+  const error = new Error("School context missing");
+  error.statusCode = 403;
+  throw error;
 };
 
 export const studentService = {
   list: async ({ page = 1, limit = 10, search = "", className = "", gender = "", status = "" } = {}, user) => {
     const currentPage = Math.max(1, toNumber(page, 1));
-    const pageSize = Math.max(1, Math.min(50, toNumber(limit, 10)));
+    const pageSize = Math.max(1, Math.min(200, toNumber(limit, 10)));
     const where = buildWhere({ search, className, gender, status });
     const schoolId = user?.schoolId;
-    if (schoolId) where.schoolId = schoolId;
+    if (!schoolId) {
+      const error = new Error("School context missing");
+      error.statusCode = 403;
+      throw error;
+    }
+    where.schoolId = schoolId;
     const [total, students] = await Promise.all([
       studentModel.count(where),
       studentModel.findMany({
@@ -214,16 +215,19 @@ export const studentService = {
       throw error;
     }
 
+    const schoolId = await resolveSchoolId(payload.schoolId);
+
     return prisma.$transaction(async (tx) => {
-      const resolvedAdmissionNumber = admissionNumber || (await makeAdmissionNumber());
-      const duplicateAdmission = await tx.student.findFirst({ where: { admissionNumber: resolvedAdmissionNumber } });
+      const resolvedAdmissionNumber = admissionNumber || (await makeAdmissionNumber(schoolId));
+      // Admission numbers are globally unique, so check across all schools.
+      const duplicateAdmission = await runWithoutSchoolContext(() =>
+        tx.student.findFirst({ where: { admissionNumber: resolvedAdmissionNumber } }),
+      );
       if (duplicateAdmission) {
         const error = new Error("Admission number already exists");
         error.statusCode = 409;
         throw error;
       }
-
-      const schoolId = await resolveSchoolId(payload.schoolId);
       const student = await tx.student.create({
         data: {
           name: studentName,

@@ -17,27 +17,23 @@ export function UserProvider({ children }) {
   };
 
   useEffect(() => {
-    let active = true;
-
+    // No "active" cleanup guard here: under StrictMode's double effect
+    // invocation the surviving response can belong to the cleaned-up closure,
+    // which would leave authReady stuck at false. /me is idempotent, so
+    // applying whichever response resolves is always safe.
     authApi
       .me()
       .then((response) => {
-        if (!active) return;
         setAuthError(null);
         setUserInfo(normalizeUser(response.user || {}));
       })
       .catch((error) => {
-        if (!active) return;
         setAuthError(error);
         clearSession();
       })
       .finally(() => {
-        if (active) setAuthReady(true);
+        setAuthReady(true);
       });
-
-    return () => {
-      active = false;
-    };
   }, []);
 
   const value = useMemo(

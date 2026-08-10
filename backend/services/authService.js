@@ -150,7 +150,6 @@ export const authService = {
     city,
     hearAbout,
     role,
-    ...rest
   }) => {
     const resolvedRole = resolvePublicRole(role);
     validatePasswordStrength(password);
@@ -196,23 +195,91 @@ export const authService = {
       throw error;
     }
 
+    // A principal (school administrator) registration creates their school so the
+    // account is born with a valid school context. Other roles join an existing
+    // school through invitations / parent access codes.
+    const schoolName = String(institution || "").trim();
+    let adoptableSchoolId = null;
+    if (resolvedRole === "principal") {
+      if (!schoolName) {
+        const error = new Error("Institution name is required to register as a school administrator");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const existingSchool = await prisma.school.findFirst({
+        where: { name: { equals: schoolName, mode: "insensitive" } },
+        select: { id: true },
+      });
+      if (existingSchool) {
+        // A school pre-created (e.g. by a super admin) without a principal can be
+        // claimed by its first registering administrator; otherwise reject.
+        const principalCount = await prisma.principal.count({
+          where: { schoolId: existingSchool.id, isActive: true },
+        });
+        if (principalCount > 0) {
+          const error = new Error("A school with this name already exists. Ask your school administrator for an invitation instead.");
+          error.statusCode = 409;
+          throw error;
+        }
+        adoptableSchoolId = existingSchool.id;
+      }
+    }
+
     const hashed = await hashPassword(password);
-    const user = await userModel.create({
-      firstName: nameParts.firstName,
-      middleName: nameParts.middleName || null,
-      lastName: nameParts.lastName,
-      username: normalizedUsername,
-      fullName: nameParts.fullName,
-      email: normalizedEmail,
-      password: hashed,
-      phone: normalizedPhone,
-      institution,
-      institutionType,
-      state,
-      city,
-      hearAbout,
-      role: resolvedRole,
-      ...rest,
+    const user = await prisma.$transaction(async (tx) => {
+      let schoolId = null;
+
+      if (resolvedRole === "principal") {
+        if (adoptableSchoolId) {
+          schoolId = adoptableSchoolId;
+        } else {
+          const school = await tx.school.create({
+            data: {
+              name: schoolName,
+              state: state || null,
+              city: city || null,
+              email: normalizedEmail,
+              phone: normalizedPhone,
+              isActive: true,
+            },
+          });
+          schoolId = school.id;
+        }
+      }
+
+      const createdUser = await tx.user.create({
+        data: {
+          firstName: nameParts.firstName,
+          middleName: nameParts.middleName || null,
+          lastName: nameParts.lastName,
+          username: normalizedUsername,
+          fullName: nameParts.fullName,
+          email: normalizedEmail,
+          password: hashed,
+          phone: normalizedPhone,
+          institution,
+          institutionType,
+          state,
+          city,
+          hearAbout,
+          role: resolvedRole,
+          schoolId,
+        },
+      });
+
+      if (resolvedRole === "principal" && schoolId) {
+        await tx.principal.create({
+          data: {
+            userId: createdUser.id,
+            schoolId,
+            designation: "Principal",
+            isActive: true,
+          },
+        });
+      }
+
+      return createdUser;
     });
 
     return {
@@ -398,23 +465,60 @@ export const authService = {
       throw error;
     }
 
+    // Inherit the school from the administrator who generated the invitation so
+    // the activated staff account lands in the correct school context.
+    let inviterSchoolId = null;
+    if (invitation.generatedBy) {
+      const inviter = await userModel.findByIdentityGlobal({
+        id: invitation.generatedBy,
+        email: invitation.generatedBy,
+      });
+      if (inviter) {
+        inviterSchoolId =
+          inviter.schoolId ||
+          inviter.principalProfile?.schoolId ||
+          inviter.adminProfile?.schoolId ||
+          inviter.teacherProfile?.schoolId ||
+          inviter.staffProfile?.schoolId ||
+          null;
+      }
+    }
+
     const hashed = await hashPassword(password);
-    const created = await userModel.create({
-      firstName: getNameParts(invitation.staffName).firstName,
-      middleName: null,
-      lastName: getNameParts(invitation.staffName).lastName,
-      username: normalizeUsername(email.split("@")[0]),
-      fullName: invitation.staffName,
-      email: invitation.email,
-      password: hashed,
-      role: "staff",
-      accountStatus: invitation.employmentStatus === "inactive" ? "inactive" : "active",
-      staffRegistrationCode: invitation.registrationCode,
-      staffRegistrationCodeUsed: true,
-      staffRole: invitation.role,
-      staffDepartment: invitation.department,
-      staffClassAssigned: invitation.assignedClass || null,
-      staffSubjectsAssigned: invitation.assignedSubjects || [],
+    const created = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          firstName: getNameParts(invitation.staffName).firstName,
+          middleName: null,
+          lastName: getNameParts(invitation.staffName).lastName,
+          username: normalizeUsername(email.split("@")[0]),
+          fullName: invitation.staffName,
+          email: invitation.email,
+          password: hashed,
+          role: "staff",
+          accountStatus: invitation.employmentStatus === "inactive" ? "inactive" : "active",
+          staffRegistrationCode: invitation.registrationCode,
+          staffRegistrationCodeUsed: true,
+          staffRole: invitation.role,
+          staffDepartment: invitation.department,
+          staffClassAssigned: invitation.assignedClass || null,
+          staffSubjectsAssigned: invitation.assignedSubjects || [],
+          schoolId: inviterSchoolId,
+        },
+      });
+
+      if (inviterSchoolId) {
+        await tx.teacher.create({
+          data: {
+            userId: createdUser.id,
+            schoolId: inviterSchoolId,
+            designation: invitation.role || "Teacher",
+            isActive: invitation.employmentStatus !== "inactive",
+          },
+        });
+      }
+
+      return createdUser;
     });
 
     const updatedInvitation = await userModel.updateStaffInvitation(invitation.id, {
@@ -538,7 +642,10 @@ export const authService = {
 
           await tx.user.update({
             where: { id: createdUser.id },
-            data: { linkedStudentId: studentIds[0] || null },
+            data: {
+              linkedStudentId: studentIds[0] || null,
+              schoolId: matchingStudents[0]?.schoolId ?? null,
+            },
           });
         }
       }

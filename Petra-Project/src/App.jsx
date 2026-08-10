@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Footer from "./Pages/components/Footer";
 import ForSchool from "./Pages/Forschool";
 import ForStudents from "./Pages/Forstusents";
@@ -115,6 +115,7 @@ function PublicLayout() {
 }
 
 function DashboardLay() {
+  const { userInfo, authReady } = useContext(UserContext);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -127,6 +128,14 @@ function DashboardLay() {
   };
 
   const closeSidebar = () => setMobileOpen(false);
+
+  // Wait for session restoration, then require a signed-in user.
+  if (!authReady) {
+    return null;
+  }
+  if (!userInfo?.email) {
+    return <Navigate to="/signin" replace />;
+  }
 
   return (
     <div className="dashboard-shell">
@@ -166,7 +175,7 @@ function DynamicParentSection(props) {
       title: "Current learner status",
       items: myChildren.map(child => ({
         title: child.name,
-        meta: `${child.class} • ${child.teacher || "Assigned Teacher"}`,
+        meta: [child.className || child.class, child.teacher || "Assigned Teacher"].filter(Boolean).join(" • "),
         value: child.status || "On Track"
       }))
     }

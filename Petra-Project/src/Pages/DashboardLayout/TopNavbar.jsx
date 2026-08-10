@@ -46,6 +46,9 @@ export default function TopNavbar({ onToggle }) {
         window.localStorage.removeItem("petra_user_info");
       } catch (e) {}
       try {
+        window.localStorage.removeItem("petra_selected_school_id");
+      } catch (e) {}
+      try {
         setUserInfo(normalizeUser({}));
       } catch (e) {
         // ignore

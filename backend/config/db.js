@@ -55,60 +55,65 @@ const modelHasSchoolId = (model) => {
   }
 };
 
+// Operations that accept a full `where` filter and must be scoped to the tenant.
+const WHERE_SCOPED_OPERATIONS = new Set([
+  "findMany",
+  "findFirst",
+  "findFirstOrThrow",
+  "count",
+  "aggregate",
+  "groupBy",
+  "updateMany",
+  "deleteMany",
+]);
+
+const scopeWhere = (where, tenant) => {
+  if (!where) return { schoolId: tenant };
+  if (!Object.prototype.hasOwnProperty.call(where, "schoolId")) {
+    return { AND: [where, { schoolId: tenant }] };
+  }
+  return { ...where, schoolId: tenant };
+};
+
+const scopeCreateData = (data, tenant) => {
+  if (!data || typeof data !== "object") return data;
+  // Don't override an explicit schoolId or a nested `school` relation write.
+  if (Object.prototype.hasOwnProperty.call(data, "schoolId")) return data;
+  if (Object.prototype.hasOwnProperty.call(data, "school")) return data;
+  return { ...data, schoolId: tenant };
+};
+
 const prisma = basePrisma.$extends({
   query: {
-    before: async (params) => {
-      const store = schoolContext.getStore();
-      if (store?.skipTenant) {
-        return params;
-      }
+    $allModels: {
+      async $allOperations({ model, operation, args, query }) {
+        const store = schoolContext.getStore();
+        if (store?.skipTenant) return query(args);
 
-      const tenant = store?.schoolId;
-      if (!tenant) {
-        return params;
-      }
+        const tenant = store?.schoolId;
+        if (!tenant || !modelHasSchoolId(model)) return query(args);
 
-      if (!modelHasSchoolId(params.model)) {
-        return params;
-      }
+        const nextArgs = args ? { ...args } : {};
 
-      const action = params.action;
-
-      if (action === "findMany" || action === "findFirst" || action === "count" || action === "findUnique") {
-        params.args = params.args || {};
-        if (!params.args.where) {
-          params.args.where = { schoolId: tenant };
-        } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
-          params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
-        } else {
-          params.args.where.schoolId = tenant;
+        if (WHERE_SCOPED_OPERATIONS.has(operation)) {
+          nextArgs.where = scopeWhere(nextArgs.where, tenant);
         }
-      }
 
-      if (action === "create" || action === "createMany") {
-        if (params.args && params.args.data) {
-          if (Array.isArray(params.args.data)) {
-            params.args.data = params.args.data.map((d) => ({ ...d, schoolId: tenant }));
-          } else {
-            params.args.data.schoolId = tenant;
-          }
+        if (operation === "create" && nextArgs.data && !Array.isArray(nextArgs.data)) {
+          nextArgs.data = scopeCreateData(nextArgs.data, tenant);
         }
-      }
 
-      if (action === "updateMany" || action === "deleteMany") {
-        params.args = params.args || {};
-        if (!params.args.where) {
-          params.args.where = { schoolId: tenant };
-        } else if (!Object.prototype.hasOwnProperty.call(params.args.where, "schoolId")) {
-          params.args.where = { AND: [params.args.where, { schoolId: tenant }] };
-        } else {
-          params.args.where.schoolId = tenant;
+        if ((operation === "createMany" || operation === "createManyAndReturn") && Array.isArray(nextArgs.data)) {
+          nextArgs.data = nextArgs.data.map((item) => scopeCreateData(item, tenant));
         }
-      }
 
-      return params;
+        if (operation === "upsert" && nextArgs.create) {
+          nextArgs.create = scopeCreateData(nextArgs.create, tenant);
+        }
+
+        return query(nextArgs);
+      },
     },
-    after: async (result) => result,
   },
 });
 
