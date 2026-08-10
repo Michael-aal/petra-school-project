@@ -109,7 +109,7 @@ export default function Navbar() {
                 onMouseEnter={() => setShowSolutions(true)}
                 onMouseLeave={() => setShowSolutions(false)}
               >
-                <button className="nav-link-btn" aria-label="Solutions menu">
+                <button type="button" className="nav-link-btn" aria-label="Solutions menu">
                   Solutions
                   <ChevronDown className="chevron-icon" size={15} />
                 </button>
@@ -147,7 +147,7 @@ export default function Navbar() {
                 onMouseEnter={() => setShowCompany(true)}
                 onMouseLeave={() => setShowCompany(false)}
               >
-                <button className="nav-link-btn" aria-label="Company menu">
+                <button type="button" className="nav-link-btn" aria-label="Company menu">
                   Company
                   <ChevronDown className="chevron-icon" size={15} />
                 </button>
@@ -159,7 +159,7 @@ export default function Navbar() {
                         key={index}
                         to={item.path}
                         className="company-item"
-                        onClick={() => handleMenuClose(item.path === "/")}
+                        onClick={() => handleMenuClose(false)}
                       >
                         <div className="company-icon">
                           {item.logo}
@@ -282,6 +282,7 @@ export default function Navbar() {
                     key={index}
                     to={item.path}
                     className="mobile-menu-link"
+                    onClick={() => handleMenuClose(false)}
                   >
                     {item.info}
                   </NavLink>
