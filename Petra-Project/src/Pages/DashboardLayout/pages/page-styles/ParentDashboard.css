@@ -1,6 +1,7 @@
 .parent-dashboard {
   display: grid;
-  gap: var(--space-5);
+  gap: 20px;
+  width: 100%;
 }
 
 .parent-hero {
@@ -81,8 +82,8 @@
 
 .parent-summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .parent-summary-card {
@@ -120,7 +121,7 @@
 .parent-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
   align-items: start;
 }
 
@@ -156,7 +157,7 @@
 .parent-list-item {
   border: 1px solid var(--app-border);
   border-radius: 14px;
-  background: var(--app-surface);
+  background: color-mix(in srgb, var(--app-surface) 86%, var(--background));
   padding: 12px 13px;
   display: flex;
   justify-content: space-between;
@@ -235,7 +236,15 @@
 }
 
 @media (max-width: 640px) {
+  .parent-dashboard {
+    gap: 16px;
+  }
+
   .parent-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .parent-grid {
+    gap: 14px;
   }
 }

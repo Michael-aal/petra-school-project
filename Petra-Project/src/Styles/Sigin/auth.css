@@ -527,6 +527,27 @@ body.dark .auth-submit {
   cursor: progress;
 }
 
+.signin-submit {
+  min-height: 52px;
+  border: 1px solid color-mix(in srgb, var(--primary) 70%, transparent);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.signin-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 20px 38px rgba(79, 70, 229, 0.3);
+}
+
+.signin-submit:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 28%, transparent);
+  outline-offset: 3px;
+}
+
+.signin-submit:disabled {
+  filter: saturate(0.7);
+}
+
 .auth-spin,
 .auth-spinner {
   animation: spin 0.9s linear infinite;
@@ -617,6 +638,301 @@ body.dark .auth-link {
 
 .registration-choice-button {
   text-decoration: none;
+}
+
+/* Nuvora registration experience */
+.auth-page {
+  --nuvora-ink: #172321;
+  --nuvora-muted: #687673;
+  --nuvora-paper: #f5f6f0;
+  --nuvora-coral: #f06b4e;
+  min-height: 100vh;
+  padding: 118px 24px 54px;
+  background: var(--nuvora-paper);
+  color: var(--nuvora-ink);
+  font-family: "Manrope", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page::before,
+.auth-page::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(23, 35, 33, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.auth-page::before {
+  width: 620px;
+  height: 300px;
+  left: -260px;
+  bottom: 80px;
+  transform: rotate(-22deg);
+}
+
+.auth-page::after {
+  width: 460px;
+  height: 220px;
+  right: -180px;
+  top: 160px;
+  transform: rotate(24deg);
+}
+
+.auth-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  grid-template-columns: minmax(320px, .82fr) minmax(420px, 1.18fr);
+  gap: 16px;
+}
+
+.auth-visual,
+.auth-card {
+  border: 1px solid rgba(23, 35, 33, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 22px 55px rgba(23, 35, 33, 0.1);
+}
+
+.auth-visual {
+  min-height: 610px;
+  padding: 30px;
+  background: #172321;
+  color: #f5f5f0;
+}
+
+.auth-card {
+  padding: 34px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+}
+
+.auth-theme-btn {
+  width: 38px;
+  height: 38px;
+  margin: 0 0 54px auto;
+  border-radius: 10px;
+  border-color: rgba(245, 245, 240, 0.2);
+  background: rgba(245, 245, 240, 0.08);
+  color: #f5f5f0;
+}
+
+.auth-brand-row {
+  gap: 12px;
+}
+
+.auth-logo {
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #f5f5f0;
+}
+
+.auth-brand {
+  color: #f5f5f0;
+  font-size: 18px;
+  letter-spacing: -.04em;
+}
+
+.auth-brand-sub {
+  color: #adbab4;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.auth-copy {
+  max-width: 390px;
+  margin-top: 100px;
+}
+
+.auth-eyebrow {
+  color: #f8b09e;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.auth-copy h1 {
+  margin: 18px 0 16px;
+  color: #f5f5f0;
+  font-size: clamp(2.4rem, 4vw, 4.2rem);
+  line-height: .98;
+  letter-spacing: -.07em;
+}
+
+.auth-copy p {
+  color: #adbab4;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.auth-points {
+  gap: 18px;
+  margin-top: 60px;
+}
+
+.auth-point strong {
+  color: #f5f5f0;
+  font-size: 12px;
+}
+
+.auth-point p {
+  color: #adbab4;
+  font-size: 11px;
+}
+
+.auth-point-dot {
+  background: var(--nuvora-coral);
+  box-shadow: 0 0 0 5px rgba(240, 107, 78, .15);
+}
+
+.auth-form {
+  gap: 16px;
+}
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  color: var(--nuvora-muted) !important;
+  font: 10px "DM Mono", monospace;
+  text-transform: uppercase;
+}
+
+.auth-back-link:hover {
+  color: var(--nuvora-coral) !important;
+}
+
+.registration-choice-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.registration-choice-card {
+  min-height: 300px;
+  padding: 18px;
+  border-color: rgba(23, 35, 33, 0.12);
+  border-radius: 10px;
+  background: rgba(245, 246, 240, .72);
+  gap: 12px;
+}
+
+.registration-choice-card:hover {
+  border-color: var(--nuvora-coral);
+  box-shadow: 0 14px 28px rgba(240, 107, 78, .13);
+}
+
+.registration-choice-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  color: var(--nuvora-coral);
+  background: #f8d9cf;
+}
+
+.registration-choice-card h3 {
+  color: var(--nuvora-ink);
+  font-size: 15px;
+  letter-spacing: -.03em;
+}
+
+.registration-choice-card p {
+  color: var(--nuvora-muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.registration-choice-button {
+  align-self: end;
+  margin-top: auto;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: var(--nuvora-ink);
+  color: #f5f5f0 !important;
+  box-shadow: none !important;
+  font-size: 11px;
+}
+
+.registration-choice-button:hover {
+  background: var(--nuvora-coral);
+}
+
+.auth-switch,
+.auth-footnote {
+  color: var(--nuvora-muted);
+  font-size: 12px;
+}
+
+.auth-switch a {
+  color: var(--nuvora-coral) !important;
+}
+
+body.dark .auth-page {
+  --nuvora-paper: #111916;
+  --nuvora-ink: #f5f5f0;
+  --nuvora-muted: #adbab4;
+  background: #111916;
+}
+
+body.dark .auth-card {
+  background: rgba(29, 40, 36, .9);
+  border-color: rgba(245, 245, 240, .14);
+}
+
+body.dark .registration-choice-card {
+  background: rgba(245, 245, 240, .06);
+  border-color: rgba(245, 245, 240, .12);
+}
+
+body.dark .registration-choice-card h3 {
+  color: #f5f5f0;
+}
+
+body.dark .registration-choice-card p {
+  color: #adbab4;
+}
+
+@media (max-width: 960px) {
+  .auth-copy {
+    margin-top: 60px;
+  }
+
+  .registration-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-choice-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    padding: 94px 12px 24px;
+  }
+
+  .auth-visual,
+  .auth-card {
+    border-radius: 14px;
+  }
+
+  .auth-visual {
+    min-height: 520px;
+    padding: 22px;
+  }
+
+  .auth-card {
+    padding: 22px;
+  }
+
+  .auth-copy h1 {
+    font-size: 2.7rem;
+  }
 }
 
 @keyframes spin {

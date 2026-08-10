@@ -9,7 +9,7 @@ const About = () => {
           <p className="heading">About us</p>
           <h1>Building the <span className="highlight">Future </span> of <span className="highlight">Education</span> in Africa</h1>
           <p className="hero-subtitle">
-            Acceede is Africa's first AI-powered operating system for academic excellence, 
+            Nuvora is Africa's modern operating system for academic excellence, 
             revolutionizing how schools operate from finance to learning.
           </p>
         </div>
@@ -52,13 +52,13 @@ const About = () => {
             <div className="text-block">
               <h2>The Evolution: From Payments to Operating System</h2>
               <p>
-                In 2024, Acceede transformed from a payment solution into Africa's first AI-powered 
+                In 2024, Nuvora transformed from a payment solution into Africa's modern 
                 operating system for academic excellence. We're not just processing payments; 
                 we're revolutionizing how African schools operate.
               </p>
               <h3>The Acceede Difference</h3>
               <p>
-                What sets us apart isn't just our technology—it's our relentless focus on the African context. 
+                What sets us apart isn't just our technology—it is our relentless focus on the African context. 
                 We understand that internet connectivity can be spotty, that parents prefer mobile-first solutions, 
                 and that schools need systems that work for their unique operational realities.
               </p>
@@ -118,7 +118,7 @@ const About = () => {
         <div className="container">
           <h2>Scale and Efficiency</h2>
           <p className="section-intro">
-            Acceede is the trusted engine powering Africa's top schools. We deliver guaranteed results 
+            Nuvora is the trusted engine powering Africa's top schools. We deliver measurable results 
             on both the balance sheet and the classroom desk.
           </p>
           <div className="stats-grid">
@@ -143,7 +143,7 @@ const About = () => {
         <div className="container">
           <h2>Our Culture: Innovation Meets Impact</h2>
           <p className="section-intro">
-            Working at Acceede means being part of something bigger than yourself.
+            Working at Nuvora means being part of something bigger than yourself.
           </p>
           <div className="culture-grid">
             <div className="culture-card">
@@ -206,7 +206,7 @@ const About = () => {
         <div className="container">
           <h2>The Future We're Building</h2>
           <p>
-            Our vision is audacious: to become the operating system powering every school in Africa. We're working on:
+            Our vision is audacious: to become the operating system powering every school in Africa. We are working on:
           </p>
           <ul className="future-list">
             <li>Advanced AI tutoring systems</li>
@@ -227,8 +227,8 @@ const About = () => {
           <h2>Let's Build Together</h2>
           <p>Whether you're a school, parent, professional, or investor—we want to connect with you.</p>
           <div className="contact-details">
-            <p><strong>Email:</strong> hi@acceede.com</p>
-            <p><strong>Website:</strong> www.acceede.com</p>
+            <p><strong>Email:</strong> hello@nuvora.school</p>
+            <p><strong>Website:</strong> www.nuvora.school</p>
             <p><strong>Address:</strong> TSC Building; Plot 8, The Rock Drive, Off C & I Leasing Drive, Lekki Phase 1, Lagos, Nigeria.</p>
           </div>
         </div>

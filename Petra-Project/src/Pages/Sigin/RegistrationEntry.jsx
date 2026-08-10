@@ -33,7 +33,7 @@ export default function RegistrationEntry() {
       footnote="Already have an account? Sign in below."
     >
       <div className="auth-form">
-        <Link to="/" className="auth-link" style={{ marginBottom: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+          <Link to="/" className="auth-link auth-back-link">
           ← Back to Home
         </Link>
 

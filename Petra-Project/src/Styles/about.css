@@ -258,6 +258,227 @@
   border-bottom: none;
 }
 
+/* Nuvora About page system */
+.about-page {
+  --about-bg: #f5f6f0;
+  --about-surface: #ffffff;
+  --about-surface-muted: #eaf0ea;
+  --about-text: #172321;
+  --about-muted: #687673;
+  --about-border: rgba(23, 35, 33, .13);
+  --about-primary: #f06b4e;
+  --about-primary-deep: #172321;
+  --about-accent: #8bc7a3;
+  --about-shadow: 0 16px 38px rgba(23, 35, 33, .08);
+  --about-shadow-hover: 0 22px 48px rgba(23, 35, 33, .14);
+  background: var(--about-bg);
+  color: var(--about-text);
+  font-family: "Manrope", sans-serif;
+}
+
+.about-page .container {
+  width: min(1160px, calc(100% - 2.5rem));
+}
+
+.about-page .hero-section {
+  min-height: 680px;
+  padding: 170px 20px 110px;
+  background: var(--about-bg);
+  text-align: left;
+}
+
+.about-page .hero-section::before {
+  width: 560px;
+  top: -220px;
+  left: auto;
+  right: -180px;
+  background: rgba(204, 232, 212, .8);
+  filter: none;
+}
+
+.about-page .hero-section::after {
+  width: 360px;
+  right: auto;
+  left: -180px;
+  bottom: -210px;
+  background: rgba(248, 217, 207, .78);
+  filter: none;
+}
+
+.about-page .hero-section .container {
+  width: min(1160px, calc(100% - 2.5rem));
+}
+
+.about-page .heading {
+  margin-bottom: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--about-primary);
+  font: 500 11px "DM Mono", monospace;
+  letter-spacing: .08em;
+}
+
+.about-page .hero-section h1 {
+  max-width: 780px;
+  margin: 0 0 25px;
+  font-size: clamp(3.4rem, 7vw, 6.5rem);
+  line-height: .96;
+  letter-spacing: -.08em;
+}
+
+.about-page .highlight {
+  color: var(--about-primary);
+}
+
+.about-page .hero-subtitle {
+  max-width: 580px;
+  margin: 0;
+  color: var(--about-muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.about-page .section {
+  padding-block: 110px;
+}
+
+.about-page .section:nth-of-type(even) {
+  background: transparent;
+}
+
+.about-page .section > .container > h2,
+.about-page .text-block h2 {
+  max-width: 780px;
+  margin-bottom: 18px;
+  color: var(--about-text);
+  font-size: clamp(2.3rem, 4.7vw, 4.7rem);
+  line-height: 1;
+  letter-spacing: -.075em;
+}
+
+.about-page .section-intro,
+.about-page .text-block p,
+.about-page .section2 > p {
+  max-width: 700px;
+  color: var(--about-muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.about-page .section2 {
+  padding: clamp(28px, 5vw, 70px);
+  border: 1px solid rgba(23, 35, 33, .1);
+  border-radius: 8px;
+  background: #172321;
+  box-shadow: 0 24px 50px rgba(23, 35, 33, .14);
+}
+
+.about-page .section2 h2 {
+  max-width: 730px;
+  color: #f5f5f0;
+}
+
+.about-page .section2 > p {
+  color: #adbab4;
+}
+
+.about-page .features-grid,
+.about-page .stats-grid,
+.about-page .culture-grid,
+.about-page .roles-grid {
+  gap: 14px;
+}
+
+.about-page .feature-card,
+.about-page .culture-card,
+.about-page .role-card,
+.about-page .innovation-card,
+.about-page .contact-details,
+.about-page .future-list li,
+.about-page .who-we-are,
+.about-page .recognition {
+  border: 1px solid var(--about-border);
+  border-radius: 7px;
+  background: var(--about-surface);
+  box-shadow: var(--about-shadow);
+}
+
+.about-page .feature-card {
+  border-color: rgba(245, 245, 240, .14);
+  background: rgba(245, 245, 240, .07);
+}
+
+.about-page .feature-card h3,
+.about-page .feature-card p {
+  color: #f5f5f0;
+}
+
+.about-page .feature-card p {
+  color: #adbab4;
+}
+
+.about-page .innovation-card {
+  border-left: 3px solid var(--about-primary);
+}
+
+.about-page .innovations-block {
+  padding: 28px;
+  border-radius: 8px;
+  background: var(--about-surface-muted);
+}
+
+.about-page .innovations-block > h3,
+.about-page .future-list li::before {
+  color: var(--about-primary);
+}
+
+.about-page .who-we-are,
+.about-page .recognition {
+  border-top: 3px solid var(--about-primary);
+}
+
+.about-page .stats-section {
+  background: #172321;
+}
+
+.about-page .stat-card {
+  border-color: rgba(245, 245, 240, .14);
+  border-radius: 7px;
+  background: rgba(245, 245, 240, .07);
+}
+
+.about-page .culture-card:hover,
+.about-page .role-card:hover,
+.about-page .feature-card:hover,
+.about-page .future-list li:hover {
+  border-color: var(--about-primary);
+}
+
+.about-page .contact-section {
+  background: var(--about-surface-muted);
+}
+
+.about-page .contact-details {
+  background: var(--about-surface);
+}
+
+@media (max-width: 600px) {
+  .about-page .hero-section {
+    min-height: 620px;
+    padding: 135px 20px 90px;
+  }
+
+  .about-page .hero-section h1 {
+    font-size: 3.55rem;
+  }
+
+  .about-page .section {
+    padding-block: 78px;
+  }
+}
+
 .who-we-are li::before {
   content: "";
   position: absolute;

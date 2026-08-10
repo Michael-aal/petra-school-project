@@ -343,7 +343,7 @@ export default function SignIn() {
 
         <button
           type="submit"
-          className="auth-submit"
+          className="auth-submit signin-submit"
           disabled={loading}
         >
           {loading ? (

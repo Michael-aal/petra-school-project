@@ -25,10 +25,10 @@ export default function AuthShell({ children, eyebrow, title, subtitle, footnote
           </button>
 
           <div className="auth-brand-row">
-            <img src="/petra logo.png" alt="Petra School logo" className="auth-logo" />
+            <img src="/nuxora-logo.png" alt="Nuvora logo" className="auth-logo" />
             <div>
-              <p className="auth-brand">Petra School</p>
-              <p className="auth-brand-sub">Secure access for schools</p>
+              <p className="auth-brand">Nuvora</p>
+              <p className="auth-brand-sub">The school operating system</p>
             </div>
           </div>
 
