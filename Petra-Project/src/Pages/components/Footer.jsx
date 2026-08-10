@@ -33,7 +33,7 @@ export default function Footer(){
         <div className="footer">
         <div className="footer-1-section">
             <div className="footer-1-section-1">
-                <h2><School size={34} className="sch" />Petra School Ota</h2>
+                <h2><School size={34} className="sch" />Nuvora</h2>
                 <p>Building the operating system for African education. From financial compliance to academic mastery.</p>
                 <h3><MapPin size={45} className="sch" />TSC Building; Plot 8, The Rock Drive, Off C & I Leasing Drive, Lekki Phase 1, Lagos, Nigeria.</h3>
             </div>
@@ -58,11 +58,11 @@ export default function Footer(){
         </div>
 
         <div className="footer-2-section">
-            <p>Acceede is a financial and education technology company, not a bank, we are a technology service developed and powered by Acceede Labs Limited (Acceede). Acceede is duly registered with the Nigerian Corporate Affairs Commission. All financial services are provided by our CBN licensed Banking and Banking-as-a-Services Provider in Nigeria. The Acceede trademarks and all the copyrights in Acceede are wholly owned by Acceede Labs Limited.</p>
+            <p>Nuvora is an education technology platform built to help ambitious schools coordinate operations, finance, and learning in one clear workspace.</p>
         </div>
 
         <div className="footer-3-section">
-            <h2>© 2026 Acceede Inc. All rights reserved.</h2>
+            <h2>© 2026 Nuvora. All rights reserved.</h2>
             <div className="last-place">
                 <h3>Privacy Policy</h3>
                 <h3>Terms & Conditions</h3>
