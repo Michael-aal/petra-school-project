@@ -13,7 +13,7 @@ export const listStudents = async (req, res, next) => {
       className: req.query.className || "",
       gender: req.query.gender || "",
       status: req.query.status || "",
-    });
+    }, req.user);
 
     return res.status(200).json({
       success: true,
@@ -26,7 +26,7 @@ export const listStudents = async (req, res, next) => {
 
 export const getStudentById = async (req, res, next) => {
   try {
-    const student = await studentService.getById(req.params.id);
+    const student = await studentService.getById(req.params.id, req.user);
     return res.status(200).json({ success: true, student });
   } catch (error) {
     return next(error);
@@ -52,7 +52,7 @@ export const createStudent = async (req, res, next) => {
 
 export const updateStudent = async (req, res, next) => {
   try {
-    const student = await studentService.update(req.params.id, req.body);
+    const student = await studentService.update(req.params.id, req.body, req.user);
     return res.status(200).json({
       success: true,
       message: "Student updated successfully",
@@ -65,7 +65,7 @@ export const updateStudent = async (req, res, next) => {
 
 export const deleteStudent = async (req, res, next) => {
   try {
-    const student = await studentService.remove(req.params.id);
+    const student = await studentService.remove(req.params.id, req.user);
     return res.status(200).json({
       success: true,
       message: "Student removed successfully",
@@ -78,7 +78,7 @@ export const deleteStudent = async (req, res, next) => {
 
 export const regenerateStudentAccessCode = async (req, res, next) => {
   try {
-    const student = await studentService.generateParentAccessCode(req.params.id);
+    const student = await studentService.generateParentAccessCode(req.params.id, req.user);
     return res.status(200).json({
       success: true,
       message: "Parent access code regenerated successfully",

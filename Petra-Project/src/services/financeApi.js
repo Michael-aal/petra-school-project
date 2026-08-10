@@ -1,22 +1,4 @@
-import { API_BASE_URL, readAuthToken } from "./authApi";
-
-const request = async (path, options = {}) => {
-  const token = readAuthToken();
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const response = await fetch(`${API_BASE_URL}${path}`, { ...options, credentials: "include", headers });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(data.message || "Request failed");
-    error.status = response.status;
-    error.data = data;
-    throw error;
-  }
-  return data;
-};
+import { request } from "./apiClient";
 
 export const financeApi = {
   payments: (params = {}) => {
@@ -29,6 +11,15 @@ export const financeApi = {
   deletePayment: (id) => request(`/api/finance/payments/${id}`, { method: "DELETE" }),
   invoices: () => request("/api/finance/invoices"),
   fees: () => request("/api/finance/fees"),
+  parentFees: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/api/finance/parent/fees${query ? `?${query}` : ""}`, { method: "GET" });
+  },
+  getReceipt: (paymentId) => request(`/api/finance/payments/${encodeURIComponent(paymentId)}/receipt`, { method: "GET" }),
+  createFee: (payload) => request("/api/finance/fees", { method: "POST", body: JSON.stringify(payload) }),
+  updateFee: (id, payload) => request(`/api/finance/fees/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  deleteFee: (id) => request(`/api/finance/fees/${id}`, { method: "DELETE" }),
+  assignFee: (payload) => request("/api/finance/fees/assign", { method: "POST", body: JSON.stringify(payload) }),
   flexpay: () => request("/api/finance/flexpay"),
   cashflow: () => request("/api/finance/cashflow"),
 };

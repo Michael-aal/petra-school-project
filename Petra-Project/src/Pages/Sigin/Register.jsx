@@ -114,6 +114,9 @@ export default function Register({ rolePreset = "" }) {
     if (!form.username.trim()) nextErrors.username = "Username is required.";
     if (!form.email.trim()) nextErrors.email = "Email address is required.";
     if (!form.role && !rolePreset) nextErrors.role = "Please select a role.";
+    if ((rolePreset || form.role) === "principal" && !form.institution.trim()) {
+      nextErrors.institution = "School name is required — it creates your school workspace.";
+    }
     if (!form.password) nextErrors.password = "Password is required.";
     if (form.password.length < 8) nextErrors.password = "Password must be at least 8 characters.";
     if (form.password.length > 128) nextErrors.password = "Password must be at most 128 characters.";
@@ -321,6 +324,7 @@ export default function Register({ rolePreset = "" }) {
               onChange={handleChange}
             />
           </div>
+          {errors.institution ? <small>{errors.institution}</small> : null}
         </label>
 
         <label className="auth-field">

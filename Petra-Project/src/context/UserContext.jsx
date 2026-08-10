@@ -1,82 +1,79 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import { authApi } from "../services/authApi";
+import { authApi, readAuthToken } from "../services/authApi";
 import { normalizeUser } from "../utils/userProfile";
 
 export const UserContext = createContext();
 
-const defaultStudents = [
-  { id: 1, studentName: "Ogunleye Kayode", studentNameLogo: "OK", studentClass: "SS2", studentParentName: "Ogunleye", studentFeeStatus: "Paid", studentStatus: "Active", studentGender: "Male" },
-  { id: 2, studentName: "Adebayo Vitor", studentNameLogo: "AV", studentClass: "SS2", studentParentName: "Adebayo", studentFeeStatus: "Unpaid", studentStatus: "Active", studentGender: "Female" },
-  { id: 3, studentName: "Feyishikemi Ifekorode", studentNameLogo: "FI", studentClass: "SS2", studentParentName: "Fakorade", studentFeeStatus: "Partial", studentStatus: "Active", studentGender: "Female" },
-];
+const emptyUser = () => normalizeUser({});
 
 export function UserProvider({ children }) {
-  const [userInfo, setUserInfo] = useState(() => {
-    try {
-      const cached = window.localStorage.getItem("petra_user_info");
-      return cached
-        ? normalizeUser(JSON.parse(cached))
-        : normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
-    } catch {
-      return normalizeUser({ institution: "My School", totalStudent: defaultStudents.length });
-    }
-  });
+  const [userInfo, setUserInfo] = useState(emptyUser);
   const [authReady, setAuthReady] = useState(false);
-  const [students, setStudents] = useState(defaultStudents);
   const [authError, setAuthError] = useState(null);
 
-  useEffect(() => {
-    window.localStorage.setItem("petra_user_info", JSON.stringify(userInfo));
-  }, [userInfo]);
+  const clearSession = () => {
+    setUserInfo(emptyUser());
+    setAuthError(null);
+  };
 
   useEffect(() => {
-    let active = true;
+    /*
+     * Do not call /api/auth/me when there is no token.
+     *
+     * This is important because UserProvider is loaded globally,
+     * including on the Sign In page.
+     */
+    const token = readAuthToken();
 
+    if (!token) {
+      clearSession();
+      setAuthReady(true);
+      return;
+    }
+
+    /*
+     * A token exists, so it is safe to verify the session.
+     */
     authApi
       .me()
       .then((response) => {
-        if (!active) return;
         setAuthError(null);
-        setUserInfo((current) =>
-          normalizeUser({
-            ...current,
-            ...response.user,
-            profileImage: response.user?.profileImage || response.user?.profilePicture || current.profileImage,
-            totalStudent: response.user?.totalStudent ?? defaultStudents.length,
-          }),
-        );
+        setUserInfo(normalizeUser(response.user || {}));
       })
       .catch((error) => {
-        if (!active) return;
         setAuthError(error);
-        if (error?.status === 401) {
-          window.localStorage.removeItem("petra_user_info");
-        }
-        setUserInfo((current) =>
-          normalizeUser({
-            ...current,
-            totalStudent: defaultStudents.length,
-          }),
-        );
+        clearSession();
       })
       .finally(() => {
-        if (active) setAuthReady(true);
+        setAuthReady(true);
       });
-
-    return () => {
-      active = false;
-    };
   }, []);
 
-  const userInfoWithTotals = useMemo(
-    () => ({ ...userInfo, totalStudent: students.length }),
-    [userInfo, students.length],
-  );
-
   const value = useMemo(
-    () => ({ userInfo: userInfoWithTotals, setUserInfo, students, setStudents, authReady, authError }),
-    [userInfoWithTotals, students, authReady, authError],
+    () => ({
+      userInfo,
+
+      setUserInfo: (updater) => {
+        setUserInfo((current) => {
+          const nextValue =
+            typeof updater === "function"
+              ? updater(current)
+              : updater;
+
+          return normalizeUser(nextValue || {});
+        });
+      },
+
+      authReady,
+      authError,
+      clearSession,
+    }),
+    [userInfo, authReady, authError],
   );
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  );
 }

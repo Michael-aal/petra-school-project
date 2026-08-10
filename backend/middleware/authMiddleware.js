@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel.js";
 import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
+import { prisma, runWithSchoolContext, runWithoutSchoolContext } from "../config/db.js";
 
 const extractToken = (req) => {
   const authHeader = req.get("authorization") || "";
@@ -46,6 +47,28 @@ const resolveTokenClaims = (decoded = {}) => {
   const email = normalizeId(decoded.email || decoded.user?.email || decoded.data?.email);
 
   return { userId, email };
+};
+
+const parseSchoolHeader = (value) => {
+  if (!value) return null;
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) return null;
+  return parsed;
+};
+
+const resolveUserSchoolId = (user) => {
+  if (!user) return null;
+  return (
+    user.schoolId ||
+    user.principalProfile?.schoolId ||
+    user.adminProfile?.schoolId ||
+    user.teacherProfile?.schoolId ||
+    user.staffProfile?.schoolId ||
+    user.parentProfile?.schoolId ||
+    user.guardianProfile?.schoolId ||
+    user.studentProfile?.schoolId ||
+    null
+  );
 };
 
 const requireRole = (allowedRoles = []) => (req, res, next) => {
@@ -94,7 +117,7 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    const user = await userModel.findByIdentity({
+    const user = await userModel.findByIdentityGlobal({
       id: resolvedUserId,
       email: resolvedEmail,
     });
@@ -113,13 +136,74 @@ export const protect = async (req, res, next) => {
       email: resolvedEmail,
     };
     req.user = user;
-    next();
+    const normalizedRole = normalizeRole(user?.role);
+
+    if (normalizedRole === "super_admin") {
+      const requestedSchoolId = parseSchoolHeader(req.get("x-school-id"));
+      let resolvedSchoolId = null;
+
+      if (requestedSchoolId) {
+        const requestedSchool = await prisma.school.findUnique({ where: { id: requestedSchoolId }, select: { id: true } });
+        if (requestedSchool) {
+          resolvedSchoolId = requestedSchool.id;
+        }
+      }
+
+      if (!resolvedSchoolId && user.selectedSchoolId) {
+        const persistedSchool = await prisma.school.findUnique({ where: { id: Number(user.selectedSchoolId) }, select: { id: true } });
+        if (persistedSchool) {
+          resolvedSchoolId = persistedSchool.id;
+        }
+      }
+
+      req.schoolId = resolvedSchoolId;
+      if (resolvedSchoolId) {
+        req.user.schoolId = resolvedSchoolId;
+      }
+    } else {
+      const fallbackSchoolId = resolveUserSchoolId(user) ?? decoded?.schoolId ?? null;
+      req.schoolId = fallbackSchoolId;
+      if (fallbackSchoolId) {
+        req.user.schoolId = fallbackSchoolId;
+      }
+    }
+
+    return runWithSchoolContext(req.schoolId, next);
   } catch (error) {
     return res.status(401).json({
       success: false,
       message: "Not authorized, token failed",
     });
   }
+};
+
+
+export const schoolGuard = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Authentication required",
+    });
+  }
+
+  const role = normalizeRole(req.user?.role);
+  if (role === "super_admin" && !req.schoolId) {
+    return res.status(403).json({
+      success: false,
+      message: "Select a school to continue.",
+    });
+  }
+
+  if (!req.user.schoolId && role !== "super_admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Select a school to continue.",
+    });
+  }
+
+  req.schoolId = req.schoolId ?? req.user.schoolId;
+
+  next();
 };
 
 export const requirePrincipal = requireRole(["principal"]);

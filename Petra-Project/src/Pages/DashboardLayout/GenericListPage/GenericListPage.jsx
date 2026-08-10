@@ -24,6 +24,7 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
   // Modal States
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editModal, setEditModal] = useState({ isOpen: false, item: null });
+  const [viewModal, setViewModal] = useState({ isOpen: false, item: null });
   const [formData, setFormData] = useState({});
 
   // Sync with parent context if onDataChange is provided
@@ -81,6 +82,13 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
   const handleOpenEdit = (item) => {
     setFormData({ ...item });
     setEditModal({ isOpen: true, item });
+    setViewModal({ isOpen: false, item: null });
+    setOpenDropdownId(null);
+  };
+
+  const openViewModal = (item) => {
+    setViewModal({ isOpen: true, item });
+    setEditModal({ isOpen: false, item: null });
     setOpenDropdownId(null);
   };
 
@@ -94,10 +102,12 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
   const closeModals = () => {
     setIsAddModalOpen(false);
     setEditModal({ isOpen: false, item: null });
+    setViewModal({ isOpen: false, item: null });
     setFormData({});
   };
 
   const IconComponent = config.icon;
+  const EmptyIcon = config.emptyState?.icon;
 
   return (
     <div className="generic-list-page">
@@ -148,26 +158,46 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <button className="btn-secondary">
-          <FilterIcon size={18} /> Filter
-        </button>
+        {config.toolbarActions?.length ? (
+          <div className="toolbar-actions">
+            {config.toolbarActions.map((action, idx) => {
+              const ButtonIcon = action.icon;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  className={action.variant === "primary" ? "btn-primary" : "btn-secondary"}
+                  onClick={action.onClick || (() => {})}
+                  disabled={action.disabled}
+                >
+                  {ButtonIcon ? <ButtonIcon size={16} /> : null}
+                  <span>{action.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <button className="btn-secondary">
+            <FilterIcon size={18} /> Filter
+          </button>
+        )}
       </div>
 
       {/* 4. Data Table */}
       <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              {config.columns.map((col, idx) => (
-                <th key={idx} className={col.align === "right" ? "text-right" : ""}>
-                  {col.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map((item) => (
+        {filteredData.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                {config.columns.map((col, idx) => (
+                  <th key={idx} className={col.align === "right" ? "text-right" : ""}>
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.map((item) => (
                 <tr key={item.id}>
                   {config.columns.map((col, idx) => (
                     <td key={idx} className={col.align === "right" ? "text-right action-cell" : ""}>
@@ -179,7 +209,7 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                           <span className="student-name">{item.name || item.fullName || item.studentName}</span>
                         </div>
                       ) : col.key === "status" || col.key === "feeStatus" ? (
-                        <span className={`status-badge status-${String(item[col.key]).toLowerCase()}`}>
+                        <span className={`status-badge status-${String(item[col.key]).toLowerCase().replace(/\s+/g, "-")}`}>
                           {item[col.key]}
                         </span>
                       ) : col.key === "actions" ? (
@@ -191,6 +221,25 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                             <div className="dropdown-menu">
                               {config.actions.map((action, aIdx) => {
                                 const ActionIcon = action.icon;
+
+                                if (action.type === "sendLink") {
+                                  return (
+                                    <button 
+                                      key={aIdx} 
+                                      className="dropdown-item" 
+                                      onClick={() => {
+                                        const loginUrl = `${window.location.origin}/signin`;
+                                        const subject = `Your Parent Portal Access for ${item.name || item.parentName || item.fullName || "Your Child"}`;
+                                        const body = `Hello,\n\nYour school has activated your parent portal. You can now view your children's results, attendance, and fees.\n\nPlease go to: ${loginUrl}\nand log in using this email address: ${item.email}\n\nIf you have any issues, please contact the school admin.`;
+                                        window.location.href = `mailto:${item.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                      }}
+                                    >
+                                      <ActionIcon size={16} />
+                                      <span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
                                 if (action.type === "delete") {
                                   return (
                                     <button key={aIdx} className="dropdown-item dropdown-item-danger" onClick={() => handleDelete(item)}>
@@ -198,6 +247,39 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                                     </button>
                                   );
                                 }
+
+                                if (action.type === "view" || action.type === "viewChildren") {
+                                  return (
+                                    <button key={aIdx} className="dropdown-item" onClick={() => openViewModal(item)}>
+                                      <ActionIcon size={16} /><span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
+                                if (action.type === "resetPassword") {
+                                  return (
+                                    <button
+                                      key={aIdx}
+                                      className="dropdown-item"
+                                      onClick={() => window.alert("Reset password flow is available in the live admin console.")}
+                                    >
+                                      <ActionIcon size={16} /><span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
+                                if (action.type === "disable") {
+                                  return (
+                                    <button
+                                      key={aIdx}
+                                      className="dropdown-item"
+                                      onClick={() => window.alert("Account status can be managed from the parent profile page.")}
+                                    >
+                                      <ActionIcon size={16} /><span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
                                 return (
                                   <button key={aIdx} className="dropdown-item" onClick={() => handleOpenEdit(item)}>
                                     <ActionIcon size={16} /><span>{action.label}</span>
@@ -213,16 +295,42 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                     </td>
                   ))}
                 </tr>
-              ))
-            ) : (
+              ))}
+            </tbody>
+          </table>
+        ) : config.emptyState ? (
+          <div className="empty-state-panel">
+            {EmptyIcon ? <EmptyIcon size={56} className="empty-state-icon" /> : null}
+            <div className="empty-state-copy">
+              <h3>{config.emptyState.title}</h3>
+              <p>{config.emptyState.description}</p>
+            </div>
+            {config.emptyState.action && (
+              <button className="btn-primary" type="button" onClick={config.emptyState.action.onClick}>
+                {config.emptyState.action.label}
+              </button>
+            )}
+          </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                {config.columns.map((col, idx) => (
+                  <th key={idx} className={col.align === "right" ? "text-right" : ""}>
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
               <tr>
                 <td colSpan={config.columns.length} className="empty-state">
                   No {config.title.toLowerCase()} found matching "{searchQuery}"
                 </td>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* 5. Add / Edit Modal */}
@@ -269,6 +377,70 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
               <button className="btn-primary" onClick={editModal.isOpen ? handleSaveEdit : handleAdd}>
                 {editModal.isOpen ? "Save Changes" : `Add ${config.singularName}`}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. View Modal */}
+      {viewModal.isOpen && (
+        <div className="modal-overlay" onClick={closeModals}>
+          <div className="modal-content view-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>View {config.singularName}</h2>
+              <button className="modal-close" onClick={closeModals}><X size={20} /></button>
+            </div>
+            <div className="modal-body">
+              <div className="view-grid">
+                <div className="view-item">
+                  <span className="view-label">Full Name</span>
+                  <span className="view-value">{viewModal.item.name || viewModal.item.fullName}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Email</span>
+                  <span className="view-value">{viewModal.item.email || "—"}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Phone</span>
+                  <span className="view-value">{viewModal.item.phoneNumber || "—"}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Status</span>
+                  <span className={`status-badge status-${String(viewModal.item.status || "unknown").toLowerCase().replace(/\s+/g, "-")}`}>
+                    {viewModal.item.status || "Unknown"}
+                  </span>
+                </div>
+                <div className="view-item full-width">
+                  <span className="view-label">Address</span>
+                  <span className="view-value">{viewModal.item.address || "No address provided."}</span>
+                </div>
+              </div>
+              <div className="linked-children-section">
+                <div className="view-section-header">
+                  <h3>Linked Children</h3>
+                  <span>{viewModal.item.children?.length || 0} linked learner{viewModal.item.children?.length === 1 ? "" : "s"}</span>
+                </div>
+                {viewModal.item.children?.length > 0 ? (
+                  <div className="linked-children-grid">
+                    {viewModal.item.children.map((child) => (
+                      <div className="child-card" key={child.id}>
+                        <div className="child-avatar">{getInitials(child.name)}</div>
+                        <div className="child-content">
+                          <strong>{child.name}</strong>
+                          <span>{child.admissionNumber}</span>
+                          <span>{child.className}</span>
+                          <span className={`status-badge status-${String(child.status || "active").toLowerCase()}`}>{child.status}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="empty-children-copy">No linked children are available for this parent.</p>
+                )}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={closeModals}>Close</button>
             </div>
           </div>
         </div>

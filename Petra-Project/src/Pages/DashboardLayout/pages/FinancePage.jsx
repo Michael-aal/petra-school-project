@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Banknote, ChartNoAxesCombined, CreditCard, FileText, Percent, Wallet } from "lucide-react";
+import { Banknote, ChartNoAxesCombined, CreditCard, FileText, Percent, Wallet, ArrowRight } from "lucide-react";
 import "./page-styles/FinancePage.css";
 import { financeApi } from "../../../services/financeApi";
 import { useEffect, useState } from "react";
@@ -70,51 +70,94 @@ export default function FinancePage() {
   }, []);
 
   return (
-    <div className="dashboard-page finance-page">
-      <section className="finance-page-hero">
+    <div className="dashboard-home finance-page">
+      <section className="finance-page-header">
         <div>
           <p className="dashboard-page-label">Finance</p>
-          <h1>School Finance Center</h1>
-          <p className="dashboard-page-copy">
-            Track payments, invoices, fees, wallet operations, installment plans, and cashflow from one control panel.
-          </p>
+          <h1>Finance command center</h1>
+          <p className="dashboard-page-copy">Access payment workflows, wallet operations, invoicing, and cashflow insights from one premium dashboard.</p>
         </div>
-        <div className="finance-page-hero-stats">
-          <div><strong>{summary.payments.length}</strong><span>Recent payments</span></div>
-          <div><strong>{summary.invoices.length}</strong><span>Invoices</span></div>
-          <div><strong>{summary.fees.length}</strong><span>Fee structures</span></div>
-        </div>
+      </section>
+
+      <section className="finance-page-summary-panel">
+        <article className="finance-page-metric-card">
+          <span>Recent payments</span>
+          <strong>{summary.payments.length}</strong>
+        </article>
+        <article className="finance-page-metric-card">
+          <span>Invoices</span>
+          <strong>{summary.invoices.length}</strong>
+        </article>
+        <article className="finance-page-metric-card">
+          <span>Fee structures</span>
+          <strong>{summary.fees.length}</strong>
+        </article>
+        <article className="finance-page-metric-card">
+          <span>Active plans</span>
+          <strong>{summary.flexpay.length}</strong>
+        </article>
       </section>
 
       <section className="finance-page-grid">
-        {cards.map((card) => (
-          <Link key={card.title} to={card.to} className="finance-page-card">
-            <div className="finance-page-card-icon">
-              <card.icon size={18} />
+        <article className="finance-page-panel finance-panel">
+          <header className="finance-page-panel-header">
+            <h2>Finance modules</h2>
+            <p>Quickly navigate the most important finance workflows.</p>
+          </header>
+          <div className="finance-page-card-grid">
+            {cards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <Link key={card.title} to={card.to} className="finance-page-card">
+                  <div className="finance-page-card-icon">
+                    <Icon size={22} />
+                  </div>
+                  <div>
+                    <h3>{card.title}</h3>
+                    <p>{card.description}</p>
+                  </div>
+                  <span className="finance-page-card-link">
+                    Open <ArrowRight size={16} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </article>
+
+        <article className="finance-page-panel finance-panel">
+          <header className="finance-page-panel-header">
+            <h2>Cashflow snapshot</h2>
+            <p>See the latest finance health metrics at a glance.</p>
+          </header>
+          {summary.cashflow ? (
+            <div className="finance-page-summary">
+              <article>
+                <span>Total revenue</span>
+                <strong>{summary.cashflow.totalRevenue}</strong>
+              </article>
+              <article>
+                <span>Total expenses</span>
+                <strong>{summary.cashflow.totalExpenses}</strong>
+              </article>
+              <article>
+                <span>Net income</span>
+                <strong>{summary.cashflow.netIncome}</strong>
+              </article>
+              <article>
+                <span>Outstanding fees</span>
+                <strong>{summary.cashflow.outstandingFees}</strong>
+              </article>
             </div>
-            <h3>{card.title}</h3>
-            <p>{card.description}</p>
+          ) : (
+            <p className="finance-page-empty">Cashflow insights will appear once the finance data is available.</p>
+          )}
+          <Link to="/dashboard/finance/cashflow" className="dashboard-home-summary-action tone-blue finance-cta">
+            <span>View full cashflow</span>
+            <ArrowRight size={14} />
           </Link>
-        ))}
+        </article>
       </section>
-
-      <section className="finance-page-actions">
-        <Link to="/dashboard/finance/payments" className="finance-page-button">
-          Open Payments
-        </Link>
-        <Link to="/dashboard/finance/cashflow" className="finance-page-button finance-page-button-secondary">
-          View Cashflow
-        </Link>
-      </section>
-
-      {summary.cashflow && (
-        <section className="finance-page-summary">
-          <article><span>Total Revenue</span><strong>{summary.cashflow.totalRevenue}</strong></article>
-          <article><span>Total Expenses</span><strong>{summary.cashflow.totalExpenses}</strong></article>
-          <article><span>Net Income</span><strong>{summary.cashflow.netIncome}</strong></article>
-          <article><span>Outstanding Fees</span><strong>{summary.cashflow.outstandingFees}</strong></article>
-        </section>
-      )}
     </div>
   );
 }

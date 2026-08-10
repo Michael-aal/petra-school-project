@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { href, NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   School,
@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Bell,
   HelpCircle,
+  MessageSquare,
   Settings,
   ChevronDown,
   ChevronRight,
@@ -26,6 +27,7 @@ import {
   PlusCircle,
   X,
   LogOut,
+  ShieldCheck
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -102,9 +104,12 @@ const navGroups = [
     icon: Bell,
     children: [
       { label: "Notifications", icon: Bell, href: "/dashboard/communication/notifications" },
+      { label: "Announcements", icon: Bell, href: "/dashboard/communication/announcements" },
+      { label: "Messages", icon: MessageSquare, href: "/dashboard/communication/messages" },
       { label: "Support", icon: HelpCircle, href: "/dashboard/communication/support" },
     ],
   },
+  {label: "Links", icon: ShieldCheck, href: "/dashboard/students/parent-links"},
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
@@ -123,7 +128,6 @@ const staffNavGroups = [
 
 const portalNavGroups = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/portal/dashboard" },
-  { label: "Children", icon: GraduationCap, href: "/portal/children" },
   { label: "Attendance", icon: ClipboardCheck, href: "/portal/attendance" },
   { label: "Results", icon: FileText, href: "/portal/results" },
   { label: "Assignments", icon: ClipboardList, href: "/portal/assignments" },
@@ -140,7 +144,7 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const location = useLocation();
   const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
-  const schoolName = userInfo?.institution?.split(" ")[0] ?? "Petra";
+  const schoolName = userInfo?.schoolName || userInfo?.institution || "Petra";
   const navItems = location.pathname.startsWith("/staff")
     ? staffNavGroups
     : location.pathname.startsWith("/portal")
@@ -174,7 +178,12 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
     } catch {
       // ignore errors during logout
     } finally {
-      window.localStorage.removeItem("petra_user_info");
+      try {
+        window.sessionStorage.removeItem("petra_user_info");
+      } catch (e) {}
+      try {
+        window.localStorage.removeItem("petra_user_info");
+      } catch (e) {}
       try {
         setUserInfo(normalizeUser({}));
       } catch {

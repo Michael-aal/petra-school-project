@@ -82,6 +82,10 @@ export function normalizeUser(user = {}) {
     profileImage: user.profileImage || user.profilePicture || "",
     phoneNumber: user.phoneNumber || user.phone || "",
     institution: user.institution || "",
+    schoolId: user.schoolId || (user.school && user.school.id) || null,
+    schoolName: (user.school && user.school.name) || user.institution || "",
+    selectedSchoolId: user.selectedSchoolId || (user.selectedSchool && user.selectedSchool.id) || null,
+    selectedSchoolName: (user.selectedSchool && user.selectedSchool.name) || null,
     institutionType: user.institutionType || "",
     state: user.state || "",
     city: user.city || "",
@@ -91,5 +95,9 @@ export function normalizeUser(user = {}) {
     address: user.address || "",
     country: user.country || "",
     totalStudent: user.totalStudent || 0,
+    children: Array.isArray(user.children) ? user.children : [],
+    primaryChildId: user.primaryChildId || null,
+    childCount: typeof user.childCount === "number" ? user.childCount : Array.isArray(user.children) ? user.children.length : 0,
+    linkedStudentId: user.linkedStudentId || null,
   };
 }

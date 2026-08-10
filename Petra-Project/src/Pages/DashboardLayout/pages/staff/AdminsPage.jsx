@@ -3,6 +3,9 @@ import { Shield, Search, RefreshCcw } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import "../page-styles/AdminsPage.css";
 
+const getAdminName = (admin) =>
+  admin.fullName || [admin.firstName, admin.lastName].filter(Boolean).join(" ") || admin.username || admin.email || "Admin";
+
 export default function AdminsPage() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,46 +30,76 @@ export default function AdminsPage() {
   }, []);
 
   return (
-    <div className="dashboard-page">
-      <section className="page-header">
-        <div className="page-title-group">
-          <div className="title-icon-box"><Shield size={24} /></div>
-          <div>
-            <h3>Admins</h3>
-            <h4>Manage administrative staff and access roles</h4>
-          </div>
+    <div className="dashboard-home admins-page">
+      <section className="dashboard-home-header">
+        <div>
+          <h1>Admins</h1>
+          <p>Manage administrative staff and access roles from one secure admin workspace.</p>
         </div>
-        <button className="btn-primary" onClick={load} type="button">
-          <RefreshCcw size={16} /> Refresh
-        </button>
+        <div className="dashboard-home-session-pill">Admin operations</div>
       </section>
 
-      <div className="admin-toolbar">
-        <div className="search-box">
-          <Search size={16} />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search admins..." />
-        </div>
-        <button className="btn-primary" type="button" onClick={load}>Search</button>
-      </div>
+      <section className="dashboard-home-summary">
+        <article className="dashboard-home-summary-card">
+          <div className="dashboard-home-summary-top">
+            <div>
+              <span>Total admins</span>
+              <strong>{admins.length}</strong>
+            </div>
+            <div className="dashboard-home-summary-icon tone-blue">
+              <Shield size={18} />
+            </div>
+          </div>
+        </article>
+        <article className="dashboard-home-summary-card">
+          <div className="dashboard-home-summary-top">
+            <div>
+              <span>Search ready</span>
+              <strong>Yes</strong>
+            </div>
+            <div className="dashboard-home-summary-icon tone-teal">
+              <RefreshCcw size={18} />
+            </div>
+          </div>
+        </article>
+      </section>
 
-      {error ? <div className="students-inline-alert">{error}</div> : null}
-      {loading ? (
-        <p>Loading admins...</p>
-      ) : admins.length ? (
-        <div className="admin-list">
-          {admins.map((admin) => (
-            <article key={admin.id} className="admin-row">
-              <div>
-                <strong>{admin.fullName || [admin.firstName, admin.lastName].filter(Boolean).join(" ")}</strong>
-                <p>{admin.username || admin.email}</p>
-              </div>
-              <span className="dashboard-home-session-pill">{admin.role}</span>
-            </article>
-          ))}
+      <section className="dashboard-home-panel admins-actions-panel">
+        <div className="admins-toolbar">
+          <div className="search-box">
+            <Search size={16} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search admins..."
+            />
+          </div>
+          <button className="dashboard-home-summary-action tone-blue" onClick={load} type="button">
+            <RefreshCcw size={14} />
+            <span>Reload</span>
+          </button>
         </div>
-      ) : (
-        <p>No admins found.</p>
-      )}
+
+        {error ? <div className="students-inline-alert">{error}</div> : null}
+
+        {loading ? (
+          <div className="module-empty">Loading admins...</div>
+        ) : admins.length ? (
+          <div className="admin-list">
+            {admins.map((admin) => (
+              <article key={admin.id} className="admin-row">
+                <div>
+                  <strong>{getAdminName(admin)}</strong>
+                  <p>{admin.username || admin.email}</p>
+                </div>
+                <span className="dashboard-home-session-pill">{admin.role}</span>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="module-empty">No admins found.</div>
+        )}
+      </section>
     </div>
   );
 }

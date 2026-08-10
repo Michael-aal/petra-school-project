@@ -5,7 +5,14 @@ const toNumber = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
-const getSchoolId = (user) => Number(user?.schoolId || 1);
+const getSchoolId = (user) => {
+  if (!user || user?.schoolId === undefined || user?.schoolId === null) {
+    const err = new Error("School context missing");
+    err.statusCode = 403;
+    throw err;
+  }
+  return Number(user.schoolId);
+};
 
 const safeUser = (user) => ({
   id: user.id,

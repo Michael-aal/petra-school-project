@@ -5,10 +5,12 @@ import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { getDisplayName, getFirstName, normalizeUser } from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
+import { useToasts } from "../../context/ToastContext";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
 
 export default function TopNavbar({ onToggle }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
+  const { info } = useToasts();
   const [showMenu, setShowMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const menuRef = useRef(null);
@@ -37,7 +39,15 @@ export default function TopNavbar({ onToggle }) {
     try {
       await authApi.logout();
     } finally {
-      window.localStorage.removeItem("petra_user_info");
+      try {
+        window.sessionStorage.removeItem("petra_user_info");
+      } catch (e) {}
+      try {
+        window.localStorage.removeItem("petra_user_info");
+      } catch (e) {}
+      try {
+        window.localStorage.removeItem("petra_selected_school_id");
+      } catch (e) {}
       try {
         setUserInfo(normalizeUser({}));
       } catch {
@@ -46,6 +56,8 @@ export default function TopNavbar({ onToggle }) {
       navigate("/signin", { replace: true });
     }
   };
+
+  const unreadCount = Number(userInfo?.unreadNotifications || userInfo?.notificationCount || 0);
 
   return (
     <header className="top-navbar">
@@ -66,6 +78,7 @@ export default function TopNavbar({ onToggle }) {
             aria-haspopup="menu"
           >
             <Bell size={20} />
+            {unreadCount > 0 ? <span className="nav-badge">{unreadCount > 9 ? "9+" : unreadCount}</span> : null}
           </button>
 
           {showNotifications ? (
@@ -87,7 +100,10 @@ export default function TopNavbar({ onToggle }) {
               <button
                 type="button"
                 className="notification-action"
-                onClick={() => setShowNotifications(false)}
+                onClick={() => {
+                  setShowNotifications(false);
+                  info("Notifications", "Live notifications will appear here as they arrive.");
+                }}
               >
                 See all Notifications
               </button>

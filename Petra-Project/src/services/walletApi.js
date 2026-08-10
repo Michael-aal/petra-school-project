@@ -1,11 +1,13 @@
-import { API_BASE_URL } from "./authApi";
+import { API_BASE_URL, readAuthToken } from "./authApi";
 
 async function request(path, options = {}) {
+  const authHeader = readAuthToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
+      ...(authHeader ? { Authorization: `Bearer ${authHeader}` } : {}),
     },
     ...options,
   });
@@ -23,6 +25,7 @@ async function request(path, options = {}) {
 
 export const walletApi = {
   getWallet: () => request("/api/wallet", { method: "GET" }),
+  getAdminWallet: () => request("/api/finance/wallet/summary", { method: "GET" }),
   getTransactions: () => request("/api/wallet/transactions", { method: "GET" }),
   getStatement: (params) => {
     const query = new URLSearchParams(params || {}).toString();

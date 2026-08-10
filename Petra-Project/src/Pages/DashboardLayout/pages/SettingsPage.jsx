@@ -68,6 +68,17 @@ export default function SettingsPage({ role: roleProp }) {
     }));
   }, [userInfo?.fullName, userInfo?.phoneNumber, userInfo?.email, userInfo?.profileImage]);
 
+  const linkedStudentNames = useMemo(
+    () =>
+      Array.isArray(userInfo?.children)
+        ? userInfo.children
+            .filter(Boolean)
+            .map((child) => child.name || child.fullName || child.studentName)
+            .filter(Boolean)
+        : [],
+    [userInfo?.children],
+  );
+
   const accountDetails = useMemo(() => {
     const roleName = roleLabel;
     const assignedClasses = Array.isArray(userInfo?.staffClassAssigned)
@@ -97,7 +108,10 @@ export default function SettingsPage({ role: roleProp }) {
         { label: "Role", value: roleName },
         { label: "Account Status", value: userInfo?.accountStatus || "active" },
         { label: "Date Joined", value: formatDate(userInfo?.createdAt) },
-        { label: "Linked Student(s)", value: userInfo?.linkedStudentId || "No linked student yet" },
+        {
+          label: "Linked Student(s)",
+          value: linkedStudentNames.length ? linkedStudentNames.join(", ") : "No linked student yet",
+        },
         { label: "Parent Access Code Status", value: userInfo?.parentAccessCodeUsed ? "Used" : "Pending" },
       ];
     }
@@ -204,8 +218,8 @@ export default function SettingsPage({ role: roleProp }) {
     try {
       await authApi.deleteAccount({ password: deletePassword });
       clearAuthToken();
-      window.localStorage.removeItem("petra_user_info");
-      window.localStorage.removeItem("petra-theme");
+      try { window.sessionStorage.removeItem("petra_user_info"); } catch (e) {}
+      try { window.localStorage.removeItem("petra-theme"); } catch (e) {}
       window.sessionStorage.clear();
       navigate("/signin", { replace: true });
     } catch (error) {

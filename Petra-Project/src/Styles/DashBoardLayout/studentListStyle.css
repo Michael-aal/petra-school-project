@@ -4,7 +4,7 @@
 .students-page {
   background: var(--app-bg);
   color: var(--app-text);
-  padding: 32px;
+  padding: var(--space-6);
   min-height: 100vh;
   max-height: fit-content;
   padding-bottom: 8em;
@@ -14,13 +14,14 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 32px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .page-title-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .title-icon-box {
@@ -54,18 +55,18 @@
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-3);
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 12px;
-  padding: 20px;
+  padding: var(--space-4);
 }
 
 .stat-icon {
@@ -118,8 +119,8 @@
 
 .page-controls {
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .search-wrapper { position: relative; flex: 1; max-width: 360px; }
@@ -169,7 +170,7 @@ th {
   background: var(--dashboard-muted-surface);
   color: var(--app-text-muted);
   text-align: left;
-  padding: 16px;
+  padding: var(--space-4);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -180,7 +181,7 @@ th {
 .text-right { text-align: right; }
 
 td {
-  padding: 16px;
+  padding: var(--space-4);
   color: var(--app-text);
   font-size: 0.875rem;
   border-bottom: 1px solid var(--app-border);
@@ -189,7 +190,7 @@ td {
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--dashboard-muted-surface); }
 
-.student-cell { display: flex; align-items: center; gap: 12px; }
+.student-cell { display: flex; align-items: center; gap: var(--space-3); }
 
 .student-avatar {
   width: 36px;

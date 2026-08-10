@@ -154,6 +154,18 @@
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
 }
 
+.notification-empty-state {
+  align-items: center;
+}
+
+.notification-empty-state h2 {
+  margin: 0 0 6px;
+}
+
+.notification-empty-state p {
+  margin-top: 0;
+}
+
 .notification-card-icon {
   width: 36px;
   height: 36px;

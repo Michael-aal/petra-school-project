@@ -17,9 +17,15 @@ import {
 import { useContext } from "react";
 import { default as DeleteAccountButton } from "../../../../components/DeleteAccountButton";
 import UserAvatar from "../../../../components/UserAvatar";
+import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
+import QuickActions from "../../../../components/dashboard/QuickActions";
+import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
+import StatCard from "../../../../components/dashboard/StatCard";
+import EmptyState from "../../../../components/dashboard/EmptyState";
 import { UserContext } from "../../../../context/UserContext";
 import { getDisplayName } from "../../../../utils/userProfile";
 import "../page-styles/TeacherDashboard.css";
+import "../../../../components/dashboard/dashboard.css";
 
 const routeConfig = {
   dashboard: {
@@ -438,16 +444,16 @@ export default function TeacherSectionPage({ route = "dashboard" }) {
 
   return (
     <div className="teacher-page dashboard-home">
-      <section className="dashboard-home-header">
-        <div>
-          <h1>Welcome back, {teacherName}</h1>
-          <p>{teacherRole} • {teacherDepartment}</p>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <UserAvatar user={userInfo} size={44} alt={teacherName} />
-          <div className="dashboard-home-session-pill">Teacher Workspace</div>
-        </div>
-      </section>
+      <DashboardHeader
+        eyebrow="Staff workspace"
+        title={`Welcome back, ${teacherName}`}
+        subtitle={`${teacherRole} • ${teacherDepartment}`}
+        badge="Teacher Workspace"
+        actionLabel="Open planner"
+        actionHref="#"
+      >
+        <UserAvatar user={userInfo} size={44} alt={teacherName} />
+      </DashboardHeader>
 
       {route === "dashboard" ? (
         <section className="teacher-toolbar">
@@ -477,51 +483,9 @@ export default function TeacherSectionPage({ route = "dashboard" }) {
 
       {route === "dashboard" ? (
         <section className="dashboard-home-summary">
-          <article className="dashboard-home-summary-card">
-            <div className="dashboard-home-summary-top">
-              <div>
-                <span>Role</span>
-                <strong>{teacherRole}</strong>
-              </div>
-              <div className="dashboard-home-summary-icon tone-blue">
-                <UserCircle2 size={18} />
-              </div>
-            </div>
-            <div className="dashboard-home-summary-action tone-blue">
-              <span>Teacher Profile</span>
-              <ArrowRight size={14} />
-            </div>
-          </article>
-          <article className="dashboard-home-summary-card">
-            <div className="dashboard-home-summary-top">
-              <div>
-                <span>Assigned Class</span>
-                <strong>{teacherClass}</strong>
-              </div>
-              <div className="dashboard-home-summary-icon tone-teal">
-                <School size={18} />
-              </div>
-            </div>
-            <div className="dashboard-home-summary-action tone-teal">
-              <span>Current Group</span>
-              <ArrowRight size={14} />
-            </div>
-          </article>
-          <article className="dashboard-home-summary-card">
-            <div className="dashboard-home-summary-top">
-              <div>
-                <span>Status</span>
-                <strong>{teacherStatus}</strong>
-              </div>
-              <div className="dashboard-home-summary-icon tone-rose">
-                <ClipboardCheck size={18} />
-              </div>
-            </div>
-            <div className="dashboard-home-summary-action tone-rose">
-              <span>Account Status</span>
-              <ArrowRight size={14} />
-            </div>
-          </article>
+          <StatCard label="Role" value={teacherRole} icon={UserCircle2} tone="blue" description="Current staff position" trend="Active" />
+          <StatCard label="Assigned Class" value={teacherClass} icon={BookOpen} tone="teal" description="Current learning group" trend="Live" />
+          <StatCard label="Status" value={teacherStatus} icon={ClipboardCheck} tone="rose" description="Account activity" trend="Updated" />
         </section>
       ) : (
         <section className="dashboard-home-summary">
@@ -550,32 +514,17 @@ export default function TeacherSectionPage({ route = "dashboard" }) {
 
       {route === "dashboard" ? (
         <section className="teacher-grid">
-          <article className="dashboard-home-panel teacher-panel">
-            <h2>Teacher Information</h2>
-            <div className="teacher-stack">
-              <div className="teacher-item">
-                <div>
-                  <strong>{teacherName}</strong>
-                  <p>{userInfo.email || "No email available"}</p>
-                </div>
-                <span>{joinedAt ? `Joined ${joinedAt}` : "Date joined not available"}</span>
-              </div>
-              <div className="teacher-item compact">
-                <div>
-                  <strong>Assigned Subjects</strong>
-                  <p>{teacherSubjects.length ? "Current subject load" : "No subjects assigned"}</p>
-                </div>
-              </div>
-              <div className="teacher-stack" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {teacherSubjects.length ? teacherSubjects.map((subject) => (
-                  <span key={subject} className="dashboard-home-session-pill">{subject}</span>
-                )) : <span className="dashboard-home-session-pill">No assigned subjects</span>}
-              </div>
-            </div>
-          </article>
+          <QuickActions
+            title="Staff shortcuts"
+            items={[
+              { label: "Mark Attendance", meta: "Open the class roll", icon: ClipboardCheck },
+              { label: "Upload Results", meta: "Save assessment data", icon: FileText },
+              { label: "View Classes", meta: "Review your assigned groups", icon: BookOpen },
+              { label: "Manage Students", meta: "Watch progress and submissions", icon: Users },
+            ]}
+          />
 
-          <article className="dashboard-home-panel teacher-panel">
-            <h2>Profile</h2>
+          <DashboardWidget title="Profile snapshot" subtitle="Staff details" actionLabel="Open profile">
             <div className="teacher-stack">
               <div className="teacher-item compact">
                 <div>
@@ -602,7 +551,7 @@ export default function TeacherSectionPage({ route = "dashboard" }) {
                 </div>
               </div>
             </div>
-          </article>
+          </DashboardWidget>
         </section>
       ) : (
         <>

@@ -6,6 +6,7 @@ import {
 import "../page-styles/ProfilePage.css";
 import { UserContext } from "../../../../context/UserContext";
 import UserAvatar from "../../../../components/UserAvatar";
+import { authApi } from "../../../../services/authApi";
 
 export default function ProfilePage() {
   const { userInfo, setUserInfo } = useContext(UserContext);
@@ -22,6 +23,7 @@ export default function ProfilePage() {
   const [newEditPassword, setNewEditPassword] = useState("");
   const [confirmEditPassword, setConfirmEditPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
 
   // Form Data State
   const [formData, setFormData] = useState({
@@ -58,11 +60,23 @@ export default function ProfilePage() {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setUserInfo((current) => {
-        const updatedUser = { ...current, profileImage: reader.result };
-        window.localStorage.setItem("petra_user_info", JSON.stringify(updatedUser));
-        return updatedUser;
-      });
+      const imageData = String(reader.result || "");
+      setSavingProfile(true);
+      authApi.updateProfile({ profileImage: imageData })
+        .then((response) => {
+          const updatedUser = response.user || {};
+          setUserInfo((current) => ({
+            ...current,
+            ...updatedUser,
+            profileImage: updatedUser.profileImage || updatedUser.profilePicture || imageData,
+          }));
+        })
+        .catch(() => {
+          setErrorMessage("Unable to save profile image right now.");
+        })
+        .finally(() => {
+          setSavingProfile(false);
+        });
     };
     reader.readAsDataURL(file);
   };
@@ -98,30 +112,43 @@ export default function ProfilePage() {
       return;
     }
 
-    setUserInfo((current) => {
-      const updatedUser = {
-        ...current,
-        institution: formData.schoolName,
-        schoolCode: formData.schoolCode,
-        phoneNumber: formData.phoneNumber,
-        email: formData.email,
-        address: formData.address,
-        state: formData.state,
-        country: formData.country,
-        // Update the edit password if a new one was provided
-        profileEditPassword: newEditPassword || current?.profileEditPassword || "",
-      };
-      window.localStorage.setItem("petra_user_info", JSON.stringify(updatedUser));
-      return updatedUser;
-    });
-
-    // Reset states after saving
-    setIsEditing(false);
-    setNewEditPassword("");
-    setConfirmEditPassword("");
-    setErrorMessage("");
-    setSaveMessage("Profile updated and locked successfully!");
-    setTimeout(() => setSaveMessage(""), 3000);
+    setSavingProfile(true);
+    authApi.updateProfile({
+      institution: formData.schoolName,
+      schoolCode: formData.schoolCode,
+      phoneNumber: formData.phoneNumber,
+      email: formData.email,
+      address: formData.address,
+      state: formData.state,
+      country: formData.country,
+      password: newEditPassword || undefined,
+    })
+      .then((response) => {
+        const updatedUser = response.user || {};
+        setUserInfo((current) => ({
+          ...current,
+          ...updatedUser,
+          institution: formData.schoolName,
+          schoolCode: formData.schoolCode,
+          phoneNumber: formData.phoneNumber,
+          email: formData.email,
+          address: formData.address,
+          state: formData.state,
+          country: formData.country,
+        }));
+        setIsEditing(false);
+        setNewEditPassword("");
+        setConfirmEditPassword("");
+        setErrorMessage("");
+        setSaveMessage("Profile updated and locked successfully!");
+        setTimeout(() => setSaveMessage(""), 3000);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message || "Unable to update profile right now.");
+      })
+      .finally(() => {
+        setSavingProfile(false);
+      });
   };
 
   const institutionInitial = formData.schoolName ? formData.schoolName[0].toUpperCase() : "S";
@@ -294,14 +321,15 @@ export default function ProfilePage() {
               )}
             </div>
             <p>PNG or JPG, max 2MB</p>
-            <button
-              type="button"
-              className="profile-upload-button"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload size={16} />
-              <span>Upload Logo</span>
-            </button>
+              <button
+                type="button"
+                className="profile-upload-button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={savingProfile}
+              >
+                <Upload size={16} />
+              <span>{savingProfile ? "Saving..." : "Upload Logo"}</span>
+              </button>
             <input
               ref={fileInputRef}
               type="file"

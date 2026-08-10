@@ -1,164 +1,86 @@
-import { connectDB, disconnectDB, prisma } from "../config/db.js";
-import bcrypt from "bcryptjs";
+import "dotenv/config";
+import { prisma, connectDB, disconnectDB } from "../config/db.js";
+import { hashPassword } from "../utils/hashPassword.js";
 
-async function seedSchool() {
-  const school = await prisma.school.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      name: "Petra School",
-      address: "Main Campus",
-      timezone: "Africa/Lagos",
-    },
+const normalizeEmail = (value) => String(value || "").trim().toLowerCase();
+
+const normalizeUsername = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "");
+
+const buildNameParts = (email) => {
+  const localPart = String(email || "")
+    .split("@")[0]
+    .replace(/[._-]+/g, " ")
+    .trim();
+
+  const parts = localPart.split(/\s+/).filter(Boolean);
+  const firstName = parts[0] || "Super";
+  const lastName = parts.slice(1).join(" ") || "Admin";
+  const fullName = `${firstName} ${lastName}`.trim();
+
+  return { firstName, lastName, fullName };
+};
+
+const getRequiredEnv = (name) => {
+  const value = process.env[name];
+  if (!value || !String(value).trim()) {
+    throw new Error(`${name} is missing. Add it to backend/.env before running the seed.`);
+  }
+  return String(value).trim();
+};
+
+async function seedSuperAdmin() {
+  const email = normalizeEmail(getRequiredEnv("SUPERADMIN_EMAIL"));
+  const password = getRequiredEnv("SUPERADMIN_PASSWORD");
+  const username = normalizeUsername(process.env.SUPERADMIN_USERNAME || email.split("@")[0] || "superadmin");
+  const { firstName, lastName, fullName } = buildNameParts(email);
+  const role = "superadmin";
+
+  const existing = await prisma.user.findUnique({
+    where: { email },
   });
 
-  console.log("✓ School seeded");
-
-  return school;
-}
-
-async function seedSettings(school) {
-  await prisma.settings.upsert({
-    where: {
-      schoolId_key: {
-        schoolId: school.id,
-        key: "default_currency",
-      },
-    },
-    update: {},
-    create: {
-      schoolId: school.id,
-      key: "default_currency",
-      value: "NGN",
-    },
-  });
-
-  console.log("✓ Settings seeded");
-}
-
-async function seedRoles(school) {
-  const roles = [
-    "Super Admin",
-    "Admin",
-    "Principal",
-    "Vice Principal",
-    "Teacher",
-    "Staff",
-    "Parent",
-    "Guardian",
-    "Student",
-  ];
-
-  for (const role of roles) {
-    await prisma.role.upsert({
-      where: {
-        schoolId_name: {
-          schoolId: school.id,
-          name: role,
-        },
-      },
-      update: {},
-      create: {
-        schoolId: school.id,
-        name: role,
-      },
-    });
+  if (existing) {
+    console.log("SuperAdmin already exists. Skipping seed.");
+    return existing;
   }
 
-  console.log("✓ Roles seeded");
-}
+  const passwordHash = await hashPassword(password);
 
-async function seedAdmin(school) {
-  const password = await bcrypt.hash("Admin@123", 12);
-
-  await prisma.user.upsert({
-    where: {
-      email: "admin@petra.com",
-    },
-    update: {},
-    create: {
-      schoolId: school.id,
-      firstName: "System",
-      lastName: "Administrator",
-      fullName: "System Administrator",
-      username: "superadmin",
-      email: "admin@petra.com",
-      password: password,
-      role: "SUPER_ADMIN",
+  const user = await prisma.user.create({
+    data: {
+      firstName,
+      lastName,
+      fullName,
+      username,
+      email,
+      password: passwordHash,
+      role,
+      schoolId: null,
+      accountStatus: "active",
     },
   });
 
-  console.log("✓ Super Admin seeded");
-}
-
-async function seedAcademic(school) {
-  await prisma.academicYear.upsert({
-    where: {
-      schoolId_name: {
-        schoolId: school.id,
-        name: "2026/2027",
-      },
-    },
-    update: {},
-    create: {
-      schoolId: school.id,
-      name: "2026/2027",
-      isCurrent: true,
-    },
-  });
-
-  console.log("✓ Academic Year seeded");
-}
-
-async function seedFinance(school) {
-  const categories = [
-    "School Fees",
-    "Examination",
-    "Development Levy",
-    "Library",
-    "Transport",
-    "Hostel",
-  ];
-
-  for (const category of categories) {
-    await prisma.feeCategory.upsert({
-      where: {
-        schoolId_name: {
-          schoolId: school.id,
-          name: category,
-        },
-      },
-      update: {},
-      create: {
-        schoolId: school.id,
-        name: category,
-      },
-    });
-  }
-
-  console.log("✓ Finance seeded");
+  console.log("SuperAdmin seeded successfully.");
+  return user;
 }
 
 async function main() {
   await connectDB();
 
-  const school = await seedSchool();
-
-  await seedSettings(school);
-  await seedRoles(school);
-  await seedAdmin(school);
-  await seedAcademic(school);
-  await seedFinance(school);
-
-  console.log("✅ Seed completed successfully");
+  try {
+    await seedSuperAdmin();
+    console.log("Seed completed successfully.");
+  } finally {
+    await disconnectDB();
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await disconnectDB();
-  });
+main().catch((error) => {
+  console.error("Seed failed:", error.message);
+  process.exit(1);
+});
+

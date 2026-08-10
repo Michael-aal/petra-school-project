@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   ArrowRight,
   BookOpen,
@@ -8,270 +9,79 @@ import {
   UserCircle2,
   Wallet,
 } from "lucide-react";
+=======
+import { useContext } from "react";
+import { UserContext } from "../../../../context/UserContext";
+import { BookOpen, ClipboardCheck, FileText, GraduationCap, Sparkles } from "lucide-react";
+import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
+import StatCard from "../../../../components/dashboard/StatCard";
+import QuickActions from "../../../../components/dashboard/QuickActions";
+import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
+import EmptyState from "../../../../components/dashboard/EmptyState";
+>>>>>>> 8a5d69f2c85cbda674151039e925fdad32eeeee7
 import "../page-styles/ParentDashboard.css";
-
-const children = [
-  {
-    name: "Ayo Ogunleye",
-    className: "SS2A",
-    teacher: "Mrs. Adeyemi",
-    status: "On Track",
-  },
-  {
-    name: "Tolu Ogunleye",
-    className: "JSS1B",
-    teacher: "Mr. Yusuf",
-    status: "Needs Support",
-  },
-];
-
-const attendance = [
-  { label: "Present", value: "92%", note: "This term so far" },
-  { label: "Absent", value: "3", note: "Recorded this month" },
-  { label: "Late", value: "2", note: "This week" },
-];
-
-const results = [
-  { title: "English", value: "81%", note: "Excellent comprehension" },
-  { title: "Mathematics", value: "74%", note: "Needs extra revision" },
-  { title: "Biology", value: "79%", note: "Strong practical work" },
-];
-
-const assignments = [
-  { title: "Science Homework", meta: "Due tomorrow • 08:00" },
-  { title: "Reading Log", meta: "Due Friday • 15:00" },
-  { title: "Math Practice", meta: "Due Monday • 12:00" },
-];
-
-const fees = [
-  { title: "School Fees", value: "₦48,000", note: "Outstanding balance" },
-  { title: "Transport", value: "₦7,500", note: "Pending this term" },
-];
-
-const announcements = [
-  { title: "Parent-Teacher Meeting", meta: "Thursday • 10:00" },
-  { title: "Mid-Term Revision", meta: "Friday • 14:00" },
-];
-
-const messages = [
-  { title: "Mrs. Adeyemi", meta: "Your child improved in reading" },
-  { title: "School Admin", meta: "Fee reminder for the next installment" },
-];
-
-const quickActions = [
-  { title: "View Child Profile", icon: UserCircle2, meta: "Open the latest school summary" },
-  { title: "Pay School Fees", icon: Wallet, meta: "Settle pending fees securely" },
-  { title: "Download Report Card", icon: FileText, meta: "Save the latest academic report" },
-  { title: "Contact Teacher", icon: MessageSquare, meta: "Send a note to the class teacher" },
-];
+import "../../../../components/dashboard/dashboard.css";
+import { getStudentDisplayName } from "../../../../utils/studentDisplay";
 
 export default function ParentDashboard() {
+  const { userInfo } = useContext(UserContext);
+  const myChildren = userInfo?.children || [];
+
+  const summaryItems = [
+    { label: "Linked Students", value: myChildren.length, icon: GraduationCap, description: myChildren.length ? `${myChildren.length} active profiles` : "No profiles linked yet", trend: "Live" },
+    { label: "Attendance", value: "On track", icon: ClipboardCheck, description: "Latest updates shared", trend: "Updated" },
+    { label: "Assignments", value: "Updated", icon: FileText, description: "Progress is current", trend: "Today" },
+    { label: "Resources", value: "Ready", icon: BookOpen, description: "Available for review", trend: "Ready" },
+  ];
+
   return (
     <div className="parent-dashboard dashboard-home">
-      <section className="parent-hero">
-        <article className="parent-hero-card">
-          <h3>Welcome back, Mrs. Ogunleye</h3>
-          <p>Your children’s progress, school updates, and fee reminders are gathered here in one calm parent workspace.</p>
-          <div className="parent-chip-row">
-            <span className="parent-chip">2 children enrolled</span>
-            <span className="parent-chip">Attendance healthy</span>
-            <span className="parent-chip">1 fee reminder</span>
-          </div>
-        </article>
-        <article className="parent-hero-card accent">
-          <h3>Today’s priority</h3>
-          <p>Review Ayo’s latest assignment and pay the transport fee before Friday.</p>
-        </article>
-      </section>
+      <DashboardHeader
+        eyebrow="Parent Portal"
+        title={`Welcome back, ${userInfo?.firstName || "Parent"}`}
+        subtitle="Stay informed with a calm, modern view of your children’s school progress."
+        badge={`${myChildren.length} linked child${myChildren.length === 1 ? "" : "ren"}`}
+        actionLabel="View school notices"
+        actionHref="#"
+      />
 
-      <section className="dashboard-home-summary">
-        <article className="dashboard-home-summary-card">
-          <div className="dashboard-home-summary-top">
-            <div>
-              <span>Children Overview</span>
-              <strong>2</strong>
-            </div>
-            <div className="dashboard-home-summary-icon tone-blue">
-              <GraduationCap size={18} />
-            </div>
-          </div>
-          <div className="dashboard-home-summary-action tone-blue">
-            <span>Active learners</span>
-            <ArrowRight size={14} />
-          </div>
-        </article>
-        <article className="dashboard-home-summary-card">
-          <div className="dashboard-home-summary-top">
-            <div>
-              <span>Attendance Summary</span>
-              <strong>92%</strong>
-            </div>
-            <div className="dashboard-home-summary-icon tone-teal">
-              <ClipboardCheck size={18} />
-            </div>
-          </div>
-          <div className="dashboard-home-summary-action tone-teal">
-            <span>Excellent</span>
-            <ArrowRight size={14} />
-          </div>
-        </article>
-        <article className="dashboard-home-summary-card">
-          <div className="dashboard-home-summary-top">
-            <div>
-              <span>Recent Results</span>
-              <strong>3 tasks</strong>
-            </div>
-            <div className="dashboard-home-summary-icon tone-rose">
-              <FileText size={18} />
-            </div>
-          </div>
-          <div className="dashboard-home-summary-action tone-rose">
-            <span>Updated today</span>
-            <ArrowRight size={14} />
-          </div>
-        </article>
-        <article className="dashboard-home-summary-card">
-          <div className="dashboard-home-summary-top">
-            <div>
-              <span>Upcoming Assignments</span>
-              <strong>3</strong>
-            </div>
-            <div className="dashboard-home-summary-icon tone-blue">
-              <BookOpen size={18} />
-            </div>
-          </div>
-          <div className="dashboard-home-summary-action tone-blue">
-            <span>Due soon</span>
-            <ArrowRight size={14} />
-          </div>
-        </article>
+      <section className="parent-summary-grid">
+        {summaryItems.map(({ label, value, icon: Icon, description, trend }) => (
+          <StatCard key={label} label={label} value={value} icon={Icon} tone="blue" description={description} trend={trend} />
+        ))}
       </section>
 
       <section className="parent-grid">
-        <article className="dashboard-home-panel">
-          <h2>Children Overview</h2>
-          <div className="parent-list">
-            {children.map((child) => (
-              <div key={child.name} className="parent-list-item">
-                <div>
-                  <strong>{child.name}</strong>
-                  <p>{child.className} • {child.teacher}</p>
-                </div>
-                <div className="parent-pill">{child.status}</div>
-              </div>
-            ))}
-          </div>
-        </article>
+        <QuickActions
+          title="Parent shortcuts"
+          items={[
+            { label: "View Child", meta: "Open profile details", icon: GraduationCap },
+            { label: "Pay Fees", meta: "Review pending fees", icon: BookOpen },
+            { label: "Check Attendance", meta: "See the latest attendance", icon: ClipboardCheck },
+            { label: "View Results", meta: "Inspect recent scores", icon: FileText },
+          ]}
+        />
 
-        <article className="dashboard-home-panel">
-          <h2>Attendance Summary</h2>
-          <div className="parent-list">
-            {attendance.map((item) => (
-              <div key={item.label} className="parent-list-item">
-                <div>
-                  <strong>{item.label}</strong>
-                  <p>{item.note}</p>
-                </div>
-                <div className="parent-pill">{item.value}</div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Recent Results</h2>
-          <div className="parent-list">
-            {results.map((item) => (
-              <div key={item.title} className="parent-list-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.note}</p>
-                </div>
-                <div className="parent-pill">{item.value}</div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Upcoming Assignments</h2>
-          <div className="parent-list">
-            {assignments.map((item) => (
-              <div key={item.title} className="parent-list-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.meta}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Outstanding School Fees</h2>
-          <div className="parent-list">
-            {fees.map((item) => (
-              <div key={item.title} className="parent-list-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.note}</p>
-                </div>
-                <div className="parent-pill">{item.value}</div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Recent Announcements</h2>
-          <div className="parent-list">
-            {announcements.map((item) => (
-              <div key={item.title} className="parent-list-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.meta}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Messages from Teachers</h2>
-          <div className="parent-list">
-            {messages.map((item) => (
-              <div key={item.title} className="parent-list-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.meta}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="dashboard-home-panel">
-          <h2>Quick Actions</h2>
-          <div className="parent-actions">
-            {quickActions.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button key={item.title} type="button" className="parent-action-btn">
-                  <div className="dashboard-home-account-row">
-                    <div className="dashboard-home-account-icon">
-                      <Icon size={16} />
+        <DashboardWidget title="Your children" subtitle="Linked students" actionLabel="Manage">
+          {myChildren.length > 0 ? (
+            <div className="parent-list">
+              {myChildren.map((child) => {
+                const childFullName = getStudentDisplayName(child);
+                return (
+                  <div key={child.id} className="parent-list-item">
+                    <div>
+                      <strong>{childFullName}</strong>
+                      <p>{child.className || "No class assigned"}</p>
                     </div>
-                    <div className="dashboard-home-account-text">
-                      <strong>{item.title}</strong>
-                      <span>{item.meta}</span>
-                    </div>
+                    <div className="parent-pill">{child.status || "Active"}</div>
                   </div>
-                  <ArrowRight size={15} />
-                </button>
-              );
-            })}
-          </div>
-        </article>
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyState title="No children linked yet" description="Link a student account to start viewing updates, attendance, and assignments here." icon={GraduationCap} />
+          )}
+        </DashboardWidget>
       </section>
     </div>
   );

@@ -1,5 +1,10 @@
 import { ArrowRight } from "lucide-react";
+import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
+import StatCard from "../../../../components/dashboard/StatCard";
+import QuickActions from "../../../../components/dashboard/QuickActions";
+import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import "../page-styles/ParentDashboard.css";
+import "../../../../components/dashboard/dashboard.css";
 
 export default function ParentSectionPage({
   title,
@@ -12,98 +17,80 @@ export default function ParentSectionPage({
   heroChips = [],
   footerAction = null,
 }) {
+  const headerBadge = heroChips.length > 0 ? `${heroChips.length} highlights` : null;
+  const actionItems = actions.map((item) => ({
+    label: item.title,
+    meta: item.meta,
+    icon: item.icon,
+  }));
+
   return (
     <div className="parent-dashboard dashboard-home">
-      <section className="parent-hero">
-        <article className="parent-hero-card">
-          <h3>{title}</h3>
-          <p>{description}</p>
-          {heroChips.length > 0 ? (
-            <div className="parent-chip-row">
-              {heroChips.map((chip) => (
-                <span key={chip} className="parent-chip">
-                  {chip}
-                </span>
-              ))}
-            </div>
-          ) : null}
-        </article>
-        <article className="parent-hero-card accent">
-          <h3>{heroTitle || "Parent view"}</h3>
-          <p>{heroDescription || "A read-only view built from realistic mock data."}</p>
-        </article>
-      </section>
+      <DashboardHeader
+        eyebrow="Parent Portal"
+        title={title || heroTitle || "Parent view"}
+        subtitle={description || heroDescription || "A calm view of your child’s current school activity."}
+        badge={headerBadge}
+      />
+
+      {heroChips.length > 0 ? (
+        <div className="parent-chip-row">
+          {heroChips.map((chip) => (
+            <span key={chip} className="parent-chip">
+              {chip}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       {summaryCards.length > 0 ? (
-        <section className="dashboard-home-summary">
+        <section className="parent-summary-grid">
           {summaryCards.map((item) => {
             const Icon = item.icon;
             return (
-              <article key={item.label} className="dashboard-home-summary-card">
-                <div className="dashboard-home-summary-top">
-                  <div>
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                  </div>
-                  <div className={`dashboard-home-summary-icon ${item.tone || "tone-blue"}`}>
-                    <Icon size={18} />
-                  </div>
-                </div>
-                <div className={`dashboard-home-summary-action ${item.tone || "tone-blue"}`}>
-                  <span>{item.meta || "Overview"}</span>
-                  <ArrowRight size={14} />
-                </div>
-              </article>
+              <StatCard
+                key={item.label}
+                label={item.label}
+                value={item.value}
+                icon={Icon}
+                tone={item.tone === "tone-teal" ? "teal" : item.tone === "tone-rose" ? "rose" : "blue"}
+                description={item.meta || "Overview"}
+                trend="Live"
+              />
             );
           })}
         </section>
       ) : null}
 
       <section className="parent-grid">
-        {sections.map((section) => (
-          <article key={section.title} className="dashboard-home-panel">
-            <h2>{section.title}</h2>
-            <div className="parent-list">
-              {section.items.map((item) => (
-                <div key={item.title || item.label} className="parent-list-item">
-                  <div>
-                    <strong>{item.title || item.label}</strong>
-                    <p>{item.meta || item.description || item.detail || item.note}</p>
-                  </div>
-                  {item.value ? <div className="parent-pill">{item.value}</div> : null}
+        {sections.length > 0 ? (
+          <div className="parent-section-stack">
+            {sections.map((section) => (
+              <DashboardWidget key={section.title} title={section.title} subtitle="Live updates">
+                <div className="parent-list">
+                  {section.items.map((item) => (
+                    <div key={item.title || item.label} className="parent-list-item">
+                      <div>
+                        <strong>{item.title || item.label}</strong>
+                        <p>{item.meta || item.description || item.detail || item.note}</p>
+                      </div>
+                      {item.value ? <div className="parent-pill">{item.value}</div> : null}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </article>
-        ))}
+              </DashboardWidget>
+            ))}
+          </div>
+        ) : null}
+
+        {actions.length > 0 ? <QuickActions title="Parent shortcuts" items={actionItems} /> : null}
       </section>
 
-      {actions.length > 0 ? (
-        <section className="dashboard-home-panel">
-          <h2>Quick Actions</h2>
-          <div className="parent-actions">
-            {actions.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button key={item.title} type="button" className="parent-action-btn">
-                  <div className="dashboard-home-account-row">
-                    <div className="dashboard-home-account-icon">
-                      <Icon size={16} />
-                    </div>
-                    <div className="dashboard-home-account-text">
-                      <strong>{item.title}</strong>
-                      <span>{item.meta}</span>
-                    </div>
-                  </div>
-                  <ArrowRight size={15} />
-                </button>
-              );
-            })}
-          </div>
-        </section>
+      {footerAction ? (
+        <DashboardWidget title="Next step" subtitle="Continue">
+          {footerAction}
+        </DashboardWidget>
       ) : null}
-
-      {footerAction ? <div className="dashboard-home-panel">{footerAction}</div> : null}
     </div>
   );
 }

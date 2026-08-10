@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect, requireTeacher } from "../middleware/authMiddleware.js";
+import { protect, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import {
   createTeacherAnnouncement,
   createTeacherAssessment,
@@ -23,23 +23,25 @@ import {
 
 const router = Router();
 
-router.get("/dashboard", protect, requireTeacher, getTeacherDashboard);
-router.get("/classes", protect, requireTeacher, getTeacherClasses);
-router.get("/classes/:id", protect, requireTeacher, getTeacherClassById);
-router.get("/students", protect, requireTeacher, getTeacherStudents);
-router.get("/profile", protect, requireTeacher, getTeacherProfile);
-router.put("/profile", protect, requireTeacher, updateTeacherProfile);
-router.get("/attendance", protect, requireTeacher, getTeacherAttendance);
-router.post("/attendance", protect, requireTeacher, createTeacherAttendance);
-router.put("/attendance/:id", protect, requireTeacher, updateTeacherAttendance);
-router.get("/assessments", protect, requireTeacher, getTeacherAssessments);
-router.post("/assessments", protect, requireTeacher, createTeacherAssessment);
-router.put("/assessments/:id", protect, requireTeacher, updateTeacherAssessment);
-router.delete("/assessments/:id", protect, requireTeacher, deleteTeacherAssessment);
-router.get("/results", protect, requireTeacher, getTeacherResults);
-router.post("/results", protect, requireTeacher, createTeacherResult);
-router.put("/results/:id", protect, requireTeacher, updateTeacherResult);
-router.get("/announcements", protect, requireTeacher, getTeacherAnnouncements);
-router.post("/announcements", protect, requireTeacher, createTeacherAnnouncement);
+const teacherOrAdmin = requireRole(["teacher", "principal"]);
+
+router.get("/dashboard", protect, schoolGuard, teacherOrAdmin, getTeacherDashboard);
+router.get("/classes", protect, schoolGuard, teacherOrAdmin, getTeacherClasses);
+router.get("/classes/:id", protect, schoolGuard, teacherOrAdmin, getTeacherClassById);
+router.get("/students", protect, schoolGuard, teacherOrAdmin, getTeacherStudents);
+router.get("/profile", protect, schoolGuard, teacherOrAdmin, getTeacherProfile);
+router.put("/profile", protect, schoolGuard, teacherOrAdmin, updateTeacherProfile);
+router.get("/attendance", protect, schoolGuard, teacherOrAdmin, getTeacherAttendance);
+router.post("/attendance", protect, schoolGuard, teacherOrAdmin, createTeacherAttendance);
+router.put("/attendance/:id", protect, schoolGuard, teacherOrAdmin, updateTeacherAttendance);
+router.get("/assessments", protect, schoolGuard, teacherOrAdmin, getTeacherAssessments);
+router.post("/assessments", protect, schoolGuard, teacherOrAdmin, createTeacherAssessment);
+router.put("/assessments/:id", protect, schoolGuard, teacherOrAdmin, updateTeacherAssessment);
+router.delete("/assessments/:id", protect, schoolGuard, teacherOrAdmin, deleteTeacherAssessment);
+router.get("/results", protect, schoolGuard, teacherOrAdmin, getTeacherResults);
+router.post("/results", protect, schoolGuard, teacherOrAdmin, createTeacherResult);
+router.put("/results/:id", protect, schoolGuard, teacherOrAdmin, updateTeacherResult);
+router.get("/announcements", protect, schoolGuard, teacherOrAdmin, getTeacherAnnouncements);
+router.post("/announcements", protect, schoolGuard, teacherOrAdmin, createTeacherAnnouncement);
 
 export default router;

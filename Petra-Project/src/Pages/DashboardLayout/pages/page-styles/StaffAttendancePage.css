@@ -1,2 +1,17 @@
-/* Styles for StaffAttendancePage */
-.staff-attendance-page{ padding:18px; }
+.staff-attendance-page {
+  padding: 20px 18px 24px;
+}
+
+.staff-attendance-panel {
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+}
+
+.dashboard-page-copy {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}

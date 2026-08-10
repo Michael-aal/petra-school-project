@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+=======
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+>>>>>>> 8a5d69f2c85cbda674151039e925fdad32eeeee7
 import './Enrollment.css';
 
 
 
 export default function EnrollmentPage() {
+  const navigate = useNavigate();
   return (
 
     <div className="enrollment-page">
@@ -11,7 +17,7 @@ export default function EnrollmentPage() {
           <div className="eyebrow">Enrollments</div>
           <h2 className="title">Enrollment Management</h2>
         </div>
-        <button className="create-btn">+ Create New Form</button>
+        <button className="create-btn" onClick={() => navigate('/dashboard/students/enrollment/create')}>+ Create New Form</button>
       </header>
 
       <nav className="enrollment-tabs">

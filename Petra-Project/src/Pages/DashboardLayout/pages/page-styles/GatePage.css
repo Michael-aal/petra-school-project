@@ -3,8 +3,8 @@
    1. PAGE LAYOUT & HEADER
    ========================================= */
 .gate-monitoring-page {
-  background-color: oklch(0.12 0.02 260);
-  color: oklch(0.93 0.01 240);
+  background: var(--app-bg);
+  color: var(--app-text);
   padding: 32px;
   min-height: 100vh;
 }
@@ -31,20 +31,20 @@
 }
 
 .gate-title-group svg {
-  color: oklch(0.62 0.2 264);
+  color: var(--app-accent);
 }
 
 .gate-title-group h2 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
 }
 
 .gate-title-group p {
   font-size: 0.875rem;
   margin: 4px 0 0 0;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
 }
 
 /* Pulsing Live Badge */
@@ -52,8 +52,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: oklch(0.7 0.18 140 / 15%);
-  color: oklch(0.7 0.18 140);
+  background: var(--surface-success);
+  color: var(--success);
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -64,15 +64,15 @@
 .live-dot {
   width: 8px;
   height: 8px;
-  background-color: oklch(0.7 0.18 140);
+  background: var(--success);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 oklch(0.7 0.18 140 / 70%); }
-  70% { box-shadow: 0 0 0 10px oklch(0.7 0.18 140 / 0%); }
-  100% { box-shadow: 0 0 0 0 oklch(0.7 0.18 140 / 0%); }
+  0% { box-shadow: 0 0 0 0 var(--success); }
+  70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
 }
 
 .gate-search {
@@ -84,14 +84,14 @@
 .gate-search svg {
   position: absolute;
   left: 14px;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   pointer-events: none;
 }
 
 .gate-search input {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background: var(--surface-muted);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
   padding: 10px 16px 10px 42px;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -101,7 +101,7 @@
 }
 
 .gate-search input:focus {
-  border-color: oklch(0.62 0.2 264);
+  border-color: var(--app-accent);
 }
 
 /* =========================================
@@ -118,8 +118,8 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
   padding: 20px;
 }
@@ -132,24 +132,26 @@
   height: 48px;
   border-radius: 12px;
   flex-shrink: 0;
+  background: var(--surface-muted);
+  color: var(--app-text);
 }
 
-.entry-icon { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.exit-icon { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
-.campus-icon { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.entry-icon { background: var(--surface-success); color: var(--success); }
+.exit-icon { background: var(--surface-warning); color: var(--warning); }
+.campus-icon { background: var(--surface-accent); color: var(--app-accent); }
 
 .gate-stat-value {
   display: block;
   font-size: 1.75rem;
   font-weight: 700;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   line-height: 1.2;
 }
 
 .gate-stat-label {
   display: block;
   font-size: 0.8rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   font-weight: 500;
 }
 
@@ -182,13 +184,13 @@
   font-size: 1.125rem;
   font-weight: 600;
   margin: 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
 }
 
 .feed-count {
   font-size: 0.8rem;
-  color: oklch(0.6 0.02 250);
-  background: oklch(0.25 0.04 260);
+  color: var(--app-text-muted);
+  background: var(--surface-muted);
   padding: 4px 10px;
   border-radius: 999px;
 }
@@ -197,8 +199,8 @@
    4. LIVE FEED LIST
    ========================================= */
 .gate-feed-panel {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
   padding: 24px;
 }
@@ -217,18 +219,18 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background-color: oklch(0.25 0.04 260);
+  background: var(--surface-muted);
   border-radius: 10px;
   border-left: 4px solid transparent;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 
 .gate-event-item:hover {
-  background-color: oklch(0.28 0.04 260);
+  background: var(--surface-muted-strong);
 }
 
-.event-entry { border-left-color: oklch(0.7 0.18 140); }
-.event-exit { border-left-color: oklch(0.65 0.22 27); }
+.event-entry { border-left-color: var(--success); }
+.event-exit { border-left-color: var(--warning); }
 
 .event-direction-icon {
   display: flex;
@@ -238,10 +240,12 @@
   height: 36px;
   border-radius: 50%;
   flex-shrink: 0;
+  background: var(--surface-muted);
+  color: var(--app-text);
 }
 
-.icon-entry { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.icon-exit { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.icon-entry { background: var(--surface-success); color: var(--success); }
+.icon-exit { background: var(--surface-warning); color: var(--warning); }
 
 .event-details {
   flex: 1;
@@ -260,24 +264,24 @@
 .event-student-name {
   font-size: 0.95rem;
   font-weight: 600;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
 }
 
 .event-student-class {
   font-size: 0.8rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
 }
 
 .event-meta {
   display: flex;
   gap: 12px;
   font-size: 0.8rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
 }
 
 .event-time {
   font-weight: 500;
-  color: oklch(0.85 0.05 264);
+  color: var(--app-accent);
 }
 
 .event-status-badge {
@@ -289,8 +293,8 @@
   letter-spacing: 0.05em;
 }
 
-.badge-entry { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.badge-exit { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.badge-entry { background: var(--surface-success); color: var(--success); }
+.badge-exit { background: var(--surface-warning); color: var(--warning); }
 
 .empty-feed {
   display: flex;
@@ -298,7 +302,7 @@
   align-items: center;
   justify-content: center;
   padding: 48px;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   text-align: center;
   gap: 12px;
 }
@@ -307,8 +311,8 @@
    5. MANUAL OVERRIDE PANEL
    ========================================= */
 .gate-manual-panel {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 12px;
   padding: 24px;
   height: fit-content;
@@ -318,7 +322,7 @@
 
 .manual-description {
   font-size: 0.875rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -338,14 +342,14 @@
 .form-group label {
   font-size: 0.85rem;
   font-weight: 500;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
 }
 
 .form-group input,
 .form-group select {
-  background-color: oklch(1 0 0 / 12%);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -355,7 +359,7 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: oklch(0.62 0.2 264);
+  border-color: var(--app-accent);
 }
 
 .form-row {
@@ -363,19 +367,17 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-
+input{
+  border: 1px solid black;
+}
 .manual-submit-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: oklch(0.62 0.2 264);
-  color: oklch(0.98 0 0);
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
   cursor: pointer;
   transition: opacity 0.2s;
   margin-top: 8px;
@@ -391,9 +393,9 @@
   gap: 10px;
   margin-top: 24px;
   padding: 12px;
-  background-color: oklch(0.72 0.18 60 / 10%);
-  border: 1px solid oklch(0.72 0.18 60 / 20%);
+  background: var(--surface-warning);
+  border: 1px solid color-mix(in srgb, var(--warning) 20%, transparent);
   border-radius: 8px;
   font-size: 0.8rem;
-  color: oklch(0.72 0.18 60);
+  color: var(--warning);
 }

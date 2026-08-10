@@ -1,14 +1,14 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const AUTH_TOKEN_KEY = "petra_auth_token";
 
-const readAuthToken = () => window.localStorage.getItem(AUTH_TOKEN_KEY);
+const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
 const writeAuthToken = (token) => {
   if (token) {
-    window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+    window.sessionStorage.setItem(AUTH_TOKEN_KEY, token);
   }
 };
 const clearAuthToken = () => {
-  window.localStorage.removeItem(AUTH_TOKEN_KEY);
+  window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
 };
 
 async function request(path, options = {}) {
@@ -85,6 +85,11 @@ export const authApi = {
   updateProfile: (payload) =>
     request("/api/auth/profile", {
       method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  selectSchool: (payload) =>
+    request("/api/auth/select-school", {
+      method: "POST",
       body: JSON.stringify(payload),
     }),
   changePassword: (payload) =>

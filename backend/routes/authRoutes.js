@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, getMe, getStaffInvitation, linkChild, listStaffInvitations, loginUser, logoutUser, activateStaff, registerParent, registerUser, regenerateStaffInvitationCode, revokeStaffInvitation, updateUserProfile } from "../controllers/authController.js";
+import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, getMe, getStaffInvitation, linkChild, listStaffInvitations, loginUser, logoutUser, activateStaff, registerParent, registerUser, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
-import { protect, requireParent, requirePrincipal } from "../middleware/authMiddleware.js";
+import { protect, requireParent, requirePrincipal, requireRole } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -16,6 +16,13 @@ router.post("/staff/invitations/revoke", protect, requirePrincipal, body("regist
 router.post("/staff/invitations/regenerate", protect, requirePrincipal, body("registrationCode").notEmpty().withMessage("Registration code is required"), regenerateStaffInvitationCode);
 router.post("/parent/register", registerParent);
 router.post("/parent/link-child", protect, requireParent, body("accessCode").notEmpty().withMessage("Parent access code is required"), linkChild);
+router.post(
+  "/select-school",
+  protect,
+  requireRole(["super_admin"]),
+  body("schoolId").notEmpty().withMessage("School ID is required"),
+  selectSchool,
+);
 router.post("/login", loginValidator, loginUser);
 router.get("/me", protect, getMe);
 router.put(

@@ -367,7 +367,7 @@ body.dark .section1-description,
 body.dark .dashboard-label,
 body.dark .dashboard-item span,
 body.dark .dashboard-card-side p {
-  color: #a1a1aa;
+  color: var(--app-text-muted);
 }
 
 body.dark .section1-btn-secondary {
@@ -416,7 +416,7 @@ body.dark .section11-privacy,
 body.dark .feature-text,
 body.dark .card-text,
 body.dark .card-info {
-  color: #a1a1aa;
+  color: var(--app-text-muted);
 }
 
 @media (max-width: 1024px) {

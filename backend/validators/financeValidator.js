@@ -3,8 +3,9 @@ import { body, param, query } from "express-validator";
 export const paymentValidator = [
   body("studentId").notEmpty().withMessage("Student is required"),
   body("amount").isFloat({ gt: 0 }).withMessage("Amount must be greater than zero"),
-  body("method").notEmpty().withMessage("Payment method is required"),
-  body("status").notEmpty().withMessage("Payment status is required"),
+  body("method").optional().trim(),
+  body("status").optional().trim(),
+  body("invoiceIds").optional().isArray(),
   body("paidAt").optional().isISO8601().withMessage("Paid date must be valid"),
 ];
 

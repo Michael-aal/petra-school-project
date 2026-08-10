@@ -3,6 +3,9 @@ import { Search, RefreshCcw, Users } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import "../page-styles/TeachersPage.css";
 
+const getTeacherName = (teacher) =>
+  teacher.fullName || [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") || teacher.email || "Teacher";
+
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,54 +30,76 @@ export default function TeachersPage() {
   }, []);
 
   return (
-    <div className="dashboard-page">
-      <section className="page-header">
-        <div className="page-title-group">
-          <div className="title-icon-box">
-            <Users size={24} />
-          </div>
-          <div>
-            <h3>Teachers</h3>
-            <h4>Manage teaching staff and their profiles</h4>
-          </div>
+    <div className="dashboard-home teachers-page">
+      <section className="dashboard-home-header">
+        <div>
+          <h1>Teachers</h1>
+          <p>Manage teaching staff, subject assignments, and profile details from one polished dashboard.</p>
         </div>
-        <button className="btn-primary" onClick={load} type="button">
-          <RefreshCcw size={16} /> Refresh
-        </button>
+        <div className="dashboard-home-session-pill">People operations</div>
       </section>
 
-      <div className="admin-toolbar">
-        <div className="search-box">
-          <Search size={16} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search teachers..."
-          />
-        </div>
-        <button className="btn-primary" type="button" onClick={load}>
-          Search
-        </button>
-      </div>
+      <section className="dashboard-home-summary">
+        <article className="dashboard-home-summary-card">
+          <div className="dashboard-home-summary-top">
+            <div>
+              <span>Total teachers</span>
+              <strong>{teachers.length}</strong>
+            </div>
+            <div className="dashboard-home-summary-icon tone-blue">
+              <Users size={18} />
+            </div>
+          </div>
+        </article>
+        <article className="dashboard-home-summary-card">
+          <div className="dashboard-home-summary-top">
+            <div>
+              <span>Search available</span>
+              <strong>Yes</strong>
+            </div>
+            <div className="dashboard-home-summary-icon tone-teal">
+              <Search size={18} />
+            </div>
+          </div>
+        </article>
+      </section>
 
-      {error ? <div className="students-inline-alert">{error}</div> : null}
-      {loading ? (
-        <p>Loading teachers...</p>
-      ) : teachers.length ? (
-        <div className="admin-list">
-          {teachers.map((teacher) => (
-            <article key={teacher.id} className="admin-row">
-              <div>
-                <strong>{teacher.fullName || [teacher.firstName, teacher.lastName].filter(Boolean).join(" ")}</strong>
-                <p>{teacher.staffDepartment || teacher.email}</p>
-              </div>
-              <span className="dashboard-home-session-pill">{teacher.role}</span>
-            </article>
-          ))}
+      <section className="dashboard-home-panel admins-actions-panel">
+        <div className="admins-toolbar">
+          <div className="search-box">
+            <Search size={16} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search teachers..."
+            />
+          </div>
+          <button className="dashboard-home-summary-action tone-blue" type="button" onClick={load}>
+            <RefreshCcw size={14} />
+            <span>Reload</span>
+          </button>
         </div>
-      ) : (
-        <p>No teachers found.</p>
-      )}
+
+        {error ? <div className="students-inline-alert">{error}</div> : null}
+
+        {loading ? (
+          <div className="module-empty">Loading teachers...</div>
+        ) : teachers.length ? (
+          <div className="admin-list">
+            {teachers.map((teacher) => (
+              <article key={teacher.id} className="admin-row">
+                <div>
+                  <strong>{getTeacherName(teacher)}</strong>
+                  <p>{teacher.staffDepartment || teacher.email}</p>
+                </div>
+                <span className="dashboard-home-session-pill">{teacher.role}</span>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="module-empty">No teachers found.</div>
+        )}
+      </section>
     </div>
   );
 }

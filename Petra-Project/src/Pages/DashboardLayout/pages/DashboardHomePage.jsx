@@ -6,7 +6,13 @@ import {
 } from "lucide-react";
 import { UserContext } from "../../../context/UserContext";
 import { getFirstName } from "../../../utils/userProfile";
+import DashboardHeader from "../../../components/dashboard/DashboardHeader";
+import StatCard from "../../../components/dashboard/StatCard";
+import QuickActions from "../../../components/dashboard/QuickActions";
+import DashboardWidget from "../../../components/dashboard/DashboardWidget";
+import EmptyState from "../../../components/dashboard/EmptyState";
 import "./page-styles/DashboardHomePage.css";
+import "../../../components/dashboard/dashboard.css";
 
 const summaryCards = [
   {
@@ -58,13 +64,14 @@ export default function DashboardHomePage() {
 
   return (
     <div className="dashboard-home">
-      <section className="dashboard-home-header">
-        <div>
-          <h1>Welcome Back, {firstName}</h1>
-          <p>Here&apos;s what&apos;s happening in your school today.</p>
-        </div>
-        <div className="dashboard-home-session-pill">{sessionLabel}</div>
-      </section>
+      <DashboardHeader
+        eyebrow="Administration"
+        title={`Welcome back, ${firstName}`}
+        subtitle="A modern command center for finance, operations, and school oversight."
+        badge={sessionLabel}
+        actionLabel="Open reports"
+        actionHref="#"
+      />
 
       <div className="dashboard-home-alert">
         <div className="dashboard-home-alert-icon">
@@ -83,55 +90,37 @@ export default function DashboardHomePage() {
         {summaryCards.map((item) => {
           const Icon = item.icon;
           return (
-            <article key={item.id} className="dashboard-home-summary-card">
-              <div className="dashboard-home-summary-top">
-                <div>
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
-                <div className={`dashboard-home-summary-icon tone-${item.accent}`}>
-                  <Icon size={18} />
-                </div>
-              </div>
-              <Link to={item.link} className={`dashboard-home-summary-action tone-${item.accent}`}>
-                <span>{item.action}</span>
-                <ArrowRight size={14} />
-              </Link>
-            </article>
+            <StatCard
+              key={item.id}
+              icon={Icon}
+              label={item.label}
+              value={item.value}
+              tone={item.accent}
+              description={item.action}
+              trend="Live"
+              footer={
+                <Link to={item.link} className="dashboard-summary-link">
+                  <span>{item.action}</span>
+                  <ArrowRight size={14} />
+                </Link>
+              }
+            />
           );
         })}
       </section>
 
-      <section className="dashboard-home-tiles">
-        {actionTiles.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link key={item.id} to={item.link} className="dashboard-home-tile">
-              <Icon size={22} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </section>
+      <section className="dashboard-home-grid">
+        <QuickActions
+          title="Admin shortcuts"
+          items={[
+            { label: "Add Student", meta: "Create a new learner profile", icon: BookOpen },
+            { label: "Add Teacher", meta: "Invite a new staff member", icon: Wallet },
+            { label: "Create CBT", meta: "Launch an assessment", icon: CalendarDays },
+            { label: "Record Payment", meta: "Log fees or transfers", icon: CreditCard },
+          ]}
+        />
 
-      <section className="dashboard-home-content">
-        <article className="dashboard-home-panel dashboard-home-account-panel">
-          <h2>Account Details</h2>
-          <div className="dashboard-home-account-row">
-            <div className="dashboard-home-account-icon">
-              <CreditCard size={16} />
-            </div>
-            <div className="dashboard-home-account-text">
-              <strong>{accountSummary[0].label}</strong>
-              <span>{accountSummary[0].value}</span>
-            </div>
-          </div>
-          <p>{accountSummary[0].note}</p>
-          <div className="dashboard-home-account-badge">NDIC</div>
-        </article>
-
-        <article className="dashboard-home-panel dashboard-home-summary-panel">
-          <h2>Transaction Summary</h2>
+        <DashboardWidget title="Today’s overview" subtitle="Operations" actionLabel="View all">
           <div className="dashboard-home-stats-grid">
             {transactionStats.map((item) => {
               const Icon = item.icon;
@@ -148,7 +137,38 @@ export default function DashboardHomePage() {
               );
             })}
           </div>
-        </article>
+        </DashboardWidget>
+      </section>
+
+      <section className="dashboard-home-content">
+        <DashboardWidget title="Account details" subtitle="Finance" actionLabel="Manage">
+          <div className="dashboard-home-account-row">
+            <div className="dashboard-home-account-icon">
+              <CreditCard size={16} />
+            </div>
+            <div className="dashboard-home-account-text">
+              <strong>{accountSummary[0].label}</strong>
+              <span>{accountSummary[0].value}</span>
+            </div>
+          </div>
+          <p>{accountSummary[0].note}</p>
+          <div className="dashboard-home-account-badge">NDIC</div>
+        </DashboardWidget>
+
+        <DashboardWidget title="Recent activity" subtitle="Live feed" actionLabel="See more">
+          <div className="dashboard-list-stack">
+            {[
+              { title: "New assessment published", meta: "CBT • 15 minutes ago" },
+              { title: "Fee payment logged", meta: "Parent portal • 34 minutes ago" },
+              { title: "Student profile updated", meta: "Admissions • 1 hour ago" },
+            ].map((item) => (
+              <div key={item.title} className="dashboard-list-item">
+                <strong>{item.title}</strong>
+                <p>{item.meta}</p>
+              </div>
+            ))}
+          </div>
+        </DashboardWidget>
       </section>
 
       <footer className="dashboard-home-footer">

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
 import { getDisplayName } from "../../../../utils/userProfile";
+import { getStudentDisplayName } from "../../../../utils/studentDisplay";
 import { teacherApi } from "../../../../services/teacherApi";
 import "../page-styles/TeacherDashboard.css";
 import SettingsPage from "../SettingsPage";
@@ -423,23 +424,27 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
               </button>
             </div>
             <div className="teacher-stack">
-              {students.length ? students.slice(0, 5).map((student) => (
-                <div key={student.id} className="teacher-item compact">
-                  <div className="teacher-student-row">
-                    <div className="teacher-student-avatar">
-                      {student.profileImage ? <img src={student.profileImage} alt={student.name} /> : <span>{student.name?.charAt(0) || "S"}</span>}
+              {students.length ? students.slice(0, 5).map((student) => {
+                const studentDisplayName = getStudentDisplayName(student);
+                const attendanceStatus = studentAttendanceMap[student.id] || studentAttendanceMap[student.name] || studentAttendanceMap[studentDisplayName] || "No record";
+                return (
+                  <div key={student.id} className="teacher-item compact">
+                    <div className="teacher-student-row">
+                      <div className="teacher-student-avatar">
+                        {student.profileImage ? <img src={student.profileImage} alt={studentDisplayName} /> : <span>{studentDisplayName?.charAt(0) || "S"}</span>}
+                      </div>
+                      <div>
+                        <strong>{studentDisplayName}</strong>
+                        <p>{student.className || "No class assigned"}</p>
+                      </div>
                     </div>
-                    <div>
-                      <strong>{student.name}</strong>
-                      <p>{student.admissionNumber} • {student.className}</p>
+                    <div className="teacher-item-right">
+                      <span>{attendanceStatus}</span>
+                      <button type="button" className="teacher-link-button">View Profile</button>
                     </div>
                   </div>
-                  <div className="teacher-item-right">
-                    <span>{studentAttendanceMap[student.name] || "No record"}</span>
-                    <button type="button" className="teacher-link-button">View Profile</button>
-                  </div>
-                </div>
-              )) : <p className="teacher-empty-copy">No students are available in your assigned classes.</p>}
+                );
+              }) : <p className="teacher-empty-copy">No students are available in your assigned classes.</p>}
             </div>
           </article>
           <article className="dashboard-home-panel teacher-panel">
@@ -604,13 +609,10 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
 
     const studentRows = (classDetails.students || []).filter((student) => {
       const query = searchQuery.trim().toLowerCase();
-      const attendanceStatus = studentAttendanceMap[student.name] || "No record";
+      const studentDisplayName = getStudentDisplayName(student);
+      const attendanceStatus = studentAttendanceMap[student.id] || studentAttendanceMap[student.name] || studentAttendanceMap[studentDisplayName] || "No record";
       const academicStatus = student.academicStatus || student.status || "Active";
-      const matchesQuery = !query || student.name?.toLowerCase().includes(query) || student.admissionNumber?.toLowerCase().includes(query);
-      const matchesGender = genderFilter === "All" || student.gender === genderFilter;
-      const matchesAttendance = attendanceFilter === "All" || attendanceStatus === attendanceFilter;
-      const matchesAcademic = academicFilter === "All" || academicStatus === academicFilter;
-      return matchesQuery && matchesGender && matchesAttendance && matchesAcademic;
+      return !query || studentDisplayName.toLowerCase().includes(query) || student.className?.toLowerCase().includes(query);
     });
 
     const presentCount = classDetails.students.filter((student) => (studentAttendanceMap[student.name] || "No record") === "Present").length;
@@ -678,7 +680,7 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
           <div className="teacher-filter-bar">
             <input
               type="text"
-              placeholder="Search student name or admission number"
+              placeholder="Search student name or class"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
@@ -706,7 +708,6 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Admission Number</th>
                 <th>Gender</th>
                 <th>Attendance Status</th>
                 <th>Academic Status</th>
@@ -715,21 +716,21 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
             </thead>
             <tbody>
               {studentRows.length ? studentRows.map((student) => {
-                const attendanceStatus = studentAttendanceMap[student.name] || "No record";
+                const studentDisplayName = getStudentDisplayName(student);
+                const attendanceStatus = studentAttendanceMap[student.id] || studentAttendanceMap[student.name] || studentAttendanceMap[studentDisplayName] || "No record";
                 const academicStatus = student.academicStatus || student.status || "Active";
                 return (
                   <tr key={student.id}>
                     <td>
                       <div className="teacher-student-row">
                         <div className="teacher-student-avatar">
-                          {student.profileImage ? <img src={student.profileImage} alt={student.name} /> : <span>{student.name?.charAt(0) || "S"}</span>}
+                          {student.profileImage ? <img src={student.profileImage} alt={studentDisplayName} /> : <span>{studentDisplayName?.charAt(0) || "S"}</span>}
                         </div>
                         <div>
-                          <strong>{student.name}</strong>
+                          <strong>{studentDisplayName}</strong>
                         </div>
                       </div>
                     </td>
-                    <td>{student.admissionNumber}</td>
                     <td>{student.gender || "—"}</td>
                     <td>{attendanceStatus}</td>
                     <td>{academicStatus}</td>
@@ -756,20 +757,22 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
           <thead>
             <tr>
               <th>Student</th>
-              <th>Admission</th>
               <th>Class</th>
               <th>Attendance</th>
             </tr>
           </thead>
           <tbody>
-            {students.length ? students.map((student) => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.admissionNumber}</td>
-                <td>{student.className}</td>
-                <td>{studentAttendanceMap[student.name] || "No record"}</td>
-              </tr>
-            )) : <tr><td colSpan="4" className="teacher-empty-copy">No students available.</td></tr>}
+            {students.length ? students.map((student) => {
+              const studentDisplayName = getStudentDisplayName(student);
+              const attendanceStatus = studentAttendanceMap[student.id] || studentAttendanceMap[student.name] || studentAttendanceMap[studentDisplayName] || "No record";
+              return (
+                <tr key={student.id}>
+                  <td>{studentDisplayName}</td>
+                  <td>{student.className}</td>
+                  <td>{attendanceStatus}</td>
+                </tr>
+              );
+            }) : <tr><td colSpan="4" className="teacher-empty-copy">No students available.</td></tr>}
           </tbody>
         </table>
       </section>
@@ -789,7 +792,7 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
               {classes.map((classItem) => <option key={classItem.id} value={classItem.name}>{classItem.name}</option>)}
             </select>
             <input type="date" value={attendanceForm.date} onChange={(event) => setAttendanceForm((current) => ({ ...current, date: event.target.value }))} />
-            <input placeholder="Student ID" value={attendanceForm.studentId} onChange={(event) => setAttendanceForm((current) => ({ ...current, studentId: event.target.value }))} />
+            <input placeholder="Student reference" value={attendanceForm.studentId} onChange={(event) => setAttendanceForm((current) => ({ ...current, studentId: event.target.value }))} />
             <select value={attendanceForm.status} onChange={(event) => setAttendanceForm((current) => ({ ...current, status: event.target.value }))}>
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
@@ -865,7 +868,7 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
         <article className="dashboard-home-panel teacher-panel">
           <h2>Input Score</h2>
           <form className="teacher-stack" onSubmit={handleResultSubmit}>
-            <input placeholder="Student ID" value={resultForm.studentId} onChange={(event) => setResultForm((current) => ({ ...current, studentId: event.target.value }))} />
+            <input placeholder="Student reference" value={resultForm.studentId} onChange={(event) => setResultForm((current) => ({ ...current, studentId: event.target.value }))} />
             <input placeholder="Subject" value={resultForm.subject} onChange={(event) => setResultForm((current) => ({ ...current, subject: event.target.value }))} />
             <input placeholder="Class" value={resultForm.className} onChange={(event) => setResultForm((current) => ({ ...current, className: event.target.value }))} />
             <input type="number" placeholder="Score" value={resultForm.score} onChange={(event) => setResultForm((current) => ({ ...current, score: event.target.value }))} />

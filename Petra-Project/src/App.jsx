@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Footer from "./Pages/components/Footer";
 import ForSchool from "./Pages/Forschool";
 import ForStudents from "./Pages/Forstusents";
@@ -35,6 +35,7 @@ import SessionsPage from "./Pages/DashboardLayout/pages/setup/SessionsPage";
 import ClassesPage from "./Pages/DashboardLayout/pages/setup/ClassesPage";
 import SubjectsPage from "./Pages/DashboardLayout/pages/setup/SubjectsPage";
 import EnrollmentPage from "./Pages/DashboardLayout/pages/students/EnrollmentPage";
+import EnrollmentCreatePage from "./Pages/DashboardLayout/pages/students/EnrollmentCreatePage";
 import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
 import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
 import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
@@ -54,8 +55,12 @@ import CashflowPage from "./Pages/DashboardLayout/pages/finance/CashflowPage";
 import WalletPage from "./Pages/DashboardLayout/pages/finance/WalletPage";
 import NotificationsPage from "./Pages/DashboardLayout/pages/communication/NotificationsPage";
 import SupportPage from "./Pages/DashboardLayout/pages/communication/SupportPage";
+import AnnouncementsPage from "./Pages/DashboardLayout/pages/communication/AnnouncementsPage";
+import MessagesPage from "./Pages/DashboardLayout/pages/communication/MessagesPage";
+import ParentFeesPage from "./Pages/DashboardLayout/pages/parent/ParentFeesPage";
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
+import { UserContext } from "./context/UserContext";
 import {
   BrowserRouter as Router,
   Routes,
@@ -77,6 +82,7 @@ import {
   Wallet,
 } from "lucide-react";
 import "./Styles/DashBoardLayout/SidebarNav.css";
+// import "./styles/theme.css";
 import SchoolOS from "./Pages/solutions/SchoolOS";
 import FinancialManagement from "./Pages/solutions/FinancialManagement";
 import CBTEngine from "./Pages/solutions/CBTEngine";
@@ -92,6 +98,8 @@ import AssessmentTools from "./Pages/solutions/AssessmentTools";
 import SchoolAnalytics from "./Pages/solutions/SchoolAnalytics";
 import Admissions from "./Pages/solutions/Admissions";
 import CommunicationHub from "./Pages/solutions/CommunicationHub";
+import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLinksPage";
+import SuperAdminDashboard from "./Pages/DashboardLayout/pages/dev/SuperAdminDashboard";
 
 function PublicLayout() {
   return (
@@ -104,6 +112,7 @@ function PublicLayout() {
 }
 
 function DashboardLay() {
+  const { userInfo, authReady } = useContext(UserContext);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -116,6 +125,14 @@ function DashboardLay() {
   };
 
   const closeSidebar = () => setMobileOpen(false);
+
+  // Wait for session restoration, then require a signed-in user.
+  if (!authReady) {
+    return null;
+  }
+  if (!userInfo?.email) {
+    return <Navigate to="/signin" replace />;
+  }
 
   return (
     <div className="dashboard-shell">
@@ -140,6 +157,37 @@ function DashboardLay() {
   );
 }
 
+function DynamicParentSection(props) {
+  const { userInfo } = useContext(UserContext);
+  const myChildren = userInfo?.children || [];
+
+  // Dynamically build the data based on the real user
+  const dynamicSummaryCards = [
+    { icon: props.icons?.children || School, label: "Children", value: myChildren.length.toString(), meta: "Active learners", tone: "tone-blue" },
+    // Add more dynamic cards here
+  ];
+
+  const dynamicSections = [
+    {
+      title: "Current learner status",
+      items: myChildren.map(child => ({
+        title: child.name,
+        meta: [child.className || child.class, child.teacher || "Assigned Teacher"].filter(Boolean).join(" • "),
+        value: child.status || "On Track"
+      }))
+    }
+  ];
+
+  // Pass the dynamic data into your existing ParentSectionPage
+  return (
+    <ParentSectionPage 
+      {...props} 
+      summaryCards={dynamicSummaryCards}
+      sections={dynamicSections}
+    />
+  );
+}
+
 function App() {
   const parentSection = (props) => <ParentSectionPage {...props} />;
 
@@ -147,6 +195,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/dev/*" element={<SuperAdminDashboard />} />
         <Route path="/register" element={<RegistrationEntry />} />
         <Route path="/register/select" element={<RegistrationEntry />} />
         <Route path="/register/admin" element={<AdminRegister />} />
@@ -212,6 +261,10 @@ function App() {
           <Route
             path="/dashboard/students/enrollment"
             element={<EnrollmentPage />}
+          />
+          <Route
+            path="/dashboard/students/enrollment/create"
+            element={<EnrollmentCreatePage />}
           />
           <Route path="/dashboard/students/parents" element={<ParentsPage />} />
           <Route path="/dashboard/students/gate" element={<GatePage />} />
@@ -279,10 +332,18 @@ function App() {
             element={<NotificationsPage />}
           />
           <Route
+            path="/dashboard/communication/announcements"
+            element={<AnnouncementsPage />}
+          />
+          <Route
+            path="/dashboard/communication/messages"
+            element={<MessagesPage />}
+          />
+          <Route
             path="/dashboard/communication/support"
             element={<SupportPage />}
           />
-
+          <Route path="/dashboard/students/parent-links" element={<PortalLinksPage />} />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
 
           <Route path="/staff" element={<Navigate to="/staff/dashboard" replace />} />
@@ -299,35 +360,21 @@ function App() {
 
           <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} />
           <Route path="/portal/dashboard" element={<ParentDashboard />} />
-          <Route
-            path="/portal/children"
-            element={parentSection({
-              title: "Children Overview",
-              description: "A calm snapshot of each child’s class, teacher, and current progress.",
-              heroTitle: "Your children at a glance",
-              heroDescription: "Keep track of performance, wellbeing, and next steps without leaving the portal.",
-              heroChips: ["2 children enrolled", "1 needs support", "Weekly check-ins"],
-              summaryCards: [
-                { icon: School, label: "Children", value: "2", meta: "Active learners", tone: "tone-blue" },
-                { icon: BookOpen, label: "Classes", value: "2", meta: "Across two year groups", tone: "tone-teal" },
-                { icon: UserCircle2, label: "Teachers", value: "2", meta: "Connected this term", tone: "tone-rose" },
-              ],
-              sections: [
-                {
-                  title: "Current learner status",
-                  items: [
-                    { title: "Ayo Ogunleye", meta: "SS2A • Mrs. Adeyemi", value: "On Track" },
-                    { title: "Tolu Ogunleye", meta: "JSS1B • Mr. Yusuf", value: "Needs Support" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: FileText, title: "View child profile", meta: "Open the latest school summary" },
-                { icon: MessageSquare, title: "Send a message", meta: "Contact the teacher quickly" },
-              ],
-              footerAction: <DeleteAccountButton />,
-            })}
-          />
+          <Route 
+  path="/portal/children" 
+  element={
+    <DynamicParentSection
+      title="Children Overview"
+      description="A calm snapshot of each child’s class, teacher, and current progress."
+      heroTitle="Your children at a glance"
+      heroDescription="Keep track of performance, wellbeing, and next steps."
+      icons={{ children: School }} // Pass icons if needed
+      actions={[
+        { icon: FileText, title: "View child profile", meta: "Open the latest school summary" },
+      ]}
+    />
+  } 
+/>
           <Route
             path="/portal/attendance"
             element={parentSection({
@@ -412,33 +459,7 @@ function App() {
               ],
             })}
           />
-          <Route
-            path="/portal/fees"
-            element={parentSection({
-              title: "Fees and Payments",
-              description: "Monitor pending balances and payment deadlines with clarity.",
-              heroTitle: "Fee reminders",
-              heroDescription: "Pay what is pending quickly so there are no surprises later in the term.",
-              heroChips: ["₦48,000 outstanding", "₦7,500 transport", "Due this week"],
-              summaryCards: [
-                { icon: CreditCard, label: "School Fees", value: "₦48,000", meta: "Outstanding balance", tone: "tone-blue" },
-                { icon: Wallet, label: "Transport", value: "₦7,500", meta: "Pending this term", tone: "tone-teal" },
-              ],
-              sections: [
-                {
-                  title: "Payment status",
-                  items: [
-                    { title: "School Fees", meta: "Balance outstanding", value: "₦48,000" },
-                    { title: "Transport", meta: "Pending this term", value: "₦7,500" },
-                  ],
-                },
-              ],
-              actions: [
-                { icon: Wallet, title: "Pay now", meta: "Settle fees securely" },
-                { icon: FileText, title: "Download invoice", meta: "Keep a copy for records" },
-              ],
-            })}
-          />
+          <Route path="/portal/fees" element={<ParentFeesPage />} />
           <Route
             path="/portal/announcements"
             element={parentSection({
