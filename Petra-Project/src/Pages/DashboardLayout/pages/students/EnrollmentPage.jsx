@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-=======
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
->>>>>>> 8a5d69f2c85cbda674151039e925fdad32eeeee7
+
 import './Enrollment.css';
 
 

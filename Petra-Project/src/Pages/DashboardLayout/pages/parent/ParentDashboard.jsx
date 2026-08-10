@@ -1,24 +1,11 @@
-<<<<<<< HEAD
-import {
-  ArrowRight,
-  BookOpen,
-  ClipboardCheck,
-  FileText,
-  GraduationCap,
-  MessageSquare,
-  UserCircle2,
-  Wallet,
-} from "lucide-react";
-=======
 import { useContext } from "react";
 import { UserContext } from "../../../../context/UserContext";
-import { BookOpen, ClipboardCheck, FileText, GraduationCap, Sparkles } from "lucide-react";
+import { BookOpen, ClipboardCheck, FileText, GraduationCap } from "lucide-react";
 import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
 import StatCard from "../../../../components/dashboard/StatCard";
 import QuickActions from "../../../../components/dashboard/QuickActions";
 import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import EmptyState from "../../../../components/dashboard/EmptyState";
->>>>>>> 8a5d69f2c85cbda674151039e925fdad32eeeee7
 import "../page-styles/ParentDashboard.css";
 import "../../../../components/dashboard/dashboard.css";
 import { getStudentDisplayName } from "../../../../utils/studentDisplay";

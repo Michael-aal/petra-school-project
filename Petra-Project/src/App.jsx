@@ -8,7 +8,7 @@ import Company from "./Pages/Company";
 import Navbar from "./Pages/components/Navbar";
 import Forparents from "./Pages/Forparents";
 import About from "./Pages/About";
-import Home from "./Pages/Home";
+import LandingPage from "./Pages/LandingPage";
 import SignIn from "./Pages/Sigin/SignIn";
 import Register from "./Pages/Sigin/Register";
 import RegistrationEntry from "./Pages/Sigin/RegistrationEntry";
@@ -204,7 +204,7 @@ function App() {
         <Route path="/register/teacher" element={<Register rolePreset="teacher" />} />
         <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/solution" element={<Solution />} />
           <Route path="/solution/school-os" element={<SchoolOS />} />
           <Route
