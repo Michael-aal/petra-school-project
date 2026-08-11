@@ -112,6 +112,10 @@ import AdmissionPassScreen from "./Pages/DashboardLayout/AdmissionPassScreen/Adm
 import ApplicationStatusPage from "./Pages/DashboardLayout/ApplicationStatusPage/ApplicationStatusPage";
 
 
+import StudentPaymentPage from "./Pages/DashboardLayout/StudentPaymentPage/StudentPaymentPage";
+import AdminPaymentSettings from "./Pages/DashboardLayout/AdminPaymentSettings/AdminPaymentSettings";
+
+
 function PublicLayout() {
   return (
     <>
@@ -207,6 +211,8 @@ function App() {
       <Routes>
         <Route path="/admission_form" element={<AdmissionForm />} />
 <Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
+<Route path="/student_Payment"  element={<SchoolFeesPaymentPage />} />
+
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />
         <Route path="/register" element={<RegistrationEntry />} />

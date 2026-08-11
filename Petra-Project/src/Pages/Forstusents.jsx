@@ -6,143 +6,134 @@ import {
   Target,
   CalendarClock,
   Trophy,
-  Gamepad2
+  Gamepad2,
+  CheckCircle2,
+  Zap,
+  Users
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import "../Styles/Forschool.css"
+import "../Styles/Forschool.css";
 
-const studetFeature = [
+const studentFeatures = [
   {
-    logo: <Sparkles />,
-    title: "Your Personal AI Tutor",
-    text:
-      "Stuck on a math problem? Need to understand chemistry concepts? Just snap a photo or ask a question. Your AI companion explains it instantly, 24/7.",
-    to: "Try it now",
-    toColor: "#9333EA",
-    logo2: <ArrowRight />,
-    logo3: <BrainCircuit />,
-    logo3BgColor: "#F3E8FF",
-    logo3Color: "#9333EA",
-    svgColor: "#9333EA",
-    topRight: "#A855F71A",
+    logo: <BrainCircuit size={24} />,
+    title: "Meet Your 24/7 AI Tutor",
+    text: "Stuck on a calculus problem at 11 PM? Snap a photo or ask a question. Nuvora’s AI breaks down complex concepts into simple, easy-to-understand steps instantly.",
+    color: "#8B5CF6", // Purple
+    bgColor: "rgba(139, 92, 246, 0.1)",
+    badgeIcon: <Sparkles size={18} />,
   },
   {
-    logo: <Target />,
-    title: "Crush WAEC & JAMB",
-    text:
-      "Practice with thousands of past questions. Get detailed performance analytics to know your weak spots before the D-day.",
-    svgColor: "#06B6D4",
-    topRight: "#06B6D41A",
+    logo: <Target size={24} />,
+    title: "Crush WAEC, JAMB & Post-UTME",
+    text: "Practice with thousands of past questions. Get real-time performance analytics to identify your weak spots and track your improvement before the big day.",
+    color: "#06B6D4", // Cyan
+    bgColor: "rgba(6, 182, 212, 0.1)",
+    badgeIcon: <Zap size={18} />,
   },
   {
-    logo: <CalendarClock />,
-    title: "Stay Organized",
-    text:
-      "View your timetable, check your results, and track your assignments. Never miss a deadline again.",
-    svgColor: "#2563EB",
-    topRight: "#2563EB1A",
+    logo: <CalendarClock size={24} />,
+    title: "Master Your Academic Life",
+    text: "Never miss a deadline again. Sync your class timetable, track assignments, and view your results in one beautiful, distraction-free dashboard.",
+    color: "#3B82F6", // Blue
+    bgColor: "rgba(59, 130, 246, 0.1)",
+    badgeIcon: <CheckCircle2 size={18} />,
   },
   {
-    logo: <Trophy />,
-    title: "Make Learning Fun",
-    text:
-      'Earn badges, climb the leaderboard, and challenge your friends in "School Wars" quizzes.',
-    svgColor: "#16A34A",
-    topRight: "#22C55E1A",
-    logo3: <Gamepad2 />,
-    logo3BgColor: "#DCFCE7",
-    logo3Color: "#16A34A",
+    logo: <Trophy size={24} />,
+    title: "Make Learning Addictive",
+    text: "Earn XP, unlock achievement badges, and challenge your classmates to the top of the leaderboard. Learning has never been this fun.",
+    color: "#10B981", // Emerald
+    bgColor: "rgba(16, 185, 129, 0.1)",
+    badgeIcon: <Gamepad2 size={18} />,
   },
 ];
 
 export default function ForStudents() {
   return (
     <section className="fsu-section">
-
-      {/* HERO */}
+      
+      {/* HERO SECTION */}
       <div className="fsu-hero">
-        <h2 className="fsu-badge">
-          <GraduationCap /> FOR STUDENTS
-        </h2>
+        <div className="fsu-badge">
+          <GraduationCap size={16} /> FOR STUDENTS
+        </div>
 
-        <h3 className="fsu-title">
-          Unlock Your True <span>Potential</span>
-        </h3>
+        <h1 className="fsu-title">
+          Experience the Future of <br /> Learning with <span>Nuvora</span>
+        </h1>
 
         <p className="fsu-text">
-          School is hard enough. Acceede gives you the superpowers to learn faster,
-          remember more, and ace every exam.
+          Stop struggling with tough subjects. Nuvora combines AI-powered tutoring, 
+          smart scheduling, and gamified learning to help you ace your exams and 
+          actually enjoy studying.
         </p>
 
         <div className="fsu-actions">
-          <NavLink className="fsu-btnPrimary">
-            Join the Waitlist <BrainCircuit />
+          <NavLink to="/register/student" className="fsu-btnPrimary">
+            Start Learning for Free <ArrowRight size={18} />
           </NavLink>
+          <NavLink to="/solution" className="fsu-btnSecondary">
+            See How It Works
+          </NavLink>
+        </div>
 
-          <NavLink className="fsu-btnSecondary">
-            Start Practicing
-          </NavLink>
+        {/* NEW: Trust Bar to build credibility */}
+        <div className="fsu-trust-bar">
+          <div className="fsu-trust-item">
+            <Users size={16} />
+            <span>10,000+ Active Learners</span>
+          </div>
+          <div className="fsu-trust-divider" />
+          <div className="fsu-trust-item">
+            <CheckCircle2 size={16} />
+            <span>Trusted by 50+ Schools</span>
+          </div>
+          <div className="fsu-trust-divider" />
+          <div className="fsu-trust-item">
+            <Trophy size={16} />
+            <span>4.9/5 Student Rating</span>
+          </div>
         </div>
       </div>
 
-      {/* CARDS */}
+      {/* FEATURES GRID */}
       <div className="fsu-grid">
-        {studetFeature.map((item, index) => (
-          <div className="fsu-card" key={index}>
+        {studentFeatures.map((item, index) => (
+          <div className="fsu-card" key={index} style={{ '--card-accent': item.color }}>
+            
+            {/* Subtle background glow */}
+            <div className="fsu-card-glow" style={{ background: item.bgColor }} />
 
-            {/* glow background */}
-            <div
-              className="fsu-glow"
-              style={{ backgroundColor: item.topRight }}
-            />
+            {/* Top Right Badge */}
+            <div className="fsu-card-badge" style={{ background: item.bgColor, color: item.color }}>
+              {item.badgeIcon}
+            </div>
 
-            {/* icon */}
-            <div
-              className="fsu-icon"
-              style={{
-                backgroundColor: item.topRight,
-                color: item.svgColor,
-              }}
-            >
+            {/* Icon */}
+            <div className="fsu-card-icon" style={{ background: item.bgColor, color: item.color }}>
               {item.logo}
             </div>
 
-            <h3 className="fsu-cardTitle">{item.title}</h3>
+            <h3 className="fsu-card-title">{item.title}</h3>
+            <p className="fsu-card-text">{item.text}</p>
 
-            <p className="fsu-cardText">{item.text}</p>
-
-            {/* CTA */}
-            {item.to && (
-              <NavLink
-                className="fsu-link"
-                style={{ color: item.toColor }}
-              >
-                {item.to} {item.logo2}
-              </NavLink>
-            )}
-
-            {/* optional badge icon */}
-            {item.logo3 && (
-              <div
-                className="fsu-badgeIcon"
-                style={{
-                  backgroundColor: item.logo3BgColor,
-                  color: item.logo3Color,
-                }}
-              >
-                {item.logo3}
-              </div>
-            )}
+            <NavLink to="/register/student" className="fsu-card-link" style={{ color: item.color }}>
+              Get Started <ArrowRight size={16} />
+            </NavLink>
           </div>
         ))}
       </div>
 
       {/* FOOTER CTA */}
       <div className="fsu-footer">
-        <h2>Join 100,000+ Students</h2>
-        <p>The smartest students use Acceede. Don't get left behind.</p>
-
-        <NavLink className="fsu-footerBtn">Join the Waitlist</NavLink>
+        <div className="fsu-footer-card">
+          <h2>Ready to upgrade your grades?</h2>
+          <p>Join thousands of students already learning smarter, not harder, with Nuvora.</p>
+          <NavLink to="/register/student" className="fsu-footer-btn">
+            Join the Nuvora Waitlist <ArrowRight size={18} />
+          </NavLink>
+        </div>
       </div>
 
     </section>
