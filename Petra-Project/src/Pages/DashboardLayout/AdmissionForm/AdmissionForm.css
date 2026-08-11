@@ -1,0 +1,336 @@
+/* =========================================
+   1. PAGE LAYOUT & HEADER
+   ========================================= */
+.admission-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 32px 16px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.admission-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.admission-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.admission-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.admission-header p {
+  font-size: 0.95rem;
+  margin: 0;
+  color: oklch(0.6 0.02 250);
+}
+
+/* =========================================
+   2. PROGRESS STEPPER
+   ========================================= */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: oklch(0.25 0.04 260);
+  color: oklch(0.6 0.02 250);
+  border: 2px solid oklch(0.35 0.04 260);
+  transition: all 0.3s ease;
+}
+
+.step.active .step-circle {
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+  border-color: oklch(0.62 0.2 264);
+  box-shadow: 0 0 15px oklch(0.62 0.2 264 / 30%);
+}
+
+.step.completed .step-circle {
+  background-color: oklch(0.7 0.18 140 / 20%);
+  color: oklch(0.7 0.18 140);
+  border-color: oklch(0.7 0.18 140);
+}
+
+.step-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: oklch(0.6 0.02 250);
+}
+
+.step.active .step-title {
+  color: oklch(0.93 0.01 240);
+  font-weight: 600;
+}
+
+.step-line {
+  width: 40px;
+  height: 2px;
+  background-color: oklch(0.35 0.04 260);
+  margin: 0 12px;
+}
+
+.step.completed + .step .step-line,
+.step.completed .step-line {
+  background-color: oklch(0.7 0.18 140);
+}
+
+@media (max-width: 600px) {
+  .step-title { display: none; }
+  .step-line { width: 24px; margin: 0 8px; }
+}
+
+/* =========================================
+   3. FORM CARD & GRID
+   ========================================= */
+.form-card {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  color: oklch(0.93 0.01 240);
+  padding-bottom: 16px;
+  border-bottom: 1px solid oklch(1 0 0 / 10%);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: oklch(0.85 0.02 250);
+}
+
+.form-group small {
+  font-size: 0.75rem;
+  color: oklch(0.62 0.2 264);
+  margin-top: -4px;
+}
+
+.form-input, 
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background-color: oklch(1 0 0 / 8%);
+  border: 1px solid oklch(1 0 0 / 12%);
+  color: oklch(0.93 0.01 240);
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: oklch(0.62 0.2 264);
+  box-shadow: 0 0 0 3px oklch(0.62 0.2 264 / 15%);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: oklch(0.5 0.02 250);
+}
+
+/* Highlight for LIN */
+.highlight-field {
+  background-color: oklch(0.62 0.2 264 / 5%);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px dashed oklch(0.62 0.2 264 / 40%);
+}
+
+/* =========================================
+   4. PARENTS SIDE-BY-SIDE LAYOUT
+   ========================================= */
+.parent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 16px;
+}
+
+.parent-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background-color: oklch(0.22 0.03 260);
+  border-radius: 12px;
+  border: 1px solid oklch(1 0 0 / 8%);
+}
+
+.parent-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: oklch(0.85 0.05 264);
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid oklch(1 0 0 / 10%);
+}
+
+@media (max-width: 768px) {
+  .parent-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   5. CHECKBOXES & FINANCE
+   ========================================= */
+.checkbox-group {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: oklch(0.62 0.2 264);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkbox-group label {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: oklch(0.85 0.02 250);
+  cursor: pointer;
+}
+
+.highlight-checkbox {
+  background-color: oklch(0.72 0.18 60 / 8%);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid oklch(0.72 0.18 60 / 20%);
+}
+
+.highlight-checkbox label {
+  color: oklch(0.93 0.01 240);
+  font-weight: 500;
+  display: flex;
+  gap: 8px;
+}
+
+/* =========================================
+   6. NAVIGATION BUTTONS
+   ========================================= */
+.form-navigation {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+}
+
+.btn-primary:hover {
+  background-color: oklch(0.68 0.2 264);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px oklch(0.62 0.2 264 / 30%);
+}
+
+.btn-secondary {
+  background-color: oklch(0.25 0.04 260);
+  color: oklch(0.93 0.01 240);
+  border: 1px solid oklch(1 0 0 / 10%);
+}
+
+.btn-secondary:hover {
+  background-color: oklch(0.3 0.04 260);
+}
+
+.btn-submit {
+  background-color: oklch(0.7 0.18 140);
+}
+
+.btn-submit:hover {
+  background-color: oklch(0.75 0.18 140);
+  box-shadow: 0 4px 12px oklch(0.7 0.18 140 / 30%);
+}
