@@ -17,6 +17,10 @@ const getInitials = (name) => {
 
 export default function GenericListPage({ config, initialData, onDataChange }) {
   const [data, setData] = useState(initialData || []);
+  // keep internal data in sync when parent passes new initialData
+  useEffect(() => {
+    setData(initialData || []);
+  }, [initialData]);
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const dropdownRef = useRef(null);
