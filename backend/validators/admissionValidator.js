@@ -1,0 +1,25 @@
+import { body } from "express-validator";
+
+export const createAdmissionValidator = [
+  body("firstName").notEmpty().withMessage("Applicant first name is required"),
+  body("lastName").notEmpty().withMessage("Applicant last name is required"),
+  body("gender").notEmpty().withMessage("Applicant gender is required"),
+  body("dob").notEmpty().withMessage("Applicant date of birth is required"),
+  body("stateOfOrigin").notEmpty().withMessage("Applicant state of origin is required"),
+  body("lga").notEmpty().withMessage("Applicant local government area is required"),
+  body("admissionClass").notEmpty().withMessage("Class seeking admission is required"),
+  body("studentStatus").notEmpty().withMessage("Student status is required"),
+  body("religion").notEmpty().withMessage("Religion is required"),
+  body("fatherName").notEmpty().withMessage("Father name is required"),
+  body("fatherAddress").notEmpty().withMessage("Father address is required"),
+  body("fatherOccupation").notEmpty().withMessage("Father occupation is required"),
+  body("fatherEmail").isEmail().withMessage("Father email must be a valid email address"),
+  body("fatherPhone1").notEmpty().withMessage("Father phone number is required"),
+  body("motherName").notEmpty().withMessage("Mother name is required"),
+  body("motherAddress").notEmpty().withMessage("Mother address is required"),
+  body("motherOccupation").notEmpty().withMessage("Mother occupation is required"),
+  body("motherEmail").isEmail().withMessage("Mother email must be a valid email address"),
+  body("motherPhone1").notEmpty().withMessage("Mother phone number is required"),
+  body("feePaymentMethod").notEmpty().withMessage("Fee payment method is required"),
+  body("agreeTerms").equals("true").withMessage("You must agree to the terms to submit the application"),
+];

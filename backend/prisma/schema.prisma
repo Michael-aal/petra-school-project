@@ -687,22 +687,78 @@ model StudentDocument {
 }
 
 model Admission {
-  id             String        @id @default(cuid())
-  schoolId       Int
-  studentId      String
-  academicYearId String?
-  termId         String?
-  status         String        @default("pending")
-  admissionDate  DateTime?
-  remarks        String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  academicYear   AcademicYear? @relation(fields: [academicYearId], references: [id])
-  school         School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student        Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  term           Term?         @relation(fields: [termId], references: [id])
+  id                 String        @id @default(cuid())
+  schoolId           Int
+  studentId          String?
+  applicationCode    String?       @unique
+  applicantName      String?
+  applicantFirstName String?
+  applicantMiddleName String?
+  applicantLastName  String?
+  parentEmail        String?
+  parentPhone        String?
+  intendedClass      String?
+  applicantGender    String?
+  applicantDob       DateTime?
+  applicantPlaceOfBirth String?
+  applicantNationality String?
+  applicantStateOfOrigin String?
+  applicantLga       String?
+  applicantLin       String?
+  studentType        String?
+  previousSchool     String?
+  religion           String?
+  ailments           String?
+  challenges         String?
+  bloodGroup         String?
+  genotype           String?
+  maritalStatus      String?
+  fatherName         String?
+  fatherDob          DateTime?
+  fatherAddress      String?
+  fatherOccupation   String?
+  fatherJobTitle     String?
+  fatherEmail        String?
+  fatherPhone1       String?
+  fatherPhone2       String?
+  motherName         String?
+  motherDob          DateTime?
+  motherAddress      String?
+  motherOccupation   String?
+  motherJobTitle     String?
+  motherEmail        String?
+  motherPhone1       String?
+  motherPhone2       String?
+  feePaymentMethod   String?
+  referredBy         String?
+  financialAwareness Boolean?      @default(false)
+  agreeTerms         Boolean?      @default(false)
+  approvedAt         DateTime?
+  approvedBy         String?
+  rejectedAt         DateTime?
+  rejectedBy         String?
+  rejectionReason    String?
+  examScore          Float?
+  examCompletedAt    DateTime?
+  examResult         String?
+  examReference      String?
+  paymentReference   String?
+  verifiedAt         DateTime?
+  submissionData     Json?
+  academicYearId     String?
+  termId             String?
+  status             String        @default("pending")
+  admissionDate      DateTime?
+  remarks            String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  academicYear       AcademicYear? @relation(fields: [academicYearId], references: [id])
+  school             School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  student            Student?      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  term               Term?         @relation(fields: [termId], references: [id])
 
   @@index([schoolId, status])
+  @@index([schoolId, applicationCode])
 }
 
 model Enrollment {

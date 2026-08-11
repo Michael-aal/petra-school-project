@@ -37,6 +37,7 @@ import SubjectsPage from "./Pages/DashboardLayout/pages/setup/SubjectsPage";
 import EnrollmentPage from "./Pages/DashboardLayout/pages/students/EnrollmentPage";
 import EnrollmentCreatePage from "./Pages/DashboardLayout/pages/students/EnrollmentCreatePage";
 import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
+import ApplicantsPage from "./Pages/DashboardLayout/pages/students/ApplicantsPage";
 import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
 import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
 import BusPage from "./Pages/DashboardLayout/pages/academics/BusPage";
@@ -82,7 +83,7 @@ import {
   Wallet,
 } from "lucide-react";
 import "./Styles/DashBoardLayout/SidebarNav.css";
-// import "./styles/theme.css";
+import "../src/utils/theme";
 import SchoolOS from "./Pages/solutions/SchoolOS";
 import FinancialManagement from "./Pages/solutions/FinancialManagement";
 import CBTEngine from "./Pages/solutions/CBTEngine";
@@ -201,6 +202,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/admission_form" element={<AdmissionForm />} />
+<Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />
         <Route path="/register" element={<RegistrationEntry />} />
@@ -265,6 +268,7 @@ function App() {
           <Route path="/dashboard/setup/subjects" element={<SubjectsPage />} />
 
           <Route path="/dashboard/students" element={<StudentsListPage />} />
+          <Route path="/dashboard/students/applicants" element={<ApplicantsPage />} />
           <Route
             path="/dashboard/students/enrollment"
             element={<EnrollmentPage />}

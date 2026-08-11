@@ -20,6 +20,7 @@ import messageRoutes from "./routes/messageRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import schoolRoutes from "./routes/schoolRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
+import admissionRoutes from "./routes/admissionRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -66,6 +67,7 @@ app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
 app.use("/api/parent", parentRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/admissions", admissionRoutes);
 app.use("/api/teacher", teacherRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/messages", messageRoutes);

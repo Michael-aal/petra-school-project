@@ -54,6 +54,7 @@ const navGroups = [
     icon: GraduationCap,
     children: [
       { label: "Students", icon: GraduationCap, href: "/dashboard/students" },
+      { label: "Applicants", icon: GraduationCap, href: "/dashboard/students/applicants" },
       { label: "Enrollment", icon: UserCheck, href: "/dashboard/students/enrollment" },
       { label: "Parents", icon: Users, href: "/dashboard/students/parents" },
       { label: "Gate Monitoring", icon: UserCheck, href: "/dashboard/students/gate" },

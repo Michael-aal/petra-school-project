@@ -3,6 +3,7 @@ import {
   UserPlus, Heart, Users, Wallet, ChevronRight, ChevronLeft, 
   CheckCircle2, AlertCircle 
 } from "lucide-react";
+import { admissionApi } from "./../../../services/admissionApi";
 import "./AdmissionForm.css";
 
 // List of 36 States + FCT
@@ -46,15 +47,79 @@ export default function AdmissionForm() {
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.agreeTerms) {
       alert("Please agree to the terms and conditions to submit.");
       return;
     }
-    console.log("Submitting Application to Backend:", formData);
-    // TODO: Connect to backend API here (e.g., admissionApi.submit(formData))
-    alert("Application Submitted Successfully! Proceeding to payment...");
+
+    try {
+      const payload = {
+        applicationCode: null,
+        applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
+        applicantFirstName: formData.firstName,
+        applicantMiddleName: formData.middleName,
+        applicantLastName: formData.lastName,
+        parentEmail: formData.fatherEmail || formData.motherEmail,
+        parentPhone1: formData.fatherPhone1,
+        parentPhone2: formData.fatherPhone2,
+        intendedClass: formData.admissionClass,
+        applicantGender: formData.gender,
+        applicantDob: formData.dob,
+        applicantPlaceOfBirth: formData.placeOfBirth,
+        applicantNationality: formData.nationality,
+        applicantStateOfOrigin: formData.stateOfOrigin,
+        applicantLga: formData.lga,
+        applicantLin: formData.lin,
+        studentType: formData.studentStatus,
+        previousSchool: formData.previousSchool,
+        religion: formData.religion,
+        ailments: formData.ailments,
+        challenges: formData.challenges,
+        bloodGroup: formData.bloodGroup,
+        genotype: formData.genotype,
+        maritalStatus: formData.maritalStatus,
+        fatherName: formData.fatherName,
+        fatherDob: formData.fatherDob,
+        fatherAddress: formData.fatherAddress,
+        fatherOccupation: formData.fatherOccupation,
+        fatherJobTitle: formData.fatherJobTitle,
+        fatherEmail: formData.fatherEmail,
+        fatherPhone1: formData.fatherPhone1,
+        fatherPhone2: formData.fatherPhone2,
+        motherName: formData.motherName,
+        motherDob: formData.motherDob,
+        motherAddress: formData.motherAddress,
+        motherOccupation: formData.motherOccupation,
+        motherJobTitle: formData.motherJobTitle,
+        motherEmail: formData.motherEmail,
+        motherPhone1: formData.motherPhone1,
+        motherPhone2: formData.motherPhone2,
+        feePaymentMethod: formData.feePaymentMethod,
+        referredBy: formData.referredBy,
+        financialAwareness: formData.financialAwareness,
+        agreeTerms: formData.agreeTerms,
+        submissionData: formData,
+      };
+
+      const response = await admissionApi.submit(payload);
+      alert(response.message || "Application submitted successfully.");
+      setCurrentStep(1);
+      setFormData({
+        email: "", firstName: "", middleName: "", lastName: "", gender: "", dob: "",
+        placeOfBirth: "", nationality: "Nigerian", stateOfOrigin: "", lga: "", lin: "",
+        admissionClass: "", studentStatus: "", previousSchool: "", religion: "",
+        ailments: "None", challenges: "None", bloodGroup: "", genotype: "",
+        maritalStatus: "", fatherName: "", fatherDob: "", fatherAddress: "", fatherOccupation: "", fatherJobTitle: "", fatherEmail: "", fatherPhone1: "", fatherPhone2: "",
+        motherName: "", motherDob: "", motherAddress: "", motherOccupation: "", motherJobTitle: "", motherEmail: "", motherPhone1: "", motherPhone2: "",
+        financialAwareness: false, feePaymentMethod: "", referredBy: "", agreeTerms: false,
+      });
+      setShowLin(false);
+    } catch (error) {
+      console.error(error);
+      alert(error.data?.message || error.message || "Application submission failed. Please try again.");
+    }
   };
 
   const steps = [

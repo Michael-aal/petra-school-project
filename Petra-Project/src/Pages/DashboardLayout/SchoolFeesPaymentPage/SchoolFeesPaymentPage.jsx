@@ -53,7 +53,7 @@ export default function SchoolFeesPaymentPage() {
   const handleGoToPortal = () => {
     // TODO: Redirect to actual parent portal route
     alert("Redirecting to Parent Portal...");
-    // window.location.href = "/portal/dashboard";
+    window.location.href = "/admission_form";
   };
 
   return (
@@ -163,7 +163,7 @@ export default function SchoolFeesPaymentPage() {
               </div>
             </div>
 
-            <button className="fees-portal-btn" onClick={handleGoToPortal}>
+            <button path="/admission_form"  className="fees-portal-btn" onClick={handleGoToPortal}>
               <ArrowRight size={18} />
               <span>Go to Parent Portal</span>
             </button>
