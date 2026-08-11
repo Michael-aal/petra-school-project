@@ -101,6 +101,13 @@ import CommunicationHub from "./Pages/solutions/CommunicationHub";
 import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLinksPage";
 import SuperAdminDashboard from "./Pages/DashboardLayout/pages/dev/SuperAdminDashboard";
 
+
+import AdmissionForm from "./Pages/DashboardLayout/AdmissionForm/AdmissionForm";
+import SchoolFeesPaymentPage from "./Pages/DashboardLayout/SchoolFeesPaymentPage/SchoolFeesPaymentPage";
+import AdmissionPassScreen from "./Pages/DashboardLayout/AdmissionPassScreen/AdmissionPassScreen";
+import ApplicationStatusPage from "./Pages/DashboardLayout/ApplicationStatusPage/ApplicationStatusPage";
+
+
 function PublicLayout() {
   return (
     <>
