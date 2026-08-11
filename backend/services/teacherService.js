@@ -165,7 +165,7 @@ export const teacherService = {
         take: 5,
       }),
       prisma.assessment.findMany({
-        where: { teacherId: user.id, className },
+        where: { teacherId: user.id, className: classId },
         orderBy: { date: "desc" },
         take: 5,
       }),
@@ -371,3 +371,4 @@ export const teacherService = {
     return announcementService.createAnnouncement(user, payload);
   },
 };
+

@@ -75,6 +75,7 @@ export const authApi = {
   me: () =>
     request("/api/auth/me", {
       method: "GET",
+      cache: "no-store",
     }),
   logout: () =>
     request("/api/auth/logout", {

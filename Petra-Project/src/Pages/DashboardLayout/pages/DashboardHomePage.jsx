@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
-  ArrowRight, Banknote, Bell, BookOpen, CheckCircle2,
+  ArrowRight, Banknote, Bell, BookOpen, CalendarDays, CheckCircle2,
   CreditCard, Download, Send, ShieldAlert, Wallet,
 } from "lucide-react";
 import { UserContext } from "../../../context/UserContext";

@@ -15,7 +15,7 @@ export function normalizeRole(value = "") {
   }
 
   if (["parent", "guardian"].includes(normalized)) {
-    return "parent";
+    return normalized;
   }
 
   if (["student", "learner"].includes(normalized)) {
@@ -26,7 +26,7 @@ export function normalizeRole(value = "") {
     return "super_admin";
   }
 
-  return "parent";
+  return normalized;
 }
 
 export function getDashboardPathForRole(role = "") {
@@ -43,7 +43,7 @@ export function getDashboardPathForRole(role = "") {
   if (normalizedRole === "parent" || normalizedRole === "student") {
     return "/portal/dashboard";
   }
-  return `/${normalizedRole}/dashboard`;
+  return normalizedRole ? `/${normalizedRole}/dashboard` : "/signin";
 }
 
 export function getRoleLabel(role = "") {

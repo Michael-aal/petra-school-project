@@ -17,14 +17,14 @@ export const normalizeRole = (role = "") => {
   }
 
   if (["parent", "guardian"].includes(normalized)) {
-    return "parent";
+    return normalized;
   }
 
   if (["student", "learner"].includes(normalized)) {
     return "student";
   }
 
-  return "parent";
+  return normalized;
 };
 
 export const hasRoleAccess = (user = {}, allowedRoles = []) => {
@@ -49,3 +49,4 @@ export const hasRoleAccess = (user = {}, allowedRoles = []) => {
 
   return normalizedAllowedRoles.includes(userRole);
 };
+
