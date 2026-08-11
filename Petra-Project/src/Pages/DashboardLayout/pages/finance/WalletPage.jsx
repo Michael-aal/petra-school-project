@@ -385,7 +385,7 @@ export default function WalletPage() {
               <div className="wallet-action-card">
                 <div>
                   <h4>Account name</h4>
-                  <p>{bankDetails?.accountName || wallet?.accountName || "Petra School Wallet"}</p>
+                  <p>{bankDetails?.accountName || wallet?.accountName || "Nuvora Wallet"}</p>
                 </div>
               </div>
             </div>

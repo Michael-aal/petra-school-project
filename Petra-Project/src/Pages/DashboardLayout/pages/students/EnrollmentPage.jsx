@@ -80,8 +80,8 @@ export default function EnrollmentPage() {
         </svg>
       </button>
    <div className="legalnote">
- <p>© 2026 All rights reserved by PetraSchool.com</p>
-   </div>
+   <p>© 2026 All rights reserved by Nuvora.com</p>
+     </div>
      
     </div>
   

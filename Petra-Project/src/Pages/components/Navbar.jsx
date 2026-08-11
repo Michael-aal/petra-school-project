@@ -13,7 +13,7 @@ import { applyTheme, getInitialTheme } from "../../utils/theme";
 
 import "../../Styles/components/Navbar.css";
 
-const NuxoraLogo = ({ size = 18 }) => (
+const NuvoraLogo = ({ size = 18 }) => (
   <svg
     width={size}
     height={size}
@@ -23,7 +23,7 @@ const NuxoraLogo = ({ size = 18 }) => (
     aria-hidden="true"
     focusable="false"
   >
-    <title>Nuxora</title>
+    <title>Nuvora</title>
     <g fill="currentColor" stroke="none">
       <path d="M12 3L2 8l10 5 10-5-10-5z" />
       <path d="M6.5 11.2c-.2.1-.5.3-.5.6v2.2c0 .7.9 1.6 2.8 2.6 1.8.9 4.2 1.4 6.2 1.4s4.4-.5 6.2-1.4c1.9-1 2.8-1.9 2.8-2.6v-2.2c0-.3-.3-.5-.5-.6L12 15l-5.5-3.8z" opacity="0.95" />
@@ -37,7 +37,7 @@ const NuxoraLogo = ({ size = 18 }) => (
 
 const companyInfo = [
   {
-    logo: <NuxoraLogo size={20} />,
+    logo: <NuvoraLogo size={20} />,
     info: "About Us",
     content: "Our Mission & Story",
     path: "/about",
@@ -117,9 +117,9 @@ export default function Navbar() {
       <div className="navbar-container">
         {/* LEFT */}
         <div className="navbar-left">
-          <NavLink to="/" className="navbar-logo" aria-label="Nuxora home">
-            <NuxoraLogo size={18} />
-            <span className="petra">Nuxora</span>
+          <NavLink to="/" className="navbar-logo" aria-label="Nuvora home">
+            <NuvoraLogo size={18} />
+            <span className="petra">Nuvora</span>
           </NavLink>
 
           {!isMobile && (

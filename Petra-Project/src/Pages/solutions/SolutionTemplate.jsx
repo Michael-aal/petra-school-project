@@ -42,7 +42,7 @@ function FeatureCards({ data }) {
     <section className="solution-section">
       <div className="section-heading">
         <h2>Feature Overview</h2>
-        <p>Focused capabilities designed to feel consistent with Petra's existing dark SaaS language.</p>
+        <p>Focused capabilities designed to feel consistent with Nuvora's existing dark SaaS language.</p>
       </div>
       <div className="solution-grid">
         {data.highlights.map((item) => (

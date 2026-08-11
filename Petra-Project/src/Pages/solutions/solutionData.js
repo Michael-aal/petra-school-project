@@ -24,7 +24,7 @@ export const solutionGroups = [
   {
     header: "For Parents",
     items: [
-      { title: "Petra Pay", path: "/solution/petra-pay", desc: "Fast tuition payments" },
+      { title: "Nuvora Pay", path: "/solution/petra-pay", desc: "Fast tuition payments" },
       { title: "FlexPay", path: "/solution/flexpay", desc: "Installment fee plans" },
       { title: "Performance", path: "/solution/performance", desc: "Track progress and updates" },
     ],
@@ -57,8 +57,8 @@ export const solutionGroups = [
 
 const sharedFaq = [
   {
-    question: "Can we switch modules later?",
-    answer: "Yes. Each solution page represents a focused module, but they are designed to work together inside the same Petra platform.",
+      question: "Can we switch modules later?",
+    answer: "Yes. Each solution page represents a focused module, but they are designed to work together inside the same Nuvora platform.",
   },
   {
     question: "Is the layout responsive?",
@@ -86,7 +86,7 @@ const baseFeatures = {
     "Support objective, theory and practice-based assessments.",
     "Review outcomes instantly with cleaner reporting.",
   ],
-  "Petra Pay": [
+  "Nuvora Pay": [
     "Accept school-related payments with a smooth parent experience.",
     "Reduce friction between the school and family payment flow.",
     "Keep receipts and payment history easy to access.",
@@ -152,7 +152,7 @@ const solutionMeta = {
   "School OS": { icon: School, accent: "#60a5fa", eyebrow: "For Schools", badge: "Operations" },
   "Financial Management": { icon: Wallet, accent: "#34d399", eyebrow: "For Schools", badge: "Finance" },
   "CBT Engine": { icon: ClipboardCheck, accent: "#22d3ee", eyebrow: "For Schools", badge: "Assessment" },
-  "Petra Pay": { icon: ShieldCheck, accent: "#f59e0b", eyebrow: "For Parents", badge: "Payments" },
+  "Nuvora Pay": { icon: ShieldCheck, accent: "#f59e0b", eyebrow: "For Parents", badge: "Payments" },
   FlexPay: { icon: Wallet, accent: "#a78bfa", eyebrow: "For Parents", badge: "Installments" },
   Performance: { icon: LineChart, accent: "#fb7185", eyebrow: "For Parents", badge: "Progress" },
   "AI Study App": { icon: Sparkles, accent: "#8b5cf6", eyebrow: "For Students", badge: "AI Tutor" },
@@ -175,7 +175,7 @@ export function getSolutionData(title) {
     icon: meta.icon,
     accent: meta.accent,
     summary:
-      `A clean, responsive module for ${title.toLowerCase()} built to fit Petra's dark SaaS experience.`,
+      `A clean, responsive module for ${title.toLowerCase()} built to fit Nuvora's dark SaaS experience.`,
     highlights: baseFeatures[title],
     benefits: [
       "Responsive sections that scale from mobile to desktop.",

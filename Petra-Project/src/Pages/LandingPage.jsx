@@ -39,9 +39,9 @@ const modules = [
 
 function ProductPreview() {
   return (
-    <div className="landing-preview" aria-label="Petra school operations dashboard preview">
+    <div className="landing-preview" aria-label="Nuvora school operations dashboard preview">
       <div className="landing-preview-topbar">
-        <div className="preview-brand"><span />Petra OS</div>
+        <div className="preview-brand"><span />Nuvora OS</div>
         <div className="preview-top-actions"><span /> <span /> <b>AD</b></div>
       </div>
       <div className="landing-preview-body">
@@ -76,9 +76,9 @@ export default function LandingPage() {
         <div className="landing-hero-copy">
           <div className="landing-eyebrow"><span /> The school operating system for what comes next</div>
           <h1>Give your school <em>room to grow.</em></h1>
-          <p className="landing-hero-text">Petra brings operations, finance, and learning into one beautifully calm workspace for ambitious schools.</p>
+          <p className="landing-hero-text">Nuvora brings operations, finance, and learning into one beautifully calm workspace for ambitious schools.</p>
           <div className="landing-actions">
-            <NavLink to="/get-started" className="landing-button landing-button-primary">See Petra in action <ArrowRight size={17} /></NavLink>
+            <NavLink to="/get-started" className="landing-button landing-button-primary">See Nuvora in action <ArrowRight size={17} /></NavLink>
             <a href="#platform" className="landing-button landing-button-quiet"><span className="play-icon"><Play size={13} fill="currentColor" /></span> Explore the platform</a>
           </div>
           <div className="landing-proof"><ShieldCheck size={16} /><span>Built for Nigerian schools</span><i /><span>No implementation theatre</span></div>
@@ -86,16 +86,16 @@ export default function LandingPage() {
         <div className="landing-hero-art"><div className="art-orbit art-orbit-one" /><div className="art-orbit art-orbit-two" /><ProductPreview /><div className="art-note art-note-top"><span className="art-note-icon"><WalletCards size={16} /></span><div><b>Fees are moving</b><small>+18.4% this month</small></div></div><div className="art-note art-note-bottom"><span className="art-avatar">JM</span><div><b>Joyce Mensah</b><small>Attendance is up today</small></div><Check size={16} /></div></div>
       </section>
 
-      <section className="landing-trust" aria-label="Petra benefits"><p>One operating rhythm for the whole school</p><div><span>Admissions</span><span>Finance</span><span>Academics</span><span>People</span><span>Communication</span></div></section>
+      <section className="landing-trust" aria-label="Nuvora benefits"><p>One operating rhythm for the whole school</p><div><span>Admissions</span><span>Finance</span><span>Academics</span><span>People</span><span>Communication</span></div></section>
 
       <section className="landing-platform" id="platform">
-        <div className="landing-section-intro"><div className="landing-eyebrow"><span /> A better everyday system</div><h2>Less admin noise.<br /><em>More school momentum.</em></h2><p>Good software should make a complex school feel legible. Petra gives every team the context to act with confidence.</p></div>
+        <div className="landing-section-intro"><div className="landing-eyebrow"><span /> A better everyday system</div><h2>Less admin noise.<br /><em>More school momentum.</em></h2><p>Good software should make a complex school feel legible. Nuvora gives every team the context to act with confidence.</p></div>
         <div className="landing-module-grid">{modules.map(({ icon: Icon, label, title, text, tone }) => <article className={`landing-module landing-module-${tone}`} key={label}><div className="module-icon"><Icon size={20} /></div><small>{label}</small><h3>{title}</h3><p>{text}</p><NavLink to="/solutions">Discover module <ArrowRight size={15} /></NavLink></article>)}</div>
       </section>
 
-      <section className="landing-quote"><div className="quote-mark">“</div><blockquote>Petra helps us see the whole school at once, without making the work feel bigger than it is.</blockquote><div className="quote-person"><span>AO</span><div><b>Amaka Okafor</b><small>School administrator, Lagos</small></div></div></section>
+      <section className="landing-quote"><div className="quote-mark">“</div><blockquote>Nuvora helps us see the whole school at once, without making the work feel bigger than it is.</blockquote><div className="quote-person"><span>AO</span><div><b>Amaka Okafor</b><small>School administrator, Lagos</small></div></div></section>
 
-      <section className="landing-final"><div><div className="landing-eyebrow"><span /> Start with a clearer Monday</div><h2>Your next chapter<br /><em>starts here.</em></h2></div><NavLink to="/get-started" className="landing-button landing-button-dark">Talk to Petra <ArrowRight size={17} /></NavLink></section>
+      <section className="landing-final"><div><div className="landing-eyebrow"><span /> Start with a clearer Monday</div><h2>Your next chapter<br /><em>starts here.</em></h2></div><NavLink to="/get-started" className="landing-button landing-button-dark">Talk to Nuvora <ArrowRight size={17} /></NavLink></section>
     </main>
   );
 }

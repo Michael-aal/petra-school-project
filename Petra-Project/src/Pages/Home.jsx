@@ -60,7 +60,7 @@ function HomeSection1() {
         <div className="section1-content">
           <div className="section1-badge">
             <span className="badge-dot" />
-            PETRA OS V2.0 IS LIVE
+            NUVORA OS V2.0 IS LIVE
           </div>
 
           <h1 className="section1-title">

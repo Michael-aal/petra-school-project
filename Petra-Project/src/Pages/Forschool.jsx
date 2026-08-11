@@ -74,7 +74,7 @@ export default function ForSchool() {
         </h2>
 
         <p className="fsos-description">
-          Stop using fragmented tools. Petra connects your Administration,
+          Stop using fragmented tools. Nuvora connects your Administration,
           Finances, and Assessments into one powerful, unified Operating System.
         </p>
 
@@ -119,7 +119,7 @@ export default function ForSchool() {
       <div className="fsos-reasons">
 
         <h2 className="fsos-reasonsTitle">
-          Why Top Schools Choose Petra
+          Why Top Schools Choose Nuvora
         </h2>
 
         <p className="fsos-reasonsText">

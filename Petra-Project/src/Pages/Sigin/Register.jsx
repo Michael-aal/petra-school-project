@@ -224,14 +224,13 @@ export default function Register({ rolePreset = "" }) {
   return (
     <AuthShell
       eyebrow="Create your account"
-      title={rolePreset === "principal" ? "Register as School Administrator" : rolePreset === "teacher" ? "Register as Staff" : "Join Petra School"}
       subtitle={rolePreset === "principal" ? "Create your school administration account and start managing your institution." : rolePreset === "teacher" ? "Create your staff account and begin managing your school responsibilities." : "Set up your account to access the school dashboard, modules, and secure tools."}
       footnote="Already enrolled? Use the login link below to return to your account."
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header">
           <h2>Register</h2>
-          <p>Fill in the details below to create your Petra School account.</p>
+          <p>Fill in the details below to create your Nuvora account.</p>
         </div>
 
         {serverError ? <div className="auth-alert">{serverError}</div> : null}

@@ -147,7 +147,7 @@ export default function AdmissionForm() {
       <div className="admission-container">
         <div className="admission-header">
           <h1>New Student Admission</h1>
-          <p>Complete the form below to apply for enrollment at Petra School.</p>
+          <p>Complete the form below to apply for enrollment at Nuvora.</p>
         </div>
 
         {/* Progress Stepper */}
@@ -385,7 +385,7 @@ export default function AdmissionForm() {
                 </div>
 
                 <div className="form-group full-width">
-                  <label>Who referred you to Petra School, or how did you hear about us?</label>
+                  <label>Who referred you to Nuvora, or how did you hear about us?</label>
                   <input type="text" name="referredBy" value={formData.referredBy} onChange={handleChange} placeholder="e.g. Mr. Adebayo, Social Media, etc." />
                 </div>
 

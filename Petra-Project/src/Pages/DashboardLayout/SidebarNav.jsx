@@ -154,7 +154,7 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
   const location = useLocation();
   const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
-  const schoolName = userInfo?.schoolName || userInfo?.institution || "Petra";
+  const schoolName = userInfo?.schoolName || userInfo?.institution || "Nuvora";
   const navItems = location.pathname.startsWith("/staff")
     ? staffNavGroups
     : location.pathname.startsWith("/portal")

@@ -7,7 +7,7 @@ export default function Solution() {
     <section className="solution-index">
       <div className="solution-index-hero">
         <p className="solution-index-kicker">Solutions</p>
-        <h1>Choose the right Petra workflow</h1>
+        <h1>Choose the right Nuvora workflow</h1>
         <p>
           Explore every module in the dropdown navigation. Each route is a dedicated landing page with the same
           responsive SaaS hierarchy.
