@@ -284,9 +284,26 @@ export default function GenericListPage({ config, initialData, onDataChange }) {
                                   );
                                 }
 
+                                if (action.onClick) {
+                                  return (
+                                    <button
+                                      key={aIdx}
+                                      className="dropdown-item"
+                                      onClick={() => {
+                                        action.onClick(item);
+                                        setOpenDropdownId(null);
+                                      }}
+                                    >
+                                      <ActionIcon size={16} />
+                                      <span>{action.label}</span>
+                                    </button>
+                                  );
+                                }
+
                                 return (
                                   <button key={aIdx} className="dropdown-item" onClick={() => handleOpenEdit(item)}>
-                                    <ActionIcon size={16} /><span>{action.label}</span>
+                                    <ActionIcon size={16} />
+                                    <span>{action.label}</span>
                                   </button>
                                 );
                               })}

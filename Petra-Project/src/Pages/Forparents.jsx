@@ -1,183 +1,122 @@
-import {Users, Smartphone, CreditCard, PiggyBank, GraduationCap, Heart, Clock, CircleCheck, ArrowRight } from "lucide-react";
- import { NavLink } from "react-router-dom";
+import { Users, Smartphone, CreditCard, PiggyBank, GraduationCap, Heart, Clock, CircleCheck, ArrowRight } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import "../Styles/Forschool.css";
 
-  const ForParentBtn =["Download App", "Learn More"] 
+const parentButtons = ["Download App", "Learn More"];
 
-  const ForParentFeature = [ 
-    { 
-      logo: <CreditCard />,
-      title: "Instant Payments", 
-      info: "Pay tuition, buy uniforms, and settle bills in seconds. Get instant receipts and track your spending history.", 
-      to: "Acceede Pay" ,
-      svgColor: "#2563eb",
-      svgBgColor: "rgb(59, 130, 246/ 0.1)",
-      rightTop: "#3B82F61A"
-    }, 
-      { 
-        logo: <PiggyBank />, 
-        title: "Financial Flexibility", 
-        info: "Can't pay all at once? Split tuition into convenient monthly installments at 0% interest with Flexpay.", 
-        to: "Flexpay" ,
-        svgColor: "#16a34a",
-        svgBgColor: "rgb(34, 197 ,94/ 0.1 )",
-        rightTop: "#22C55E1A"
-      }, 
-      { 
-        logo: <GraduationCap />, 
-        title: "Academic Success", 
-        info: "Give your child a 24/7 AI Tutor. Personalized lesson plans, instant homework help, and exam prep for WAEC & JAMB.", 
-        to: "Study App" ,
-        svgBgColor: "#6366F11A",
-        svgColor: "rgb(79 70 229)",
-        rightTop: "#6366F11A"
-      }, 
-    ] 
-    
-  const forParentModern = [ { logo: <Heart />, title: "Peace of Mind", info: "Never worry about your child being sent home for fees. Flexpay ensures seamless education continuity." }, { logo: <Clock />, title: "Save Time", info: "No more queues at the bank. Pay for everything from tuition to excursions in just a few taps." }, { logo: <CircleCheck />, title: "Real-time Updated", info: "Get notifications when your child attends class, completes an assignment, or when results are released." }, { logo: <Users />, title: "Multi-child Support", info: "Have children in different schools? Manage all their profiles and payments from a single dashboard." }, ]
+const parentFeatures = [
+  {
+    logo: <CreditCard />,
+    title: "Instant Payments",
+    info: "Pay tuition, buy uniforms, and settle bills in seconds. Get instant receipts and track your spending history.",
+    to: "Nuvora Pay",
+    svgColor: "#2563eb",
+    svgBgColor: "rgba(59, 130, 246, 0.12)",
+    rightTop: "rgba(59, 130, 246, 0.12)",
+  },
+  {
+    logo: <PiggyBank />,
+    title: "Financial Flexibility",
+    info: "Can't pay all at once? Split tuition into convenient monthly installments with Flexpay.",
+    to: "Flexpay",
+    svgColor: "#16a34a",
+    svgBgColor: "rgba(22, 163, 74, 0.12)",
+    rightTop: "rgba(22, 163, 74, 0.12)",
+  },
+  {
+    logo: <GraduationCap />,
+    title: "Academic Confidence",
+    info: "Access learning support, homework tracking, and progress insights that keep your child ahead.",
+    to: "Learning Hub",
+    svgColor: "#7c3aed",
+    svgBgColor: "rgba(124, 58, 237, 0.12)",
+    rightTop: "rgba(124, 58, 237, 0.12)",
+  },
+];
 
-  import "../Styles/Forschool.css";
+const parentHighlights = [
+  { logo: <Heart />, title: "Peace of Mind", info: "Know when fees are paid, attendance is logged, and school updates are delivered." },
+  { logo: <Clock />, title: "Save Time", info: "Manage your child’s school life from one dashboard instead of multiple apps." },
+  { logo: <CircleCheck />, title: "Real-time Updates", info: "Receive instant notifications whenever your child’s school activity changes." },
+  { logo: <Users />, title: "Multi-child Support", info: "Keep siblings in different classes or schools organized under one parent account." },
+];
+
 export default function Forparents() {
   return (
-    <section className="fparent">
-
-        <div className="fparent-header">
-
-          <h2 className="fparent-badge">
-            <Users />
-            FOR PARENTS
-          </h2>
-
-          <h3 className="fparent-title">
-            Champion Your Child's <span>Future</span>
-          </h3>
-
-          <p className="fparent-description">
-            Paying for school shouldn't be a struggle. Acceede gives you the
-            financial tools to keep your child in school and the academic
-            insights to ensure they excel.
-          </p>
-
-          <div className="fparent-actions">
-            {ForParentBtn.map((item, index) => (
-              <NavLink
-                to="/"
-                key={index}
-                className={
-                  index === 0
-                    ? "fparent-btnPrimary"
-                    : "fparent-btnSecondary"
-                }
-              >
-                {item}
-                {index === 0 && <Smartphone className="fparent-btnIcon" />}
-              </NavLink>
-            ))}
-          </div>
-
-        </div>
-
-        <div className="fparent-features">
-
-          {ForParentFeature.map((item, index) => (
-            <div className="fparent-featureCard" key={index}>
-
-              <div
-  className="feature-top-circle"
-  style={{ backgroundColor: item.rightTop }}
-></div>
-
-              <h3 className="fparent-featureIcon" style={{backgroundColor: item.svgBgColor, color: item.svgColor}}>
-                {item.logo}
-              </h3>
-
-              <h2 className="fparent-featureTitle">
-                {item.title}
-              </h2>
-
-              <p className="fparent-featureText">
-                {item.info}
-              </p>
-
-              <h4 className="fparent-featureLink"style={{color: item.svgColor}} >
-                Explore {item.to} <ArrowRight />
-              </h4>
-
-            </div>
-          ))}
-
-        </div>
-
-
-      {/* Modern Parenting */}
-      <div className="fparent-modern">
-
-        <h2 className="fparent-modernTitle">
-          Built for Modern Parenting
-        </h2>
-
-        <p className="fparent-modernDescription">
-          We handle the logistics so you can focus on what matters most:
-          raising the next generation of leaders.
+    <section className="marketing-page fparent">
+      <div className="marketing-header">
+        <span className="marketing-badge">
+          <Users />
+          For Parents
+        </span>
+        <h1 className="marketing-title">
+          Champion your child’s <span>future</span>
+        </h1>
+        <p className="marketing-description">
+          Paying for school shouldn’t be a struggle. Nuvora gives parents fast payments, clear school updates, and the tools they need to stay informed.
         </p>
+        <div className="marketing-actions">
+          {parentButtons.map((item, index) => (
+            <NavLink
+              to="/"
+              key={index}
+              className={index === 0 ? "marketing-btn marketing-btn-primary" : "marketing-btn marketing-btn-secondary"}
+            >
+              {item}
+              {index === 0 && <Smartphone className="button-icon" />}
+            </NavLink>
+          ))}
+        </div>
+      </div>
 
-        <div className="fparent-modernGrid">
+      <div className="marketing-section feature-grid">
+        {parentFeatures.map((item, index) => (
+          <article className="marketing-card" key={index}>
+            <span className="feature-top-circle" style={{ backgroundColor: item.rightTop }} />
+            <div className="marketing-card-icon" style={{ backgroundColor: item.svgBgColor, color: item.svgColor }}>
+              {item.logo}
+            </div>
+            <h3 className="marketing-card-title">{item.title}</h3>
+            <p className="marketing-card-text">{item.info}</p>
+            <NavLink to="/" className="marketing-card-link" style={{ color: item.svgColor }}>
+              Explore {item.to} <ArrowRight />
+            </NavLink>
+          </article>
+        ))}
+      </div>
 
-          {forParentModern.map((item, index) => (
-            <div className="fparent-modernCard" key={index}>
-
-              <h3 className="fparent-modernIcon">
-                {item.logo}
-              </h3>
-
-              <div className="fparent-modernContent">
-
-                <h2 className="fparent-modernCardTitle">
-                  {item.title}
-                </h2>
-
-                <p className="fparent-modernCardText">
-                  {item.info}
-                </p>
-
-              </div>
-
+      <section className="marketing-section marketing-highlight-section">
+        <div className="marketing-intro-block">
+          <h2>Built for Modern Parenting</h2>
+          <p>
+            We handle the logistics so you can focus on what matters most: raising the next generation of leaders.
+          </p>
+        </div>
+        <div className="feature-grid highlight-grid">
+          {parentHighlights.map((item, index) => (
+            <div className="marketing-card" key={index}>
+              <div className="marketing-card-icon highlight-icon">{item.logo}</div>
+              <h3 className="marketing-card-title">{item.title}</h3>
+              <p className="marketing-card-text">{item.info}</p>
             </div>
           ))}
-
         </div>
+      </section>
 
-      </div>
-      
-      {/* App Download */}
-<div className="fparent-download">
-
-  <div className="fparent-downloadBadge">
-    <Smartphone />
-    <span>FOR PARENTS</span>
-  </div>
-
-  <h2 className="fparent-downloadTitle">
-    Join the Community
-  </h2>
-
-  <p className="fparent-downloadText">
-    Over 50,000 parents are already using Acceede to power their children's education.
-  </p>
-
-  <div className="fparent-downloadActions">
-
-    <a href="/" className=" appBtn fparent-storeButton">
-      Google Play
-    </a>
-
-    <a href="/" className="  fparent-storeButton secondary">
-      App Store
-    </a>
-
-  </div>
-
-</div>
-
+      <section className="marketing-section marketing-cta">
+        <div className="cta-badge">
+          <Smartphone />
+          <span>For Parents</span>
+        </div>
+        <h2 className="marketing-cta-title">Join the Community</h2>
+        <p className="marketing-cta-text">
+          Over 50,000 parents are already using Nuvora to simplify school payments, monitor progress, and stay connected.
+        </p>
+        <div className="marketing-actions">
+          <a href="/" className="marketing-btn marketing-btn-primary">Google Play</a>
+          <a href="/" className="marketing-btn marketing-btn-secondary">App Store</a>
+        </div>
+      </section>
     </section>
-  )
+  );
 }

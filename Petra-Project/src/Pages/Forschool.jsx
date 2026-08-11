@@ -2,166 +2,134 @@ import { Building2, ArrowRight, LayoutDashboard, Wallet, TestTube, TrendingUp, S
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
 
-const forSchoolBtn = ["Request a Strategic Demo", "Contact Sales"];
+const schoolButtons = ["Request a Strategic Demo", "Contact Sales"];
 
-const ForSchoolPurpose = [
-    {
-        logo: <LayoutDashboard />,
-        title: "Core Operation",
-        info: "Manage students, staff, attendance, and results generation with ease. The backbone of your digital campus.",
-        to: "School OS",
-        svgColor: "#9333ea",
-        svgBgColor: "#A855F71A",
-        rightTop: "#A855F714",
-    },
-    {
-        logo: <Wallet />,
-        title: "Financial Control",
-        info: "Eliminate fraud, automate fee collection, and boost revenue with Flexpay installment plans for parents.",
-        to: "Finance",
-        svgColor: "rgb(22 163 74)",
-        svgBgColor: "rgb(34 197 94 / 0.1)",
-        rightTop: "#22C55E1A"
-    },
-    {
-        logo: <TestTube />,
-        title: "Modern Assessment",
-        info: "Conduct exams, CA, and homework digitally. Save thousands of teacher hours on grading and analysis.",
-        to: "CBT Engine",
-        svgColor: "#0891b2",
-        svgBgColor: "rgb(6 182 212 / 0.1)",
-        rightTop: "#06B6D41A"
-    }
-]
+const schoolFeatures = [
+  {
+    logo: <LayoutDashboard />,
+    title: "Core Operations",
+    info: "Manage students, staff, attendance, and results from a single, unified school platform.",
+    to: "School OS",
+    svgColor: "#9333ea",
+    svgBgColor: "rgba(148, 63, 247, 0.12)",
+    rightTop: "rgba(148, 63, 247, 0.12)",
+  },
+  {
+    logo: <Wallet />,
+    title: "Financial Control",
+    info: "Eliminate fraud, automate fee collection, and improve transparency for parents and administrators.",
+    to: "Finance",
+    svgColor: "#16a34a",
+    svgBgColor: "rgba(22, 163, 74, 0.12)",
+    rightTop: "rgba(22, 163, 74, 0.12)",
+  },
+  {
+    logo: <TestTube />,
+    title: "Modern Assessment",
+    info: "Run exams, quizzes, and performance analytics with fewer manual steps and clearer insights.",
+    to: "Assessments",
+    svgColor: "#0891b2",
+    svgBgColor: "rgba(6, 182, 212, 0.12)",
+    rightTop: "rgba(6, 182, 212, 0.12)",
+  },
+];
 
-const topSchoolInfo = [
-    {
-        logo: <TrendingUp className="fsos-svg" />,
-        title: "Revenue Assurance",
-        info: "Our integrated payment rails and reconciliation tools ensure you collect 100% of your fees, on time. No more leakages."
-    },
-    {
-        logo: <Shield className="fsos-svg" />,
-        title: "Data Security First",
-        info: "We employ bank-grade encryption and security protocols to keep your sensitive student and financial data safe."
-    },
-    {
-        logo: <CircleCheck className="fsos-svg" />,
-        title: "Dedicated Support",
-        info: "You get a dedicated account manager and 24/7 technical support. We are an extension of your team."
-    },
-    {
-        logo: <Building2 className="fsos-svg" />,
-        title: "Scalable Infrastructure",
-        info: "Whether you have 50 students or 5,000, our cloud-native infrastructure scales with your growth without skipping a beat."
-    },
-]
+const schoolBenefits = [
+  {
+    logo: <TrendingUp className="marketing-icon" />,
+    title: "Revenue Assurance",
+    info: "Capture every fee payment and simplify reconciliation with built-in tracking and reporting.",
+  },
+  {
+    logo: <Shield className="marketing-icon" />,
+    title: "Data Security First",
+    info: "Bank-grade security keeps student and financial data protected across every school workflow.",
+  },
+  {
+    logo: <CircleCheck className="marketing-icon" />,
+    title: "Dedicated Support",
+    info: "Access a team of education specialists who help you launch and scale with confidence.",
+  },
+  {
+    logo: <Building2 className="marketing-icon" />,
+    title: "Scalable Infrastructure",
+    info: "Support 50 or 5,000 learners with cloud-native performance and high availability.",
+  },
+];
 
 export default function ForSchool() {
   return (
-    <section className="fsos">
-
-      {/* HEADER */}
-      <div className="fsos-header">
-
-        <div className="fsos-badge">
+    <section className="marketing-page fsos">
+      <div className="marketing-header">
+        <span className="marketing-badge">
           <Building2 />
-          FOR SCHOOLS
-        </div>
-
-        <h2 className="fsos-title">
-          Run Your Entire School on <span className="text1">Autopilot</span>
-        </h2>
-
-        <p className="fsos-description">
-          Stop using fragmented tools. Nuvora connects your Administration,
-          Finances, and Assessments into one powerful, unified Operating System.
+          For Schools
+        </span>
+        <h1 className="marketing-title">
+          Run your entire school on <span>autopilot</span>
+        </h1>
+        <p className="marketing-description">
+          Stop using fragmented tools. Nuvora connects administration, finance, and assessments into one powerful operating system.
         </p>
-
-        <div className="fsos-actions">
-          {forSchoolBtn.map((item, index) => (
-            <NavLink to="/" key={index} className={index === 0 ? "fsos-btn1" : "fsos-btn2"}>
+        <div className="marketing-actions">
+          {schoolButtons.map((item, index) => (
+            <NavLink
+              to="/"
+              key={index}
+              className={index === 0 ? "marketing-btn marketing-btn-primary" : "marketing-btn marketing-btn-secondary"}
+            >
               {item}
-              {index === 0 && <ArrowRight className="fsos-icon" />}
+              {index === 0 && <ArrowRight className="button-icon" />}
             </NavLink>
           ))}
         </div>
-
       </div>
 
-      {/* FEATURES */}
-      <div className="fsos-features">
-
-        {ForSchoolPurpose.map((item, index) => (
-          <div className="fsos-featureCard" key={index}>
-
-            <div
-  className="feature-top-circle"
-  style={{ backgroundColor: item.rightTop }}
-></div>
-
-            <h3 className="fsos-featureIcon" style={{backgroundColor: item.svgBgColor, color: item.svgColor}}>{item.logo}</h3>
-
-            <h2 className="fsos-featureTitle">{item.title}</h2>
-
-            <p className="fsos-featureText">{item.info}</p>
-
-            <h4 className="fsos-featureLink" style={{color: item.svgColor}} >
-              Explore {item.to} <ArrowRight />
-            </h4>
-
-          </div>
-        ))}
-
-      </div>
-
-      {/* REASONS */}
-      <div className="fsos-reasons">
-
-        <h2 className="fsos-reasonsTitle">
-          Why Top Schools Choose Nuvora
-        </h2>
-
-        <p className="fsos-reasonsText">
-          We don't just sell software; we partner with you to achieve operational excellence.
-        </p>
-
-<div className="fsos-info">
-        {topSchoolInfo.map((item, index) => (
-          <div className="fsos-reasonItem" key={index}>
-
-            <h3 className="fsos-reasonIcon">{item.logo}</h3>
-
-            <div className="fsos-reasonContent">
-              <h4 className="fsos-reasonTitle">{item.title}</h4>
-              <p className="fsos-reasonText">{item.info}</p>
+      <div className="marketing-section feature-grid">
+        {schoolFeatures.map((item, index) => (
+          <article className="marketing-card" key={index}>
+            <span className="feature-top-circle" style={{ backgroundColor: item.rightTop }} />
+            <div className="marketing-card-icon" style={{ backgroundColor: item.svgBgColor, color: item.svgColor }}>
+              {item.logo}
             </div>
-
-          </div>
+            <h3 className="marketing-card-title">{item.title}</h3>
+            <p className="marketing-card-text">{item.info}</p>
+            <NavLink to="/" className="marketing-card-link" style={{ color: item.svgColor }}>
+              Explore {item.to} <ArrowRight />
+            </NavLink>
+          </article>
         ))}
-
-        </div>
-
       </div>
 
-      {/* CTA */}
-      <div className="fsos-cta">
+      <section className="marketing-section marketing-highlight-section">
+        <div className="marketing-intro-block">
+          <h2>Why Top Schools Choose Nuvora</h2>
+          <p>We partner with schools to deliver operational excellence, stronger finances, and safer student management.</p>
+        </div>
+        <div className="feature-grid highlight-grid">
+          {schoolBenefits.map((item, index) => (
+            <div className="marketing-card" key={index}>
+              <div className="marketing-card-icon highlight-icon">{item.logo}</div>
+              <h3 className="marketing-card-title">{item.title}</h3>
+              <p className="marketing-card-text">{item.info}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        <h2 className="fsos-ctaTitle">
-          Ready to Modernize Your School?
-        </h2>
-
-        <p className="fsos-ctaText">
-          Join hundreds of forward-thinking institutions that trust Acceede.
-          Schedule a personalized walkthrough today.
+      <section className="marketing-section marketing-cta">
+        <div className="cta-badge">
+          <Shield />
+          <span>For Schools</span>
+        </div>
+        <h2 className="marketing-cta-title">Ready to modernize your school?</h2>
+        <p className="marketing-cta-text">
+          Join hundreds of forward-thinking institutions that trust Nuvora. Schedule a personalized walkthrough today.
         </p>
-
-        <NavLink to="/" className="fsos-ctaButton">
+        <NavLink to="/" className="marketing-btn marketing-btn-primary">
           Book Your Demo
         </NavLink>
-
-      </div>
-
+      </section>
     </section>
   );
 }
