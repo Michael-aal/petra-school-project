@@ -15,5 +15,14 @@ export const admissionApi = {
     });
     return request(`/api/admissions${query.toString() ? `?${query.toString()}` : ""}`);
   },
+  approve: (id) =>
+    request(`/api/admissions/${encodeURIComponent(id)}/approve`, {
+      method: "PATCH",
+    }),
+  reject: (id, reason) =>
+    request(`/api/admissions/${encodeURIComponent(id)}/reject`, {
+      method: "PATCH",
+      body: JSON.stringify({ reason }),
+    }),
   getById: (id) => request(`/api/admissions/${encodeURIComponent(id)}`),
 };

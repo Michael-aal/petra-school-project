@@ -17,6 +17,7 @@ export default function ApplicantsPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [classFilter, setClassFilter] = useState("");
   const [pagination, setPagination] = useState({ total: 0, totalPages: 1 });
+  const [actionBusy, setActionBusy] = useState(false);
 
   const loadApplicants = async (requestedPage = 1) => {
     setLoading(true);
@@ -36,6 +37,46 @@ export default function ApplicantsPage() {
       setError(err.message || "Failed to load applicants");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApprove = async (applicantId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to approve this applicant for the entrance examination?"
+    );
+    if (!confirm) return;
+
+    setActionBusy(true);
+    setError("");
+    try {
+      await admissionApi.approve(applicantId);
+      await loadApplicants(page);
+    } catch (err) {
+      setError(err.message || "Failed to approve the applicant");
+    } finally {
+      setActionBusy(false);
+    }
+  };
+
+  const handleReject = async (applicantId) => {
+    const reason = window.prompt(
+      "Enter a rejection reason (optional):",
+      ""
+    );
+    const confirm = window.confirm(
+      "Are you sure you want to reject this application?"
+    );
+    if (!confirm) return;
+
+    setActionBusy(true);
+    setError("");
+    try {
+      await admissionApi.reject(applicantId, reason || "");
+      await loadApplicants(page);
+    } catch (err) {
+      setError(err.message || "Failed to reject the applicant");
+    } finally {
+      setActionBusy(false);
     }
   };
 
@@ -107,7 +148,7 @@ export default function ApplicantsPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="students-empty-state">Loading applicants...</td>
+                <td colSpan={7} className="students-empty-state">Loading applicants...</td>
               </tr>
             ) : applicants.length ? (
               applicants.map((applicant) => (
@@ -117,12 +158,41 @@ export default function ApplicantsPage() {
                   <td>{applicant.intendedClass || "—"}</td>
                   <td>{applicant.status || "pending"}</td>
                   <td>{applicant.parentEmail || "—"}</td>
-                  <td className="text-right">{new Date(applicant.createdAt).toLocaleDateString()}</td>
+                  <td>{new Date(applicant.createdAt).toLocaleDateString()}</td>
+                  <td className="action-cell">
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => window.alert("View applicant details is not implemented yet")}
+                    >
+                      View
+                    </button>
+                    {applicant.status === "pending" ? (
+                      <>
+                        <button
+                          type="button"
+                          className="btn-success"
+                          onClick={() => handleApprove(applicant.id)}
+                          disabled={actionBusy}
+                        >
+                          Approve for Entrance Exam
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          onClick={() => handleReject(applicant.id)}
+                          disabled={actionBusy}
+                        >
+                          Reject Application
+                        </button>
+                      </>
+                    ) : null}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="students-empty-state">No applicants found.</td>
+                <td colSpan={7} className="students-empty-state">No applicants found.</td>
               </tr>
             )}
           </tbody>

@@ -40,6 +40,15 @@ const navGroups = [
   { label: "Get Started", icon: LayoutDashboard, href: "/dashboard/get-started" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   {
+    label: "Overview",
+    icon: BarChart2,
+    children: [
+      { label: "Live Overview", icon: BarChart2, href: "/dashboard/overview/live" },
+      { label: "Daily Reports", icon: Calendar, href: "/dashboard/overview/daily" },
+      { label: "Term Summary", icon: TrendingUp, href: "/dashboard/overview/term" },
+    ],
+  },
+  {
     label: "School Setup",
     icon: School,
     children: [

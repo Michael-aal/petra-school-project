@@ -39,6 +39,9 @@ import EnrollmentCreatePage from "./Pages/DashboardLayout/pages/students/Enrollm
 import ParentsPage from "./Pages/DashboardLayout/pages/students/ParentsPage";
 import ApplicantsPage from "./Pages/DashboardLayout/pages/students/ApplicantsPage";
 import GatePage from "./Pages/DashboardLayout/pages/students/GatePage";
+import LiveOverviewPage from "./Pages/DashboardLayout/pages/overview/LiveOverviewPage";
+import DailyReportsPage from "./Pages/DashboardLayout/pages/overview/DailyReportsPage";
+import TermSummaryPage from "./Pages/DashboardLayout/pages/overview/TermSummaryPage";
 import TimetablePage from "./Pages/DashboardLayout/pages/academics/TimetablePage";
 import BusPage from "./Pages/DashboardLayout/pages/academics/BusPage";
 import AttendancePage from "./Pages/DashboardLayout/pages/academics/AttendancePage";
@@ -260,8 +263,11 @@ function App() {
         {/* Dashboard */}
         <Route element={<DashboardLay />}>
           <Route path="/dashboard" element={<DashboardHomePage />} />
+          <Route path="/dashboard/overview" element={<LiveOverviewPage />} />
+          <Route path="/dashboard/overview/live" element={<LiveOverviewPage />} />
+          <Route path="/dashboard/overview/daily" element={<DailyReportsPage />} />
+          <Route path="/dashboard/overview/term" element={<TermSummaryPage />} />
           <Route path="/dashboard/get-started" element={<GetStarted />} />
-          <Route path="/dashboard/setup" element={<SchoolSetupPage />} />
           <Route path="/dashboard/setup/profile" element={<ProfilePage />} />
           <Route path="/dashboard/setup/sessions" element={<SessionsPage />} />
           <Route path="/dashboard/setup/classes" element={<ClassesPage />} />

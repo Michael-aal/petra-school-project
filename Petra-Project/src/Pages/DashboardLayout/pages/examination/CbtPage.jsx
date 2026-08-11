@@ -38,8 +38,21 @@ export default function CbtPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [cmBusyMap, setCmBusyMap] = useState({});
   const [error, setError] = useState(null);
   const [form, setForm] = useState(initialAssessmentForm);
+
+  const parseClassMarkerMeta = (description) => {
+    if (!description) return null;
+    const marker = "[ClassMarkerMeta]";
+    const idx = description.indexOf(marker);
+    if (idx === -1) return null;
+    try {
+      return JSON.parse(description.slice(idx + marker.length).trim());
+    } catch (err) {
+      return null;
+    }
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -112,6 +125,50 @@ export default function CbtPage() {
       setError(requestError.message || "Unable to delete the assessment.");
     } finally {
       setBusy(false);
+    }
+  };
+
+  const handleCreateRemoteExam = async (assessmentId) => {
+    setError(null);
+    setCmBusyMap((m) => ({ ...m, [assessmentId]: true }));
+    try {
+      await teacherApi.classmarker.createExam({ assessmentId });
+      await loadData();
+    } catch (e) {
+      setError(e.message || "Unable to create remote exam");
+    } finally {
+      setCmBusyMap((m) => ({ ...m, [assessmentId]: false }));
+    }
+  };
+
+  const handleLaunchRemote = async (assessmentId) => {
+    setError(null);
+    setCmBusyMap((m) => ({ ...m, [assessmentId]: true }));
+    try {
+      const response = await teacherApi.classmarker.launch(assessmentId);
+      if (response.url) {
+        window.open(response.url, "_blank");
+      } else {
+        setError("No launch URL returned");
+      }
+    } catch (e) {
+      setError(e.message || "Unable to get launch link");
+    } finally {
+      setCmBusyMap((m) => ({ ...m, [assessmentId]: false }));
+    }
+  };
+
+  const handleSyncResults = async (assessmentId) => {
+    setError(null);
+    setCmBusyMap((m) => ({ ...m, [assessmentId]: true }));
+    try {
+      const response = await teacherApi.classmarker.syncResults(assessmentId);
+      await loadData();
+      if (!response.success) setError(response.message || "Sync returned no success flag");
+    } catch (e) {
+      setError(e.message || "Unable to sync results");
+    } finally {
+      setCmBusyMap((m) => ({ ...m, [assessmentId]: false }));
     }
   };
 
@@ -205,14 +262,36 @@ export default function CbtPage() {
                   </div>
                   <div className="cbt-list-meta">
                     <span>{formatDate(item.date)}</span>
-                    <button
-                      type="button"
-                      className="cbt-icon-button"
-                      onClick={() => handleDeleteAssessment(item.id)}
-                      disabled={busy}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      {(() => {
+                        const meta = parseClassMarkerMeta(item.description);
+                        if (meta && meta.remoteId) {
+                          return (
+                            <>
+                              <button type="button" className="cbt-small-button" onClick={() => handleLaunchRemote(item.id)} disabled={cmBusyMap[item.id]}>
+                                Launch
+                              </button>
+                              <button type="button" className="cbt-small-button" onClick={() => handleSyncResults(item.id)} disabled={cmBusyMap[item.id]}>
+                                Sync
+                              </button>
+                            </>
+                          );
+                        }
+                        return (
+                          <button type="button" className="cbt-small-button" onClick={() => handleCreateRemoteExam(item.id)} disabled={cmBusyMap[item.id]}>
+                            Create (ClassMarker)
+                          </button>
+                        );
+                      })()}
+                      <button
+                        type="button"
+                        className="cbt-icon-button"
+                        onClick={() => handleDeleteAssessment(item.id)}
+                        disabled={busy}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </li>
               ))}

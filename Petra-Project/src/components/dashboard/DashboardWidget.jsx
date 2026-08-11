@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 
-export default function DashboardWidget({ title, subtitle, actionLabel, children, compact = false }) {
+export default function DashboardWidget({ title, subtitle, actionLabel, actionHref, onAction, children, compact = false }) {
   return (
     <section className={`dashboard-widget${compact ? " dashboard-widget-compact" : ""}`}>
       <div className="dashboard-widget-head">
@@ -9,10 +9,17 @@ export default function DashboardWidget({ title, subtitle, actionLabel, children
           <h3>{title}</h3>
         </div>
         {actionLabel ? (
-          <button className="dashboard-widget-action" type="button">
-            <span>{actionLabel}</span>
-            <ArrowRight size={14} />
-          </button>
+          onAction ? (
+            <button className="dashboard-widget-action" type="button" onClick={onAction}>
+              <span>{actionLabel}</span>
+              <ArrowRight size={14} />
+            </button>
+          ) : (
+            <a className="dashboard-widget-action" href={actionHref || "#"}>
+              <span>{actionLabel}</span>
+              <ArrowRight size={14} />
+            </a>
+          )
         ) : null}
       </div>
       <div className="dashboard-widget-body">{children}</div>

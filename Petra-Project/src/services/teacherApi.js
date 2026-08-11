@@ -49,4 +49,10 @@ export const teacherApi = {
   createResult: (payload) => request("/api/teacher/results", { method: "POST", body: JSON.stringify(payload) }),
   updateResult: (id, payload) => request(`/api/teacher/results/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   announcements: () => request("/api/teacher/announcements"),
+  // ClassMarker integration endpoints
+  classmarker: {
+    createExam: (payload) => request("/api/classmarker/exams", { method: "POST", body: JSON.stringify(payload) }),
+    launch: (assessmentId) => request(`/api/classmarker/exams/${assessmentId}/launch`),
+    syncResults: (assessmentId) => request(`/api/classmarker/exams/${assessmentId}/sync-results`, { method: "POST" }),
+  },
 };

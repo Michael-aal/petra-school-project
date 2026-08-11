@@ -47,6 +47,15 @@ const safeAdmission = (admission) => ({
   intendedClass: admission.intendedClass,
   applicantGender: admission.applicantGender,
   status: admission.status,
+  approvedAt: admission.approvedAt,
+  approvedBy: admission.approvedBy,
+  rejectedAt: admission.rejectedAt,
+  rejectedBy: admission.rejectedBy,
+  rejectionReason: admission.rejectionReason,
+  examScore: admission.examScore,
+  examCompletedAt: admission.examCompletedAt,
+  examResult: admission.examResult,
+  examReference: admission.examReference,
   createdAt: admission.createdAt,
   updatedAt: admission.updatedAt,
   parentEmail: admission.parentEmail,
@@ -106,7 +115,60 @@ export const admissionService = {
       throw error;
     }
 
-    return admission;
+    return safeAdmission(admission);
+  },
+
+  approve: async (id, userId) => {
+    const admission = await prisma.admission.findUnique({ where: { id } });
+    if (!admission) {
+      const error = new Error("Admission not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (admission.status !== "pending") {
+      const error = new Error("Only pending applications can be approved");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const updated = await prisma.admission.update({
+      where: { id },
+      data: {
+        status: "approved",
+        approvedAt: new Date(),
+        approvedBy: userId,
+      },
+    });
+
+    return safeAdmission(updated);
+  },
+
+  reject: async (id, userId, reason = "") => {
+    const admission = await prisma.admission.findUnique({ where: { id } });
+    if (!admission) {
+      const error = new Error("Admission not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (admission.status !== "pending") {
+      const error = new Error("Only pending applications can be rejected");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const updated = await prisma.admission.update({
+      where: { id },
+      data: {
+        status: "rejected",
+        rejectedAt: new Date(),
+        rejectedBy: userId,
+        rejectionReason: reason || "",
+      },
+    });
+
+    return safeAdmission(updated);
   },
 create: async (payload) => {
   const schoolId = await resolveSchoolId(payload.schoolId);

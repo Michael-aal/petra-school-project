@@ -24,6 +24,24 @@ export const getAdmissionById = async (req, res, next) => {
   }
 };
 
+export const approveAdmission = async (req, res, next) => {
+  try {
+    const admission = await admissionService.approve(req.params.id, req.user.id);
+    return res.status(200).json({ success: true, message: "Applicant approved for entrance exam", admission });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const rejectAdmission = async (req, res, next) => {
+  try {
+    const admission = await admissionService.reject(req.params.id, req.user.id, req.body.reason || "");
+    return res.status(200).json({ success: true, message: "Applicant rejected", admission });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const createAdmission = async (req, res, next) => {
   try {
     const admission = await admissionService.create(req.body);
