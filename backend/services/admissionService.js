@@ -108,67 +108,137 @@ export const admissionService = {
 
     return admission;
   },
+create: async (payload) => {
+  const schoolId = await resolveSchoolId(payload.schoolId);
 
-  create: async (payload) => {
-    const schoolId = await resolveSchoolId(payload.schoolId);
-    const applicantName = String(
-      payload.applicantName ||
-        [payload.applicantFirstName, payload.applicantMiddleName, payload.applicantLastName]
-          .filter(Boolean)
-          .join(" "),
-    ).trim();
+  // Accept the current frontend field names
+  // and map them to the existing Prisma/database field names.
+  const applicantFirstName =
+    payload.applicantFirstName || payload.firstName || "";
 
-    const admission = await prisma.admission.create({
-      data: {
-        schoolId,
-        applicationCode: makeApplicationCode(schoolId),
-        applicantName,
-        applicantFirstName: payload.applicantFirstName || "",
-        applicantMiddleName: payload.applicantMiddleName || "",
-        applicantLastName: payload.applicantLastName || "",
-        parentEmail: payload.parentEmail || "",
-        parentPhone: payload.parentPhone1 || payload.parentPhone2 || "",
-        intendedClass: payload.intendedClass || "",
-        applicantGender: payload.applicantGender || "",
-        applicantDob: parseDate(payload.applicantDob),
-        applicantPlaceOfBirth: payload.applicantPlaceOfBirth || "",
-        applicantNationality: payload.applicantNationality || "",
-        applicantStateOfOrigin: payload.applicantStateOfOrigin || "",
-        applicantLga: payload.applicantLga || "",
-        applicantLin: payload.applicantLin || "",
-        studentType: payload.studentType || "",
-        previousSchool: payload.previousSchool || "",
-        religion: payload.religion || "",
-        ailments: payload.ailments || "",
-        challenges: payload.challenges || "",
-        bloodGroup: payload.bloodGroup || "",
-        genotype: payload.genotype || "",
-        maritalStatus: payload.maritalStatus || "",
-        fatherName: payload.fatherName || "",
-        fatherDob: parseDate(payload.fatherDob),
-        fatherAddress: payload.fatherAddress || "",
-        fatherOccupation: payload.fatherOccupation || "",
-        fatherJobTitle: payload.fatherJobTitle || "",
-        fatherEmail: payload.fatherEmail || "",
-        fatherPhone1: payload.fatherPhone1 || "",
-        fatherPhone2: payload.fatherPhone2 || "",
-        motherName: payload.motherName || "",
-        motherDob: parseDate(payload.motherDob),
-        motherAddress: payload.motherAddress || "",
-        motherOccupation: payload.motherOccupation || "",
-        motherJobTitle: payload.motherJobTitle || "",
-        motherEmail: payload.motherEmail || "",
-        motherPhone1: payload.motherPhone1 || "",
-        motherPhone2: payload.motherPhone2 || "",
-        feePaymentMethod: payload.feePaymentMethod || "",
-        referredBy: payload.referredBy || "",
-        financialAwareness: Boolean(payload.financialAwareness),
-        agreeTerms: Boolean(payload.agreeTerms),
-        submissionData: payload.submissionData || payload,
-        status: "pending",
-      },
-    });
+  const applicantMiddleName =
+    payload.applicantMiddleName || payload.middleName || "";
 
-    return admission;
-  },
-};
+  const applicantLastName =
+    payload.applicantLastName || payload.lastName || "";
+
+  const applicantGender =
+    payload.applicantGender || payload.gender || "";
+
+  const applicantDob =
+    payload.applicantDob || payload.dob;
+
+  const applicantPlaceOfBirth =
+    payload.applicantPlaceOfBirth || payload.placeOfBirth || "";
+
+  const applicantNationality =
+    payload.applicantNationality || payload.nationality || "";
+
+  const applicantStateOfOrigin =
+    payload.applicantStateOfOrigin || payload.stateOfOrigin || "";
+
+  const applicantLga =
+    payload.applicantLga || payload.lga || "";
+
+  const applicantLin =
+    payload.applicantLin || payload.lin || "";
+
+  const intendedClass =
+    payload.intendedClass || payload.admissionClass || "";
+
+  const studentType =
+    payload.studentType || payload.studentStatus || "";
+
+  const applicantName = String(
+    payload.applicantName ||
+      [
+        applicantFirstName,
+        applicantMiddleName,
+        applicantLastName,
+      ]
+        .filter(Boolean)
+        .join(" ")
+  ).trim();
+
+  const admission = await prisma.admission.create({
+    data: {
+      schoolId,
+      applicationCode: makeApplicationCode(schoolId),
+
+      // Applicant
+      applicantName,
+      applicantFirstName,
+      applicantMiddleName,
+      applicantLastName,
+      applicantGender,
+      applicantDob: parseDate(applicantDob),
+      applicantPlaceOfBirth,
+      applicantNationality,
+      applicantStateOfOrigin,
+      applicantLga,
+      applicantLin,
+
+      // Admission
+      intendedClass,
+      studentType,
+      previousSchool: payload.previousSchool || "",
+      religion: payload.religion || "",
+
+      // Other applicant information
+      ailments: payload.ailments || "",
+      challenges: payload.challenges || "",
+      bloodGroup: payload.bloodGroup || "",
+      genotype: payload.genotype || "",
+      maritalStatus: payload.maritalStatus || "",
+
+      // Parent
+      parentEmail:
+        payload.parentEmail ||
+        payload.fatherEmail ||
+        payload.motherEmail ||
+        "",
+
+      parentPhone:
+        payload.parentPhone1 ||
+        payload.parentPhone2 ||
+        payload.fatherPhone1 ||
+        payload.motherPhone1 ||
+        "",
+
+      // Father
+      fatherName: payload.fatherName || "",
+      fatherDob: parseDate(payload.fatherDob),
+      fatherAddress: payload.fatherAddress || "",
+      fatherOccupation: payload.fatherOccupation || "",
+      fatherJobTitle: payload.fatherJobTitle || "",
+      fatherEmail: payload.fatherEmail || "",
+      fatherPhone1: payload.fatherPhone1 || "",
+      fatherPhone2: payload.fatherPhone2 || "",
+
+      // Mother
+      motherName: payload.motherName || "",
+      motherDob: parseDate(payload.motherDob),
+      motherAddress: payload.motherAddress || "",
+      motherOccupation: payload.motherOccupation || "",
+      motherJobTitle: payload.motherJobTitle || "",
+      motherEmail: payload.motherEmail || "",
+      motherPhone1: payload.motherPhone1 || "",
+      motherPhone2: payload.motherPhone2 || "",
+
+      // Application
+      feePaymentMethod: payload.feePaymentMethod || "",
+      referredBy: payload.referredBy || "",
+      financialAwareness: Boolean(payload.financialAwareness),
+      agreeTerms:
+        payload.agreeTerms === true ||
+        payload.agreeTerms === "true",
+
+      submissionData: payload.submissionData || payload,
+
+      status: "pending",
+    },
+  });
+
+  return admission;
+},
+}

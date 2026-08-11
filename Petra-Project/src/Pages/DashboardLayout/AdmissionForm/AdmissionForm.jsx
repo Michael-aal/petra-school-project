@@ -54,54 +54,67 @@ export default function AdmissionForm() {
       return;
     }
 
-    try {
-      const payload = {
-        applicationCode: null,
-        applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
-        applicantFirstName: formData.firstName,
-        applicantMiddleName: formData.middleName,
-        applicantLastName: formData.lastName,
-        parentEmail: formData.fatherEmail || formData.motherEmail,
-        parentPhone1: formData.fatherPhone1,
-        parentPhone2: formData.fatherPhone2,
-        intendedClass: formData.admissionClass,
-        applicantGender: formData.gender,
-        applicantDob: formData.dob,
-        applicantPlaceOfBirth: formData.placeOfBirth,
-        applicantNationality: formData.nationality,
-        applicantStateOfOrigin: formData.stateOfOrigin,
-        applicantLga: formData.lga,
-        applicantLin: formData.lin,
-        studentType: formData.studentStatus,
-        previousSchool: formData.previousSchool,
-        religion: formData.religion,
-        ailments: formData.ailments,
-        challenges: formData.challenges,
-        bloodGroup: formData.bloodGroup,
-        genotype: formData.genotype,
-        maritalStatus: formData.maritalStatus,
-        fatherName: formData.fatherName,
-        fatherDob: formData.fatherDob,
-        fatherAddress: formData.fatherAddress,
-        fatherOccupation: formData.fatherOccupation,
-        fatherJobTitle: formData.fatherJobTitle,
-        fatherEmail: formData.fatherEmail,
-        fatherPhone1: formData.fatherPhone1,
-        fatherPhone2: formData.fatherPhone2,
-        motherName: formData.motherName,
-        motherDob: formData.motherDob,
-        motherAddress: formData.motherAddress,
-        motherOccupation: formData.motherOccupation,
-        motherJobTitle: formData.motherJobTitle,
-        motherEmail: formData.motherEmail,
-        motherPhone1: formData.motherPhone1,
-        motherPhone2: formData.motherPhone2,
-        feePaymentMethod: formData.feePaymentMethod,
-        referredBy: formData.referredBy,
-        financialAwareness: formData.financialAwareness,
-        agreeTerms: formData.agreeTerms,
-        submissionData: formData,
-      };
+    try {const payload = {
+  applicationCode: null,
+
+  // Applicant
+  applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
+  firstName: formData.firstName,
+  middleName: formData.middleName,
+  lastName: formData.lastName,
+  gender: formData.gender,
+  dob: formData.dob,
+  placeOfBirth: formData.placeOfBirth,
+  nationality: formData.nationality,
+  stateOfOrigin: formData.stateOfOrigin,
+  lga: formData.lga,
+  lin: formData.lin,
+
+  // Admission / academic information
+  admissionClass: formData.admissionClass,
+  studentStatus: formData.studentStatus,
+  previousSchool: formData.previousSchool,
+  religion: formData.religion,
+
+  // Health information
+  ailments: formData.ailments,
+  challenges: formData.challenges,
+  bloodGroup: formData.bloodGroup,
+  genotype: formData.genotype,
+  maritalStatus: formData.maritalStatus,
+
+  // Father
+  fatherName: formData.fatherName,
+  fatherDob: formData.fatherDob,
+  fatherAddress: formData.fatherAddress,
+  fatherOccupation: formData.fatherOccupation,
+  fatherJobTitle: formData.fatherJobTitle,
+  fatherEmail: formData.fatherEmail,
+  fatherPhone1: formData.fatherPhone1,
+  fatherPhone2: formData.fatherPhone2,
+
+  // Mother
+  motherName: formData.motherName,
+  motherDob: formData.motherDob,
+  motherAddress: formData.motherAddress,
+  motherOccupation: formData.motherOccupation,
+  motherJobTitle: formData.motherJobTitle,
+  motherEmail: formData.motherEmail,
+  motherPhone1: formData.motherPhone1,
+  motherPhone2: formData.motherPhone2,
+
+  // Application/payment
+  parentEmail: formData.fatherEmail || formData.motherEmail,
+  parentPhone1: formData.fatherPhone1,
+  parentPhone2: formData.fatherPhone2,
+  feePaymentMethod: formData.feePaymentMethod,
+  referredBy: formData.referredBy,
+  financialAwareness: formData.financialAwareness,
+  agreeTerms: formData.agreeTerms,
+
+  // Keep the complete original form data
+  submissionData: formData,
+};
 
       const response = await admissionApi.submit(payload);
       alert(response.message || "Application submitted successfully.");
