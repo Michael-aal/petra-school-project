@@ -100,7 +100,7 @@ export const getInstallmentPlans = async (req, res, next) => {
 
 export const getCashflow = async (req, res, next) => {
   try {
-    return res.json({ success: true, ...(await financeService.getCashflow(req.user)) });
+    return res.json({ success: true, ...(await financeService.getCashflow(req.user, req.query)) });
   } catch (error) {
     next(error);
   }

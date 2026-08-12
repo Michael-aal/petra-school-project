@@ -87,10 +87,11 @@ export const teacherService = {
         orderBy: { date: "desc" },
         take: 5,
       }),
-      prisma.attendance.findMany({
+      prisma.studentAttendance.findMany({
         where: {
-          teacherId: user.id,
-          date: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+          schoolId: Number(user.schoolId),
+          markedById: user.id,
+          attendanceDate: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
         },
         orderBy: { createdAt: "desc" },
         take: 10,
@@ -159,10 +160,11 @@ export const teacherService = {
         where: { className: classId, schoolId: user.schoolId ? Number(user.schoolId) : undefined },
         orderBy: { name: "asc" },
       }),
-      prisma.attendance.findMany({
-        where: { teacherId: user.id, className: classId },
-        orderBy: { date: "desc" },
+      prisma.studentAttendance.findMany({
+        where: { schoolId: Number(user.schoolId), markedById: user.id, student: { className: classId } },
+        orderBy: { attendanceDate: "desc" },
         take: 5,
+        include: { student: true },
       }),
       prisma.assessment.findMany({
         where: { teacherId: user.id, className: classId },
@@ -244,26 +246,40 @@ export const teacherService = {
       error.statusCode = 403;
       throw error;
     }
-    const attendance = await prisma.attendance.create({
+    const student = await prisma.student.findFirst({
+      where: { id: payload.studentId, schoolId: Number(user.schoolId), className },
+      select: { id: true },
+    });
+    if (!student) {
+      const error = new Error("Student is not in the selected class");
+      error.statusCode = 400;
+      throw error;
+    }
+    const schoolClass = await prisma.class.findFirst({
+      where: { schoolId: Number(user.schoolId), name: className },
+      select: { id: true },
+    });
+    const attendance = await prisma.studentAttendance.create({
       data: {
-        teacherId: user.id,
-        studentId: payload.studentId,
-        className,
-        date: payload.date ? new Date(payload.date) : new Date(),
-        status: payload.status,
+        schoolId: Number(user.schoolId),
+        studentId: student.id,
+        classId: schoolClass?.id || null,
+        attendanceDate: payload.date ? new Date(payload.date) : new Date(),
+        status: String(payload.status || "present").toLowerCase(),
+        markedById: user.id,
       },
     });
     return attendance;
   },
 
   updateAttendance: async (user, id, payload) => {
-    const existing = await prisma.attendance.findUnique({ where: { id } });
-    if (!existing || existing.teacherId !== user.id) {
+    const existing = await prisma.studentAttendance.findFirst({ where: { id, schoolId: Number(user.schoolId), markedById: user.id } });
+    if (!existing) {
       const error = new Error("Attendance record not found");
       error.statusCode = 404;
       throw error;
     }
-    const updated = await prisma.attendance.update({ where: { id }, data: { status: payload.status } });
+    const updated = await prisma.studentAttendance.update({ where: { id }, data: { status: String(payload.status || existing.status).toLowerCase() } });
     return updated;
   },
 

@@ -42,7 +42,9 @@ const resolveSchoolId = async (preferredSchoolId) => {
 const safeAdmission = (admission) => ({
   id: admission.id,
   schoolId: admission.schoolId,
+  studentId: admission.studentId,
   applicationCode: admission.applicationCode,
+  admissionCode: admission.admissionCode,
   applicantName: admission.applicantName,
   intendedClass: admission.intendedClass,
   applicantGender: admission.applicantGender,
@@ -142,6 +144,118 @@ export const admissionService = {
     });
 
     return safeAdmission(updated);
+  },
+
+
+  enroll: async (id, userId, payload = {}) => {
+    const admission = await prisma.admission.findUnique({ where: { id } });
+    if (!admission) {
+      const error = new Error("Admission not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    if (!["admission_offered", "passed"].includes(admission.status) && !admission.admissionCode) {
+      const error = new Error("Only applicants who have been offered admission can be enrolled");
+      error.statusCode = 400;
+      throw error;
+    }
+    if (admission.studentId) {
+      return safeAdmission(admission);
+    }
+
+    const schoolId = admission.schoolId;
+    const className = String(payload.className || admission.intendedClass || "").trim();
+    const admissionNumber = String(payload.admissionNumber || `STU-${schoolId}-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`).slice(0, 40);
+
+    const enrolled = await prisma.$transaction(async (tx) => {
+      const student = await tx.student.create({
+        data: {
+          schoolId,
+          name: admission.applicantName || [admission.applicantFirstName, admission.applicantMiddleName, admission.applicantLastName].filter(Boolean).join(" "),
+          admissionNumber,
+          className,
+          dob: admission.applicantDob,
+          gender: admission.applicantGender || null,
+          parentEmail: admission.parentEmail || admission.fatherEmail || admission.motherEmail || null,
+          parentPhone: admission.parentPhone || admission.fatherPhone1 || admission.motherPhone1 || null,
+          guardianName: admission.fatherName || admission.motherName || null,
+          status: "active",
+        },
+      });
+
+      await tx.studentProfile.create({
+        data: {
+          studentId: student.id,
+          schoolId,
+          admissionNumber,
+          address: admission.fatherAddress || admission.motherAddress || null,
+          bloodGroup: admission.bloodGroup || null,
+          nationality: admission.applicantNationality || null,
+          religion: admission.religion || null,
+        },
+      });
+
+      const parentInputs = [
+        { name: admission.fatherName, email: admission.fatherEmail, phone: admission.fatherPhone1 || admission.fatherPhone2, relation: "father" },
+        { name: admission.motherName, email: admission.motherEmail, phone: admission.motherPhone1 || admission.motherPhone2, relation: "mother" },
+      ].filter((p) => p.name || p.email || p.phone);
+
+      let primaryParentId = null;
+      for (const parentInput of parentInputs) {
+        const email = String(parentInput.email || "").trim().toLowerCase();
+        let parent = email
+          ? await tx.parent.findFirst({ where: { schoolId, email } })
+          : null;
+        if (!parent) {
+          parent = await tx.parent.create({
+            data: {
+              schoolId,
+              name: parentInput.name || "Parent/Guardian",
+              email: email || null,
+              phone: parentInput.phone || null,
+            },
+          });
+        }
+        await tx.studentParent.upsert({
+          where: { studentId_parentId: { studentId: student.id, parentId: parent.id } },
+          create: { studentId: student.id, parentId: parent.id, relation: parentInput.relation },
+          update: { relation: parentInput.relation },
+        });
+        if (!primaryParentId) primaryParentId = parent.id;
+      }
+
+      if (primaryParentId) {
+        await tx.student.update({ where: { id: student.id }, data: { parentId: primaryParentId } });
+      }
+
+      let classRecord = null;
+      if (payload.classId) {
+        classRecord = await tx.class.findFirst({ where: { id: String(payload.classId), schoolId } });
+      } else if (className) {
+        classRecord = await tx.class.findFirst({ where: { schoolId, name: className } });
+      }
+
+      const enrollment = await tx.enrollment.create({
+        data: {
+          schoolId,
+          studentId: student.id,
+          classId: classRecord?.id || null,
+          sectionId: payload.sectionId || null,
+          academicYearId: admission.academicYearId || null,
+          termId: admission.termId || null,
+          status: "active",
+        },
+      });
+
+      const updatedAdmission = await tx.admission.update({
+        where: { id: admission.id },
+        data: { studentId: student.id, status: "enrolled", admissionDate: new Date() },
+      });
+
+      return { student, enrollment, admission: updatedAdmission };
+    });
+
+    return safeAdmission(enrolled.admission);
   },
 
   reject: async (id, userId, reason = "") => {

@@ -4,7 +4,7 @@ import { admissionApi } from "../../../../services/admissionApi";
 import "../../../../Styles/DashBoardLayout/studentListStyle.css";
 import "../page-styles/StudentsListPage.css";
 
-const statusOptions = ["pending", "approved", "rejected"];
+const statusOptions = ["pending", "approved", "admission_offered", "enrolled", "rejected", "failed"];
 const classOptions = ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"];
 
 export default function ApplicantsPage() {
@@ -53,6 +53,22 @@ export default function ApplicantsPage() {
       await loadApplicants(page);
     } catch (err) {
       setError(err.message || "Failed to approve the applicant");
+    } finally {
+      setActionBusy(false);
+    }
+  };
+
+  const handleEnroll = async (applicant) => {
+    const confirm = window.confirm(`Enroll ${applicant.applicantName || "this applicant"} as a student?`);
+    if (!confirm) return;
+
+    setActionBusy(true);
+    setError("");
+    try {
+      await admissionApi.enroll(applicant.id, {});
+      await loadApplicants(page);
+    } catch (err) {
+      setError(err.message || "Failed to enroll the applicant");
     } finally {
       setActionBusy(false);
     }
@@ -167,6 +183,16 @@ export default function ApplicantsPage() {
                     >
                       View
                     </button>
+                    {applicant.status === "admission_offered" ? (
+                      <button
+                        type="button"
+                        className="btn-success"
+                        onClick={() => handleEnroll(applicant)}
+                        disabled={actionBusy}
+                      >
+                        Enroll Student
+                      </button>
+                    ) : null}
                     {applicant.status === "pending" ? (
                       <>
                         <button

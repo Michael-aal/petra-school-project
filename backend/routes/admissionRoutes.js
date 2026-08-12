@@ -7,6 +7,7 @@ import {
   getAdmissionById,
   approveAdmission,
   rejectAdmission,
+  enrollAdmission,
 } from "../controllers/admissionController.js";
 import { createAdmissionValidator } from "../validators/admissionValidator.js";
 
@@ -25,5 +26,6 @@ router.get("/", protect, requirePrincipal, listAdmissions);
 router.get("/:id", protect, requirePrincipal, getAdmissionById);
 router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);
 router.patch("/:id/reject", protect, requirePrincipal, rejectAdmission);
+router.post("/:id/enroll", protect, requirePrincipal, enrollAdmission);
 
 export default router;

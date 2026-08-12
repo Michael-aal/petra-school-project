@@ -54,3 +54,12 @@ export const createAdmission = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const enrollAdmission = async (req, res, next) => {
+  try {
+    const admission = await admissionService.enroll(req.params.id, req.user.id, req.body || {});
+    return res.status(200).json({ success: true, message: "Applicant enrolled successfully", admission });
+  } catch (error) {
+    return next(error);
+  }
+};

@@ -29,7 +29,7 @@ export default function DailyReportsPage() {
     try {
       const [attendanceResponse, cashflowResponse, pendingResponse, approvedResponse, rejectedResponse] = await Promise.all([
         academicApi.attendance({ date, page: 1, limit: 50 }),
-        financeApi.cashflow(),
+        financeApi.cashflow({ startDate: date, endDate: date }),
         admissionApi.list({ page: 1, limit: 1, status: "pending" }),
         admissionApi.list({ page: 1, limit: 1, status: "approved" }),
         admissionApi.list({ page: 1, limit: 1, status: "rejected" }),
