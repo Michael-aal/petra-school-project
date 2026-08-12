@@ -58,7 +58,7 @@ model User {
   roleRef                   Role?             @relation(fields: [roleId], references: [id])
   vicePrincipalProfile      VicePrincipal?
   wallet                    Wallet?
-  expensesCreated           Expense[]
+  expensesCreated            Expense[]
 
   @@index([email])
   @@index([username])
@@ -201,81 +201,81 @@ model Transaction {
 }
 
 model School {
-  id                      Int                      @id @default(autoincrement())
-  name                    String
-  address                 String?
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  city                    String?
-  country                 String?
-  email                   String?
-  isActive                Boolean                  @default(true)
-  logo                    String?
-  phone                   String?
-  state                   String?
-  timezone                String?                  @default("UTC")
-  website                 String?
-  academicYears           AcademicYear[]
-  activityLogs            ActivityLog[]
-  admins                  Admin[]
-  admissions              Admission[]
-  announcements           Announcement[]
-  assessments             Assessment[]
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  address            String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  city               String?
+  country            String?
+  email              String?
+  isActive           Boolean             @default(true)
+  logo               String?
+  phone              String?
+  state              String?
+  timezone           String?             @default("UTC")
+  website            String?
+  academicYears      AcademicYear[]
+  activityLogs       ActivityLog[]
+  admins             Admin[]
+  admissions         Admission[]
+  announcements      Announcement[]
+  assessments        Assessment[]
   classMarkerIntegrations ClassMarkerIntegration[]
-  assignments             Assignment[]
-  auditLogs               AuditLog[]
-  books                   Book[]
-  bookCategories          BookCategory[]
-  borrowRecords           BorrowRecord[]
-  campuses                Campus[]
-  classes                 Class[]
-  classrooms              Classroom[]
-  departments             Department[]
-  discounts               Discount[]
-  drivers                 Driver[]
-  emailLogs               EmailLog[]
-  enrollments             Enrollment[]
-  exams                   Exam[]
-  feeCategories           FeeCategory[]
-  expenseCategories       ExpenseCategory[]
-  expenses                Expense[]
-  feeStructures           FeeStructure[]
-  fines                   Fine[]
-  grades                  Grade[]
-  gradeScales             GradeScale[]
-  guardians               Guardian[]
-  hostels                 Hostel[]
-  installmentPlans        InstallmentPlan[]
-  invoices                Invoice[]
-  messages                Message[]
-  notifications           Notification[]
-  parents                 Parent[]
-  payments                Payment[]
-  paymentMethods          PaymentMethod[]
-  principals              Principal[]
-  receipts                Receipt[]
-  reportCards             ReportCard[]
-  results                 Result[]
-  rooms                   Room[]
-  roomAllocations         RoomAllocation[]
-  routes                  Route[]
-  scholarships            Scholarship[]
-  sections                Section[]
-  settings                Settings[]
-  staff                   Staff[]
-  students                Student[]
-  studentAttendances      StudentAttendance[]
-  studentFees             StudentFee[]
-  studentProfiles         StudentProfile[]
-  studentTransports       StudentTransport[]
-  subjects                Subject[]
-  teachers                Teacher[]
-  teacherAttendances      TeacherAttendance[]
-  terms                   Term[]
-  timetables              Timetable[]
-  timetableEntries        TimetableEntry[]
-  vehicles                Vehicle[]
-  vicePrincipals          VicePrincipal[]
+  assignments        Assignment[]
+  auditLogs          AuditLog[]
+  books              Book[]
+  bookCategories     BookCategory[]
+  borrowRecords      BorrowRecord[]
+  campuses           Campus[]
+  classes            Class[]
+  classrooms         Classroom[]
+  departments        Department[]
+  discounts          Discount[]
+  drivers            Driver[]
+  emailLogs          EmailLog[]
+  enrollments        Enrollment[]
+  exams              Exam[]
+  feeCategories      FeeCategory[]
+  expenseCategories  ExpenseCategory[]
+  expenses            Expense[]
+  feeStructures      FeeStructure[]
+  fines              Fine[]
+  grades             Grade[]
+  gradeScales        GradeScale[]
+  guardians          Guardian[]
+  hostels            Hostel[]
+  installmentPlans   InstallmentPlan[]
+  invoices           Invoice[]
+  messages           Message[]
+  notifications      Notification[]
+  parents            Parent[]
+  payments           Payment[]
+  paymentMethods     PaymentMethod[]
+  principals         Principal[]
+  receipts           Receipt[]
+  reportCards        ReportCard[]
+  results            Result[]
+  rooms              Room[]
+  roomAllocations    RoomAllocation[]
+  routes             Route[]
+  scholarships       Scholarship[]
+  sections           Section[]
+  settings           Settings[]
+  staff              Staff[]
+  students           Student[]
+  studentAttendances StudentAttendance[]
+  studentFees        StudentFee[]
+  studentProfiles    StudentProfile[]
+  studentTransports  StudentTransport[]
+  subjects           Subject[]
+  teachers           Teacher[]
+  teacherAttendances TeacherAttendance[]
+  terms              Term[]
+  timetables         Timetable[]
+  timetableEntries   TimetableEntry[]
+  vehicles           Vehicle[]
+  vicePrincipals     VicePrincipal[]
 
   @@unique([name, country])
   @@index([name])
@@ -327,9 +327,9 @@ model Term {
   updatedAt      DateTime     @updatedAt
   admissions     Admission[]
   enrollments    Enrollment[]
+  expenses       Expense[]
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
   school         School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  expenses       Expense[]
 
   @@unique([academicYearId, name])
   @@index([schoolId, isActive])
@@ -696,76 +696,76 @@ model StudentDocument {
 }
 
 model Admission {
-  id                     String        @id @default(cuid())
-  schoolId               Int
-  studentId              String?
-  applicationCode        String?       @unique
-  admissionCode          String?       @unique
-  applicantName          String?
-  applicantFirstName     String?
-  applicantMiddleName    String?
-  applicantLastName      String?
-  parentEmail            String?
-  parentPhone            String?
-  intendedClass          String?
-  applicantGender        String?
-  applicantDob           DateTime?
-  applicantPlaceOfBirth  String?
-  applicantNationality   String?
+  id                 String        @id @default(cuid())
+  schoolId           Int
+  studentId          String?
+  applicationCode    String?       @unique
+  admissionCode      String?       @unique
+  applicantName      String?
+  applicantFirstName String?
+  applicantMiddleName String?
+  applicantLastName  String?
+  parentEmail        String?
+  parentPhone        String?
+  intendedClass      String?
+  applicantGender    String?
+  applicantDob       DateTime?
+  applicantPlaceOfBirth String?
+  applicantNationality String?
   applicantStateOfOrigin String?
-  applicantLga           String?
-  applicantLin           String?
-  studentType            String?
-  previousSchool         String?
-  religion               String?
-  ailments               String?
-  challenges             String?
-  bloodGroup             String?
-  genotype               String?
-  maritalStatus          String?
-  fatherName             String?
-  fatherDob              DateTime?
-  fatherAddress          String?
-  fatherOccupation       String?
-  fatherJobTitle         String?
-  fatherEmail            String?
-  fatherPhone1           String?
-  fatherPhone2           String?
-  motherName             String?
-  motherDob              DateTime?
-  motherAddress          String?
-  motherOccupation       String?
-  motherJobTitle         String?
-  motherEmail            String?
-  motherPhone1           String?
-  motherPhone2           String?
-  feePaymentMethod       String?
-  referredBy             String?
-  financialAwareness     Boolean?      @default(false)
-  agreeTerms             Boolean?      @default(false)
-  approvedAt             DateTime?
-  approvedBy             String?
-  rejectedAt             DateTime?
-  rejectedBy             String?
-  rejectionReason        String?
-  examScore              Float?
-  examCompletedAt        DateTime?
-  examResult             String?
-  examReference          String?
-  paymentReference       String?
-  verifiedAt             DateTime?
-  submissionData         Json?
-  academicYearId         String?
-  termId                 String?
-  status                 String        @default("pending")
-  admissionDate          DateTime?
-  remarks                String?
-  createdAt              DateTime      @default(now())
-  updatedAt              DateTime      @updatedAt
-  academicYear           AcademicYear? @relation(fields: [academicYearId], references: [id])
-  school                 School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student                Student?      @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  term                   Term?         @relation(fields: [termId], references: [id])
+  applicantLga       String?
+  applicantLin       String?
+  studentType        String?
+  previousSchool     String?
+  religion           String?
+  ailments           String?
+  challenges         String?
+  bloodGroup         String?
+  genotype           String?
+  maritalStatus      String?
+  fatherName         String?
+  fatherDob          DateTime?
+  fatherAddress      String?
+  fatherOccupation   String?
+  fatherJobTitle     String?
+  fatherEmail        String?
+  fatherPhone1       String?
+  fatherPhone2       String?
+  motherName         String?
+  motherDob          DateTime?
+  motherAddress      String?
+  motherOccupation   String?
+  motherJobTitle     String?
+  motherEmail        String?
+  motherPhone1       String?
+  motherPhone2       String?
+  feePaymentMethod   String?
+  referredBy         String?
+  financialAwareness Boolean?      @default(false)
+  agreeTerms         Boolean?      @default(false)
+  approvedAt         DateTime?
+  approvedBy         String?
+  rejectedAt         DateTime?
+  rejectedBy         String?
+  rejectionReason    String?
+  examScore          Float?
+  examCompletedAt    DateTime?
+  examResult         String?
+  examReference      String?
+  paymentReference   String?
+  verifiedAt         DateTime?
+  submissionData     Json?
+  academicYearId     String?
+  termId             String?
+  status             String        @default("pending")
+  admissionDate      DateTime?
+  remarks            String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  academicYear       AcademicYear? @relation(fields: [academicYearId], references: [id])
+  school             School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  student            Student?      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  term               Term?         @relation(fields: [termId], references: [id])
 
   @@index([schoolId, status])
   @@index([schoolId, applicationCode])
@@ -841,23 +841,23 @@ model TeacherAttendance {
 }
 
 model Assessment {
-  id                     String                  @id @default(cuid())
-  teacherId              String
-  title                  String
-  subject                String
-  className              String
-  maxScore               Int
-  date                   DateTime
-  description            String?
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  schoolId               Int
-  subjectId              String?
-  school                 School                  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  subjectRef             Subject?                @relation(fields: [subjectId], references: [id])
-  teacher                Teacher                 @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  results                Result[]
-  exam                   Exam?
+  id          String   @id @default(cuid())
+  teacherId   String
+  title       String
+  subject     String
+  className   String
+  maxScore    Int
+  date        DateTime
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  schoolId    Int
+  subjectId   String?
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  subjectRef  Subject? @relation(fields: [subjectId], references: [id])
+  teacher     Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  results     Result[]
+  exam        Exam?
   classMarkerIntegration ClassMarkerIntegration?
 
   @@index([schoolId, date])
@@ -887,23 +887,23 @@ model Result {
 }
 
 model Exam {
-  id           String        @id @default(cuid())
-  schoolId     Int
-  teacherId    String?
-  subjectId    String?
-  assessmentId String?       @unique
-  title        String
-  examDate     DateTime
-  totalMarks   Int           @default(100)
-  description  String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  school       School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  subject      Subject?      @relation(fields: [subjectId], references: [id])
-  teacher      Teacher?      @relation(fields: [teacherId], references: [id])
-  assessment   Assessment?   @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
-  results      ExamResult[]
-  attempts     ExamAttempt[]
+  id            String       @id @default(cuid())
+  schoolId      Int
+  teacherId     String?
+  subjectId     String?
+  assessmentId  String?      @unique
+  title       String
+  examDate    DateTime
+  totalMarks  Int          @default(100)
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  subject     Subject?     @relation(fields: [subjectId], references: [id])
+  teacher     Teacher?     @relation(fields: [teacherId], references: [id])
+  assessment  Assessment?  @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  results     ExamResult[]
+  attempts    ExamAttempt[]
 
   @@index([schoolId, examDate])
   @@index([schoolId, subjectId, examDate])
@@ -933,38 +933,38 @@ model ExamAttempt {
 }
 
 model ExamResult {
-  id          String       @id @default(cuid())
-  examId      String
-  studentId   String
-  attemptId   String?      @unique
-  marks       Float
-  grade       String?
-  remarks     String?
-  percentage  Float?
-  completedAt DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  exam        Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
-  student     Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  attempt     ExamAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+  id           String       @id @default(cuid())
+  examId       String
+  studentId    String
+  attemptId    String?      @unique
+  marks        Float
+  grade        String?
+  remarks      String?
+  percentage   Float?
+  completedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  exam         Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attempt      ExamAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
 
   @@index([examId, studentId])
 }
 
 model ClassMarkerIntegration {
-  id              String     @id @default(cuid())
+  id              String      @id @default(cuid())
   schoolId        Int
-  assessmentId    String     @unique
-  remoteExamId    String?    @unique
+  assessmentId    String      @unique
+  remoteExamId    String?     @unique
   remoteExamUrl   String?
-  syncStatus      String     @default("pending")
+  syncStatus      String      @default("pending")
   lastSyncedAt    DateTime?
   lastWebhookAt   DateTime?
   webhookEventRef String?
   lastError       String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  school          School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  school          School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   assessment      Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
 
   @@index([schoolId, syncStatus])
@@ -1584,7 +1584,7 @@ model ExpenseCategory {
 }
 
 model Expense {
-  id                String           @id @default(cuid())
+  id                String          @id @default(cuid())
   schoolId          Int
   expenseCategoryId String?
   academicYearId    String?
@@ -1594,13 +1594,13 @@ model Expense {
   amount            Float
   occurredAt        DateTime
   note              String?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  school            School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  school            School          @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   expenseCategory   ExpenseCategory? @relation(fields: [expenseCategoryId], references: [id], onDelete: SetNull)
-  academicYear      AcademicYear?    @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
-  term              Term?            @relation(fields: [termId], references: [id], onDelete: SetNull)
-  createdBy         User?            @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  academicYear      AcademicYear?   @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  term              Term?           @relation(fields: [termId], references: [id], onDelete: SetNull)
+  createdBy         User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([schoolId, occurredAt])
   @@index([schoolId, academicYearId, termId])
