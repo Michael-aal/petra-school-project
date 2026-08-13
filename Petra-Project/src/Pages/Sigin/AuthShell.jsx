@@ -24,7 +24,7 @@ const NuvoraLogo = ({ size = 18 }) => (
   </svg>
 );
 
-export default function AuthShell({ children, eyebrow, title, subtitle, footnote }) {
+export default function AuthShell({ children, eyebrow, title, subtitle, footnote, variant = "" }) {
   const [darkMode, setDarkMode] = useState(() => {
     return getInitialTheme() === "dark";
   });
@@ -35,7 +35,7 @@ export default function AuthShell({ children, eyebrow, title, subtitle, footnote
 
   return (
     <main className="auth-page">
-      <section className="auth-shell">
+      <section className={`auth-shell ${variant ? `auth-shell--${variant}` : ""}`}>
         <div className="auth-visual">
           <button
             type="button"
@@ -80,9 +80,9 @@ export default function AuthShell({ children, eyebrow, title, subtitle, footnote
           </div>
         </div>
 
-        <div className="auth-card">
+        <div className={`auth-card ${variant ? `auth-card--${variant}` : ""}`}>
           {children}
-          <p className="auth-footnote">{footnote}</p>
+          {footnote ? <p className="auth-footnote">{footnote}</p> : null}
         </div>
       </section>
     </main>
