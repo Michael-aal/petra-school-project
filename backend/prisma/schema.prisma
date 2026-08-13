@@ -701,6 +701,7 @@ model Admission {
   studentId              String?
   applicationCode        String?       @unique
   admissionCode          String?       @unique
+  applicantId            String?       @unique
   applicantName          String?
   applicantFirstName     String?
   applicantMiddleName    String?

@@ -224,7 +224,9 @@ function App() {
         <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
+          
           <Route path="/solution" element={<Solution />} />
+          {/* <Route path="/classmarker" element={<ClassMarkerPage />} /> */}
           <Route path="/solution/school-os" element={<SchoolOS />} />
           <Route
             path="/solution/financial-management"

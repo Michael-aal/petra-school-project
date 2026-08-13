@@ -291,6 +291,7 @@ export const teacherService = {
     const assessments = await prisma.assessment.findMany({
       where,
       orderBy: { date: "desc" },
+      distinct: ["id"],
     });
     return assessments;
   },

@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import { classMarkerService } from "../services/classMarkerService.js";
+import { quizlabService } from "../services/quizlabService.js";
 import { sendAdmissionEmail } from "../services/emailService.js";
 import crypto from "crypto";
 
@@ -29,6 +30,75 @@ const isPassing = (candidate, fallbackMax) => {
   return score / max >= 0.5;
 };
 
+const extractLaunchUrl = (source) => {
+  if (!source) return null;
+  if (typeof source === "string") return source.trim() || null;
+  if (typeof source !== "object") return null;
+  return (
+    source.quizUrl ||
+    source.launchUrl ||
+    source.launch_url ||
+    source.url ||
+    source.startUrl ||
+    source.start_url ||
+    source.accessUrl ||
+    source.access_url ||
+    source.inviteUrl ||
+    source.invite_url ||
+    null
+  );
+};
+
+const findLaunchUrlDeep = (value, path = [], seen = new WeakSet()) => {
+  if (!value || typeof value !== "object") return null;
+  if (seen.has(value)) return null;
+  seen.add(value);
+
+  const direct = extractLaunchUrl(value);
+  if (direct) return { url: direct, path: path.join(".") || "(root)" };
+
+  for (const [key, nested] of Object.entries(value)) {
+    if (!nested || typeof nested !== "object") {
+      continue;
+    }
+    const found = findLaunchUrlDeep(nested, [...path, key], seen);
+    if (found) return found;
+  }
+
+  return null;
+};
+
+const safeLogQuizlab = (label, value) => {
+  try {
+    const summary = Array.isArray(value)
+      ? {
+          type: "array",
+          length: value.length,
+          firstKeys: value[0] && typeof value[0] === "object" ? Object.keys(value[0]).slice(0, 20) : undefined,
+        }
+      : value && typeof value === "object"
+        ? {
+            type: "object",
+            keys: Object.keys(value).slice(0, 30),
+          }
+        : {
+            type: typeof value,
+          };
+    console.log(`[QuizLab Debug] ${label}`, summary);
+  } catch (error) {
+    console.log(`[QuizLab Debug] ${label} <unprintable>`);
+  }
+};
+
+const quizlabResponseHint = (value) => {
+  if (!value || typeof value !== "object") return "No object payload returned";
+  const keys = Object.keys(value);
+  const textHints = keys
+    .filter((key) => /url|link|launch|access|invite|candidate|attempt|session|token|id/i.test(key))
+    .join(", ");
+  return `keys: ${keys.slice(0, 30).join(", ")}${textHints ? `; hints: ${textHints}` : ""}`;
+};
+
 export const createRemoteExamForAssessment = async (req, res, next) => {
   try {
     const { assessmentId } = req.body;
@@ -41,30 +111,51 @@ export const createRemoteExamForAssessment = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "Not allowed" });
     }
 
-    const remote = await classMarkerService.createRemoteExam(assessment);
-    const remoteExamId = normalizeRemoteId(remote);
-    if (!remoteExamId) {
-      return res.status(502).json({ success: false, message: "ClassMarker did not return a remote exam ID" });
+    // Use QuizLab to create or verify a quiz for this assessment
+    let remote = null;
+    try {
+      // Try to find existing quiz mapping first
+      const existing = await prisma.classMarkerIntegration.findUnique({ where: { assessmentId } });
+      if (existing?.remoteExamId) {
+        // Verify quiz exists on QuizLab
+        try {
+          remote = await quizlabService.getQuiz(existing.remoteExamId);
+        } catch (e) {
+          // not found, continue to create
+          remote = null;
+        }
+      }
+      if (!remote) {
+        // Create a quiz on QuizLab using basic metadata
+        const payload = { title: assessment.title, maxScore: assessment.maxScore || 100, description: assessment.description || '', metadata: { petraAssessmentId: assessment.id } };
+        const created = await quizlabService.createQuiz(payload);
+        const quizId = created?.quizId || created?.id || created?.quiz_id || null;
+        if (!quizId) throw new Error('QuizLab did not return a quiz id');
+        await quizlabService.publishQuiz(quizId);
+        remote = await quizlabService.getQuiz(quizId);
+
+        // Upsert integration record
+        await prisma.classMarkerIntegration.upsert({
+          where: { assessmentId },
+          create: {
+            schoolId: assessment.schoolId,
+            assessmentId,
+            remoteExamId: quizId,
+            remoteExamUrl: remote?.launchUrl || remote?.url || null,
+            syncStatus: 'created',
+          },
+          update: {
+            remoteExamId: quizId,
+            remoteExamUrl: remote?.launchUrl || remote?.url || undefined,
+            syncStatus: 'created',
+            lastError: null,
+          },
+        });
+      }
+    } catch (err) {
+      return next(err);
     }
-
-    const integration = await prisma.classMarkerIntegration.upsert({
-      where: { assessmentId },
-      create: {
-        schoolId: assessment.schoolId,
-        assessmentId,
-        remoteExamId,
-        remoteExamUrl: remote.url || remote.examUrl || null,
-        syncStatus: "created",
-      },
-      update: {
-        remoteExamId,
-        remoteExamUrl: remote.url || remote.examUrl || undefined,
-        syncStatus: "created",
-        lastError: null,
-      },
-    });
-
-    return res.status(201).json({ success: true, integration, remote });
+    return res.status(201).json({ success: true, remote });
   } catch (error) {
     next(error);
   }
@@ -78,11 +169,121 @@ export const getLaunchLinkForAssessment = async (req, res, next) => {
 
     const integration = await prisma.classMarkerIntegration.findUnique({ where: { assessmentId } });
     if (!integration?.remoteExamId) {
-      return res.status(404).json({ success: false, message: "Remote exam not created" });
+      return res.status(404).json({ success: false, message: "Remote quiz not created" });
     }
 
-    const url = await classMarkerService.createLaunchLink(integration.remoteExamId, req.body?.candidate || null);
-    return res.status(200).json({ success: true, url });
+    // Ensure remote quiz exists and create an invitation for the candidate
+    const candidate = req.body?.candidate || null;
+    try {
+      const quiz = await quizlabService.getQuiz(integration.remoteExamId);
+      // Create or reuse invitation
+      const inv = await quizlabService.createInvitation(integration.remoteExamId, candidate || {});
+      const launchUrl = inv?.launchUrl || inv?.url || quiz?.launchUrl || quiz?.url || null;
+      if (!launchUrl) throw new Error('QuizLab did not return a launch URL');
+      return res.status(200).json({ success: true, url: launchUrl });
+    } catch (err) {
+      return next(err);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const launchForCandidate = async (req, res, next) => {
+  try {
+    const { assessmentId } = req.params;
+    const candidate = req.body?.candidate || req.body || null;
+    if (!candidate || !candidate.reference) return res.status(400).json({ success: false, message: 'candidate.reference required' });
+
+    const assessment = await prisma.assessment.findUnique({ where: { id: assessmentId } });
+    if (!assessment) return res.status(404).json({ success: false, message: 'Assessment not found' });
+
+    const integration = await prisma.classMarkerIntegration.findUnique({ where: { assessmentId } });
+    if (!integration?.remoteExamId) return res.status(404).json({ success: false, message: 'Remote quiz not created' });
+
+    // Validate candidate.reference matches an Admission for this school
+    const reference = String(candidate.reference).trim();
+    const admission = await prisma.admission.findFirst({
+      where: {
+        schoolId: assessment.schoolId,
+        OR: [{ admissionCode: reference }, { applicationCode: reference }, { examReference: reference }, { applicantId: reference }],
+      },
+    });
+    if (!admission) return res.status(400).json({ success: false, message: 'Invalid applicant ID' });
+
+    try {
+      // Create or reuse invitation for the quiz with reference set to applicantId
+      const inv = await quizlabService.createInvitation(integration.remoteExamId, { reference, email: candidate.email || admission.parentEmail || null, name: candidate.name || admission.applicantName || null });
+      const launchUrl = inv?.launchUrl || inv?.url || null;
+      if (!launchUrl) throw new Error('QuizLab did not return a launch URL');
+      return res.status(200).json({ success: true, url: launchUrl });
+    } catch (err) {
+      return next(err);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const startAssessmentForApplicant = async (req, res, next) => {
+  try {
+    const { applicantId, assessmentId } = req.body || {};
+    if (!applicantId || !assessmentId) return res.status(400).json({ success: false, message: 'applicantId and assessmentId required' });
+
+    const assessment = await prisma.assessment.findUnique({ where: { id: assessmentId } });
+    if (!assessment) return res.status(404).json({ success: false, message: 'Assessment not found' });
+
+    const integration = await prisma.classMarkerIntegration.findUnique({ where: { assessmentId } });
+    if (!integration?.remoteExamId) return res.status(404).json({ success: false, message: 'Remote quiz not created' });
+
+    // Validate applicant exists for this school
+    const admission = await prisma.admission.findFirst({ where: { schoolId: assessment.schoolId, OR: [{ applicantId: applicantId }, { applicationCode: applicantId }, { admissionCode: applicantId }, { examReference: applicantId }] } });
+    if (!admission) return res.status(400).json({ success: false, message: 'Invalid applicant ID' });
+
+    try {
+      // Try to find existing invitation for this applicant
+      let inv = null;
+      try {
+        const list = await quizlabService.listInvitations(integration.remoteExamId, { reference: applicantId });
+        safeLogQuizlab("listInvitations response", list);
+        const items = Array.isArray(list) ? list : (list?.invitations || []);
+        if (items && items.length) inv = items[0];
+      } catch (e) {
+        // ignore listing errors and create a new invitation
+      }
+
+      if (!inv) {
+        inv = await quizlabService.createInvitation(integration.remoteExamId, { reference: applicantId, email: admission.parentEmail || null, name: admission.applicantName || null });
+        safeLogQuizlab("createInvitation response", inv);
+      }
+
+      const quiz = await quizlabService.getQuiz(integration.remoteExamId);
+      safeLogQuizlab("getQuiz response", quiz);
+
+      const inviteLaunch = findLaunchUrlDeep(inv);
+      const quizLaunch = findLaunchUrlDeep(quiz);
+      const resolvedLaunch = inviteLaunch || quizLaunch;
+      const resolvedLaunchUrl = resolvedLaunch?.url || null;
+      if (!resolvedLaunchUrl) {
+        const inviteKeys = inv && typeof inv === "object" ? Object.keys(inv) : [];
+        const quizKeys = quiz && typeof quiz === "object" ? Object.keys(quiz) : [];
+        const inviteHint = quizlabResponseHint(inv);
+        const quizHint = quizlabResponseHint(quiz);
+        throw new Error(`QuizLab did not return a launch URL. invitation ${inviteHint}; quiz ${quizHint}`);
+      }
+      if (resolvedLaunch?.path) {
+        console.log(`[QuizLab Debug] launch url resolved from ${resolvedLaunch.path}`);
+      }
+      return res.status(200).json({ success: true, quizUrl: resolvedLaunchUrl, url: resolvedLaunchUrl });
+    } catch (err) {
+      console.error("[QuizLab Debug] startAssessmentForApplicant failed", {
+        message: err?.message,
+        quizId: integration?.remoteExamId,
+        applicantId,
+        assessmentId,
+      });
+      return next(err);
+    }
   } catch (error) {
     next(error);
   }
@@ -99,18 +300,14 @@ export const syncResultsForAssessment = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Remote exam not created" });
     }
 
-    let remoteResults;
+    let candidates = [];
     try {
-      remoteResults = await classMarkerService.fetchExamResults(integration.remoteExamId);
+      const attempts = await quizlabService.listAttempts(integration.remoteExamId);
+      candidates = Array.isArray(attempts) ? attempts : (attempts?.attempts || []);
     } catch (error) {
-      await prisma.classMarkerIntegration.update({
-        where: { assessmentId },
-        data: { syncStatus: "error", lastError: String(error.message || error).slice(0, 2000) },
-      });
+      await prisma.classMarkerIntegration.update({ where: { assessmentId }, data: { syncStatus: 'error', lastError: String(error.message || error).slice(0, 2000) } });
       throw error;
     }
-
-    const candidates = Array.isArray(remoteResults) ? remoteResults : (remoteResults?.results || []);
     const processed = [];
     const emails = [];
 
