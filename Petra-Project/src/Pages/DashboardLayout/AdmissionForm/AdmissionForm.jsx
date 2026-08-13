@@ -148,7 +148,6 @@ export default function AdmissionForm() {
         if (startNow) {
           const params = new URLSearchParams();
           if (applicantId) params.set("applicantId", applicantId);
-          if (admCode) params.set("assessmentRef", admCode);
           window.location.href = `/dashboard/examination/cbt${params.toString() ? `?${params.toString()}` : ""}`;
           return;
         }

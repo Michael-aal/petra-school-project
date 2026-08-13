@@ -16,7 +16,7 @@ export default function CbtPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const applicantParam = params.get("applicantId") || params.get("studentId");
-    const assessmentParam = params.get("assessmentId") || params.get("assessmentRef");
+    const assessmentParam = params.get("assessmentId");
     if (applicantParam) setApplicantId(applicantParam);
     if (assessmentParam) setAssessmentId(assessmentParam);
 
@@ -38,6 +38,9 @@ export default function CbtPage() {
     setError(null);
     if (!assessmentId) return setError("Please select an assessment");
     if (!applicantId) return setError("Please select an applicant");
+    if (assessments.length && !assessments.some((assessment) => String(assessment.id) === String(assessmentId))) {
+      return setError("No valid assessment is configured for the selected value. Please choose an assessment from the list.");
+    }
     setLoading(true);
     try {
       const json = await request("/api/assessments/start", {
@@ -48,7 +51,8 @@ export default function CbtPage() {
       if (!quizUrl) throw new Error("Assessment started but no QuizLab launch URL returned");
       window.location.href = quizUrl;
     } catch (err) {
-      setError(err.message || String(err));
+      const step = err?.data?.step ? ` (${err.data.step})` : "";
+      setError(`${err.message || String(err)}${step}`);
     } finally {
       setLoading(false);
     }
@@ -71,7 +75,7 @@ export default function CbtPage() {
             })}
           </select>
         ) : (
-          <input className="cbt-input" value={applicantId} onChange={(e) => setApplicantId(e.target.value)} placeholder="Applicant ID" />
+          <div className="cbt-empty-state">No applicants available. Submit an admission form first.</div>
         )}
 
         <label className="cbt-input-label">Assessment</label>
@@ -83,7 +87,7 @@ export default function CbtPage() {
             ))}
           </select>
         ) : (
-          <input className="cbt-input" value={assessmentId} onChange={(e) => setAssessmentId(e.target.value)} placeholder="Assessment ID" />
+          <div className="cbt-empty-state">No assessments available.</div>
         )}
 
         <button className="cbt-primary-btn" onClick={handleCreateRemoteExam} disabled={loading}>

@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { teacherApi } from "../../../../services/teacherApi";
 import "../page-styles/ResultsPage.css";
 
+const formatDate = (value) => {
+  if (!value) return "Not dated";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not dated";
+  return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+};
+
 export default function ResultsPage() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,26 +32,60 @@ export default function ResultsPage() {
   }, []);
 
   return (
-    <div className="dashboard-page">
-      <h1>Results</h1>
-      <p>Review student results and performance records.</p>
+    <div className="dashboard-page results-page">
+      <section className="results-hero">
+        <div>
+          <h1>Results</h1>
+          <p>Review synced assessment outcomes and performance records.</p>
+        </div>
+        <div className="results-hero-chip">
+          {results.length} record{results.length === 1 ? "" : "s"}
+        </div>
+      </section>
 
       {loading ? <p>Loading results...</p> : null}
-      {error ? <p>{error}</p> : null}
-      {!loading && !error && results.length === 0 ? <p>No published results are available yet.</p> : null}
+      {error ? <p className="results-error">{error}</p> : null}
+      {!loading && !error && results.length === 0 ? (
+        <p className="results-empty">No published results are available yet.</p>
+      ) : null}
 
       {!loading && !error && results.length > 0 ? (
-        <div className="dashboard-card">
+        <div className="results-list">
           {results.map((item) => (
-            <div key={item.id} style={{ padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-              <strong>{item.studentName || "Unnamed student"}</strong>
-              <div style={{ opacity: 0.85, marginTop: 4 }}>
-                {item.subject}{item.className ? ` • ${item.className}` : ""}
+            <article key={item.id} className="results-card">
+              <div className="results-card-top">
+                <strong>{item.studentName || "Unnamed student"}</strong>
+                {item.published ? <span className="results-pill">Published</span> : <span className="results-pill muted">Draft</span>}
               </div>
-              <div style={{ opacity: 0.75, marginTop: 4 }}>
-                {item.score} / {item.maxScore}{item.published ? " • Published" : ""}
+              <div className="results-meta">
+                <span>{item.assessmentTitle || "Assessment"}</span>
+                <span>
+                  {item.subject}
+                  {item.className ? ` - ${item.className}` : ""}
+                </span>
               </div>
-            </div>
+              <div className="results-score">
+                <span>{item.score}</span>
+                <span>/ {item.maxScore}</span>
+              </div>
+              <div className="results-footer">
+                <span>{item.percentage != null ? `${item.percentage}%` : "No percentage"}</span>
+                <span>{item.assessmentId ? `Assessment ID: ${item.assessmentId}` : "Assessment ID unavailable"}</span>
+              </div>
+              <div className="results-subtle">
+                {item.assessmentDate ? `Assessment date: ${formatDate(item.assessmentDate)} | ` : ""}
+                Updated {formatDate(item.updatedAt)} | Created {formatDate(item.createdAt)}
+              </div>
+              <div className="results-footer">
+                <span>{item.examStatus ? `Attempt: ${item.examStatus}` : "Attempt: unavailable"}</span>
+                <span>{item.examAttemptNumber ? `Run #${item.examAttemptNumber}` : "Run: unavailable"}</span>
+              </div>
+              <div className="results-subtle">
+                {item.examCompletedAt ? `Completed: ${formatDate(item.examCompletedAt)} | ` : ""}
+                {item.examCompletionTimeSeconds != null ? `Time: ${item.examCompletionTimeSeconds}s | ` : ""}
+                {item.examExternalResultId ? `External ID: ${item.examExternalResultId}` : "External ID unavailable"}
+              </div>
+            </article>
           ))}
         </div>
       ) : null}

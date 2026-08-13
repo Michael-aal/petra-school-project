@@ -339,17 +339,43 @@ export const teacherService = {
 
     const results = await prisma.result.findMany({
       where,
-      include: { student: true },
+      include: {
+        student: true,
+        assessment: {
+          include: {
+            exam: {
+              include: {
+                attempts: {
+                  orderBy: { updatedAt: "desc" },
+                  take: 1,
+                },
+              },
+            },
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
+    const latestAttempt = (assessment) => assessment?.exam?.attempts?.[0] || null;
     return results.map((item) => ({
       id: item.id,
-      studentName: item.student?.name || "",
+      studentName: item.student?.name || item.student?.admissionNumber || item.student?.parentEmail || "",
+      assessmentTitle: item.assessment?.title || "",
+      assessmentId: item.assessmentId || "",
+      assessmentDate: item.assessment?.date || null,
       subject: item.subject,
       className: item.className,
       score: item.score,
       maxScore: item.maxScore,
+      percentage: Number.isFinite(Number(item.maxScore)) && Number(item.maxScore) > 0 ? Math.round((Number(item.score) / Number(item.maxScore)) * 100) : null,
       published: item.published,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      examAttemptNumber: latestAttempt(item.assessment)?.attemptNumber || null,
+      examStatus: latestAttempt(item.assessment)?.status || null,
+      examCompletedAt: latestAttempt(item.assessment)?.completedAt || null,
+      examExternalResultId: latestAttempt(item.assessment)?.externalResultId || null,
+      examCompletionTimeSeconds: latestAttempt(item.assessment)?.completionTimeSeconds || null,
     }));
   },
 

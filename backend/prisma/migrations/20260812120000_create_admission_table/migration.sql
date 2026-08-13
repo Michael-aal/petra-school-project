@@ -70,6 +70,11 @@ CREATE TABLE IF NOT EXISTS "Admission" (
   "updatedAt" TIMESTAMP(3) NOT NULL
 );
 
+-- Ensure important columns exist even if Admission was already present in the database.
+ALTER TABLE "Admission" ADD COLUMN IF NOT EXISTS "applicationCode" TEXT;
+ALTER TABLE "Admission" ADD COLUMN IF NOT EXISTS "admissionCode" TEXT;
+ALTER TABLE "Admission" ADD COLUMN IF NOT EXISTS "applicantId" TEXT;
+
 -- Primary key constraint
 DO $$
 BEGIN
@@ -79,8 +84,10 @@ BEGIN
 END $$;
 
 -- Unique indexes for codes
+-- These columns may be backfilled by later migrations or the application layer.
 CREATE UNIQUE INDEX IF NOT EXISTS "Admission_applicationCode_key" ON "Admission"("applicationCode");
 CREATE UNIQUE INDEX IF NOT EXISTS "Admission_admissionCode_key" ON "Admission"("admissionCode");
+CREATE UNIQUE INDEX IF NOT EXISTS "Admission_applicantId_key" ON "Admission"("applicantId");
 
 -- Indexes used by application
 CREATE INDEX IF NOT EXISTS "Admission_schoolId_status_idx" ON "Admission"("schoolId", "status");
