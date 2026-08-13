@@ -1,234 +1,285 @@
 import { useState } from "react";
 import { 
-  Search, CheckCircle2, XCircle, Loader2, CreditCard, 
-  ArrowRight, ArrowLeft, ShieldCheck, Lock, AlertTriangle, 
-  FileText, RefreshCw, School, Wallet 
+  CheckCircle2, XCircle, Loader2, CreditCard, ArrowRight, 
+  ArrowLeft, Lock, AlertTriangle, Search, ShieldCheck, 
+  User, School, FileText, Calendar
 } from "lucide-react";
 import "./StudentPaymentPage.css";
 
 // ==========================================
-// MOCK DATA (Replace with Backend API calls)
+// MOCK DATA (Replace with Backend API)
 // ==========================================
-const MOCK_STUDENTS = {
-  "PET-2024-001": { name: "Michael John Doe", className: "SS2A" },
-  "PET-2024-002": { name: "Ayo Ogunleye", className: "JSS1" },
+const MOCK_STUDENT = {
+  "PET-2024-001": {
+    name: "Michael John Doe",
+    code: "PET-2024-001",
+    initials: "MD",
+    className: "SS 2A",
+  },
 };
 
 const MOCK_PAYMENT_ITEMS = [
-  { id: 1, name: "School Fees", amount: 95000, description: "Tuition for the current term" },
-  { id: 2, name: "Registration Fee", amount: 20000, description: "One-time enrollment fee" },
-  { id: 3, name: "New Student Package", amount: 15000, description: "Starter kit and materials" },
+  { id: 1, name: "Tuition Fee", amount: 150000, description: "Full term tuition" },
+  { id: 2, name: "Registration Fee", amount: 25000, description: "One-time enrollment fee" },
+  { id: 3, name: "Uniform Package", amount: 35000, description: "Complete school uniform set" },
+  { id: 4, name: "Transportation", amount: 45000, description: "School bus service per term" },
 ];
 
-// ==========================================
-// MAIN COMPONENT
-// ==========================================
+const STEPS = [
+  { id: 1, title: "Student" },
+  { id: 2, title: "Payment" },
+  { id: 3, title: "Confirmation" },
+];
+
 export default function StudentPaymentPage() {
-  // Flow: verify -> verifying -> confirm -> selectPayment -> review -> processing -> success/failed
-  const [step, setStep] = useState("verify");
-  
+  const [currentStep, setCurrentStep] = useState(1);
   const [studentCode, setStudentCode] = useState("");
-  const [verifiedStudent, setVerifiedStudent] = useState(null);
-  const [paymentItems, setPaymentItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [loadingItems, setLoadingItems] = useState(false);
-  const [paymentRef, setPaymentRef] = useState("");
+  const [student, setStudent] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState("");
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentResult, setPaymentResult] = useState(null); // { status, reference, date }
 
-  const formatNaira = (amount) => `₦${Number(amount).toLocaleString("en-NG")}`;
+  const formatNaira = (amount) =>
+    `₦${Number(amount).toLocaleString("en-NG")}`;
+
+  const totalAmount = selectedItems.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
 
   // ==========================================
-  // STEP 1-3: VERIFY STUDENT CODE
+  // STEP 1: VERIFY STUDENT
   // ==========================================
-  const handleVerifyStudent = async (e) => {
+  const handleVerifyStudent = (e) => {
     e.preventDefault();
+    setVerifyError("");
+
     if (!studentCode.trim()) {
-      setErrorMsg("Please enter a student code.");
+      setVerifyError("Please enter a student code.");
       return;
     }
 
-    setStep("verifying");
-    setErrorMsg("");
+    setIsVerifying(true);
 
-    // TODO: REPLACE WITH REAL API CALL
-    // const response = await fetch(`${API_BASE_URL}/payments/verify-student`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ studentCode: studentCode.trim().toUpperCase() }),
-    // });
-    // if (!response.ok) throw new Error("Student code not found.");
-    // const data = await response.json();
-
-    // SIMULATED API DELAY (2 seconds)
+    // TODO: Replace with real API call
+    // await paymentApi.verifyStudent(studentCode);
     setTimeout(() => {
-      const code = studentCode.trim().toUpperCase();
-      const found = MOCK_STUDENTS[code];
-
+      const found = MOCK_STUDENT[studentCode.trim().toUpperCase()];
       if (found) {
-        setVerifiedStudent({ ...found, code });
-        setStep("confirm");
+        setStudent(found);
+        setIsVerifying(false);
       } else {
-        setErrorMsg("Student code not found. Please check the code and try again.");
-        setStep("verify");
+        setVerifyError("Student code not found. Please check and try again.");
+        setIsVerifying(false);
       }
     }, 1500);
   };
 
-  // ==========================================
-  // STEP 4: CONFIRM STUDENT & LOAD PAYMENT ITEMS
-  // ==========================================
-  const handleConfirmStudent = async () => {
-    setStep("selectPayment");
-    setLoadingItems(true);
-
-    // TODO: REPLACE WITH REAL API CALL
-    // const response = await fetch(`${API_BASE_URL}/payments/active-items?studentCode=${verifiedStudent.code}`);
-    // const data = await response.json();
-    // setPaymentItems(data.paymentItems);
-
-    // SIMULATED API DELAY
-    setTimeout(() => {
-      setPaymentItems(MOCK_PAYMENT_ITEMS);
-      setLoadingItems(false);
-    }, 1200);
+  const handleContinueFromStudent = () => {
+    setCurrentStep(2);
   };
 
   // ==========================================
-  // STEP 6-8: SELECT ITEM & REVIEW
+  // STEP 2: PAYMENT ITEMS
   // ==========================================
-  const handleSelectItem = (item) => {
-    setSelectedItem(item);
-    setStep("review");
-  };
-
-  // ==========================================
-  // STEP 9-11: PROCESS PAYMENT
-  // ==========================================
-  const handleProceedToPayment = async () => {
-    setStep("processing");
-
-    // TODO: REPLACE WITH REAL PAYSTACK INTEGRATION
-    // 1. Send payment info to backend to initialize
-    // 2. Backend returns authorization_url
-    // 3. Redirect user to Paystack
-    // 4. Listen for success/failure callback
-    // 5. Verify payment with backend
-
-    // SIMULATED PAYMENT PROCESS
-    setTimeout(() => {
-      const isSuccess = Math.random() > 0.2; // 80% success rate for demo
-      const ref = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-      setPaymentRef(ref);
-
-      if (isSuccess) {
-        setStep("success");
-      } else {
-        setStep("failed");
+  const toggleItem = (item) => {
+    setSelectedItems((prev) => {
+      const exists = prev.find((i) => i.id === item.id);
+      if (exists) {
+        return prev.filter((i) => i.id !== item.id);
       }
-    }, 3000);
+      return [...prev, item];
+    });
   };
 
-  const handleReset = () => {
-    setStep("verify");
+  const handleProceedToPayment = () => {
+    setCurrentStep(3);
+  };
+
+  // ==========================================
+  // STEP 3: PAYMENT GATEWAY
+  // ==========================================
+  const handlePayWithPaystack = () => {
+    setIsProcessing(true);
+
+    // TODO: Replace with real Paystack integration
+    // 1. Call backend to initialize payment
+    // 2. Open Paystack popup with authorization_url
+    // 3. On callback, verify payment with backend
+    
+    setTimeout(() => {
+      const isSuccess = Math.random() > 0.15;
+      if (isSuccess) {
+        setPaymentResult({
+          status: "success",
+          reference: `PS-${Date.now()}-${Math.floor(Math.random() * 9999)}`,
+          date: new Date().toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }),
+        });
+      } else {
+        setPaymentResult({ status: "failed" });
+      }
+      setIsProcessing(false);
+    }, 2500);
+  };
+
+  const handleContinueToPortal = () => {
+    // TODO: Redirect to actual student portal
+    alert("Redirecting to Student Portal...");
+    // window.location.href = "/portal/dashboard";
+  };
+
+  const handleTryAgain = () => {
+    setPaymentResult(null);
+  };
+
+  const handleStartOver = () => {
+    setCurrentStep(1);
     setStudentCode("");
-    setVerifiedStudent(null);
-    setSelectedItem(null);
-    setPaymentItems([]);
-    setErrorMsg("");
+    setStudent(null);
+    setSelectedItems([]);
+    setPaymentResult(null);
+    setVerifyError("");
   };
 
   return (
     <div className="sp-page">
       <div className="sp-container">
-        
+
         {/* SECURITY BADGE */}
         <div className="sp-security-bar">
           <Lock size={14} />
-          <span>Secure Payment • Powered by Paystack</span>
+          <span>Secure Payment • Encrypted by Paystack</span>
         </div>
 
+        {/* STEPPER */}
+        {!paymentResult && (
+          <div className="sp-stepper">
+            {STEPS.map((step, idx) => {
+              const isActive = currentStep === step.id;
+              const isCompleted = currentStep > step.id;
+              return (
+                <div key={step.id} className="sp-step-wrapper">
+                  <div
+                    className={`sp-step ${isActive ? "active" : ""} ${isCompleted ? "completed" : ""}`}
+                  >
+                    <div className="sp-step-circle">
+                      {isCompleted ? <CheckCircle2 size={16} /> : step.id}
+                    </div>
+                    <span className="sp-step-label">{step.title}</span>
+                  </div>
+                  {idx < STEPS.length - 1 && (
+                    <div
+                      className={`sp-step-line ${isCompleted ? "completed" : ""}`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* ========================================== */}
-        {/* STEP 1 & 2: STUDENT CODE INPUT             */}
+        {/* STEP 1: STUDENT VERIFICATION               */}
         {/* ========================================== */}
-        {(step === "verify" || step === "verifying") && (
+        {currentStep === 1 && !student && (
           <div className="sp-card">
             <div className="sp-card-header">
-              <div className="sp-icon-box blue">
-                <Search size={24} />
+              <div className="sp-card-icon-box">
+                <User size={22} />
               </div>
               <div>
-                <h2>Verify Student</h2>
-                <p>Enter your student code to begin the payment process.</p>
+                <h2>Student Payment</h2>
+                <p>Enter the student code to begin the payment process.</p>
               </div>
             </div>
 
             <form onSubmit={handleVerifyStudent} className="sp-form">
               <div className="sp-field">
                 <label htmlFor="studentCode">Student Code</label>
-                <input
-                  id="studentCode"
-                  type="text"
-                  placeholder="PET-XXXXXXXX"
-                  value={studentCode}
-                  onChange={(e) => {
-                    setStudentCode(e.target.value.toUpperCase());
-                    setErrorMsg("");
-                  }}
-                  disabled={step === "verifying"}
-                  className="sp-input code-input"
-                />
-                <small className="sp-hint">Try: PET-2024-001 or PET-2024-002</small>
+                <div className="sp-input-wrapper">
+                  <Search size={18} className="sp-input-icon" />
+                  <input
+                    id="studentCode"
+                    type="text"
+                    placeholder="Enter student code"
+                    value={studentCode}
+                    onChange={(e) => {
+                      setStudentCode(e.target.value.toUpperCase());
+                      setVerifyError("");
+                    }}
+                    disabled={isVerifying}
+                    className="sp-input code-input"
+                  />
+                </div>
+                <small className="sp-hint">
+                  Try: <code>PET-2024-001</code>
+                </small>
               </div>
 
-              {errorMsg && (
+              {verifyError && (
                 <div className="sp-alert error">
-                  <XCircle size={16} />
-                  <span>{errorMsg}</span>
+                  <AlertTriangle size={16} />
+                  <span>{verifyError}</span>
                 </div>
               )}
 
-              <button type="submit" className="sp-btn primary" disabled={step === "verifying"}>
-                {step === "verifying" ? (
-                  <><Loader2 size={18} className="spin" /> Verifying...</>
+              <button
+                type="submit"
+                className="sp-btn primary"
+                disabled={isVerifying || !studentCode.trim()}
+              >
+                {isVerifying ? (
+                  <>
+                    <Loader2 size={18} className="spin" /> Verifying...
+                  </>
                 ) : (
-                  <><CheckCircle2 size={18} /> Verify Student</>
+                  <>
+                    <ShieldCheck size={18} /> Verify Student
+                  </>
                 )}
               </button>
             </form>
           </div>
         )}
 
-        {/* ========================================== */}
-        {/* STEP 3 & 4: CONFIRM STUDENT                */}
-        {/* ========================================== */}
-        {step === "confirm" && verifiedStudent && (
+        {currentStep === 1 && student && (
           <div className="sp-card">
             <div className="sp-card-header">
-              <div className="sp-icon-box green">
-                <CheckCircle2 size={24} />
+              <div className="sp-card-icon-box success">
+                <CheckCircle2 size={22} />
               </div>
               <div>
-                <h2>Student Verified</h2>
-                <p>Please confirm this is the correct student before proceeding.</p>
+                <h2>Student Verified Successfully</h2>
+                <p>Please confirm this is the correct student.</p>
               </div>
             </div>
 
-            <div className="sp-student-confirm">
-              <div className="sp-student-avatar">
-                {verifiedStudent.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-              </div>
-              <div className="sp-student-details">
-                <span className="sp-student-name">{verifiedStudent.name}</span>
-                <span className="sp-student-code mono">{verifiedStudent.code}</span>
-                <span className="sp-student-class">Class: {verifiedStudent.className}</span>
+            <div className="sp-student-display">
+              <div className="sp-student-avatar">{student.initials}</div>
+              <div className="sp-student-info">
+                <h3>{student.name}</h3>
+                <div className="sp-student-meta">
+                  <span className="sp-meta-item">
+                    <FileText size={14} /> {student.code}
+                  </span>
+                  <span className="sp-meta-item">
+                    <School size={14} /> {student.className}
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="sp-btn-group">
-              <button className="sp-btn secondary" onClick={handleReset}>
-                <ArrowLeft size={18} /> Not my student
+              <button className="sp-btn secondary" onClick={handleStartOver}>
+                <ArrowLeft size={18} /> Change Student
               </button>
-              <button className="sp-btn primary" onClick={handleConfirmStudent}>
+              <button className="sp-btn primary" onClick={handleContinueFromStudent}>
                 Continue <ArrowRight size={18} />
               </button>
             </div>
@@ -236,157 +287,233 @@ export default function StudentPaymentPage() {
         )}
 
         {/* ========================================== */}
-        {/* STEP 5-6: SELECT PAYMENT ITEM              */}
+        {/* STEP 2: PAYMENT ITEMS                      */}
         {/* ========================================== */}
-        {step === "selectPayment" && (
+        {currentStep === 2 && (
           <div className="sp-card">
             <div className="sp-card-header">
-              <div className="sp-icon-box purple">
-                <Wallet size={24} />
+              <div className="sp-card-icon-box">
+                <CreditCard size={22} />
               </div>
               <div>
-                <h2>What would you like to pay for?</h2>
-                <p>Select a payment option for <strong>{verifiedStudent?.name}</strong></p>
+                <h2>Select Payment Items</h2>
+                <p>
+                  Choose the fees to pay for{" "}
+                  <strong>{student?.name}</strong>
+                </p>
               </div>
             </div>
 
-            {loadingItems ? (
-              <div className="sp-loading-state">
-                <Loader2 size={32} className="spin" />
-                <p>Loading available payment options...</p>
+            {/* Selected Student Summary */}
+            <div className="sp-mini-student">
+              <div className="sp-mini-avatar">{student?.initials}</div>
+              <div>
+                <strong>{student?.name}</strong>
+                <span>{student?.code}</span>
               </div>
-            ) : paymentItems.length > 0 ? (
-              <div className="sp-payment-options">
-                {paymentItems.map((item) => (
-                  <button
+            </div>
+
+            {/* Payment Items List */}
+            <div className="sp-items-list">
+              {MOCK_PAYMENT_ITEMS.map((item) => {
+                const isSelected = selectedItems.find((i) => i.id === item.id);
+                return (
+                  <label
                     key={item.id}
-                    className="sp-payment-option"
-                    onClick={() => handleSelectItem(item)}
+                    className={`sp-item-row ${isSelected ? "selected" : ""}`}
                   >
-                    <div className="sp-option-info">
+                    <input
+                      type="checkbox"
+                      checked={!!isSelected}
+                      onChange={() => toggleItem(item)}
+                      className="sp-checkbox"
+                    />
+                    <div className="sp-item-info">
                       <strong>{item.name}</strong>
                       <span>{item.description}</span>
                     </div>
-                    <div className="sp-option-right">
-                      <span className="sp-option-amount">{formatNaira(item.amount)}</span>
-                      <ArrowRight size={18} />
+                    <div className="sp-item-amount">
+                      {formatNaira(item.amount)}
                     </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="sp-empty-state">
-                <AlertTriangle size={28} />
-                <p>No payment options are currently available. Please contact the school office.</p>
-              </div>
-            )}
+                  </label>
+                );
+              })}
+            </div>
 
-            <button className="sp-btn ghost" onClick={handleReset}>
-              <ArrowLeft size={16} /> Change student
-            </button>
+            {/* Payment Summary */}
+            <div className="sp-summary">
+              <h4>Payment Summary</h4>
+              {selectedItems.length === 0 ? (
+                <p className="sp-empty-summary">
+                  No items selected yet. Choose at least one payment item.
+                </p>
+              ) : (
+                <>
+                  <div className="sp-summary-items">
+                    {selectedItems.map((item) => (
+                      <div key={item.id} className="sp-summary-row">
+                        <span>{item.name}</span>
+                        <strong>{formatNaira(item.amount)}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="sp-summary-divider" />
+                  <div className="sp-summary-row total">
+                    <span>Total</span>
+                    <strong>{formatNaira(totalAmount)}</strong>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="sp-btn-group">
+              <button className="sp-btn secondary" onClick={() => setCurrentStep(1)}>
+                <ArrowLeft size={18} /> Back
+              </button>
+              <button
+                className="sp-btn primary"
+                onClick={handleProceedToPayment}
+                disabled={selectedItems.length === 0}
+              >
+                Proceed to Payment <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         )}
 
         {/* ========================================== */}
-        {/* STEP 7-8: REVIEW & CONFIRM PAYMENT         */}
+        {/* STEP 3: PAYMENT GATEWAY                    */}
         {/* ========================================== */}
-        {step === "review" && selectedItem && verifiedStudent && (
+        {currentStep === 3 && !paymentResult && (
           <div className="sp-card">
             <div className="sp-card-header">
-              <div className="sp-icon-box orange">
-                <FileText size={24} />
+              <div className="sp-card-icon-box">
+                <ShieldCheck size={22} />
               </div>
               <div>
-                <h2>Payment Summary</h2>
-                <p>Please review the details before proceeding to payment.</p>
+                <h2>Choose Payment Method</h2>
+                <p>Securely complete your payment.</p>
               </div>
             </div>
 
-            <div className="sp-review-box">
-              <div className="sp-review-row">
-                <span>Student</span>
-                <strong>{verifiedStudent.name}</strong>
+            <div className="sp-method-card">
+              <div className="sp-method-top">
+                <div className="sp-method-logo">
+                  <CreditCard size={24} />
+                </div>
+                <div>
+                  <strong>Paystack</strong>
+                  <span>Securely complete your payment with Paystack.</span>
+                </div>
+                <div className="sp-method-check">
+                  <CheckCircle2 size={20} />
+                </div>
               </div>
-              <div className="sp-review-row">
-                <span>Student Code</span>
-                <strong className="mono">{verifiedStudent.code}</strong>
-              </div>
-              <div className="sp-review-row">
-                <span>Payment Item</span>
-                <strong>{selectedItem.name}</strong>
-              </div>
-              <div className="sp-review-divider"></div>
-              <div className="sp-review-row total">
-                <span>Amount Due</span>
-                <strong>{formatNaira(selectedItem.amount)}</strong>
+              <div className="sp-method-divider" />
+              <div className="sp-method-total">
+                <span>Total Amount</span>
+                <strong>{formatNaira(totalAmount)}</strong>
               </div>
             </div>
 
             <div className="sp-btn-group">
-              <button className="sp-btn secondary" onClick={() => setStep("selectPayment")}>
-                <ArrowLeft size={18} /> Change payment
+              <button
+                className="sp-btn secondary"
+                onClick={() => setCurrentStep(2)}
+                disabled={isProcessing}
+              >
+                <ArrowLeft size={18} /> Back
               </button>
-              <button className="sp-btn primary" onClick={handleProceedToPayment}>
-                <Lock size={16} /> Proceed to Payment
+              <button
+                className="sp-btn primary pay-btn"
+                onClick={handlePayWithPaystack}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 size={18} className="spin" /> Processing...
+                  </>
+                ) : (
+                  <>
+                    <Lock size={16} /> Pay {formatNaira(totalAmount)} with Paystack
+                  </>
+                )}
               </button>
             </div>
           </div>
         )}
 
         {/* ========================================== */}
-        {/* STEP 9: PROCESSING PAYMENT                 */}
+        {/* SUCCESS STATE                              */}
         {/* ========================================== */}
-        {step === "processing" && (
-          <div className="sp-card sp-center">
-            <Loader2 size={56} className="spin purple-spin" />
-            <h2>Processing Payment...</h2>
-            <p>Please do not close this window.</p>
-            <p className="sp-processing-note">Connecting securely to payment gateway...</p>
-          </div>
-        )}
-
-        {/* ========================================== */}
-        {/* STEP 10: PAYMENT SUCCESS                   */}
-        {/* ========================================== */}
-        {step === "success" && (
-          <div className="sp-card sp-center success-state">
-            <div className="sp-result-icon success-ring">
-              <CheckCircle2 size={48} />
+        {paymentResult?.status === "success" && (
+          <div className="sp-card sp-success-card">
+            <div className="sp-success-icon">
+              <CheckCircle2 size={56} />
             </div>
             <h2>Payment Successful</h2>
-            <p>Your payment has been confirmed and processed.</p>
+            <p className="sp-success-sub">
+              Your payment has been verified and processed successfully.
+            </p>
 
-            <div className="sp-receipt-box">
-              <div className="sp-review-row"><span>Student</span><strong>{verifiedStudent?.name}</strong></div>
-              <div className="sp-review-row"><span>Student Code</span><strong className="mono">{verifiedStudent?.code}</strong></div>
-              <div className="sp-review-row"><span>Payment</span><strong>{selectedItem?.name}</strong></div>
-              <div className="sp-review-row"><span>Amount</span><strong>{formatNaira(selectedItem?.amount)}</strong></div>
-              <div className="sp-review-divider"></div>
-              <div className="sp-review-row"><span>Reference</span><strong className="mono">{paymentRef}</strong></div>
+            <div className="sp-receipt">
+              <div className="sp-receipt-row">
+                <span><User size={14} /> Student Name</span>
+                <strong>{student?.name}</strong>
+              </div>
+              <div className="sp-receipt-row">
+                <span><FileText size={14} /> Student Code</span>
+                <strong className="mono">{student?.code}</strong>
+              </div>
+              <div className="sp-receipt-row">
+                <span><CreditCard size={14} /> Amount Paid</span>
+                <strong>{formatNaira(totalAmount)}</strong>
+              </div>
+              <div className="sp-receipt-row">
+                <span><ShieldCheck size={14} /> Reference</span>
+                <strong className="mono">{paymentResult.reference}</strong>
+              </div>
+              <div className="sp-receipt-row">
+                <span><Calendar size={14} /> Date</span>
+                <strong>{paymentResult.date}</strong>
+              </div>
+              <div className="sp-receipt-divider" />
+              <div className="sp-receipt-section">
+                <strong>Paid Items</strong>
+                <ul>
+                  {selectedItems.map((item) => (
+                    <li key={item.id}>
+                      <CheckCircle2 size={14} /> {item.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            <button className="sp-btn primary" onClick={handleReset}>
-              <RefreshCw size={18} /> Make Another Payment
+            <button className="sp-btn primary" onClick={handleContinueToPortal}>
+              Continue to Student Portal <ArrowRight size={18} />
             </button>
           </div>
         )}
 
         {/* ========================================== */}
-        {/* STEP 11: PAYMENT FAILED                    */}
+        {/* FAILED STATE                               */}
         {/* ========================================== */}
-        {step === "failed" && (
-          <div className="sp-card sp-center failed-state">
-            <div className="sp-result-icon failed-ring">
-              <XCircle size={48} />
+        {paymentResult?.status === "failed" && (
+          <div className="sp-card sp-failed-card">
+            <div className="sp-failed-icon">
+              <XCircle size={56} />
             </div>
             <h2>Payment Failed</h2>
-            <p>We were unable to process your payment. No money was deducted from your account.</p>
+            <p className="sp-failed-sub">
+              We could not process your payment. No amount has been charged to your account.
+            </p>
 
             <div className="sp-btn-group center">
-              <button className="sp-btn primary" onClick={() => setStep("review")}>
-                <RefreshCw size={18} /> Try Again
+              <button className="sp-btn primary" onClick={handleTryAgain}>
+                Try Again
               </button>
-              <button className="sp-btn secondary" onClick={handleReset}>
+              <button className="sp-btn secondary" onClick={handleStartOver}>
                 Start Over
               </button>
             </div>
