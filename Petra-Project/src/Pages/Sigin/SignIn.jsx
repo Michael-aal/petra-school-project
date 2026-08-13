@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Eye, EyeOff, Lock, Mail, LoaderCircle, ArrowRight, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, LoaderCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
@@ -241,25 +241,15 @@ export default function SignIn() {
       eyebrow="Welcome back"
       title="Access your school workspace"
       subtitle="Sign in to review operations, learning, finance, and every update across your school in one calm view."
-      variant="signin"
-      footnote=""
+      footnote="Need an account? Create one in a minute to get started."
     >
       <form
         className="auth-form"
         onSubmit={handleSubmit}
       >
-        <div className="auth-form-header auth-signin-heading">
-          <div className="auth-form-heading-top">
-            <div>
-              <span className="auth-form-kicker">SECURE ACCESS</span>
-              <h2>Sign In</h2>
-            </div>
-            <span className="auth-secure-chip" aria-label="Secure sign in">
-              <ShieldCheck size={15} />
-              Protected
-            </span>
-          </div>
-          <p>Enter your credentials to access your school workspace.</p>
+        <div className="auth-form-header">
+          <h2>Sign In</h2>
+          <p>Enter your details to continue.</p>
         </div>
 
         {serverError ? (
@@ -362,27 +352,23 @@ export default function SignIn() {
         >
           {loading ? (
             <>
-              <LoaderCircle className="auth-spin" size={18} />
+              <LoaderCircle
+                className="auth-spin"
+                size={18}
+              />
               Signing in...
             </>
           ) : (
-            <>
-              <span>Sign In</span>
-              <ArrowRight size={18} />
-            </>
+            "Sign In"
           )}
         </button>
 
-        <div className="auth-signin-bottom">
-          <p className="auth-switch">
-            Don't have an account?{" "}
-            <Link to="/register">Register</Link>
-          </p>
-          <p className="auth-security-note">
-            <ShieldCheck size={14} />
-            Your session is protected by secure authentication controls.
-          </p>
-        </div>
+        <p className="auth-switch">
+          Don't have an account?{" "}
+          <Link to="/get-started">
+            Get started
+          </Link>
+        </p>
       </form>
     </AuthShell>
   );

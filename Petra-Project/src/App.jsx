@@ -211,7 +211,7 @@ function App() {
       <Routes>
         <Route path="/admission_form" element={<AdmissionForm />} />
 <Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
-<Route path="/student_Payment" element={<StudentPaymentPage />} />
+<Route path="/student_Payment"  element={<SchoolFeesPaymentPage />} />
 
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />
