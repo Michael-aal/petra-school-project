@@ -237,16 +237,20 @@ export default function SignIn() {
   }
 
   return (
-    <AuthShell>
+    <AuthShell
+      eyebrow="Welcome back"
+      title="Access your school workspace"
+      subtitle="Sign in to review operations, learning, finance, and every update across your school in one calm view."
+      footnote="Need an account? Create one in a minute to get started."
+    >
       <form
         className="auth-form"
         onSubmit={handleSubmit}
       >
-        <h1>Sign In</h1>
-
-        <p>
-          Enter your details to continue.
-        </p>
+        <div className="auth-form-header">
+          <h2>Sign In</h2>
+          <p>Enter your details to continue.</p>
+        </div>
 
         {serverError ? (
           <div className="auth-alert">

@@ -323,42 +323,46 @@ body.dark .auth-point-dot {
 }
 
 .auth-card {
-  padding: 2.1rem;
+  padding: 2.2rem 2.1rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: linear-gradient(180deg, rgba(7, 14, 20, 0.96), rgba(13, 23, 31, 0.98));
+  border: 1px solid rgba(165, 182, 192, 0.12);
+  box-shadow: 0 28px 60px rgba(2, 7, 12, 0.28);
 }
 
 .auth-input-wrap {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-height: 62px;
   padding: 0.95rem 1rem;
-  border-radius: 16px;
-  background: var(--surface-muted);
-  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: rgba(15, 24, 31, 0.92);
+  border: 1px solid rgba(167, 182, 193, 0.14);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 body.light .auth-input-wrap {
-  background: var(--surface-muted);
-  border-color: var(--border-color);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(23, 35, 33, 0.12);
 }
 
 body.dark .auth-input-wrap {
-  background: var(--surface);
-  border-color: var(--border-color);
+  background: rgba(17, 25, 22, 0.95);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 body.light .auth-input-wrap input,
 body.dark .auth-input-wrap input {
-  color: var(--text-dark);
+  color: var(--nuvora-ink);
 }
 
 body.light .auth-input-wrap input::placeholder,
 body.dark .auth-input-wrap input::placeholder,
 .auth-eye-btn {
-  color: var(--text-muted);
+  color: var(--nuvora-muted);
 }
 
 body.light .auth-alert {
@@ -373,15 +377,18 @@ body.light .auth-alert {
 }
 
 .auth-form-header h2 {
-  margin: 0 0 0.35rem;
-  font-size: 1.7rem;
-  letter-spacing: -0.03em;
+  margin: 0 0 0.4rem;
+  font-size: clamp(2.15rem, 2.4vw, 3.1rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+  color: #f4f7fb;
+  font-weight: 800;
 }
 
 .auth-form-header p {
   margin: 0;
-  color: var(--app-text-muted);
-  font-size: 0.98rem;
+  color: rgba(214, 226, 233, 0.72);
+  font-size: 1.02rem;
 }
 
 .auth-alert {
@@ -406,25 +413,35 @@ body.dark .auth-alert {
 }
 
 .auth-field span {
-  font-size: 0.92rem;
-  color: var(--text-dark);
-  font-weight: 600;
+  font-size: 0.96rem;
+  color: rgba(233, 239, 245, 0.84);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .auth-input-wrap {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.95rem 1rem;
+  min-height: 64px;
+  padding: 0.8rem 1rem 0.8rem 0.9rem;
   border-radius: 16px;
-  background: var(--surface-muted);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(13, 23, 31, 0.98), rgba(12, 20, 28, 0.96));
+  border: 1px solid rgba(158, 174, 184, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .auth-input-wrap:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+  border-color: rgba(240, 107, 78, 0.7);
+  box-shadow: 0 0 0 4px rgba(240, 107, 78, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.auth-input-wrap svg {
+  width: 18px;
+  height: 18px;
+  color: rgba(202, 214, 224, 0.68);
+  flex-shrink: 0;
 }
 
 .auth-input-wrap input {
@@ -432,8 +449,10 @@ body.dark .auth-alert {
   border: none;
   outline: none;
   background: transparent;
-  font-size: 0.98rem;
-  color: var(--text-dark);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #f4f8fb;
 }
 
 /* Prevent flex children from growing beyond container and causing horizontal scroll */
@@ -447,18 +466,28 @@ body.dark .auth-alert {
 }
 
 .auth-input-wrap input::placeholder {
-  color: var(--text-muted);
+  color: rgba(177, 191, 204, 0.72);
+  font-weight: 500;
 }
 
 .auth-eye-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(167, 182, 193, 0.12);
+  color: rgba(228, 236, 241, 0.8);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.1rem;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.auth-eye-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(167, 182, 193, 0.22);
 }
 
 .auth-field small {
@@ -479,8 +508,8 @@ body.dark .auth-alert {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: var(--text-muted);
-  font-size: 0.92rem;
+  color: rgba(221, 232, 240, 0.78);
+  font-size: 0.96rem;
 }
 
 .auth-checkbox input {
@@ -504,14 +533,15 @@ body.dark .auth-alert {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
+  min-height: 60px;
   padding: 0.95rem 1rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: var(--surface);
-  font-weight: 700;
-  font-size: 0.98rem;
+  background: linear-gradient(135deg, #f06b4e 0%, #e35d3f 100%);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.02rem;
   cursor: pointer;
-  box-shadow: 0 18px 35px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 16px 28px rgba(240, 107, 78, 0.18);
 }
 
 body.light .auth-submit {
@@ -557,14 +587,14 @@ body.dark .auth-submit {
 .auth-footnote {
   margin: 0;
   text-align: center;
-  color: var(--text-muted);
-  font-size: 0.95rem;
+  color: rgba(214, 226, 233, 0.7);
+  font-size: 0.96rem;
 }
 
 .auth-switch a {
-  color: var(--primary);
+  color: #f58f75;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 body.light .auth-switch a,
@@ -645,10 +675,15 @@ body.dark .auth-link {
   --nuvora-ink: #172321;
   --nuvora-muted: #687673;
   --nuvora-paper: #f5f6f0;
+  --nuvora-panel: rgba(255, 255, 255, 0.82);
   --nuvora-coral: #f06b4e;
+  --nuvora-coral-soft: rgba(240, 107, 78, 0.12);
+  --nuvora-mint: #cfe8d9;
+  --nuvora-blue: #bfdce9;
+  --nuvora-line: rgba(23, 35, 33, 0.12);
   min-height: 100vh;
   padding: 118px 24px 54px;
-  background: var(--nuvora-paper);
+  background: linear-gradient(180deg, #f8f5f1 0%, #f3f7f3 100%);
   color: var(--nuvora-ink);
   font-family: "Manrope", sans-serif;
   position: relative;
@@ -659,7 +694,7 @@ body.dark .auth-link {
 .auth-page::after {
   content: "";
   position: absolute;
-  border: 1px solid rgba(23, 35, 33, 0.1);
+  border: 1px solid rgba(23, 35, 33, 0.08);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -684,27 +719,28 @@ body.dark .auth-link {
   position: relative;
   z-index: 1;
   width: min(1120px, 100%);
+  display: grid;
   grid-template-columns: minmax(320px, .82fr) minmax(420px, 1.18fr);
   gap: 16px;
 }
 
 .auth-visual,
 .auth-card {
-  border: 1px solid rgba(23, 35, 33, 0.12);
-  border-radius: 18px;
-  box-shadow: 0 22px 55px rgba(23, 35, 33, 0.1);
+  border: 1px solid var(--nuvora-line);
+  border-radius: 20px;
+  box-shadow: 0 22px 55px rgba(23, 35, 33, 0.08);
 }
 
 .auth-visual {
   min-height: 610px;
   padding: 30px;
-  background: #172321;
+  background: linear-gradient(180deg, rgba(23, 35, 33, 0.96), rgba(18, 24, 23, 0.96));
   color: #f5f5f0;
 }
 
 .auth-card {
   padding: 34px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--nuvora-panel);
   backdrop-filter: blur(18px);
 }
 
@@ -719,21 +755,39 @@ body.dark .auth-link {
 }
 
 .auth-brand-row {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.auth-logo {
-  width: 50px;
-  height: 50px;
-  padding: 5px;
-  border-radius: 12px;
-  background: #f5f5f0;
+.auth-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.light .auth-brand-mark {
+  background: rgba(23, 35, 33, 0.05);
+  color: #172321;
+  border-color: rgba(23, 35, 33, 0.08);
+}
+
+.auth-brand-mark svg {
+  width: 26px;
+  height: 26px;
 }
 
 .auth-brand {
   color: #f5f5f0;
   font-size: 18px;
+  font-weight: 700;
   letter-spacing: -.04em;
+  margin: 0;
 }
 
 .auth-brand-sub {
@@ -741,6 +795,7 @@ body.dark .auth-link {
   font: 10px "DM Mono", monospace;
   letter-spacing: .04em;
   text-transform: uppercase;
+  margin: 4px 0 0;
 }
 
 .auth-copy {
@@ -790,6 +845,7 @@ body.dark .auth-link {
 }
 
 .auth-form {
+  display: flex;
   gap: 16px;
 }
 
