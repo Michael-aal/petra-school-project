@@ -9,7 +9,7 @@
     "prestart": "prisma generate",
     "start": "node server.js",
     "postinstall": "prisma generate",
-    "test": "node --test ./tests",
+    "test": "node --test ./tests/*.test.js",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
