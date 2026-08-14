@@ -1,542 +1,588 @@
 /* =========================================================
-   NUVORA PAY / STUDENT PAYMENT MODULE
+   NUVORA PAY — STUDENT PAYMENT PAGE
+   Matches StudentPaymentPage.jsx
    ========================================================= */
 
-.student-payment-page {
+.sp-page {
   min-height: 100vh;
   padding: 48px 20px 64px;
-  color: var(--app-text, #f8fafc);
+  box-sizing: border-box;
+  color: #f8fafc;
   background:
-    radial-gradient(circle at 10% 0%, rgba(240, 107, 78, 0.10), transparent 26%),
-    radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.10), transparent 24%),
-    var(--app-bg, #0b1220);
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(99, 102, 241, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(168, 85, 247, 0.10),
+      transparent 26%
+    ),
+    #0b1020;
 }
 
-.student-payment-shell {
-  width: min(900px, 100%);
+.sp-container {
+  width: 100%;
+  max-width: 720px;
   margin: 0 auto;
 }
 
-.student-payment-header {
+/* =========================================================
+   SECURITY BAR
+   ========================================================= */
+
+.sp-security-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 28px;
+  color: #a7f3d0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sp-security-bar svg {
+  color: #6ee7b7;
+}
+
+/* =========================================================
+   STEPPER
+   ========================================================= */
+
+.sp-stepper {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 28px;
-}
-
-.student-payment-eyebrow {
-  display: inline-block;
-  margin-bottom: 9px;
-  color: #f48a6f;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.student-payment-header h1 {
-  margin: 0;
-  color: inherit;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.04;
-  letter-spacing: -0.05em;
-}
-
-.student-payment-header p {
-  max-width: 660px;
-  margin: 12px 0 0;
-  color: var(--app-text-muted, #9aa7b2);
-  line-height: 1.65;
-}
-
-.student-payment-security {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  padding: 9px 12px;
-  border: 1px solid rgba(95, 205, 141, 0.16);
-  border-radius: 999px;
-  background: rgba(95, 205, 141, 0.06);
-  color: #7fe0aa;
-  font-size: 0.73rem;
-  font-weight: 700;
-}
-
-.student-payment-stepper {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: start;
-  gap: 0;
-  margin-bottom: 18px;
-  padding: 6px 4px;
-}
-
-.payment-step {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-}
-
-.payment-step-marker {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--app-border, rgba(255,255,255,.10));
-  border-radius: 50%;
-  background: var(--app-panel, #121b29);
-  color: var(--app-text-muted, #7c8a96);
-  font-size: 0.74rem;
-  font-weight: 800;
-  transition: 220ms ease;
-  z-index: 2;
-}
-
-.payment-step-marker.is-active {
-  border-color: rgba(240, 107, 78, 0.7);
-  background: rgba(240, 107, 78, 0.12);
-  color: #ff987e;
-  box-shadow: 0 0 0 7px rgba(240, 107, 78, 0.05);
-}
-
-.payment-step-marker.is-complete {
-  border-color: rgba(95, 205, 141, 0.35);
-  background: rgba(95, 205, 141, 0.10);
-  color: #79dda4;
-}
-
-.payment-step-label {
-  color: var(--app-text-muted, #7c8a96);
-  font-size: 0.74rem;
-  font-weight: 700;
-}
-
-.payment-step-label.is-active {
-  color: var(--app-text, #f8fafc);
-}
-
-.payment-step-line {
-  position: absolute;
-  top: 16px;
-  right: 50%;
+  justify-content: center;
   width: 100%;
-  height: 1px;
-  background: var(--app-border, rgba(255,255,255,.08));
-  z-index: 0;
+  margin-bottom: 32px;
 }
 
-.payment-step-line.is-complete {
-  background: rgba(95, 205, 141, 0.32);
+.sp-step-wrapper {
+  display: flex;
+  align-items: flex-start;
 }
 
-.student-payment-card {
+.sp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 50px;
+}
+
+.sp-step-circle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  border: 2px solid #30384d;
+  border-radius: 50%;
+
+  background: #171d30;
+  color: #7c8499;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.sp-step.active .sp-step-circle {
+  border-color: #818cf8;
+  background: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.12);
+}
+
+.sp-step.completed .sp-step-circle {
+  border-color: #34d399;
+  background: #10b981;
+  color: #06130f;
+}
+
+.sp-step-label {
+  color: #717a91;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sp-step.active .sp-step-label {
+  color: #f8fafc;
+}
+
+.sp-step.completed .sp-step-label {
+  color: #a7f3d0;
+}
+
+.sp-step-line {
+  width: 55px;
+  height: 2px;
+  margin: 17px 8px 0;
+
+  background: #2a3144;
+  transition: background 0.25s ease;
+}
+
+.sp-step-line.completed {
+  background: #34d399;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.sp-card {
   position: relative;
   overflow: hidden;
-  padding: clamp(26px, 4vw, 42px);
-  border: 1px solid var(--app-border, rgba(255,255,255,.09));
-  border-radius: 26px;
+
+  padding: 32px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+
   background:
-    linear-gradient(135deg, rgba(255,255,255,.03), transparent 45%),
-    var(--app-card, #111a27);
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035),
+      transparent 45%
+    ),
+    #151b2c;
+
   box-shadow:
-    0 30px 80px rgba(0,0,0,.22),
-    inset 0 1px 0 rgba(255,255,255,.025);
-  animation: studentPaymentEnter 360ms cubic-bezier(.22,.8,.22,1);
+    0 25px 70px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  animation: spFadeInUp 0.3s ease;
 }
 
-.student-payment-card::before {
+.sp-card::before {
   content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 220px;
+  top: -100px;
+  right: -100px;
+
+  width: 240px;
+  height: 240px;
+
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.08);
+  filter: blur(40px);
+
   pointer-events: none;
-  background: radial-gradient(circle at top right, rgba(240,107,78,.12), transparent 62%);
 }
 
-@keyframes studentPaymentEnter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes spFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.student-payment-card-heading {
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.sp-card-header {
   position: relative;
+
   display: flex;
-  gap: 15px;
   align-items: flex-start;
+  gap: 15px;
+
   margin-bottom: 26px;
 }
 
-.student-payment-icon {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  border: 1px solid rgba(240,107,78,.16);
-  border-radius: 14px;
-  color: #ff8b71;
-  background: rgba(240,107,78,.08);
-}
-
-.student-payment-icon--success {
-  border-color: rgba(95,205,141,.18);
-  color: #7fe0aa;
-  background: rgba(95,205,141,.08);
-}
-
-.student-payment-kicker {
-  display: inline-block;
-  margin-bottom: 5px;
-  color: var(--app-text-muted, #8d9aa4);
-  font-size: 0.67rem;
-  font-weight: 800;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-
-.student-payment-card-heading h2 {
+.sp-card-header h2 {
   margin: 0;
-  color: var(--app-text, #f8fafc);
-  font-size: clamp(1.35rem, 3vw, 1.72rem);
-  line-height: 1.18;
-  letter-spacing: -.035em;
+
+  color: #f8fafc;
+
+  font-size: clamp(1.3rem, 3vw, 1.65rem);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
-.student-payment-card-heading p {
+.sp-card-header p {
   margin: 7px 0 0;
-  color: var(--app-text-muted, #8d9aa4);
-  font-size: .9rem;
+
+  color: #8b95aa;
+
+  font-size: 0.88rem;
   line-height: 1.55;
 }
 
-.student-payment-form {
+/* =========================================================
+   ICON BOX
+   ========================================================= */
+
+.sp-icon-box {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  background: rgba(99, 102, 241, 0.10);
+  color: #818cf8;
+}
+
+.sp-icon-box.blue {
+  background: rgba(59, 130, 246, 0.10);
+  border-color: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+}
+
+.sp-icon-box.green {
+  background: rgba(16, 185, 129, 0.10);
+  border-color: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+.sp-icon-box.purple {
+  background: rgba(168, 85, 247, 0.10);
+  border-color: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+}
+
+.sp-icon-box.orange {
+  background: rgba(249, 115, 22, 0.10);
+  border-color: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.sp-form {
   display: grid;
   gap: 18px;
 }
 
-.student-payment-field {
+.sp-field {
   display: grid;
   gap: 9px;
 }
 
-.student-payment-field > span {
-  color: var(--app-text, #f8fafc);
-  font-size: .82rem;
+.sp-field label {
+  color: #e5e7eb;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
-.student-payment-input-wrap {
-  min-height: 62px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.sp-input {
+  width: 100%;
+  min-height: 56px;
+
+  box-sizing: border-box;
+
   padding: 0 16px;
-  border: 1px solid var(--app-border, rgba(255,255,255,.10));
-  border-radius: 15px;
-  background: rgba(255,255,255,.025);
-  transition: 200ms ease;
-}
 
-.student-payment-input-wrap:focus-within {
-  border-color: rgba(240,107,78,.65);
-  background: rgba(240,107,78,.025);
-  box-shadow: 0 0 0 4px rgba(240,107,78,.07);
-}
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 13px;
 
-.student-payment-input-wrap svg {
-  color: var(--app-text-muted, #788792);
-  flex-shrink: 0;
-}
+  outline: none;
 
-.student-payment-input-wrap input {
-  width: 100%;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--app-text, #f8fafc);
+  background: rgba(255, 255, 255, 0.035);
+  color: #f8fafc;
+
   font: inherit;
-  font-size: 1rem;
-  font-weight: 650;
+  font-size: 0.95rem;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.student-payment-input-wrap input::placeholder {
-  color: var(--app-text-muted, #788792);
-  opacity: .65;
+.sp-input::placeholder {
+  color: #626c81;
 }
 
-.student-payment-input-wrap input:disabled {
-  opacity: .55;
+.sp-input:focus {
+  border-color: rgba(99, 102, 241, 0.65);
+
+  background: rgba(99, 102, 241, 0.035);
+
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.10);
 }
 
-.student-payment-primary-btn,
-.student-payment-secondary-btn {
-  min-height: 54px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: 14px;
-  padding: 0 20px;
-  font: inherit;
-  font-size: .92rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease, border-color 180ms ease, background 180ms ease;
-}
-
-.student-payment-primary-btn {
-  width: 100%;
-  border: 1px solid rgba(255,255,255,.10);
-  color: #fff;
-  background: linear-gradient(135deg, #f06b4e, #d9573a);
-  box-shadow: 0 12px 30px rgba(240,107,78,.17);
-}
-
-.student-payment-primary-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 36px rgba(240,107,78,.21);
-}
-
-.student-payment-primary-btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.student-payment-primary-btn:disabled,
-.student-payment-secondary-btn:disabled {
+.sp-input:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
-  opacity: .48;
-  transform: none;
-  box-shadow: none;
 }
 
-.student-payment-secondary-btn {
-  border: 1px solid var(--app-border, rgba(255,255,255,.10));
-  background: rgba(255,255,255,.02);
-  color: var(--app-text, #f8fafc);
+.code-input {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
 }
 
-.student-payment-secondary-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.16);
+.sp-hint {
+  color: #687288;
+  font-size: 0.72rem;
 }
 
-.student-payment-secondary-btn--full {
-  width: 100%;
-}
+/* =========================================================
+   ALERT
+   ========================================================= */
 
-.student-payment-alert {
+.sp-alert {
   display: flex;
   align-items: flex-start;
   gap: 9px;
+
   padding: 12px 14px;
+
   border-radius: 12px;
-  font-size: .82rem;
+
+  font-size: 0.8rem;
   line-height: 1.45;
 }
 
-.student-payment-alert--error {
-  border: 1px solid rgba(248,113,113,.18);
-  background: rgba(248,113,113,.08);
+.sp-alert.error {
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.07);
   color: #fda4af;
 }
 
-.student-payment-demo-note {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-  color: var(--app-text-muted, #788792);
-  font-size: .72rem;
+.sp-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.student-payment-demo-note button,
-.student-payment-change-student,
-.student-payment-back-link {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: #ff987e;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
-.student-payment-student-card {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 15px;
-  padding: 16px;
-  border: 1px solid var(--app-border, rgba(255,255,255,.09));
-  border-radius: 16px;
-  background: rgba(255,255,255,.02);
-}
+.sp-btn {
+  min-height: 52px;
 
-.student-payment-avatar {
-  width: 50px;
-  height: 50px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(240,107,78,.10);
-  color: #ff987e;
-  font-size: .82rem;
-  font-weight: 900;
-  letter-spacing: .03em;
-}
-
-.student-payment-avatar--small {
-  width: 42px;
-  height: 42px;
-  font-size: .72rem;
-}
-
-.student-payment-student-main {
-  min-width: 0;
-}
-
-.student-payment-student-main > div:first-child {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.student-payment-student-main strong,
-.student-payment-mini-student strong {
-  color: var(--app-text, #f8fafc);
-  font-size: .94rem;
-}
-
-.student-payment-student-main span,
-.student-payment-mini-student span {
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .75rem;
-}
-
-.student-payment-student-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 5px;
-}
-
-.student-payment-student-meta span {
-  padding: 4px 7px;
-  border-radius: 7px;
-  background: rgba(255,255,255,.04);
-  color: #aab5bd;
-}
-
-.student-payment-verified-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 9px;
-  border: 1px solid rgba(95,205,141,.16);
-  border-radius: 999px;
-  background: rgba(95,205,141,.06);
-  color: #7fe0aa;
-  font-size: .7rem;
-  font-weight: 800;
-}
+  justify-content: center;
+  gap: 9px;
 
-.student-payment-success-message {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 16px;
-  color: #7fe0aa;
-  font-size: .78rem;
-  font-weight: 700;
-}
+  padding: 0 20px;
 
-.student-payment-items {
-  display: grid;
-  gap: 10px;
-}
+  border: 1px solid transparent;
+  border-radius: 13px;
 
-.student-payment-item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 13px;
-  padding: 16px;
-  text-align: left;
-  border: 1px solid var(--app-border, rgba(255,255,255,.09));
-  border-radius: 15px;
-  background: rgba(255,255,255,.018);
-  color: inherit;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+
   cursor: pointer;
-  transition: 190ms ease;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
 }
 
-.student-payment-item:hover {
-  border-color: rgba(240,107,78,.25);
-  background: rgba(240,107,78,.03);
+.sp-btn:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 
-.student-payment-item.is-selected {
-  border-color: rgba(240,107,78,.52);
-  background: linear-gradient(135deg, rgba(240,107,78,.08), rgba(240,107,78,.025));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 9px 28px rgba(0,0,0,.08);
+.sp-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
-.student-payment-checkbox {
-  width: 22px;
-  height: 22px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 7px;
-  color: #fff;
-  background: rgba(255,255,255,.02);
+.sp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.student-payment-checkbox.is-selected {
+.sp-btn.primary {
+  width: 100%;
+
+  border-color: rgba(129, 140, 248, 0.25);
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #4f46e5
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(79, 70, 229, 0.22);
+}
+
+.sp-btn.primary:hover:not(:disabled) {
+  box-shadow:
+    0 14px 34px rgba(79, 70, 229, 0.30);
+}
+
+.sp-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.09);
+
+  background: rgba(255, 255, 255, 0.045);
+
+  color: #e5e7eb;
+}
+
+.sp-btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.sp-btn.ghost {
+  margin-top: 20px;
+
+  min-height: 42px;
+
   border-color: transparent;
-  background: #f06b4e;
+
+  background: transparent;
+
+  color: #8b95aa;
+
+  font-size: 0.78rem;
 }
 
-.student-payment-item-copy {
+.sp-btn.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.035);
+  color: #f8fafc;
+}
+
+.sp-btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.sp-btn-group .sp-btn {
+  flex: 1;
+}
+
+/* =========================================================
+   STUDENT CONFIRMATION
+   ========================================================= */
+
+.sp-student-confirm {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sp-student-avatar {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25),
+      rgba(168, 85, 247, 0.20)
+    );
+
+  border: 1px solid rgba(129, 140, 248, 0.20);
+
+  color: #c7d2fe;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.sp-student-details {
   min-width: 0;
-  display: grid;
-  gap: 3px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.student-payment-item-copy strong {
-  color: var(--app-text, #f8fafc);
-  font-size: .9rem;
+.sp-student-name {
+  color: #f8fafc;
+
+  font-size: 0.95rem;
+  font-weight: 750;
 }
 
-.student-payment-item-copy small {
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .75rem;
+.sp-student-code {
+  color: #818cf8;
+  font-size: 0.75rem;
 }
 
-.student-payment-item-amount {
-  color: var(--app-text, #f8fafc);
-  font-size: .88rem;
-  font-weight: 850;
-  white-space: nowrap;
+.sp-student-class {
+  color: #7d879b;
+  font-size: 0.75rem;
 }
+
+.mono {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+}
+
+/* =========================================================
+   PAYMENT SUMMARY HEADER
+   ========================================================= */
 
 .student-payment-summary {
-  margin-top: 18px;
-  padding: 18px;
-  border: 1px solid var(--app-border, rgba(255,255,255,.08));
-  border-radius: 16px;
-  background: rgba(255,255,255,.025);
+  margin-bottom: 16px;
+
+  padding: 16px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .student-payment-summary-header {
@@ -544,366 +590,601 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--app-border, rgba(255,255,255,.08));
 }
 
 .student-payment-summary-header > div {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 3px;
 }
 
 .student-payment-summary-header span {
-  color: var(--app-text, #f8fafc);
-  font-size: .84rem;
-  font-weight: 800;
+  color: #f1f5f9;
+
+  font-size: 0.82rem;
+  font-weight: 750;
 }
 
 .student-payment-summary-header small {
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .7rem;
+  color: #737d92;
+
+  font-size: 0.7rem;
 }
 
 .student-payment-summary-header svg {
-  color: #ff987e;
+  color: #a78bfa;
 }
 
-.student-payment-summary-items {
-  display: grid;
-  gap: 7px;
-  padding: 12px 0;
-}
+/* =========================================================
+   LOADING
+   ========================================================= */
 
-.student-payment-summary-row,
-.student-payment-summary-total {
+.sp-loading-state {
+  min-height: 190px;
+
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
+  justify-content: center;
 
-.student-payment-summary-row {
-  color: var(--app-text-muted, #8d99a3);
-  font-size: .8rem;
-}
+  gap: 14px;
 
-.student-payment-summary-row strong {
-  color: var(--app-text, #f8fafc);
-}
-
-.student-payment-empty-summary {
-  padding: 14px 0;
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .78rem;
-  line-height: 1.5;
-}
-
-.student-payment-summary-total {
-  padding-top: 13px;
-  border-top: 1px dashed var(--app-border, rgba(255,255,255,.08));
-}
-
-.student-payment-summary-total span {
-  color: var(--app-text-muted, #8d99a3);
-  font-size: .78rem;
-}
-
-.student-payment-summary-total strong {
-  color: #fff;
-  font-size: 1.45rem;
-  letter-spacing: -.03em;
-}
-
-.student-payment-actions {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.student-payment-actions .student-payment-secondary-btn {
-  min-width: 108px;
-}
-
-.student-payment-change-student {
-  display: inline-flex;
-  margin-top: 15px;
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .74rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.student-payment-change-student:hover,
-.student-payment-demo-note button:hover,
-.student-payment-back-link:hover {
-  color: var(--app-text, #fff);
-}
-
-.student-payment-mini-student {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.student-payment-mini-student > div:last-child {
-  display: grid;
-  gap: 2px;
-}
-
-.student-payment-method-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(95,205,141,.13);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(95,205,141,.055), rgba(255,255,255,.015));
-}
-
-.student-payment-method-leading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.student-payment-paystack-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  color: #79dda4;
-  background: rgba(95,205,141,.08);
-}
-
-.student-payment-method-leading > div:last-child {
-  display: grid;
-  gap: 3px;
-}
-
-.student-payment-method-leading strong {
-  color: var(--app-text, #f8fafc);
-  font-size: .9rem;
-}
-
-.student-payment-method-leading span {
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .73rem;
-}
-
-.student-payment-method-card > svg {
-  color: #79dda4;
-}
-
-.student-payment-total-callout {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  margin: 14px 0 18px;
-  padding: 19px 20px;
-  border: 1px solid rgba(240,107,78,.12);
-  border-radius: 16px;
-  background: rgba(240,107,78,.05);
-}
-
-.student-payment-total-callout span {
-  color: var(--app-text-muted, #8d99a3);
-  font-size: .8rem;
-  font-weight: 700;
-}
-
-.student-payment-total-callout strong {
-  color: #fff;
-  font-size: clamp(1.45rem, 4vw, 1.9rem);
-  letter-spacing: -.04em;
-}
-
-.student-payment-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .75rem;
-}
-
-.student-payment-success-state {
-  display: grid;
-  justify-items: center;
+  color: #858fa3;
   text-align: center;
 }
 
-.student-payment-success-icon {
-  width: 80px;
-  height: 80px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 17px;
-  border: 1px solid rgba(95,205,141,.22);
-  border-radius: 50%;
-  color: #7fe0aa;
-  background: rgba(95,205,141,.08);
-  box-shadow: 0 0 0 10px rgba(95,205,141,.035);
-  animation: studentPaymentPop 460ms cubic-bezier(.16,1,.3,1);
-}
-
-@keyframes studentPaymentPop {
-  0% { opacity: 0; transform: scale(.75); }
-  70% { transform: scale(1.04); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-.student-payment-success-state h2 {
+.sp-loading-state p {
   margin: 0;
-  color: var(--app-text, #fff);
-  font-size: clamp(1.7rem, 4vw, 2.15rem);
-  letter-spacing: -.04em;
+
+  font-size: 0.82rem;
 }
 
-.student-payment-success-state > p {
-  max-width: 560px;
-  margin: 10px 0 20px;
-  color: var(--app-text-muted, #8d99a3);
-  line-height: 1.6;
+.spin {
+  animation: spSpin 1s linear infinite;
 }
 
-.student-payment-receipt {
-  width: 100%;
+@keyframes spSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   PAYMENT OPTIONS
+   ========================================================= */
+
+.sp-payment-options {
   display: grid;
-  gap: 0;
-  margin-bottom: 18px;
-  overflow: hidden;
-  border: 1px solid var(--app-border, rgba(255,255,255,.08));
-  border-radius: 16px;
-  text-align: left;
+  gap: 10px;
 }
 
-.student-payment-receipt > div {
+.sp-payment-option {
+  width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 12px 15px;
-  background: rgba(255,255,255,.018);
+
+  padding: 17px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  color: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
-.student-payment-receipt > div + div {
-  border-top: 1px solid var(--app-border, rgba(255,255,255,.06));
+.sp-payment-option:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(129, 140, 248, 0.35);
+
+  background: rgba(99, 102, 241, 0.045);
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.student-payment-receipt span {
-  color: var(--app-text-muted, #7e8b95);
-  font-size: .75rem;
+.sp-option-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.student-payment-receipt strong {
-  max-width: 64%;
-  color: var(--app-text, #f8fafc);
-  font-size: .78rem;
+.sp-option-info strong {
+  color: #f8fafc;
+
+  font-size: 0.9rem;
   font-weight: 750;
-  text-align: right;
 }
 
-.student-payment-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+.sp-option-info span {
+  color: #7d879b;
+
+  font-size: 0.75rem;
+  line-height: 1.4;
 }
+
+.sp-option-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  flex-shrink: 0;
+
+  color: #818cf8;
+}
+
+.sp-option-amount {
+  color: #e0e7ff;
+
+  font-size: 0.86rem;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.sp-empty-state {
+  min-height: 160px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 20px;
+
+  border: 1px dashed rgba(255, 255, 255, 0.10);
+  border-radius: 15px;
+
+  color: #8a94a8;
+
+  text-align: center;
+}
+
+.sp-empty-state svg {
+  color: #f59e0b;
+}
+
+.sp-empty-state p {
+  max-width: 380px;
+
+  margin: 0;
+
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   REVIEW
+   ========================================================= */
+
+.sp-review-box {
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sp-review-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 13px 16px;
+}
+
+.sp-review-row + .sp-review-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.sp-review-row span {
+  color: #7c869a;
+
+  font-size: 0.77rem;
+}
+
+.sp-review-row strong {
+  max-width: 60%;
+
+  color: #f1f5f9;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  text-align: right;
+
+  overflow-wrap: anywhere;
+}
+
+.sp-review-divider {
+  height: 1px;
+  margin: 4px 16px;
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sp-review-row.total {
+  padding-top: 17px;
+  padding-bottom: 17px;
+
+  background: rgba(99, 102, 241, 0.045);
+}
+
+.sp-review-row.total span {
+  color: #a5aec0;
+
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.sp-review-row.total strong {
+  color: #a5b4fc;
+
+  font-size: 1.15rem;
+  font-weight: 850;
+}
+
+/* =========================================================
+   PROCESSING / CENTER STATES
+   ========================================================= */
+
+.sp-center {
+  min-height: 360px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.sp-center h2 {
+  margin: 20px 0 8px;
+
+  color: #f8fafc;
+
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.sp-center > p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #858fa3;
+
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.sp-processing-note {
+  margin-top: 10px !important;
+
+  color: #636d82 !important;
+
+  font-size: 0.75rem !important;
+}
+
+.purple-spin {
+  color: #818cf8;
+}
+
+/* =========================================================
+   SUCCESS / FAILED
+   ========================================================= */
+
+.success-state,
+.failed-state {
+  text-align: center;
+}
+
+.sp-result-icon {
+  width: 86px;
+  height: 86px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 50%;
+}
+
+.success-ring {
+  border: 1px solid rgba(52, 211, 153, 0.25);
+
+  background: rgba(16, 185, 129, 0.08);
+
+  color: #34d399;
+
+  box-shadow:
+    0 0 0 10px rgba(16, 185, 129, 0.035);
+
+  animation: spPopIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.failed-ring {
+  border: 1px solid rgba(248, 113, 113, 0.25);
+
+  background: rgba(239, 68, 68, 0.08);
+
+  color: #f87171;
+}
+
+@keyframes spPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  70% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.success-state h2 {
+  margin: 0 0 8px;
+
+  color: #6ee7b7;
+
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.failed-state h2 {
+  margin: 0 0 8px;
+
+  color: #fca5a5;
+
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.success-state > p,
+.failed-state > p {
+  max-width: 470px;
+
+  margin: 0 auto 20px;
+
+  color: #858fa3;
+
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   RECEIPT
+   ========================================================= */
+
+.sp-receipt-box {
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  text-align: left;
+}
+
+.sp-receipt-box .sp-review-row {
+  padding: 12px 15px;
+}
+
+.sp-receipt-box .sp-review-row strong {
+  font-size: 0.78rem;
+}
+
+.sp-receipt-box .mono {
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   PRODUCTION NOTE
+   ========================================================= */
 
 .student-payment-production-note {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin: 14px 0 0;
-  color: var(--app-text-muted, #697782);
-  font-size: .68rem;
-  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 7px;
+
+  max-width: 520px;
+
+  margin: 16px auto 0;
+
+  color: #687287;
+
+  font-size: 0.7rem;
+  line-height: 1.5;
+
+  text-align: left;
 }
 
-@media (max-width: 720px) {
-  .student-payment-page {
+.student-payment-production-note svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: #6ee7b7;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .sp-page {
     padding: 30px 14px 48px;
   }
 
-  .student-payment-header {
-    flex-direction: column;
-    gap: 14px;
+  .sp-container {
+    max-width: 100%;
   }
 
-  .student-payment-security {
-    align-self: flex-start;
+  .sp-card {
+    padding: 24px 18px;
+
+    border-radius: 17px;
   }
 
-  .student-payment-student-card {
-    grid-template-columns: auto 1fr;
+  .sp-stepper {
+    overflow-x: auto;
+
+    justify-content: flex-start;
+
+    padding: 0 4px 5px;
+
+    scrollbar-width: none;
   }
 
-  .student-payment-verified-badge {
-    grid-column: 2;
-    justify-self: start;
-  }
-}
-
-@media (max-width: 540px) {
-  .student-payment-card {
-    padding: 22px 17px;
-    border-radius: 21px;
+  .sp-stepper::-webkit-scrollbar {
+    display: none;
   }
 
-  .student-payment-stepper {
-    margin-bottom: 12px;
+  .sp-step-line {
+    width: 28px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 
-  .payment-step-label {
-    font-size: .67rem;
+  .sp-card-header {
+    gap: 12px;
   }
 
-  .student-payment-card-heading {
-    gap: 11px;
-  }
-
-  .student-payment-icon {
+  .sp-icon-box {
     width: 42px;
     height: 42px;
+
     border-radius: 12px;
   }
 
-  .student-payment-item {
-    grid-template-columns: auto 1fr;
+  .sp-btn-group {
+    flex-direction: column-reverse;
   }
 
-  .student-payment-item-amount {
-    grid-column: 2;
-    justify-self: start;
-    padding-left: 35px;
-  }
-
-  .student-payment-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .student-payment-actions .student-payment-secondary-btn {
+  .sp-btn-group .sp-btn {
     width: 100%;
   }
 
-  .student-payment-method-card {
+  .sp-payment-option {
     align-items: flex-start;
   }
 
-  .student-payment-receipt strong {
-    max-width: 58%;
+  .sp-option-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
   }
 }
 
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .sp-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .sp-card {
+    padding: 21px 15px;
+  }
+
+  .sp-step-circle {
+    width: 32px;
+    height: 32px;
+
+    font-size: 0.72rem;
+  }
+
+  .sp-step-label {
+    font-size: 0.64rem;
+  }
+
+  .sp-step-line {
+    width: 20px;
+  }
+
+  .sp-student-confirm {
+    padding: 14px;
+  }
+
+  .sp-student-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sp-review-row {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .sp-review-row strong {
+    max-width: 55%;
+  }
+
+  .sp-option-info span {
+    font-size: 0.7rem;
+  }
+
+  .sp-option-amount {
+    font-size: 0.78rem;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
-  .student-payment-card,
-  .student-payment-success-icon,
-  .student-payment-item,
-  .student-payment-primary-btn,
-  .student-payment-secondary-btn {
+  .sp-card,
+  .success-ring,
+  .sp-btn,
+  .sp-payment-option,
+  .sp-step-circle,
+  .sp-step-line {
     animation: none !important;
     transition: none !important;
   }

@@ -4,20 +4,30 @@ import { AsyncLocalStorage } from "node:async_hooks";
 
 import "./loadEnv.js";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is missing. Check backend/.env before starting the server.");
-}
+const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const createBasePrisma = () => {
+  if (!hasDatabaseUrl) {
+    return {
+      _dmmf: null,
+      _runtimeDataModel: null,
+      $extends: () => ({}),
+      $connect: async () => undefined,
+      $disconnect: async () => undefined,
+    };
+  }
 
-const basePrisma =
-  globalThis.prisma ||
-  new PrismaClient({
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "info", "warn", "error"] : ["error"],
   });
+};
+
+const basePrisma = globalThis.prisma || createBasePrisma();
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.prisma = basePrisma;
@@ -146,6 +156,10 @@ export const getCurrentSchoolId = () => {
 };
 
 const connectDB = async () => {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is missing. Check backend/.env before starting the server.");
+  }
+
   try {
     await prisma.$connect();
     console.log("Database connected successfully");
