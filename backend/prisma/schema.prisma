@@ -696,22 +696,23 @@ model StudentDocument {
 }
 
 model Admission {
-  id                 String        @id @default(cuid())
-  schoolId           Int
-  studentId          String?
-  applicationCode    String?       @unique
-  admissionCode      String?       @unique
-  applicantName      String?
-  applicantFirstName String?
-  applicantMiddleName String?
-  applicantLastName  String?
-  parentEmail        String?
-  parentPhone        String?
-  intendedClass      String?
-  applicantGender    String?
-  applicantDob       DateTime?
-  applicantPlaceOfBirth String?
-  applicantNationality String?
+  id                     String        @id @default(cuid())
+  schoolId               Int
+  studentId              String?
+  applicationCode        String?       @unique
+  admissionCode          String?       @unique
+  applicantId            String?       @unique
+  applicantName          String?
+  applicantFirstName     String?
+  applicantMiddleName    String?
+  applicantLastName      String?
+  parentEmail            String?
+  parentPhone            String?
+  intendedClass          String?
+  applicantGender        String?
+  applicantDob           DateTime?
+  applicantPlaceOfBirth  String?
+  applicantNationality   String?
   applicantStateOfOrigin String?
   applicantLga       String?
   applicantLin       String?
@@ -853,6 +854,7 @@ model Assessment {
   updatedAt   DateTime @updatedAt
   schoolId    Int
   subjectId   String?
+  quizlabQuizId String? @unique
   school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   subjectRef  Subject? @relation(fields: [subjectId], references: [id])
   teacher     Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)

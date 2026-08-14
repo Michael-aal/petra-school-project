@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { AsyncLocalStorage } from "node:async_hooks";
 
+import "./loadEnv.js";
+
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is missing. Check backend/.env before starting the server.");
 }

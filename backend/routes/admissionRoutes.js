@@ -8,6 +8,7 @@ import {
   approveAdmission,
   rejectAdmission,
   enrollAdmission,
+  completeStudentRecord,
 } from "../controllers/admissionController.js";
 import { createAdmissionValidator } from "../validators/admissionValidator.js";
 
@@ -27,5 +28,6 @@ router.get("/:id", protect, requirePrincipal, getAdmissionById);
 router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);
 router.patch("/:id/reject", protect, requirePrincipal, rejectAdmission);
 router.post("/:id/enroll", protect, requirePrincipal, enrollAdmission);
+router.post("/:id/complete-student", protect, requirePrincipal, completeStudentRecord);
 
 export default router;

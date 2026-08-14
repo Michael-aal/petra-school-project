@@ -1,2 +1,140 @@
-/* Styles for ResultsPage */
-.results-page{ padding:18px; }
+.results-page{
+  padding: 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.results-hero{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #102a43 0%, #1f4b99 60%, #2e7bbd 100%);
+  color: #fff;
+  box-shadow: 0 18px 40px rgba(16, 42, 67, 0.18);
+}
+
+.results-hero h1{
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.results-hero p{
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.results-hero-chip{
+  min-width: 84px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-weight: 700;
+}
+
+.results-error,
+.results-empty{
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.results-error{
+  color: #b42318;
+  background: #fff5f5;
+  border-color: #fecaca;
+}
+
+.results-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.results-card{
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 14px;
+}
+
+.results-card-top{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.results-card-top strong{
+  font-size: 1rem;
+  color: #102a43;
+}
+
+.results-pill{
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e8fff3;
+  color: #067647;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.results-pill.muted{
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.results-meta{
+  display: grid;
+  gap: 6px;
+  color: #475467;
+  font-size: 0.95rem;
+}
+
+.results-score{
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 800;
+  color: #1d2939;
+}
+
+.results-score span:first-child{
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.results-footer{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #667085;
+  font-size: 0.88rem;
+  flex-wrap: wrap;
+}
+
+.results-subtle{
+  color: #98a2b3;
+}
+
+@media (max-width: 640px){
+  .results-page{
+    padding: 16px;
+  }
+
+  .results-hero{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,677 +1,758 @@
-import { useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  CheckCircle2,
-  CircleDollarSign,
-  CreditCard,
-  Loader2,
-  LockKeyhole,
-  ReceiptText,
-  Search,
-  ShieldCheck,
-  UserRound,
-  XCircle,
-} from "lucide-react";
 import "./StudentPaymentPage.css";
 
-/**
- * Frontend demonstration data.
- *
- * Replace verifyStudent() and loadPaymentItems() with authenticated API calls
- * once the payment service is connected to the backend.
- *
- * Payment items are intentionally data-driven so the admin/payment-management
- * module can later create, update, activate/deactivate, and remove fee items
- * without changing this component.
- */
-const MOCK_STUDENTS = {
-  "PET-2024-001": {
-    name: "Michael John Doe",
-    className: "SS2A",
-    level: "Senior Secondary",
-  },
-  "PET-2024-002": {
-    name: "Ayo Ogunleye",
-    className: "JSS1",
-    level: "Junior Secondary",
-  },
-};
-
-const MOCK_PAYMENT_ITEMS = [
-  {
-    id: "tuition",
-    name: "Tuition Fee",
-    amount: 150000,
-    description: "Current term tuition",
-  },
-  {
-    id: "registration",
-    name: "Registration Fee",
-    amount: 25000,
-    description: "Registration and administrative fee",
-  },
-];
-
-const STEPS = [
-  { id: 1, label: "Student" },
-  { id: 2, label: "Payment" },
-  { id: 3, label: "Confirmation" },
-];
-
-const formatNaira = (amount) =>
-  new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    maximumFractionDigits: 0,
-  }).format(Number(amount) || 0);
-
-const getInitials = (name = "") =>
-  name
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-
-export default function StudentPaymentPage() {
-  const [step, setStep] = useState(1);
-  const [studentCode, setStudentCode] = useState("");
-  const [verifiedStudent, setVerifiedStudent] = useState(null);
-  const [paymentItems, setPaymentItems] = useState([]);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [status, setStatus] = useState("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [paymentReference, setPaymentReference] = useState("");
-  const [paymentDate, setPaymentDate] = useState(null);
-
-  const totalAmount = useMemo(
-    () =>
-      paymentItems
-        .filter((item) => selectedIds.includes(item.id))
-        .reduce((sum, item) => sum + Number(item.amount || 0), 0),
-    [paymentItems, selectedIds],
-  );
-
-  const selectedItems = useMemo(
-    () => paymentItems.filter((item) => selectedIds.includes(item.id)),
-    [paymentItems, selectedIds],
-  );
-
-  const verificationBusy = status === "verifying";
-  const paymentBusy = status === "processing";
-
-  const currentStep =
-    step === 1 ? 1 : step === 2 ? 2 : step === 3 ? 3 : 3;
-
-  const resetFlow = () => {
-    setStep(1);
-    setStudentCode("");
-    setVerifiedStudent(null);
-    setPaymentItems([]);
-    setSelectedIds([]);
-    setStatus("idle");
-    setErrorMessage("");
-    setPaymentReference("");
-    setPaymentDate(null);
-  };
-
-  const handleVerifyStudent = async (event) => {
-    event.preventDefault();
-    const normalizedCode = studentCode.trim().toUpperCase();
-
-    if (!normalizedCode) {
-      setErrorMessage("Enter a student code to continue.");
-      return;
-    }
-
-    setErrorMessage("");
-    setStatus("verifying");
-
-    // Replace this demo lookup with: POST /api/payments/verify-student
-    await new Promise((resolve) => setTimeout(resolve, 900));
-
-    const student = MOCK_STUDENTS[normalizedCode];
-
-    if (!student) {
-      setStatus("idle");
-      setErrorMessage(
-        "We couldn't find a student with that code. Check the code and try again.",
-      );
-      return;
-    }
-
-    setVerifiedStudent({ ...student, code: normalizedCode });
-
-    // Replace this with: GET /api/payments/items?studentCode=...
-    setPaymentItems(MOCK_PAYMENT_ITEMS);
-
-    setSelectedIds([]);
-    setStatus("idle");
-  };
-
-  const handleContinue = () => {
-    if (!verifiedStudent) return;
-    setErrorMessage("");
-    setStep(2);
-  };
-
-  const togglePaymentItem = (itemId) => {
-    setErrorMessage("");
-    setSelectedIds((current) =>
-      current.includes(itemId)
-        ? current.filter((id) => id !== itemId)
-        : [...current, itemId],
-    );
-  };
-
-  const handleProceedToPayment = () => {
-    if (!selectedItems.length || totalAmount <= 0) {
-      setErrorMessage("Select at least one payment item to continue.");
-      return;
-    }
-
-    setErrorMessage("");
-    setStep(3);
-  };
-
-  const handlePaystackPayment = async () => {
-    if (!verifiedStudent || totalAmount <= 0 || paymentBusy) return;
-
-    setErrorMessage("");
-    setStatus("processing");
-
-    /*
-     * Production integration point:
-     *
-     * 1. POST to your backend to initialize a Paystack transaction.
-     * 2. Receive the Paystack authorization URL/reference.
-     * 3. Open Paystack Checkout / Inline.
-     * 4. Let Paystack handle authentication and payment.
-     * 5. Verify the transaction server-side.
-     * 6. Mark the backend payment as completed.
-     *
-     * For this frontend-only demonstration, a short mock completion is used.
-     */
-    await new Promise((resolve) => setTimeout(resolve, 1800));
-
-    const reference = `NUV-${Date.now().toString(36).toUpperCase()}`;
-
-    setPaymentReference(reference);
-    setPaymentDate(new Date());
-    setStatus("success");
-  };
-
-  const continueToStudentPortal = () => {
-    // Student accounts currently resolve to the portal dashboard in roleAccess.js.
-    window.location.assign("/portal/dashboard");
-  };
-
-  const retryPayment = () => {
-    setStatus("idle");
-    setErrorMessage("");
-  };
-
+const About = () => {
   return (
-    <main className="student-payment-page">
-      <div className="student-payment-shell">
-        <header className="student-payment-header">
-          <div>
-            <span className="student-payment-eyebrow">Nuvora Pay</span>
-            <h1>Student Payment</h1>
+    <main className="nuvora-about">
+
+      {/* =====================================================
+          HERO
+      ===================================================== */}
+      <section className="about-hero">
+        <div className="container">
+
+          <div className="about-hero__top">
+            <div className="eyebrow">
+              <span className="eyebrow__dot" />
+              About Nuvora
+            </div>
+
+            <span className="hero-code">
+              NUVORA / EDUCATION OS
+            </span>
+          </div>
+
+          <div className="about-hero__content">
+            <h1>
+              Building the
+              <span> infrastructure </span>
+              behind better schools.
+            </h1>
+
             <p>
-              Securely verify a student, choose outstanding fees, and complete
-              payment in one calm flow.
+              Nuvora is Africa's modern operating system for
+              academic excellence — bringing finance, academics,
+              operations, and learning into one intelligent platform.
             </p>
           </div>
 
-          <div className="student-payment-security">
-            <ShieldCheck size={16} />
-            <span>Secure payment experience</span>
+          <div className="about-hero__bottom">
+            <span>Founded 2022</span>
+            <span>Built for Africa</span>
+            <span>Education × Technology</span>
           </div>
-        </header>
 
-        <div className="student-payment-stepper" aria-label="Payment progress">
-          {STEPS.map((item, index) => {
-            const active = currentStep === item.id;
-            const complete = currentStep > item.id;
-
-            return (
-              <div className="payment-step" key={item.id}>
-                <div
-                  className={`payment-step-marker ${
-                    active ? "is-active" : ""
-                  } ${complete ? "is-complete" : ""}`}
-                >
-                  {complete ? <Check size={15} /> : item.id}
-                </div>
-                <span
-                  className={`payment-step-label ${
-                    active ? "is-active" : ""
-                  }`}
-                >
-                  {item.label}
-                </span>
-                {index < STEPS.length - 1 ? (
-                  <span
-                    className={`payment-step-line ${
-                      currentStep > item.id ? "is-complete" : ""
-                    }`}
-                    aria-hidden="true"
-                  />
-                ) : null}
-              </div>
-            );
-          })}
         </div>
+      </section>
 
-        <section className="student-payment-card">
-          {step === 1 ? (
-            <>
-              <div className="student-payment-card-heading">
-                <div className="student-payment-icon">
-                  <Search size={20} />
-                </div>
-                <div>
-                  <span className="student-payment-kicker">Step 1</span>
-                  <h2>Find the student</h2>
-                  <p>
-                    Enter the unique student code assigned by the school.
-                  </p>
-                </div>
-              </div>
 
-              <form onSubmit={handleVerifyStudent} className="student-payment-form">
-                <label className="student-payment-field" htmlFor="studentCode">
-                  <span>Student Code</span>
-                  <div className="student-payment-input-wrap">
-                    <UserRound size={18} />
-                    <input
-                      id="studentCode"
-                      name="studentCode"
-                      type="text"
-                      inputMode="text"
-                      autoComplete="off"
-                      spellCheck="false"
-                      placeholder="Enter student code"
-                      value={studentCode}
-                      onChange={(event) => {
-                        setStudentCode(event.target.value.toUpperCase());
-                        setErrorMessage("");
-                      }}
-                      disabled={verificationBusy}
-                      aria-invalid={Boolean(errorMessage)}
-                      aria-describedby={
-                        errorMessage ? "student-code-error" : undefined
-                      }
-                    />
-                  </div>
-                </label>
+      {/* =====================================================
+          INTRODUCTION
+      ===================================================== */}
+      <section className="about-story section">
+        <div className="container about-story__grid">
 
-                {errorMessage ? (
-                  <div
-                    className="student-payment-alert student-payment-alert--error"
-                    id="student-code-error"
-                    role="alert"
-                  >
-                    <XCircle size={17} />
-                    <span>{errorMessage}</span>
-                  </div>
-                ) : null}
+          <div className="section-label">
+            <span>01</span>
+            Why we exist
+          </div>
 
-                <button
-                  type="submit"
-                  className="student-payment-primary-btn"
-                  disabled={!studentCode.trim() || verificationBusy}
-                >
-                  {verificationBusy ? (
-                    <>
-                      <Loader2 className="student-payment-spin" size={18} />
-                      Verifying student...
-                    </>
-                  ) : (
-                    <>
-                      Verify Student
-                      <ArrowRight size={18} />
-                    </>
-                  )}
-                </button>
-              </form>
+          <div className="about-story__content">
 
-              <div className="student-payment-demo-note">
-                <span>Demo code</span>
-                <button
-                  type="button"
-                  onClick={() => setStudentCode("PET-2024-001")}
-                >
-                  PET-2024-001
-                </button>
-                <span>•</span>
-                <span>Mock frontend data</span>
-              </div>
-            </>
-          ) : null}
+            <h2>
+              We started with
+              <span> payments.</span>
+              <br />
+              We discovered a much
+              <br />
+              bigger problem.
+            </h2>
 
-          {step === 2 ? (
-            <>
-              <div className="student-payment-card-heading">
-                <div className="student-payment-icon student-payment-icon--success">
-                  <CheckCircle2 size={20} />
-                </div>
-                <div>
-                  <span className="student-payment-kicker">Step 2</span>
-                  <h2>Select payment items</h2>
-                  <p>Choose the fees you want to settle today.</p>
-                </div>
-              </div>
-
-              {verifiedStudent ? (
-                <div className="student-payment-student-card">
-                  <div className="student-payment-avatar">
-                    {getInitials(verifiedStudent.name)}
-                  </div>
-                  <div className="student-payment-student-main">
-                    <div>
-                      <strong>{verifiedStudent.name}</strong>
-                      <span>{verifiedStudent.code}</span>
-                    </div>
-                    <div className="student-payment-student-meta">
-                      <span>{verifiedStudent.className}</span>
-                      <span>{verifiedStudent.level}</span>
-                    </div>
-                  </div>
-                  <div className="student-payment-verified-badge">
-                    <CheckCircle2 size={15} />
-                    Verified
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="student-payment-success-message">
-                <CheckCircle2 size={16} />
-                <span>Student verified successfully.</span>
-              </div>
-
-              <div className="student-payment-items">
-                {paymentItems.map((item) => {
-                  const selected = selectedIds.includes(item.id);
-
-                  return (
-                    <button
-                      type="button"
-                      key={item.id}
-                      className={`student-payment-item ${
-                        selected ? "is-selected" : ""
-                      }`}
-                      onClick={() => togglePaymentItem(item.id)}
-                      aria-pressed={selected}
-                    >
-                      <span
-                        className={`student-payment-checkbox ${
-                          selected ? "is-selected" : ""
-                        }`}
-                        aria-hidden="true"
-                      >
-                        {selected ? <Check size={14} /> : null}
-                      </span>
-
-                      <span className="student-payment-item-copy">
-                        <strong>{item.name}</strong>
-                        <small>{item.description}</small>
-                      </span>
-
-                      <span className="student-payment-item-amount">
-                        {formatNaira(item.amount)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="student-payment-summary">
-                <div className="student-payment-summary-header">
-                  <div>
-                    <span>Payment Summary</span>
-                    <small>{selectedItems.length} item(s) selected</small>
-                  </div>
-                  <ReceiptText size={18} />
-                </div>
-
-                {selectedItems.length ? (
-                  <div className="student-payment-summary-items">
-                    {selectedItems.map((item) => (
-                      <div className="student-payment-summary-row" key={item.id}>
-                        <span>{item.name}</span>
-                        <strong>{formatNaira(item.amount)}</strong>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="student-payment-empty-summary">
-                    Select one or more payment items to calculate your total.
-                  </div>
-                )}
-
-                <div className="student-payment-summary-total">
-                  <span>Total amount</span>
-                  <strong>{formatNaira(totalAmount)}</strong>
-                </div>
-              </div>
-
-              {errorMessage ? (
-                <div
-                  className="student-payment-alert student-payment-alert--error"
-                  role="alert"
-                >
-                  <XCircle size={17} />
-                  <span>{errorMessage}</span>
-                </div>
-              ) : null}
-
-              <div className="student-payment-actions">
-                <button
-                  type="button"
-                  className="student-payment-secondary-btn"
-                  onClick={() => {
-                    setStep(1);
-                    setErrorMessage("");
-                  }}
-                >
-                  <ArrowLeft size={17} />
-                  Back
-                </button>
-
-                <button
-                  type="button"
-                  className="student-payment-primary-btn"
-                  onClick={handleProceedToPayment}
-                  disabled={!selectedItems.length || totalAmount <= 0}
-                >
-                  Continue to payment
-                  <ArrowRight size={17} />
-                </button>
-              </div>
-
-              <button
-                type="button"
-                className="student-payment-change-student"
-                onClick={resetFlow}
-              >
-                Change student
-              </button>
-            </>
-          ) : null}
-
-          {step === 3 && status !== "success" ? (
-            <>
-              <div className="student-payment-card-heading">
-                <div className="student-payment-icon">
-                  <CreditCard size={20} />
-                </div>
-                <div>
-                  <span className="student-payment-kicker">Step 3</span>
-                  <h2>Choose payment method</h2>
-                  <p>Securely complete your payment with Paystack.</p>
-                </div>
-              </div>
-
-              {verifiedStudent ? (
-                <div className="student-payment-mini-student">
-                  <div className="student-payment-avatar student-payment-avatar--small">
-                    {getInitials(verifiedStudent.name)}
-                  </div>
-                  <div>
-                    <strong>{verifiedStudent.name}</strong>
-                    <span>
-                      {verifiedStudent.code} · {verifiedStudent.className}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="student-payment-method-card">
-                <div className="student-payment-method-leading">
-                  <div className="student-payment-paystack-mark">
-                    <CircleDollarSign size={20} />
-                  </div>
-                  <div>
-                    <strong>Paystack</strong>
-                    <span>Secure online card, bank, and transfer checkout.</span>
-                  </div>
-                </div>
-                <ShieldCheck size={19} />
-              </div>
-
-              <div className="student-payment-total-callout">
-                <span>Total to pay</span>
-                <strong>{formatNaira(totalAmount)}</strong>
-              </div>
-
-              {errorMessage ? (
-                <div
-                  className="student-payment-alert student-payment-alert--error"
-                  role="alert"
-                >
-                  <XCircle size={17} />
-                  <span>{errorMessage}</span>
-                </div>
-              ) : null}
-
-              <button
-                type="button"
-                className="student-payment-primary-btn"
-                onClick={handlePaystackPayment}
-                disabled={paymentBusy}
-              >
-                {paymentBusy ? (
-                  <>
-                    <Loader2 className="student-payment-spin" size={18} />
-                    Connecting to Paystack...
-                  </>
-                ) : (
-                  <>
-                    <LockKeyhole size={17} />
-                    Pay {formatNaira(totalAmount)} with Paystack
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                className="student-payment-back-link"
-                onClick={() => {
-                  setStep(2);
-                  setErrorMessage("");
-                }}
-                disabled={paymentBusy}
-              >
-                <ArrowLeft size={16} />
-                Back to payment items
-              </button>
-            </>
-          ) : null}
-
-          {step === 3 && status === "success" ? (
-            <div className="student-payment-success-state">
-              <div className="student-payment-success-icon">
-                <CheckCircle2 size={34} />
-              </div>
-
-              <span className="student-payment-kicker">Payment complete</span>
-              <h2>Payment Successful</h2>
+            <div className="story-copy">
               <p>
-                The payment has been confirmed for the selected student in this
-                frontend demonstration.
+                In 2022, we recognized a problem countless African
+                families faced every day: the cost and complexity of
+                education was becoming a barrier to opportunity.
               </p>
 
-              <div className="student-payment-receipt">
-                <div>
-                  <span>Student</span>
-                  <strong>{verifiedStudent?.name}</strong>
-                </div>
-                <div>
-                  <span>Student Code</span>
-                  <strong>{verifiedStudent?.code}</strong>
-                </div>
-                <div>
-                  <span>Amount paid</span>
-                  <strong>{formatNaira(totalAmount)}</strong>
-                </div>
-                <div>
-                  <span>Payment reference</span>
-                  <strong className="student-payment-mono">
-                    {paymentReference}
-                  </strong>
-                </div>
-                <div>
-                  <span>Date</span>
-                  <strong>
-                    {paymentDate
-                      ? paymentDate.toLocaleString("en-NG", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
-                      : "—"}
-                  </strong>
-                </div>
-                <div>
-                  <span>Paid items</span>
-                  <strong>
-                    {selectedItems.map((item) => item.name).join(", ")}
-                  </strong>
-                </div>
-              </div>
+              <p>
+                We began by building a flexible payment platform.
+                But working closely with schools revealed something
+                much larger.
+              </p>
 
-              <button
-                type="button"
-                className="student-payment-primary-btn"
-                onClick={continueToStudentPortal}
-              >
-                Continue to Student Portal
-                <ArrowRight size={18} />
-              </button>
-
-              <button
-                type="button"
-                className="student-payment-secondary-btn student-payment-secondary-btn--full"
-                onClick={resetFlow}
-              >
-                Make another payment
-              </button>
-
-              <p className="student-payment-production-note">
-                <ShieldCheck size={14} />
-                Production flow: verify the Paystack transaction server-side
-                before marking the payment complete or activating a student
-                account.
+              <p>
+                Schools were managing finance, attendance, results,
+                assessments, communication, and administration across
+                disconnected tools and manual processes.
               </p>
             </div>
-          ) : null}
-        </section>
-      </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          WHAT NUVORA BUILDS
+      ===================================================== */}
+      <section className="about-platform section">
+        <div className="container">
+
+          <div className="section-intro">
+            <div className="section-label">
+              <span>02</span>
+              What we build
+            </div>
+
+            <div>
+              <h2>
+                One operating layer
+                <span> for the entire school.</span>
+              </h2>
+
+              <p>
+                Nuvora connects the systems schools depend on every
+                day, replacing fragmented workflows with a single
+                source of truth.
+              </p>
+            </div>
+          </div>
+
+          <div className="platform-list">
+
+            <article className="platform-row">
+              <span className="platform-row__number">01</span>
+
+              <div className="platform-row__main">
+                <h3>Financial Infrastructure</h3>
+
+                <p>
+                  Fee collection, payment tracking, reconciliation,
+                  budgeting, and financial visibility.
+                </p>
+              </div>
+
+              <span className="platform-row__tag">
+                FINANCE
+              </span>
+            </article>
+
+
+            <article className="platform-row">
+              <span className="platform-row__number">02</span>
+
+              <div className="platform-row__main">
+                <h3>Academic Operations</h3>
+
+                <p>
+                  Attendance, results, assessments, CBT, and the
+                  workflows teachers use every day.
+                </p>
+              </div>
+
+              <span className="platform-row__tag">
+                ACADEMICS
+              </span>
+            </article>
+
+
+            <article className="platform-row">
+              <span className="platform-row__number">03</span>
+
+              <div className="platform-row__main">
+                <h3>Intelligent Insights</h3>
+
+                <p>
+                  AI and analytics that turn school data into
+                  practical information for better decisions.
+                </p>
+              </div>
+
+              <span className="platform-row__tag">
+                INTELLIGENCE
+              </span>
+            </article>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          EVOLUTION
+      ===================================================== */}
+      <section className="about-evolution section">
+        <div className="container about-evolution__grid">
+
+          <div className="about-evolution__timeline">
+
+            <div className="timeline-item">
+              <span>2022</span>
+
+              <div>
+                <strong>Payments</strong>
+                <p>
+                  Making school payments simpler and more accessible.
+                </p>
+              </div>
+            </div>
+
+
+            <div className="timeline-item timeline-item--active">
+              <span>2024</span>
+
+              <div>
+                <strong>School Operations</strong>
+                <p>
+                  Expanding into the systems schools depend on
+                  every day.
+                </p>
+              </div>
+            </div>
+
+
+            <div className="timeline-item">
+              <span>NOW</span>
+
+              <div>
+                <strong>Education OS</strong>
+                <p>
+                  Building the intelligent infrastructure for
+                  African education.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+
+          <div className="about-evolution__content">
+
+            <div className="section-label">
+              <span>03</span>
+              The evolution
+            </div>
+
+            <h2>
+              From payments
+              <span> to an operating system.</span>
+            </h2>
+
+            <p>
+              Nuvora evolved because schools needed more than a
+              payment processor. They needed a system that
+              understood how their entire organization worked.
+            </p>
+
+            <p>
+              Our approach is deliberately African. We design for
+              mobile-first families, local payment realities,
+              imperfect connectivity, and the operational complexity
+              schools actually face.
+            </p>
+
+            <div className="evolution-note">
+              <span>"</span>
+
+              <p>
+                We don't build technology for an imaginary school.
+                We build for the schools that exist today.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          INNOVATION
+      ===================================================== */}
+      <section className="about-innovation section">
+        <div className="container">
+
+          <div className="section-intro">
+            <div className="section-label">
+              <span>04</span>
+              Innovation
+            </div>
+
+            <div>
+              <h2>
+                Turning complexity
+                <span> into leverage.</span>
+              </h2>
+
+              <p>
+                The goal isn't to add more software to schools.
+                It's to remove friction.
+              </p>
+            </div>
+          </div>
+
+
+          <div className="innovation-grid">
+
+            <article className="innovation-item innovation-item--featured">
+              <div className="innovation-item__meta">
+                <span>01 / ASSESSMENTS</span>
+                <span>CBT</span>
+              </div>
+
+              <h3>
+                Digital assessments without the administrative burden.
+              </h3>
+
+              <p>
+                Helping schools move from paper-based assessments
+                into secure, scalable digital examination workflows.
+              </p>
+            </article>
+
+
+            <article className="innovation-item">
+              <div className="innovation-item__meta">
+                <span>02 / INTELLIGENCE</span>
+                <span>AI</span>
+              </div>
+
+              <h3>
+                School data that actually helps people decide.
+              </h3>
+
+              <p>
+                Transforming information into useful signals for
+                school leaders and educators.
+              </p>
+            </article>
+
+
+            <article className="innovation-item">
+              <div className="innovation-item__meta">
+                <span>03 / PAYMENTS</span>
+                <span>FIN</span>
+              </div>
+
+              <h3>
+                Financial infrastructure designed around schools.
+              </h3>
+
+              <p>
+                Payments, visibility, and reconciliation working
+                together instead of across disconnected systems.
+              </p>
+            </article>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          IMPACT
+      ===================================================== */}
+      <section className="about-impact section">
+        <div className="container">
+
+          <div className="section-label">
+            <span>05</span>
+            Impact
+          </div>
+
+          <h2 className="impact-title">
+            Built to create
+            <span> measurable change.</span>
+          </h2>
+
+          <div className="impact-grid">
+
+            <div className="impact-item">
+              <span className="impact-value">₦M+</span>
+
+              <p>
+                in administrative and back-office savings
+              </p>
+            </div>
+
+
+            <div className="impact-item">
+              <span className="impact-value">10K+</span>
+
+              <p>
+                hours of teacher busywork eliminated
+              </p>
+            </div>
+
+
+            <div className="impact-item">
+              <span className="impact-value">100K+</span>
+
+              <p>
+                digital assessments taken
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          PEOPLE
+      ===================================================== */}
+      <section className="about-people section">
+        <div className="container about-people__grid">
+
+          <div>
+
+            <div className="section-label">
+              <span>06</span>
+              The people
+            </div>
+
+            <h2>
+              Small team.
+              <span> Serious ambition.</span>
+            </h2>
+
+            <p>
+              We're builders, operators, designers, strategists,
+              engineers, and problem-solvers united by one belief:
+              African education deserves world-class infrastructure.
+            </p>
+
+          </div>
+
+
+          <div className="people-list">
+
+            <div className="people-row">
+              <span>01</span>
+
+              <div>
+                <strong>Product & Design</strong>
+
+                <p>
+                  Creating experiences schools and families
+                  actually enjoy using.
+                </p>
+              </div>
+            </div>
+
+
+            <div className="people-row">
+              <span>02</span>
+
+              <div>
+                <strong>Engineering</strong>
+
+                <p>
+                  Building reliable infrastructure capable of
+                  supporting complex school ecosystems.
+                </p>
+              </div>
+            </div>
+
+
+            <div className="people-row">
+              <span>03</span>
+
+              <div>
+                <strong>Data & AI</strong>
+
+                <p>
+                  Turning education data into practical intelligence.
+                </p>
+              </div>
+            </div>
+
+
+            <div className="people-row">
+              <span>04</span>
+
+              <div>
+                <strong>Customer Success</strong>
+
+                <p>
+                  Making sure schools get measurable value from
+                  everything we build.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          RECOGNITION
+      ===================================================== */}
+      <section className="about-recognition section">
+        <div className="container">
+
+          <div className="section-intro">
+            <div className="section-label">
+              <span>07</span>
+              Recognition
+            </div>
+
+            <div>
+              <h2>
+                Progress worth
+                <span> noting.</span>
+              </h2>
+            </div>
+          </div>
+
+
+          <div className="recognition-list">
+
+            <div className="recognition-row">
+              <span>2025</span>
+
+              <p>
+                Selected for the Wema Bank Hackaholics Accelerator.
+              </p>
+            </div>
+
+
+            <div className="recognition-row">
+              <span>GLOBAL</span>
+
+              <p>
+                Selected by Harvard Innovation Labs & AWS as one
+                of 25 ventures for the inaugural NextGen Accelerator.
+              </p>
+            </div>
+
+
+            <div className="recognition-row">
+              <span>IMPACT</span>
+
+              <p>
+                Partnered with institutions and processed millions
+                in school fees.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          CULTURE
+      ===================================================== */}
+      <section className="about-culture section">
+        <div className="container">
+
+          <div className="section-intro">
+            <div className="section-label">
+              <span>08</span>
+              Culture
+            </div>
+
+            <div>
+              <h2>
+                How we
+                <span> work.</span>
+              </h2>
+
+              <p>
+                The environment determines the quality of the work.
+              </p>
+            </div>
+          </div>
+
+
+          <div className="culture-list">
+
+            <div className="culture-row">
+              <span>01</span>
+
+              <h3>Move Fast</h3>
+
+              <p>
+                We value momentum, ownership, and learning quickly.
+              </p>
+            </div>
+
+
+            <div className="culture-row">
+              <span>02</span>
+
+              <h3>Think Deeply</h3>
+
+              <p>
+                Fast execution is useful only when paired with
+                thoughtful decisions.
+              </p>
+            </div>
+
+
+            <div className="culture-row">
+              <span>03</span>
+
+              <h3>Stay Curious</h3>
+
+              <p>
+                The best solutions often come from questions nobody
+                thought to ask.
+              </p>
+            </div>
+
+
+            <div className="culture-row">
+              <span>04</span>
+
+              <h3>Build Together</h3>
+
+              <p>
+                Strong products come from strong collaboration.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          FUTURE
+      ===================================================== */}
+      <section className="about-future section">
+        <div className="container">
+
+          <div className="section-label">
+            <span>09</span>
+            What's next
+          </div>
+
+          <h2>
+            The future of African
+            <span> education is being built.</span>
+          </h2>
+
+          <p className="future-description">
+            Our vision is to become the operating system powering
+            schools across Africa — from the first payment to the
+            final classroom insight.
+          </p>
+
+
+          <div className="future-list">
+
+            <div>
+              <span>01</span>
+              Advanced AI tutoring systems
+            </div>
+
+            <div>
+              <span>02</span>
+              Predictive analytics for student outcomes
+            </div>
+
+            <div>
+              <span>03</span>
+              Pan-African payment infrastructure
+            </div>
+
+            <div>
+              <span>04</span>
+              Virtual classroom technologies
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          CTA
+      ===================================================== */}
+      <section className="about-cta">
+
+        <div className="about-cta__glow" />
+
+        <div className="container">
+
+          <div className="about-cta__card">
+
+            <div className="about-cta__top">
+
+              <span className="about-cta__label">
+                <span className="about-cta__dot" />
+                The next chapter
+              </span>
+
+              <span className="about-cta__mono">
+                NUVORA / 2026
+              </span>
+
+            </div>
+
+
+            <div className="about-cta__content">
+
+              <h2>
+                Let's build the
+                <span> future of school </span>
+                infrastructure.
+              </h2>
+
+              <p>
+                Nuvora is building the infrastructure that helps
+                African schools operate smarter, move faster, and
+                create better outcomes for every learner.
+              </p>
+
+
+              <div className="about-cta__actions">
+
+                <a
+                  href="mailto:hello@nuvora.school"
+                  className="about-cta__primary"
+                >
+                  Talk to Nuvora
+                  <span>↗</span>
+                </a>
+
+                <a
+                  href="/"
+                  className="about-cta__secondary"
+                >
+                  Explore the platform
+                  <span>→</span>
+                </a>
+
+              </div>
+
+            </div>
+
+
+            <div className="about-cta__footer">
+              <span>Built in Africa</span>
+              <span>Designed for scale</span>
+              <span>Made for education</span>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
     </main>
   );
-}
+};
+
+export default About;
