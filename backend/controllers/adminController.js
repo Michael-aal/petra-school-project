@@ -74,3 +74,20 @@ export const listAuditLogs = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const listResults = async (req, res, next) => {
+  try {
+    const data = await adminService.listResults({
+      user: req.user,
+      query: req.query,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
