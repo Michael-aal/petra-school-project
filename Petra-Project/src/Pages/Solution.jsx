@@ -1,6 +1,6 @@
 
 import { NavLink } from "react-router-dom";
-import { solutionGroups } from "../pages/solutions/solutionData";
+import { solutionGroups } from "./solutions/solutionData";
 
 export default function Solution() {
   return (

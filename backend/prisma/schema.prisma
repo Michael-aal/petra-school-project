@@ -149,8 +149,13 @@ model StaffInvitation {
   usedAt           DateTime?
   revokedAt        DateTime?
   staffUserId      String?
+  schoolId         Int?
   updatedAt        DateTime  @default(now()) @updatedAt
+  school           School?   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   user             User?     @relation(fields: [staffUserId], references: [id])
+
+  @@unique([schoolId, email])
+  @@index([schoolId, generatedAt])
 }
 
 model Wallet {
@@ -254,6 +259,7 @@ model School {
   paymentMethods          PaymentMethod[]
   principals              Principal[]
   receipts                Receipt[]
+  staffInvitations        StaffInvitation[]
   reportCards             ReportCard[]
   results                 Result[]
   rooms                   Room[]

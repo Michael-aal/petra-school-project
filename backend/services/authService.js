@@ -312,7 +312,7 @@ export const authService = {
   },
 
 
-  createPendingStaff: async ({ fullName, email, position, department }) => {
+  createPendingStaff: async ({ fullName, email, position, department, schoolId }) => {
     const existingUser = await userModel.findByEmail(email);
     if (existingUser) {
       const error = new Error("Email already in use");
@@ -336,12 +336,13 @@ export const authService = {
       staffDepartment: department || "",
       staffRegistrationCode,
       staffRegistrationCodeUsed: false,
+      schoolId: Number(schoolId),
     });
 
     return { user: safeUser(user), staffRegistrationCode, registrationLink: "/staff/register" };
   },
 
-  createStaffInvitation: async ({ staffName, email, role, department, assignedClass, assignedSubjects, employmentStatus, generatedBy }) => {
+  createStaffInvitation: async ({ staffName, email, role, department, assignedClass, assignedSubjects, employmentStatus, generatedBy, schoolId }) => {
     const normalizedEmail = String(email || "").trim().toLowerCase();
     const normalizedStaffName = String(staffName || "").trim();
 
@@ -352,7 +353,14 @@ export const authService = {
       throw error;
     }
 
-    const existingInvitation = await userModel.findStaffInvitationByEmail(normalizedEmail);
+    const resolvedSchoolId = Number(schoolId);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) {
+      const error = new Error("School context missing");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const existingInvitation = await userModel.findStaffInvitationByEmail(normalizedEmail, resolvedSchoolId);
     if (existingInvitation) {
       const error = new Error("A staff invitation already exists for this email");
       error.statusCode = 409;
@@ -370,13 +378,14 @@ export const authService = {
       employmentStatus: employmentStatus || "active",
       registrationCode,
       generatedBy,
+      schoolId: resolvedSchoolId,
       status: "unused",
     });
 
     return invitation;
   },
 
-  listStaffInvitations: async () => userModel.listStaffInvitations(),
+  listStaffInvitations: async (schoolId) => userModel.listStaffInvitations(Number(schoolId)),
 
   getStaffInvitation: async (registrationCode) => {
     const invitation = await userModel.findStaffInvitationByCode(registrationCode);
@@ -401,22 +410,30 @@ export const authService = {
     return invitation;
   },
 
-  revokeStaffInvitation: async ({ registrationCode }) => {
-    const invitation = await userModel.findStaffInvitationByCode(registrationCode);
+  revokeStaffInvitation: async ({ registrationCode, schoolId }) => {
+    const resolvedSchoolId = Number(schoolId);
+    const invitation = await userModel.findStaffInvitationByCode(registrationCode, resolvedSchoolId);
     if (!invitation) {
       const error = new Error("Staff invitation not found");
       error.statusCode = 404;
       throw error;
     }
-    const updated = await userModel.updateStaffInvitation(invitation.id, {
+    const revokedAt = new Date();
+    const result = await userModel.updateStaffInvitation(invitation.id, {
       status: "revoked",
-      revokedAt: new Date(),
-    });
-    return updated;
+      revokedAt,
+    }, resolvedSchoolId);
+    if (!result.count) {
+      const error = new Error("Staff invitation not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return { ...invitation, status: "revoked", revokedAt };
   },
 
-  regenerateStaffInvitationCode: async ({ registrationCode }) => {
-    const invitation = await userModel.findStaffInvitationByCode(registrationCode);
+  regenerateStaffInvitationCode: async ({ registrationCode, schoolId }) => {
+    const resolvedSchoolId = Number(schoolId);
+    const invitation = await userModel.findStaffInvitationByCode(registrationCode, resolvedSchoolId);
     if (!invitation) {
       const error = new Error("Staff invitation not found");
       error.statusCode = 404;
@@ -427,12 +444,18 @@ export const authService = {
       error.statusCode = 400;
       throw error;
     }
-    const updated = await userModel.updateStaffInvitation(invitation.id, {
-      registrationCode: makeInvitationCode(),
+    const nextRegistrationCode = makeInvitationCode();
+    const result = await userModel.updateStaffInvitation(invitation.id, {
+      registrationCode: nextRegistrationCode,
       status: "unused",
       revokedAt: null,
-    });
-    return updated;
+    }, resolvedSchoolId);
+    if (!result.count) {
+      const error = new Error("Staff invitation not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return { ...invitation, registrationCode: nextRegistrationCode, status: "unused", revokedAt: null };
   },
 
   activateStaff: async ({ email, password, code }) => {
@@ -503,15 +526,15 @@ export const authService = {
           staffDepartment: invitation.department,
           staffClassAssigned: invitation.assignedClass || null,
           staffSubjectsAssigned: invitation.assignedSubjects || [],
-          schoolId: inviterSchoolId,
+          schoolId: invitation.schoolId || inviterSchoolId,
         },
       });
 
-      if (inviterSchoolId) {
+      if (invitation.schoolId || inviterSchoolId) {
         await tx.teacher.create({
           data: {
             userId: createdUser.id,
-            schoolId: inviterSchoolId,
+            schoolId: invitation.schoolId || inviterSchoolId,
             designation: invitation.role || "Teacher",
             isActive: invitation.employmentStatus !== "inactive",
           },
