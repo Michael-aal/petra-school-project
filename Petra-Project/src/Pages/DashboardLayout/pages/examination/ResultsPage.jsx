@@ -17,12 +17,26 @@ const formatDateTime = (value) => {
 };
 
 const formatNumber = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return "N/A";
+  }
+
   const num = Number(value);
-  return Number.isFinite(num) ? num.toLocaleString() : "0";
+  return Number.isFinite(num) ? num.toLocaleString() : "N/A";
 };
 
 const ResultCard = ({ item }) => {
-  const isPass = String(item?.grade || item?.attemptStatus || "").toLowerCase().includes("pass");
+  const isPending = item?.resultState === "pending" || item?.passStatus === "pending";
+  const isPass = !isPending && item?.passStatus === "pass";
+  const isFail = !isPending && item?.passStatus === "fail";
+  const statusLabel = isPending
+    ? "Result Pending"
+    : isPass
+      ? "Passed"
+      : isFail
+        ? "Failed"
+        : item?.grade || "Recorded";
+  const statusClass = isPending ? "pending" : isPass ? "pass" : isFail ? "fail" : "neutral";
 
   return (
     <article className="results-card">
@@ -31,8 +45,8 @@ const ResultCard = ({ item }) => {
           <p className="results-card-label">Student</p>
           <strong>{item.studentName || "Unknown Student"}</strong>
         </div>
-        <span className={`results-pill ${isPass ? "pass" : "fail"}`}>
-          {isPass ? "Passed" : item.grade || "Result"}
+        <span className={`results-pill ${statusClass}`}>
+          {statusLabel}
         </span>
       </div>
 
@@ -47,7 +61,7 @@ const ResultCard = ({ item }) => {
         </div>
         <div>
           <span>Marks Obtained</span>
-          <strong>{formatNumber(item.marks)}</strong>
+          <strong>{formatNumber(item.score ?? item.marks)}</strong>
         </div>
         <div>
           <span>Total Marks</span>
@@ -63,11 +77,15 @@ const ResultCard = ({ item }) => {
         </div>
         <div>
           <span>Pass / Fail</span>
-          <strong>{isPass ? "Pass" : "Fail"}</strong>
+          <strong>{isPending ? "Pending" : isPass ? "Pass" : isFail ? "Fail" : "Not assessed"}</strong>
         </div>
         <div>
           <span>Attempt Status</span>
           <strong>{item.attemptStatus || "Completed"}</strong>
+        </div>
+        <div>
+          <span>Result State</span>
+          <strong>{isPending ? "Attempt recorded; final result pending" : "Final result available"}</strong>
         </div>
         <div>
           <span>Completed</span>
@@ -75,7 +93,35 @@ const ResultCard = ({ item }) => {
         </div>
         <div>
           <span>Admission / School Code</span>
-          <strong>{item.admissionCode || "Not available"}</strong>
+          <strong>{item.schoolCode || item.admissionCode || item.applicationCode || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Admission Status</span>
+          <strong>{item.admissionStatus || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Application Code</span>
+          <strong>{item.applicationCode || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Applicant</span>
+          <strong>{item.applicantName || item.studentName || "Unknown Student"}</strong>
+        </div>
+        <div>
+          <span>Applicant ID</span>
+          <strong>{item.applicantId || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Exam Reference</span>
+          <strong>{item.examReference || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Attempt ID</span>
+          <strong>{item.attemptId || "Not available"}</strong>
+        </div>
+        <div>
+          <span>Result ID</span>
+          <strong>{item.resultId || "Pending"}</strong>
         </div>
       </div>
     </article>
@@ -169,14 +215,14 @@ export default function ResultsPage() {
 
       {!loading && !error && results.length === 0 && (
         <div className="results-state">
-          No results are available yet.
+          No assessment attempts or results are available yet.
         </div>
       )}
 
       {!loading && !error && results.length > 0 && (
         <div className="results-list">
           {results.map((item) => (
-            <ResultCard key={item.id} item={item} />
+            <ResultCard key={item.resultId || item.attemptId || item.id} item={item} />
           ))}
         </div>
       )}

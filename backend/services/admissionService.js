@@ -497,6 +497,7 @@ create: async (payload, user = null) => {
   // Generate persistent applicant ID
   const applicantId = `APP-${schoolId}-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
   const admissionColumns = await getAdmissionColumns();
+  const allCols = await getAllAdmissionColumns();
 
   const baseSubmissionData = payload.submissionData || payload;
 
@@ -516,6 +517,55 @@ create: async (payload, user = null) => {
 
   if (payload.academicYearId) createData.academicYearId = payload.academicYearId;
   if (payload.termId) createData.termId = payload.termId;
+
+  // Persist the same applicant identity used to issue the QuizLab invitation.
+  // `remarks` remains a compatibility copy for installations with schema drift.
+  const canonicalFields = {
+    applicantName: applicantName || null,
+    applicantFirstName: applicantFirstName || null,
+    applicantMiddleName: applicantMiddleName || null,
+    applicantLastName: applicantLastName || null,
+    applicantGender: applicantGender || null,
+    applicantDob: parseDate(applicantDob),
+    applicantPlaceOfBirth: applicantPlaceOfBirth || null,
+    applicantNationality: applicantNationality || null,
+    applicantStateOfOrigin: applicantStateOfOrigin || null,
+    applicantLga: applicantLga || null,
+    applicantLin: applicantLin || null,
+    intendedClass: intendedClass || null,
+    studentType: studentType || null,
+    previousSchool: payload.previousSchool || null,
+    religion: payload.religion || null,
+    fatherName: payload.fatherName || null,
+    fatherAddress: payload.fatherAddress || null,
+    fatherOccupation: payload.fatherOccupation || null,
+    fatherJobTitle: payload.fatherJobTitle || null,
+    fatherEmail: String(payload.fatherEmail || "").trim().toLowerCase() || null,
+    fatherPhone1: payload.fatherPhone1 || null,
+    fatherPhone2: payload.fatherPhone2 || null,
+    motherName: payload.motherName || null,
+    motherAddress: payload.motherAddress || null,
+    motherOccupation: payload.motherOccupation || null,
+    motherJobTitle: payload.motherJobTitle || null,
+    motherEmail: String(payload.motherEmail || "").trim().toLowerCase() || null,
+    motherPhone1: payload.motherPhone1 || null,
+    motherPhone2: payload.motherPhone2 || null,
+    parentEmail: String(
+      payload.parentEmail || payload.fatherEmail || payload.motherEmail || ""
+    )
+      .trim()
+      .toLowerCase() || null,
+    parentPhone: payload.parentPhone || payload.fatherPhone1 || payload.motherPhone1 || null,
+    feePaymentMethod: payload.feePaymentMethod || null,
+    agreeTerms:
+      payload.agreeTerms === true || String(payload.agreeTerms || "").toLowerCase() === "true",
+  };
+
+  for (const [field, value] of Object.entries(canonicalFields)) {
+    if (allCols.has(field.toLowerCase())) {
+      createData[field] = value;
+    }
+  }
 
   // Prefer canonical `admissionCode` if the DB has that column.
   if (admissionColumns.has("admissioncode")) {
@@ -541,7 +591,6 @@ create: async (payload, user = null) => {
   // If the database is missing many Admission columns (classic drift), Prisma
   // may attempt to insert all model columns and fail. Detect that case and
   // perform a raw INSERT that only writes safe columns.
-  const allCols = await getAllAdmissionColumns();
   const needsRawInsert = !allCols.has('applicantname');
 
   console.log('admission.create data keys:', Object.keys(createData), 'allCols count:', allCols.size);

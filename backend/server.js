@@ -1,10 +1,10 @@
+import "./config/loadEnv.js";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 
-import "./config/loadEnv.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
@@ -117,4 +117,5 @@ process.on("SIGTERM", () => {
   }
 });
 
+console.log(`QUIZLAB_API_KEY loaded: ${Boolean(process.env.QUIZLAB_API_KEY)}`);
 start();

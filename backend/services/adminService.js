@@ -85,6 +85,52 @@ const calculatePercentage = (marks, totalMarks) => {
   return Number(((numericMarks / numericTotal) * 100).toFixed(2));
 };
 
+const toFiniteNumber = (value, fallback = null) => {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+};
+
+const getRecordTime = (record) => {
+  const value =
+    record?.completedAt ||
+    record?.updatedAt ||
+    record?.createdAt ||
+    record?.startedAt ||
+    null;
+  const time = value ? new Date(value).getTime() : 0;
+  return Number.isFinite(time) ? time : 0;
+};
+
+const isNewerRecord = (candidate, current) => {
+  if (!current) return true;
+
+  const candidateTime = getRecordTime(candidate);
+  const currentTime = getRecordTime(current);
+
+  if (candidateTime !== currentTime) {
+    return candidateTime > currentTime;
+  }
+
+  const candidateAttemptNumber = Number(
+    candidate?.attemptNumber ?? candidate?.attempt?.attemptNumber ?? 0
+  );
+  const currentAttemptNumber = Number(
+    current?.attemptNumber ?? current?.attempt?.attemptNumber ?? 0
+  );
+
+  return candidateAttemptNumber > currentAttemptNumber;
+};
+
+const getExamStudentKey = (examId, studentId) =>
+  examId && studentId ? `${examId}:${studentId}` : null;
+
+const isPassingGrade = (grade) =>
+  ["pass", "passed"].includes(String(grade || "").trim().toLowerCase());
+
 export const adminService = {
   getDashboard: async (user) => {
     const schoolId = getSchoolId(user);
@@ -547,19 +593,13 @@ export const adminService = {
     const schoolId = getSchoolId(user);
     const { page, limit, skip } = getPagination(query);
 
-    const where = {
-      exam: {
-        schoolId,
-      },
-    };
-
-    const [total, results] = await Promise.all([
-      prisma.examResult.count({
-        where,
-      }),
-
+    const [examResults, incompleteAttempts, legacyResults] = await Promise.all([
       prisma.examResult.findMany({
-        where,
+        where: {
+          exam: {
+            schoolId,
+          },
+        },
 
         include: {
           exam: {
@@ -581,11 +621,258 @@ export const adminService = {
             createdAt: "desc",
           },
         ],
+      }),
 
-        skip,
-        take: limit,
+      prisma.examAttempt.findMany({
+        where: {
+          exam: {
+            schoolId,
+          },
+          result: {
+            is: null,
+          },
+        },
+
+        include: {
+          exam: {
+            include: {
+              subject: true,
+            },
+          },
+          student: true,
+        },
+
+        orderBy: [
+          {
+            completedAt: "desc",
+          },
+          {
+            createdAt: "desc",
+          },
+        ],
+      }),
+
+      prisma.result.findMany({
+        where: {
+          schoolId,
+        },
+
+        include: {
+          assessment: {
+            include: {
+              exam: {
+                include: {
+                  subject: true,
+                },
+              },
+            },
+          },
+
+          student: true,
+          teacher: true,
+        },
+
+        orderBy: [
+          {
+            createdAt: "desc",
+          },
+        ],
       }),
     ]);
+
+    const latestLegacyByExamStudent = new Map();
+
+    for (const result of legacyResults) {
+      const key = getExamStudentKey(
+        result.assessment?.exam?.id,
+        result.studentId
+      );
+
+      if (key && isNewerRecord(result, latestLegacyByExamStudent.get(key))) {
+        latestLegacyByExamStudent.set(key, result);
+      }
+    }
+
+    const latestExamResultsByStudentExam = new Map();
+
+    for (const result of examResults) {
+      const key = getExamStudentKey(result.examId, result.studentId);
+
+      if (
+        key &&
+        isNewerRecord(
+          result,
+          latestExamResultsByStudentExam.get(key)
+        )
+      ) {
+        latestExamResultsByStudentExam.set(key, result);
+      }
+    }
+
+    const latestIncompleteAttemptsByStudentExam = new Map();
+
+    for (const attempt of incompleteAttempts) {
+      const key = getExamStudentKey(attempt.examId, attempt.studentId);
+
+      if (key && isNewerRecord(attempt, latestIncompleteAttemptsByStudentExam.get(key))) {
+        latestIncompleteAttemptsByStudentExam.set(key, attempt);
+      }
+    }
+
+    const combined = [];
+
+    for (const [studentExamKey, result] of latestExamResultsByStudentExam) {
+      const legacyResult = latestLegacyByExamStudent.get(studentExamKey);
+      const legacyMaxScore = toFiniteNumber(legacyResult?.maxScore);
+      const examTotalMarks = toFiniteNumber(result.exam?.totalMarks, 0);
+      const totalMarks = legacyMaxScore && legacyMaxScore > 0
+        ? legacyMaxScore
+        : examTotalMarks;
+      const marks = toFiniteNumber(result.marks, 0);
+      const percentage = toFiniteNumber(
+        result.percentage,
+        calculatePercentage(marks, totalMarks)
+      );
+      const passed = isPassingGrade(result.grade);
+
+      combined.push({
+        kind: "exam_result",
+        key: `exam:${result.id}`,
+        id: result.id,
+        resultId: result.id,
+        attemptId: result.attemptId || result.attempt?.id || null,
+        externalResultId: result.attempt?.externalResultId || null,
+        attemptNumber: result.attempt?.attemptNumber || null,
+        resultState: "completed",
+        examId: result.examId,
+        assessmentId: result.exam?.assessmentId || legacyResult?.assessmentId || null,
+        studentId: result.studentId,
+        studentName: getStudentName(result.student),
+        examTitle: result.exam?.title || "Untitled Exam",
+        subject: result.exam?.subject?.name || "Unknown Subject",
+        marks,
+        score: marks,
+        totalMarks,
+        totalQuestions: null,
+        percentage,
+        grade: result.grade || "",
+        passed,
+        passStatus: passed ? "pass" : "fail",
+        remarks: result.remarks || "",
+        completedAt: result.completedAt,
+        createdAt: result.createdAt,
+        attemptStatus: result.attempt?.status || null,
+      });
+    }
+
+    for (const [studentExamKey, attempt] of latestIncompleteAttemptsByStudentExam) {
+      const finalResult = latestExamResultsByStudentExam.get(studentExamKey);
+
+      // A newer attempt without an ExamResult must be visible as pending.
+      if (finalResult && !isNewerRecord(attempt, finalResult)) {
+        continue;
+      }
+
+      const marks = toFiniteNumber(attempt.score);
+      const totalMarks = toFiniteNumber(attempt.exam?.totalMarks, 0);
+      const percentage = toFiniteNumber(
+        attempt.percentage,
+        marks === null ? null : calculatePercentage(marks, totalMarks)
+      );
+
+      combined.push({
+        kind: "exam_attempt",
+        key: `attempt:${attempt.id}`,
+        id: attempt.id,
+        resultId: null,
+        attemptId: attempt.id,
+        externalResultId: attempt.externalResultId || null,
+        attemptNumber: attempt.attemptNumber || null,
+        resultState: "pending",
+        examId: attempt.examId,
+        assessmentId: attempt.exam?.assessmentId || null,
+        studentId: attempt.studentId,
+        studentName: getStudentName(attempt.student),
+        examTitle: attempt.exam?.title || "Untitled Exam",
+        subject: attempt.exam?.subject?.name || "Unknown Subject",
+        marks,
+        score: marks,
+        totalMarks,
+        totalQuestions: null,
+        percentage,
+        grade: "Pending",
+        passed: null,
+        passStatus: "pending",
+        remarks: "The attempt is stored, but its final result has not been created yet.",
+        completedAt: attempt.completedAt,
+        createdAt: attempt.createdAt,
+        attemptStatus: attempt.status || "in_progress",
+      });
+    }
+
+    const displayedStudentExamKeys = new Set(
+      combined
+        .map((result) => getExamStudentKey(result.examId, result.studentId))
+        .filter(Boolean)
+    );
+
+    for (const result of legacyResults) {
+      const examId = result.assessment?.exam?.id || null;
+      const existingKey = getExamStudentKey(examId, result.studentId);
+
+      if (
+        existingKey &&
+        (displayedStudentExamKeys.has(existingKey) ||
+          latestLegacyByExamStudent.get(existingKey)?.id !== result.id)
+      ) {
+        continue;
+      }
+
+      const key = `legacy:${result.id}`;
+      const totalMarks = toFiniteNumber(
+        result.maxScore,
+        toFiniteNumber(result.assessment?.exam?.totalMarks, 0)
+      );
+      const marks = toFiniteNumber(result.score, 0);
+
+      combined.push({
+        kind: "legacy",
+        key,
+        id: result.id,
+        resultId: result.id,
+        attemptId: null,
+        externalResultId: null,
+        attemptNumber: null,
+        resultState: "completed",
+        examId,
+        assessmentId: result.assessmentId || null,
+        studentId: result.studentId,
+        studentName: getStudentName(result.student),
+        examTitle: result.assessment?.exam?.title || result.assessment?.title || "Untitled Exam",
+        subject: result.assessment?.exam?.subject?.name || result.subject || "Unknown Subject",
+        marks,
+        score: marks,
+        totalMarks,
+        totalQuestions: null,
+        percentage: totalMarks > 0 ? calculatePercentage(marks, totalMarks) : null,
+        grade: result.published ? "Published" : "",
+        passed: null,
+        passStatus: null,
+        remarks: "",
+        completedAt: result.updatedAt || result.createdAt,
+        createdAt: result.createdAt,
+        attemptStatus: result.published ? "published" : null,
+      });
+    }
+
+    combined.sort((a, b) => {
+      const aTime = new Date(a.completedAt || a.createdAt || 0).getTime();
+      const bTime = new Date(b.completedAt || b.createdAt || 0).getTime();
+      return bTime - aTime;
+    });
+
+    const total = combined.length;
+    const results = combined.slice(skip, skip + limit);
 
     const studentIds = results
       .map((result) => result.studentId)
@@ -600,66 +887,49 @@ export const adminService = {
             },
           },
           select: {
+            id: true,
             studentId: true,
+            applicantName: true,
+            applicantId: true,
+            applicationCode: true,
             admissionCode: true,
             status: true,
             examResult: true,
+            examScore: true,
+            examCompletedAt: true,
+            examReference: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            updatedAt: "desc",
           },
         })
       : [];
 
-    const admissionByStudentId = new Map(
-      admissions
-        .filter((item) => item.studentId)
-        .map((item) => [item.studentId, item])
-    );
+    const admissionByStudentId = new Map();
+
+    for (const admission of admissions) {
+      if (admission.studentId && !admissionByStudentId.has(admission.studentId)) {
+        admissionByStudentId.set(admission.studentId, admission);
+      }
+    }
 
     return {
       results: results.map((result) => {
-        const totalMarks = Number(result.exam?.totalMarks || 0);
-
-        const percentage =
-          result.percentage !== null &&
-          result.percentage !== undefined
-            ? Number(result.percentage)
-            : calculatePercentage(result.marks, totalMarks);
+        const admission = admissionByStudentId.get(result.studentId) || null;
 
         return {
-          id: result.id,
-
-          examId: result.examId,
-
-          studentId: result.studentId,
-
-          studentName: getStudentName(result.student),
-
-          examTitle: result.exam?.title || "Untitled Exam",
-
-          subject: result.exam?.subject?.name || "Unknown Subject",
-
-          marks: Number(result.marks || 0),
-
-          totalMarks,
-
-          percentage,
-
-          grade: result.grade || "",
-
-          remarks: result.remarks || "",
-
-          completedAt: result.completedAt,
-
-          createdAt: result.createdAt,
-
-          attemptStatus: result.attempt?.status || null,
-
-          admissionCode:
-            admissionByStudentId.get(result.studentId)
-              ?.admissionCode || null,
-
-          admissionStatus:
-            admissionByStudentId.get(result.studentId)
-              ?.status || null,
+          ...result,
+          admissionId: admission?.id || null,
+          admissionCode: admission?.admissionCode || null,
+          applicationCode: admission?.applicationCode || null,
+          applicantName: admission?.applicantName || null,
+          applicantId: admission?.applicantId || null,
+          schoolCode: admission?.admissionCode || admission?.applicationCode || null,
+          admissionStatus: admission?.status || null,
+          examReference: admission?.examReference || null,
+          source: result.kind,
         };
       }),
 

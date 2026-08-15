@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "../config/loadEnv.js";
 import { prisma } from '../config/db.js';
 
 const main = async () => {

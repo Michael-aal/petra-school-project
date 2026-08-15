@@ -131,10 +131,12 @@ export default function AdmissionForm() {
         }
       })();
       const applicantId = admission?.applicantId || safeRemarks.applicantId;
+      const assessmentId = admission?.examReference || safeRemarks.examReference;
       const admCode = admission?.admissionCode || admission?.applicationCode || safeRemarks.admissionCode || safeRemarks.applicationCode;
       setSubmissionSummary({
         message: response.message || "Application submitted successfully.",
         applicantId: applicantId || "",
+        assessmentId: assessmentId || "",
         admissionCode: admCode || "",
       });
       showSuccess(
@@ -148,6 +150,7 @@ export default function AdmissionForm() {
         if (startNow) {
           const params = new URLSearchParams();
           if (applicantId) params.set("applicantId", applicantId);
+          if (assessmentId) params.set("assessmentId", assessmentId);
           window.location.href = `/dashboard/examination/cbt${params.toString() ? `?${params.toString()}` : ""}`;
           return;
         }
@@ -204,6 +207,14 @@ export default function AdmissionForm() {
                 <strong>Applicant ID: {submissionSummary.applicantId}</strong>
                 <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.applicantId)}>
                   {copiedCode === submissionSummary.applicantId ? "Copied" : "Copy"}
+                </button>
+              </div>
+            ) : null}
+            {submissionSummary.assessmentId ? (
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+                <strong>Assessment ID: {submissionSummary.assessmentId}</strong>
+                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.assessmentId)}>
+                  {copiedCode === submissionSummary.assessmentId ? "Copied" : "Copy"}
                 </button>
               </div>
             ) : null}

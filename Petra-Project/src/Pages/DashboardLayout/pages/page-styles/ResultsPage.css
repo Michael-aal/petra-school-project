@@ -115,6 +115,16 @@
   color: #c01048;
 }
 
+.results-pill.pending{
+  background: #fff7e6;
+  color: #9a6700;
+}
+
+.results-pill.neutral{
+  background: #edf2f7;
+  color: #344054;
+}
+
 .results-grid{
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

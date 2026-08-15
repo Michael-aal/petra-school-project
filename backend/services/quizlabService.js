@@ -1,3 +1,4 @@
+import "../config/loadEnv.js";
 import fetch from 'node-fetch';
 
 const QUIZLAB_MCP_URL = process.env.QUIZLAB_MCP_URL || 'https://quizlab.in/mcp';
@@ -58,14 +59,30 @@ const callMcp = async (method, params = {}) => {
   const data = await res.json();
   if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
   const result = data.result ?? data;
+
+  const throwProviderError = (value) => {
+    if (!value?.error) return value;
+
+    const message =
+      typeof value.error === 'string'
+        ? value.error
+        : value.error?.message || JSON.stringify(value.error);
+
+    throw new Error(`QuizLab ${method} failed: ${message}`);
+  };
+
   if (result && Array.isArray(result.content) && result.content.length === 1 && typeof result.content[0]?.text === 'string') {
+    let parsed;
+
     try {
-      return JSON.parse(result.content[0].text);
+      parsed = JSON.parse(result.content[0].text);
     } catch {
       return result.content[0].text;
     }
+
+    return throwProviderError(parsed);
   }
-  return result;
+  return throwProviderError(result);
 };
 
 const callAts = async (path, { method = 'GET', body } = {}) => {
@@ -115,10 +132,17 @@ export const quizlabService = {
     ends_at: payload?.ends_at ?? payload?.endsAt,
   }),
   publishQuiz: async (quizId) => callMcp('quiz_publish', { quiz_id: Number(quizId) || quizId }),
-  createInvitation: async (quizId, candidate) => callMcp('invitation_create', { quiz_id: Number(quizId) || quizId, ...candidate }),
-  listInvitations: async (quizId, opts = {}) => callMcp('invitation_list', Object.assign({ quiz_id: Number(quizId) || quizId }, opts)),
-  listAttempts: async (quizId, opts = {}) => callMcp('result_list_attempts', Object.assign({ quiz_id: Number(quizId) || quizId }, opts)),
-  getAttempt: async (quizId, attemptId) => callMcp('result_get_attempt', { quiz_id: Number(quizId) || quizId, attempt_id: attemptId }),
+  createInvitation: async (quizId, candidate = {}) => callMcp('invitation_create', {
+    quiz_id: Number(quizId) || quizId,
+    email: candidate.email,
+    full_name: candidate.full_name || candidate.fullName || candidate.name,
+    ...(candidate.expiry_days || candidate.expiryDays
+      ? { expiry_days: Number(candidate.expiry_days || candidate.expiryDays) }
+      : {}),
+  }),
+  listInvitations: async (quizId) => callMcp('invitation_list', { quiz_id: Number(quizId) || quizId }),
+  listAttempts: async (quizId) => callMcp('result_list_attempts', { quiz_id: Number(quizId) || quizId }),
+  getAttempt: async (_quizId, attemptId) => callMcp('result_get_attempt', { attempt_id: Number(attemptId) || attemptId }),
   createAssessment: async (payload) => callAts('/api/ats/assessments', { method: 'POST', body: payload }),
   getAssessment: async (idOrExternalId) => callAts(`/api/ats/assessments/${encodeURIComponent(idOrExternalId)}`),
   listAssessments: async (status) => callAts(`/api/ats/assessments${status ? `?status=${encodeURIComponent(status)}` : ''}`),
