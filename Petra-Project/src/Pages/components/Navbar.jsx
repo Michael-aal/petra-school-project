@@ -8,7 +8,7 @@ import {
   Shield,
   ChevronDown,
 } from "lucide-react";
-import { solutionGroups } from "../../pages/solutions/solutionData";
+import { solutionGroups } from "./../pages/solutions/solutionData";
 import { applyTheme, getInitialTheme } from "../../utils/theme";
 
 import "../../Styles/components/Navbar.css";
