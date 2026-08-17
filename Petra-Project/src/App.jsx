@@ -111,7 +111,7 @@ import SchoolFeesPaymentPage from "./Pages/DashboardLayout/SchoolFeesPaymentPage
 import AdmissionPassScreen from "./Pages/DashboardLayout/AdmissionPassScreen/AdmissionPassScreen";
 import ApplicationStatusPage from "./Pages/DashboardLayout/ApplicationStatusPage/ApplicationStatusPage";
 
-
+import Payment from "./Payment";
 import StudentPaymentPage from "./Pages/DashboardLayout/StudentPaymentPage/StudentPaymentPage";
 import AdminPaymentSettings from "./Pages/DashboardLayout/AdminPaymentSettings/AdminPaymentSettings";
 
