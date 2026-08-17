@@ -13,16 +13,40 @@ const parseDate = (value) => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
-const resolveSchoolId = async (preferredSchoolId) => {
-  if (preferredSchoolId) {
-    const parsed = Number.parseInt(String(preferredSchoolId), 10);
-    if (!Number.isNaN(parsed)) {
-      const school = await prisma.school.findUnique({
-        where: { id: parsed },
-        select: { id: true },
-      });
-      if (school) return school.id;
-    }
+const resolveSchoolToId = async (candidate) => {
+  if (candidate === undefined || candidate === null || candidate === "") return null;
+
+  const parsed = Number.parseInt(String(candidate), 10);
+  if (Number.isNaN(parsed)) return null;
+
+  const school = await prisma.school.findUnique({
+    where: { id: parsed },
+    select: { id: true },
+  });
+
+  return school ? school.id : null;
+};
+
+// Resolve which school an admission submission belongs to.
+//
+// Priority (only existing, valid schools are accepted):
+//   1. explicit payload.schoolId
+//   2. the request's x-school-id header (sent by the frontend apiClient when a
+//      school is actively selected in the dashboard)
+//   3. the authenticated user's own school (user.schoolId / principalProfile /
+//      admin / teacher / staff profiles)
+//   4. fallback: the first active school (legacy behavior for anonymous, public
+//      walk-in applications that carry no school context)
+const resolveSchoolId = async (preferredSchoolId, context = {}) => {
+  const candidates = [
+    preferredSchoolId,
+    context.schoolHeader,
+    context.userSchoolId,
+  ];
+
+  for (const candidate of candidates) {
+    const resolved = await resolveSchoolToId(candidate);
+    if (resolved) return resolved;
   }
 
   const defaultSchool = await prisma.school.findFirst({
@@ -441,8 +465,20 @@ export const admissionService = {
 
     return { success: true, created };
   },
-create: async (payload, user = null) => {
-  const schoolId = await resolveSchoolId(payload.schoolId);
+create: async (payload, user = null, context = {}) => {
+  const userSchoolId =
+    context.userSchoolId ||
+    user?.schoolId ||
+    user?.principalProfile?.schoolId ||
+    user?.adminProfile?.schoolId ||
+    user?.teacherProfile?.schoolId ||
+    user?.staffProfile?.schoolId ||
+    null;
+
+  const schoolId = await resolveSchoolId(payload.schoolId, {
+    schoolHeader: context.schoolHeader,
+    userSchoolId,
+  });
 
   // Accept the current frontend field names
   // and map them to the existing Prisma/database field names.
@@ -637,95 +673,11 @@ create: async (payload, user = null) => {
     const sql = `INSERT INTO "Admission" (${colList}) VALUES (${placeholders}) RETURNING *;`;
     const rows = await prisma.$queryRawUnsafe(sql, ...params);
     const created = Array.isArray(rows) ? rows[0] : rows;
-    // Try to create a minimal Assessment using the examReference as its id so
-    // admins can use the generated examReference directly as an assessment id.
-    try {
-      if (examRef) {
-        // Prefer the submitting user's Teacher record when available
-        let teacherIdToUse = null;
-        if (user && user.id) {
-          const t = await prisma.teacher.findFirst({ where: { userId: user.id, schoolId } });
-          if (t) teacherIdToUse = t.id;
-        }
-
-        // Fallback to a system teacher for the school
-        if (!teacherIdToUse) {
-          teacherIdToUse = `sys_teacher_${schoolId}`;
-          await prisma.teacher.upsert({
-            where: { id: teacherIdToUse },
-            create: { id: teacherIdToUse, schoolId },
-            update: {},
-          });
-        }
-
-        await prisma.assessment.upsert({
-          where: { id: examRef },
-          create: {
-            id: examRef,
-            teacherId: teacherIdToUse,
-            title: `Admission Exam: ${applicantName || code}`,
-            subject: "Admission",
-            className: intendedClass || "Admission",
-            maxScore: 100,
-            date: new Date(),
-            schoolId,
-            description: "Auto-created assessment for admission",
-          },
-          update: {
-            title: `Admission Exam: ${applicantName || code}`,
-            className: intendedClass || "Admission",
-            maxScore: 100,
-            date: new Date(),
-          },
-        });
-      }
-    } catch (err) {
-      // Do not fail admission creation if assessment creation fails.
-      console.error('Auto-create assessment failed:', err);
-    }
 
     return created;
   }
 
   const admission = await prisma.admission.create({ data: createData });
-  // After creating admission, try to auto-create a minimal Assessment using examRef
-  try {
-    if (examRef) {
-      let teacherIdToUse = null;
-      if (user && user.id) {
-        const t = await prisma.teacher.findFirst({ where: { userId: user.id, schoolId } });
-        if (t) teacherIdToUse = t.id;
-      }
-
-      if (!teacherIdToUse) {
-        teacherIdToUse = `sys_teacher_${schoolId}`;
-        await prisma.teacher.upsert({ where: { id: teacherIdToUse }, create: { id: teacherIdToUse, schoolId }, update: {} });
-      }
-
-      await prisma.assessment.upsert({
-        where: { id: examRef },
-        create: {
-          id: examRef,
-          teacherId: teacherIdToUse,
-          title: `Admission Exam: ${applicantName || code}`,
-          subject: "Admission",
-          className: intendedClass || "Admission",
-          maxScore: 100,
-          date: new Date(),
-          schoolId,
-          description: "Auto-created assessment for admission",
-        },
-        update: {
-          title: `Admission Exam: ${applicantName || code}`,
-          className: intendedClass || "Admission",
-          maxScore: 100,
-          date: new Date(),
-        },
-      });
-    }
-  } catch (err) {
-    console.error('Auto-create assessment failed:', err);
-  }
 
   return admission;
 },

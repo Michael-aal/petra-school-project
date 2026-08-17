@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { 
   UserPlus, Heart, Users, Wallet, ChevronRight, ChevronLeft, 
   CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { admissionApi } from "./../../../services/admissionApi";
 import { useToasts } from "../../../context/ToastContext";
+import { UserContext } from "../../../context/UserContext";
 import "./AdmissionForm.css";
 
 // List of 36 States + FCT
@@ -21,6 +22,14 @@ export default function AdmissionForm() {
   const [submissionSummary, setSubmissionSummary] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
   const { success: showSuccess, error: showError } = useToasts();
+  const { userInfo } = useContext(UserContext);
+
+  // When a school administrator (principal/super_admin) submits the admission
+  // form, bind the new application to their own school so it appears in that
+  // school's Create Assessment (CBT) page. Public/anonymous walk-in submissions
+  // omit this and fall back to the server's first active school.
+  const submitterSchoolId =
+    userInfo?.selectedSchoolId || userInfo?.schoolId || null;
   
   // Single state object for the entire massive form
   const [formData, setFormData] = useState({
@@ -60,6 +69,8 @@ export default function AdmissionForm() {
 
     try {const payload = {
   applicationCode: null,
+  // Bind to the submitting admin's school when known (see notes above).
+  ...(submitterSchoolId ? { schoolId: submitterSchoolId } : {}),
 
   // Applicant
   applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
@@ -145,16 +156,6 @@ export default function AdmissionForm() {
           ? `Applicant ID: ${applicantId}${admCode ? ` • Admission Code: ${admCode}` : ""}`
           : "The applicant was saved successfully."
       );
-      if (admCode || applicantId) {
-        const startNow = window.confirm("Admission submitted successfully.\n\nOpen CBT page now?");
-        if (startNow) {
-          const params = new URLSearchParams();
-          if (applicantId) params.set("applicantId", applicantId);
-          if (assessmentId) params.set("assessmentId", assessmentId);
-          window.location.href = `/dashboard/examination/cbt${params.toString() ? `?${params.toString()}` : ""}`;
-          return;
-        }
-      }
       setCurrentStep(1);
       setFormData({
         email: "", firstName: "", middleName: "", lastName: "", gender: "", dob: "",
@@ -502,3 +503,4 @@ export default function AdmissionForm() {
     </div>
   );
 }
+

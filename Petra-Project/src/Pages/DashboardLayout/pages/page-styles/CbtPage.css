@@ -46,6 +46,15 @@
   font-size: 40px;
 }
 
+iframe{
+  width: 100%;
+  height: 100vh;
+}
+
+
+
+
+
 .cbt-hero {
   display: flex;
   align-items: flex-start;

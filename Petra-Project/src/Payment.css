@@ -1,0 +1,335 @@
+* {
+  box-sizing: border-box;
+}
+
+.payment-screen {
+  min-height: 100vh;
+  background: #f1f5f9;
+  padding: 40px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #0f172a;
+}
+
+.payment-container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+
+.payment-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 35px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: #2563eb;
+  letter-spacing: 1px;
+}
+
+.payment-header span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* TITLE */
+
+.payment-content {
+  width: 100%;
+}
+
+.payment-title {
+  margin-bottom: 25px;
+}
+
+.payment-title h1 {
+  margin: 0;
+  font-size: 38px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.payment-title p {
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* CARD */
+
+.payment-card {
+  background: white;
+  border-radius: 18px;
+  padding: 30px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+}
+
+/* STUDENT ID */
+
+.payment-card > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.student-input {
+  display: flex;
+  gap: 10px;
+}
+
+.student-input input {
+  flex: 1;
+  height: 48px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  padding: 0 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.student-input input:focus {
+  border-color: #2563eb;
+}
+
+.student-input button {
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.student-input button:hover {
+  background: #1d4ed8;
+}
+
+/* STUDENT */
+
+.student-result {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.student-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.student-info:last-child {
+  margin-bottom: 0;
+}
+
+.student-info span {
+  color: #64748b;
+}
+
+.student-info strong {
+  color: #0f172a;
+}
+
+/* PAYMENT OPTIONS */
+
+.payment-options {
+  margin-top: 30px;
+}
+
+.section-heading {
+  margin-bottom: 15px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.section-heading p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* PAYMENT ITEM */
+
+.payment-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px;
+  margin-bottom: 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: 0.2s ease;
+}
+
+.payment-item:hover {
+  border-color: #93c5fd;
+}
+
+.payment-item.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.payment-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.payment-item-left input {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+}
+
+.payment-item-left h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.payment-item-left p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* QUANTITY */
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-control button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.quantity-control button:hover {
+  background: #f1f5f9;
+}
+
+.quantity-control span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ITEM TOTAL */
+
+.item-total {
+  min-width: 95px;
+  text-align: right;
+  color: #2563eb;
+}
+
+/* TOTAL */
+
+.payment-total {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.payment-total > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-total span {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.payment-total strong {
+  font-size: 26px;
+  color: #0f172a;
+}
+
+/* CONTINUE */
+
+.continue-button {
+  width: 100%;
+  height: 52px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.continue-button:hover {
+  background: #1d4ed8;
+}
+
+/* SECURE */
+
+.secure-text {
+  text-align: center;
+  margin-top: 20px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .payment-screen {
+    padding: 25px 15px;
+  }
+
+  .payment-card {
+    padding: 20px;
+  }
+
+  .payment-title h1 {
+    font-size: 30px;
+  }
+
+  .student-input {
+    flex-direction: column;
+  }
+
+  .student-input button {
+    width: 100%;
+  }
+
+  .payment-item {
+    flex-wrap: wrap;
+  }
+
+  .payment-item-left {
+    width: 100%;
+  }
+
+  .item-total {
+    margin-left: auto;
+  }
+}
