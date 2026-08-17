@@ -44,7 +44,9 @@ export const rejectAdmission = async (req, res, next) => {
 
 export const createAdmission = async (req, res, next) => {
   try {
-    const created = await admissionService.create(req.body, req.user);
+    const created = await admissionService.create(req.body, req.user, {
+      schoolHeader: req.get("x-school-id") || "",
+    });
     // Return the safe admission shape (read via getById) so callers get canonical fields like admissionCode
     const admission = await admissionService.getById(created.id);
     return res.status(201).json({

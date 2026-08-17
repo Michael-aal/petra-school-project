@@ -7,6 +7,14 @@ import { normalizeRole } from "../utils/roleUtils.js";
 import crypto from "crypto";
 import { logger } from "../utils/logger.js";
 import { normalizeParentEmail } from "../utils/parentLinking.js";
+import { normalizeEmail } from "../utils/emailUtils.js";
+
+// Detect the password hash algorithm WITHOUT exposing the full hash.
+// bcrypt hashes carry a "$2a$/$2b$/$2x$/$2y$" identifier prefix.
+const passwordHashAlgorithm = (hash) => {
+  if (!hash || typeof hash !== "string") return "unknown";
+  return /^\$2[abxy]\$/.test(hash) ? "bcrypt" : "unknown";
+};
 
 const resolvePublicRole = (role) => {
   const normalizedRole = normalizeRole(role);
@@ -156,7 +164,7 @@ export const authService = {
 
     const normalizedUsername = normalizeUsername(username || `${String(email || "").split("@")[0]}`);
     const nameParts = splitNameParts({ firstName, middleName, lastName, fullName });
-    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
     const normalizedPhone = String(phone || "").trim() || null;
 
     if (!nameParts.firstName || !nameParts.lastName) {
@@ -289,14 +297,40 @@ export const authService = {
   },
 
   login: async ({ email, password }) => {
-    const user = await userModel.findByEmail(email);
+    const normalizedEmail = normalizeEmail(email);
+
+    if (!normalizedEmail || !password) {
+      const error = new Error("Email and password are required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await userModel.findByEmail(normalizedEmail);
+
+    // Safe, temporary diagnostic logging (no passwords, hashes, tokens,
+    // cookies, or authorization headers are ever printed).
+    const passwordHashExists = Boolean(user?.password);
+    const hashAlgorithm = passwordHashAlgorithm(user?.password);
+
+    let isMatch = false;
+    if (user && passwordHashExists) {
+      isMatch = await comparePassword(password, user.password);
+    }
+
+    logger.info("LOGIN DEBUG", {
+      emailNormalized: normalizedEmail !== email,
+      userFound: Boolean(user),
+      passwordHashExists,
+      passwordHashAlgorithm: hashAlgorithm,
+      passwordMatches: isMatch,
+    });
+
     if (!user) {
       const error = new Error("Invalid email or password");
       error.statusCode = 401;
       throw error;
     }
 
-    const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       const error = new Error("Invalid email or password");
       error.statusCode = 401;
@@ -724,7 +758,7 @@ export const authService = {
       throw error;
     }
 
-    const nextEmail = payload.email?.trim();
+    const nextEmail = payload.email ? normalizeEmail(payload.email) : "";
     if (nextEmail && nextEmail !== user.email) {
       const existingUser = await userModel.findByEmail(nextEmail);
       if (existingUser && existingUser.id !== userId) {
