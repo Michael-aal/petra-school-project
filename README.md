@@ -2,7 +2,7 @@
 
 Petra is a modern school management platform that brings academic operations, finance, communication, and family engagement into one secure workspace. It gives school leaders and staff the tools to manage daily operations while giving parents a clear view of their children’s progress, fees, and school updates.
 
-## What Petra does
+## What Nuvora does
 
 - **School operations:** Set up schools, classes, subjects, timetables, staff, and students from a central dashboard.
 - **Admissions and enrolment:** Capture applicant details, follow admissions progress, and manage student enrolment.
