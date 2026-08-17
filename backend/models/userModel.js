@@ -103,14 +103,19 @@ export const userModel = {
   },
   update: (id, data) => prisma.user.update({ where: { id }, data }),
   updateGlobal: (id, data) => runWithoutSchoolContext(() => prisma.user.update({ where: { id }, data })),
-  findStaffInvitationByCode: (registrationCode) =>
-    prisma.staffInvitation.findUnique({ where: { registrationCode } }),
-  findStaffInvitationByEmail: (email) =>
-    prisma.staffInvitation.findUnique({ where: { email } }),
-  listStaffInvitations: () =>
-    prisma.staffInvitation.findMany({ orderBy: { generatedAt: "desc" } }),
+  findStaffInvitationByCode: (registrationCode, schoolId = null) =>
+    schoolId
+      ? prisma.staffInvitation.findFirst({ where: { registrationCode, schoolId } })
+      : runWithoutSchoolContext(() => prisma.staffInvitation.findUnique({ where: { registrationCode } })),
+  findStaffInvitationByEmail: (email, schoolId) =>
+    prisma.staffInvitation.findFirst({ where: { email, schoolId } }),
+  listStaffInvitations: (schoolId) =>
+    prisma.staffInvitation.findMany({ where: { schoolId }, orderBy: { generatedAt: "desc" } }),
   createStaffInvitation: (data) => prisma.staffInvitation.create({ data }),
-  updateStaffInvitation: (id, data) => prisma.staffInvitation.update({ where: { id }, data }),
+  updateStaffInvitation: (id, data, schoolId = null) =>
+    schoolId
+      ? prisma.staffInvitation.updateMany({ where: { id, schoolId }, data })
+      : runWithoutSchoolContext(() => prisma.staffInvitation.update({ where: { id }, data })),
   findStudentByAccessCode: (accessCode) =>
     prisma.student.findFirst({ where: { parentAccessCode: accessCode } }),
   findParentRecordByUserId: (userId) => prisma.parent.findFirst({ where: { userId } }),

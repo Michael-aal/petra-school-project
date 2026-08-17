@@ -211,7 +211,7 @@ function App() {
       <Routes>
         <Route path="/admission_form" element={<AdmissionForm />} />
 <Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
-<Route path="/student_Payment"  element={<SchoolFeesPaymentPage />} />
+<Route path="/student_Payment" element={<StudentPaymentPage />} />
 
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />
@@ -224,7 +224,9 @@ function App() {
         <Route path="/get-started" element={<RegistrationEntry />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
+          
           <Route path="/solution" element={<Solution />} />
+          {/* <Route path="/classmarker" element={<ClassMarkerPage />} /> */}
           <Route path="/solution/school-os" element={<SchoolOS />} />
           <Route
             path="/solution/financial-management"

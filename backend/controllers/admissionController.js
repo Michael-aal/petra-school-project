@@ -44,12 +44,32 @@ export const rejectAdmission = async (req, res, next) => {
 
 export const createAdmission = async (req, res, next) => {
   try {
-    const admission = await admissionService.create(req.body);
+    const created = await admissionService.create(req.body, req.user);
+    // Return the safe admission shape (read via getById) so callers get canonical fields like admissionCode
+    const admission = await admissionService.getById(created.id);
     return res.status(201).json({
       success: true,
       message: "Admission application submitted successfully",
       admission,
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const enrollAdmission = async (req, res, next) => {
+  try {
+    const admission = await admissionService.enroll(req.params.id, req.user.id, req.body || {});
+    return res.status(200).json({ success: true, message: "Applicant enrolled successfully", admission });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const completeStudentRecord = async (req, res, next) => {
+  try {
+    const result = await admissionService.completeStudentRecord(req.params.id, req.user?.id || null);
+    return res.status(200).json({ success: true, ...result });
   } catch (error) {
     return next(error);
   }

@@ -432,25 +432,51 @@ export const financeService = {
       include: { student: true, payments: true },
     }),
 
-  getCashflow: async (user) => {
+  getCashflow: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
+    const parseBoundary = (value, end = false) => {
+      if (!value) return null;
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      date.setHours(end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0);
+      return date;
+    };
+    const range = {};
+    if (query.startDate) { const start = parseBoundary(query.startDate); if (start) range.gte = start; }
+    if (query.endDate) { const end = parseBoundary(query.endDate, true); if (end) range.lte = end; }
+    const paymentDate = Object.keys(range).length ? { paidAt: range } : {};
+    const expenseDate = Object.keys(range).length ? { occurredAt: range } : {};
     const [payments, expenses] = await Promise.all([
-      prisma.payment.findMany({ where: { schoolId }, orderBy: { paidAt: "desc" }, take: 20, include: { student: true } }),
-      prisma.expense.findMany({ where: { schoolId }, orderBy: { occurredAt: "desc" }, take: 20, include: { category: true } }),
+      prisma.payment.findMany({ where: { schoolId, ...paymentDate }, orderBy: { paidAt: "desc" }, take: 100, include: { student: true } }),
+      prisma.expense.findMany({ where: { schoolId, ...expenseDate }, orderBy: { occurredAt: "desc" }, take: 100, include: { expenseCategory: true } }),
     ]);
 
-    const revenue = await prisma.payment.aggregate({ where: { schoolId, status: "Successful" }, _sum: { amount: true } });
-    const expenseTotal = await prisma.expense.aggregate({ where: { schoolId }, _sum: { amount: true } });
+    const [revenue, expenseTotal, outstanding, todayRevenue, monthRevenue, yearRevenue, categoryRows] = await Promise.all([
+      prisma.payment.aggregate({ where: { schoolId, status: "Successful" }, _sum: { amount: true } }),
+      prisma.expense.aggregate({ where: { schoolId }, _sum: { amount: true } }),
+      prisma.invoice.aggregate({ where: { schoolId, outstandingBalance: { gt: 0 } }, _sum: { outstandingBalance: true } }),
+      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: startOfDay() } }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: startOfMonth() } }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: new Date(new Date().getFullYear(), 0, 1) } }, _sum: { amount: true } }),
+      prisma.expense.findMany({ where: { schoolId }, select: { amount: true, expenseCategory: { select: { id: true, name: true } } } }),
+    ]);
+
+    const expensesByCategory = Object.values(categoryRows.reduce((acc, row) => {
+      const key = row.expenseCategory?.id || "uncategorized";
+      if (!acc[key]) acc[key] = { categoryId: row.expenseCategory?.id || null, category: row.expenseCategory?.name || "Uncategorized", amount: 0 };
+      acc[key].amount += Number(row.amount || 0);
+      return acc;
+    }, {}));
 
     return {
       totalRevenue: revenue._sum.amount || 0,
       totalExpenses: expenseTotal._sum.amount || 0,
       netIncome: (revenue._sum.amount || 0) - (expenseTotal._sum.amount || 0),
-      outstandingFees: 0,
-      revenueToday: 0,
-      revenueThisMonth: 0,
-      revenueThisYear: 0,
-      expensesByCategory: [],
+      outstandingFees: outstanding._sum.outstandingBalance || 0,
+      revenueToday: todayRevenue._sum.amount || 0,
+      revenueThisMonth: monthRevenue._sum.amount || 0,
+      revenueThisYear: yearRevenue._sum.amount || 0,
+      expensesByCategory,
       monthlyRevenue: [],
       monthlyExpense: [],
       recentTransactions: payments.map((payment) => ({ ...payment, type: "Payment" })),

@@ -25,4 +25,6 @@ export const admissionApi = {
       body: JSON.stringify({ reason }),
     }),
   getById: (id) => request(`/api/admissions/${encodeURIComponent(id)}`),
+  enroll: (id, data = {}) => request(`/api/admissions/${encodeURIComponent(id)}/enroll`, { method: "POST", body: JSON.stringify(data) }),
+  completeStudent: (id) => request(`/api/admissions/${encodeURIComponent(id)}/complete-student`, { method: "POST" }),
 };

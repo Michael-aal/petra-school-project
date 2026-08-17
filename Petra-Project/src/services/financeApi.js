@@ -21,5 +21,5 @@ export const financeApi = {
   deleteFee: (id) => request(`/api/finance/fees/${id}`, { method: "DELETE" }),
   assignFee: (payload) => request("/api/finance/fees/assign", { method: "POST", body: JSON.stringify(payload) }),
   flexpay: () => request("/api/finance/flexpay"),
-  cashflow: () => request("/api/finance/cashflow"),
+  cashflow: (query = {}) => request(`/api/finance/cashflow${new URLSearchParams(query).toString() ? `?${new URLSearchParams(query).toString()}` : ""}`),
 };

@@ -4,6 +4,7 @@ import {
   CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { admissionApi } from "./../../../services/admissionApi";
+import { useToasts } from "../../../context/ToastContext";
 import "./AdmissionForm.css";
 
 // List of 36 States + FCT
@@ -17,6 +18,9 @@ const nigerianStates = [
 export default function AdmissionForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showLin, setShowLin] = useState(false);
+  const [submissionSummary, setSubmissionSummary] = useState(null);
+  const [copiedCode, setCopiedCode] = useState("");
+  const { success: showSuccess, error: showError } = useToasts();
   
   // Single state object for the entire massive form
   const [formData, setFormData] = useState({
@@ -50,7 +54,7 @@ export default function AdmissionForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.agreeTerms) {
-      alert("Please agree to the terms and conditions to submit.");
+      showError("Submission blocked", "Please agree to the terms and conditions to submit.");
       return;
     }
 
@@ -117,7 +121,40 @@ export default function AdmissionForm() {
 };
 
       const response = await admissionApi.submit(payload);
-      alert(response.message || "Application submitted successfully.");
+      // Response contains safe `admission` with admissionCode/applicationCode
+      const admission = response?.admission;
+      const safeRemarks = (() => {
+        try {
+          return admission?.remarks ? JSON.parse(admission.remarks) : {};
+        } catch {
+          return {};
+        }
+      })();
+      const applicantId = admission?.applicantId || safeRemarks.applicantId;
+      const assessmentId = admission?.examReference || safeRemarks.examReference;
+      const admCode = admission?.admissionCode || admission?.applicationCode || safeRemarks.admissionCode || safeRemarks.applicationCode;
+      setSubmissionSummary({
+        message: response.message || "Application submitted successfully.",
+        applicantId: applicantId || "",
+        assessmentId: assessmentId || "",
+        admissionCode: admCode || "",
+      });
+      showSuccess(
+        "Application submitted",
+        applicantId
+          ? `Applicant ID: ${applicantId}${admCode ? ` • Admission Code: ${admCode}` : ""}`
+          : "The applicant was saved successfully."
+      );
+      if (admCode || applicantId) {
+        const startNow = window.confirm("Admission submitted successfully.\n\nOpen CBT page now?");
+        if (startNow) {
+          const params = new URLSearchParams();
+          if (applicantId) params.set("applicantId", applicantId);
+          if (assessmentId) params.set("assessmentId", assessmentId);
+          window.location.href = `/dashboard/examination/cbt${params.toString() ? `?${params.toString()}` : ""}`;
+          return;
+        }
+      }
       setCurrentStep(1);
       setFormData({
         email: "", firstName: "", middleName: "", lastName: "", gender: "", dob: "",
@@ -131,7 +168,18 @@ export default function AdmissionForm() {
       setShowLin(false);
     } catch (error) {
       console.error(error);
-      alert(error.data?.message || error.message || "Application submission failed. Please try again.");
+      showError("Submission failed", error.data?.message || error.message || "Application submission failed. Please try again.");
+    }
+  };
+
+  const copyText = async (value) => {
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedCode(value);
+      window.setTimeout(() => setCopiedCode(""), 1500);
+    } catch {
+      setCopiedCode("");
     }
   };
 
@@ -149,6 +197,37 @@ export default function AdmissionForm() {
           <h1>New Student Admission</h1>
           <p>Complete the form below to apply for enrollment at Nuvora.</p>
         </div>
+
+        {submissionSummary ? (
+          <div className="form-card" style={{ marginBottom: 20 }}>
+            <h2 className="card-title">Submission Complete</h2>
+            <p>{submissionSummary.message}</p>
+            {submissionSummary.applicantId ? (
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+                <strong>Applicant ID: {submissionSummary.applicantId}</strong>
+                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.applicantId)}>
+                  {copiedCode === submissionSummary.applicantId ? "Copied" : "Copy"}
+                </button>
+              </div>
+            ) : null}
+            {submissionSummary.assessmentId ? (
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+                <strong>Assessment ID: {submissionSummary.assessmentId}</strong>
+                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.assessmentId)}>
+                  {copiedCode === submissionSummary.assessmentId ? "Copied" : "Copy"}
+                </button>
+              </div>
+            ) : null}
+            {submissionSummary.admissionCode ? (
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+                <strong>Admission Code: {submissionSummary.admissionCode}</strong>
+                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.admissionCode)}>
+                  {copiedCode === submissionSummary.admissionCode ? "Copied" : "Copy"}
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         {/* Progress Stepper */}
         <div className="stepper">

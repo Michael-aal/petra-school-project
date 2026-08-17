@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "../config/loadEnv.js";
 import { prisma, connectDB, disconnectDB } from "../config/db.js";
 import { hashPassword } from "../utils/hashPassword.js";
 
@@ -83,4 +83,3 @@ main().catch((error) => {
   console.error("Seed failed:", error.message);
   process.exit(1);
 });
-

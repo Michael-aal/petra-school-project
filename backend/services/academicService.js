@@ -46,84 +46,66 @@ export const academicService = {
     const currentPage = Math.max(1, toNumber(query.page, 1));
     const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 25)));
     const schoolId = getSchoolId(user);
-    const and = [
-      {
-        OR: [
-          { teacher: { schoolId } },
-          { student: { schoolId } },
-        ],
-      },
-    ];
+    const where = { schoolId };
 
-    if (query.className) and.push({ className: { contains: String(query.className).trim(), mode: "insensitive" } });
-    if (query.status) and.push({ status: String(query.status).trim() });
+    if (query.className) {
+      where.student = { className: { contains: String(query.className).trim(), mode: "insensitive" } };
+    }
+    if (query.status) where.status = String(query.status).trim().toLowerCase();
     if (query.student) {
       const student = String(query.student).trim();
-      and.push({
-        student: {
-          OR: [
-            { name: { contains: student, mode: "insensitive" } },
-            { admissionNumber: { contains: student, mode: "insensitive" } },
-          ],
-        },
-      });
+      where.student = {
+        ...(where.student || {}),
+        OR: [
+          { name: { contains: student, mode: "insensitive" } },
+          { admissionNumber: { contains: student, mode: "insensitive" } },
+        ],
+      };
     }
-    if (query.teacher) {
-      const teacher = String(query.teacher).trim();
-      and.push({
-        teacher: {
-          OR: [
-            { fullName: { contains: teacher, mode: "insensitive" } },
-            { email: { contains: teacher, mode: "insensitive" } },
-          ],
-        },
-      });
-    }
-    if (query.subject) and.push({ OR: [{ className: { contains: String(query.subject).trim(), mode: "insensitive" } }] });
     if (query.search) {
       const search = String(query.search).trim();
-      and.push({
-        OR: [
-          { student: { name: { contains: search, mode: "insensitive" } } },
-          { student: { admissionNumber: { contains: search, mode: "insensitive" } } },
-          { className: { contains: search, mode: "insensitive" } },
-          { status: { contains: search, mode: "insensitive" } },
-          { teacher: { fullName: { contains: search, mode: "insensitive" } } },
-        ],
-      });
+      where.OR = [
+        { student: { name: { contains: search, mode: "insensitive" } } },
+        { student: { admissionNumber: { contains: search, mode: "insensitive" } } },
+        { student: { className: { contains: search, mode: "insensitive" } } },
+        { status: { contains: search, mode: "insensitive" } },
+      ];
     }
+    const toDateRange = (dateValue, end = false) => {
+      const date = new Date(dateValue);
+      if (Number.isNaN(date.getTime())) return null;
+      if (end) date.setHours(23, 59, 59, 999);
+      else date.setHours(0, 0, 0, 0);
+      return date;
+    };
     if (query.date) {
-      const date = new Date(query.date);
-      and.push({ date: { gte: new Date(date.setHours(0, 0, 0, 0)), lt: new Date(date.setHours(23, 59, 59, 999)) } });
-    }
-    if (query.startDate || query.endDate) {
+      const start = toDateRange(query.date);
+      const end = toDateRange(query.date, true);
+      if (start && end) where.attendanceDate = { gte: start, lte: end };
+    } else if (query.startDate || query.endDate) {
       const range = {};
-      if (query.startDate) {
-        const start = new Date(query.startDate);
-        range.gte = new Date(start.setHours(0, 0, 0, 0));
-      }
-      if (query.endDate) {
-        const end = new Date(query.endDate);
-        range.lte = new Date(end.setHours(23, 59, 59, 999));
-      }
-      and.push({ date: range });
+      if (query.startDate) { const start = toDateRange(query.startDate); if (start) range.gte = start; }
+      if (query.endDate) { const end = toDateRange(query.endDate, true); if (end) range.lte = end; }
+      if (Object.keys(range).length) where.attendanceDate = range;
     }
-
-    const where = { AND: and };
 
     const [total, attendance] = await Promise.all([
-      prisma.attendance.count({ where }),
-      prisma.attendance.findMany({
+      prisma.studentAttendance.count({ where }),
+      prisma.studentAttendance.findMany({
         where,
-        orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+        orderBy: [{ attendanceDate: "desc" }, { createdAt: "desc" }],
         skip: (currentPage - 1) * pageSize,
         take: pageSize,
-        include: { student: true, teacher: true },
+        include: { student: true, class: true },
       }),
     ]);
 
     return {
-      attendance,
+      attendance: attendance.map((item) => ({
+        ...item,
+        date: item.attendanceDate,
+        className: item.class?.name || item.student?.className || "",
+      })),
       pagination: {
         page: currentPage,
         limit: pageSize,

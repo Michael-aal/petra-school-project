@@ -1,8 +1,5 @@
-import "dotenv/config";
-import path from "node:path";
+import "./config/loadEnv.js";
 import { defineConfig } from "prisma/config";
-
-const envPath = path.resolve(process.cwd(), ".env");
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -12,8 +9,5 @@ export default defineConfig({
   },
   datasource: {
     url: process.env.DATABASE_URL || "",
-  },
-  env: {
-    path: envPath,
   },
 });

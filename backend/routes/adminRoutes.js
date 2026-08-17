@@ -8,6 +8,7 @@ import {
   listStaffAttendance,
   listTeachers,
   listUsers,
+    listResults,
 } from "../controllers/adminController.js";
 import { adminAttendanceListValidator, adminUserListValidator } from "../validators/adminValidator.js";
 
@@ -20,5 +21,5 @@ router.get("/admins", protect, requirePrincipal, listAdmins);
 router.get("/staff-attendance", protect, requirePrincipal, adminAttendanceListValidator, listStaffAttendance);
 router.get("/roles", protect, requirePrincipal, listRoles);
 router.get("/audit-logs", protect, requirePrincipal, adminAttendanceListValidator, listAuditLogs);
-
+router.get("/results", protect, requirePrincipal, listResults);
 export default router;

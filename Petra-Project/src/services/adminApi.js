@@ -9,7 +9,8 @@ const buildQuery = (params = {}) => {
 };
 
 export const adminApi = {
-  dashboard: () => request("/api/admin/dashboard"),
+results: (params = {}) =>
+  request(`/api/admin/results${buildQuery(params) ? `?${buildQuery(params)}` : ""}`),  dashboard: () => request("/api/admin/dashboard"),
   users: (params = {}) => request(`/api/admin/users${buildQuery(params) ? `?${buildQuery(params)}` : ""}`),
   teachers: (params = {}) => request(`/api/admin/teachers${buildQuery(params) ? `?${buildQuery(params)}` : ""}`),
   admins: () => request("/api/admin/admins"),
