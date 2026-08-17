@@ -1,4 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// VITE_API_URL is injected when the frontend is built. It must point to the
+// public URL of the API in production; localhost only works on a developer's
+// machine.
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const API_BASE_URL = (configuredApiUrl || "http://localhost:5000").replace(/\/$/, "");
 const AUTH_TOKEN_KEY = "petra_auth_token";
 
 const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
@@ -22,11 +26,21 @@ async function request(path, options = {}) {
     mergedHeaders.Authorization = `Bearer ${authHeader}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    credentials: "include",
-    headers: mergedHeaders,
-  });
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      credentials: "include",
+      headers: mergedHeaders,
+    });
+  } catch (cause) {
+    const error = new Error(
+      `Cannot reach the Petra API at ${API_BASE_URL}. Please check that the API is running and that VITE_API_URL is configured for this site.`
+    );
+    error.cause = cause;
+    throw error;
+  }
 
   const data = await response.json().catch(() => ({}));
 

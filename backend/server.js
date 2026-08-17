@@ -28,10 +28,12 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  // A comma-separated value permits the production site and preview sites to
+  // be configured without changing code. Example: CLIENT_URL="https://app.example.com,https://staging.example.com"
+  ...String(process.env.CLIENT_URL || "").split(","),
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-].filter(Boolean);
+].map((origin) => origin.trim()).filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
