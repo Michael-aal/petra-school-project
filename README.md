@@ -1,4 +1,4 @@
-# Petra School Project
+# Nuvora
 
 Petra is a modern school management platform that brings academic operations, finance, communication, and family engagement into one secure workspace. It gives school leaders and staff the tools to manage daily operations while giving parents a clear view of their children’s progress, fees, and school updates.
 
