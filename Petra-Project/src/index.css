@@ -144,8 +144,8 @@ button:not(.btn-primary):not(.btn-ghost) {
 
 .card,
 .panel,
-.dashboard-home-panel,
-.dashboard-home-summary-card,
+-panel,
+-summary-card,
 .settings-card,
 .wallet-panel,
 .payments-panel,
@@ -161,8 +161,8 @@ button:not(.btn-primary):not(.btn-ghost) {
 
 body.dark .card,
 body.dark .panel,
-body.dark .dashboard-home-panel,
-body.dark .dashboard-home-summary-card,
+body.dark -panel,
+body.dark -summary-card,
 body.dark .settings-card,
 body.dark .wallet-panel,
 body.dark .payments-panel,
@@ -235,10 +235,10 @@ textarea:focus {
 
 .status-badge,
 .badge,
-.dashboard-home-session-pill,
+-session-pill,
 .wallet-hero-chip,
 .wallet-panel-status,
-.dashboard-home-summary-action {
+-summary-action {
   border-radius: 999px;
 }
 
@@ -623,6 +623,6 @@ body.dark .ctc-page {
 
 
 
-.dashboard-home-summary-action{
+-summary-action{
  padding: 10px;
 }

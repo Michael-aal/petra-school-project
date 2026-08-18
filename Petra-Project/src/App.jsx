@@ -130,6 +130,7 @@ function DashboardLay() {
   const { userInfo, authReady } = useContext(UserContext);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isParentPortal = String(userInfo?.role || "").toLowerCase() === "parent";
 
   const toggle = () => {
     if (window.innerWidth <= 900) {
@@ -150,7 +151,7 @@ function DashboardLay() {
   }
 
   return (
-    <div className="dashboard-shell">
+    <div className={`dashboard-shell${isParentPortal ? " parent-portal-theme" : ""}`}>
       <div className={`dashboard-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
         <SidebarNav collapsed={collapsed} onNavigate={closeSidebar} />
       </div>

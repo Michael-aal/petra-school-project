@@ -1,155 +1,110 @@
-/* Parent fees page spacing and responsive layout */
-.parent-dashboard {
-  padding: 0;
+/* Payment controls that use the same orange, light parent-portal system. */
+.parent-dashboard .dashboard-alert {
+  padding: 13px 15px;
+  border: 1px solid #f0dfd2;
+  border-radius: 13px;
+  background: #ffffff;
+  color: #5c4233;
+  box-shadow: 0 5px 14px rgba(112, 61, 27, 0.04);
+  font-size: 0.87rem;
 }
 
-.parent-chip-row {
+.parent-dashboard .dashboard-alert.success { border-color: #bce9cd; background: #f0fdf4; color: #166534; }
+.parent-dashboard .dashboard-alert.error { border-color: #fecaca; background: #fff7f7; color: #b91c1c; }
+
+.parent-dashboard .dashboard-home-account-row {
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  color: #513a2c;
+  font-size: 0.83rem;
+  font-weight: 750;
 }
 
-.parent-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: var(--surface-accent);
-  color: var(--app-accent);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
+.parent-dashboard .parent-list-item-actions { flex-shrink: 0; }
 
-.parent-list {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.parent-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border-radius: 18px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-}
-
-.parent-list-item > div:first-child {
-  min-width: 0;
-}
-
-.parent-list-item strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.dashboard-home-account-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.parent-action-btn {
+.parent-dashboard .parent-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: var(--surface-accent);
-  border: 1px solid var(--app-border);
-  color: var(--app-accent);
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid #fed1aa;
+  border-radius: 10px;
+  background: #fff5ed;
+  color: #c2410c;
   cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 
-.parent-action-btn input {
-  margin: 0;
-}
+.parent-dashboard .parent-action-btn:hover { background: #ffead6; }
+.parent-dashboard .parent-action-btn input { width: 15px; height: 15px; margin: 0; accent-color: #ea580c; }
 
-.fees-form {
-  display: grid;
-  gap: var(--space-4);
-}
+.parent-dashboard .fees-form { display: grid; gap: 15px; }
+.parent-dashboard .fees-form label { display: grid; gap: 8px; color: #513a2c; font-size: 0.84rem; font-weight: 800; }
 
-.fees-form label {
-  display: grid;
-  gap: var(--space-2);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.fees-form input {
+.parent-dashboard .fees-form input {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--app-border);
-  border-radius: 14px;
-  background: var(--app-surface);
-  color: var(--app-text);
-}
-
-.fees-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.module-button {
-  padding: 12px 16px;
-  border: none;
-  border-radius: 14px;
-  background: var(--app-accent);
-  color: white;
-  cursor: pointer;
   min-height: 46px;
-  font-weight: 700;
+  padding: 12px 13px;
+  border: 1px solid #e8d3c3;
+  border-radius: 11px;
+  outline: none;
+  background: #ffffff;
+  color: #3b2a20;
+  font: inherit;
 }
 
-.module-button.ghost {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  color: var(--app-text);
-}
+.parent-dashboard .fees-form input::placeholder { color: #a89587; }
+.parent-dashboard .fees-form input:focus { border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12); }
 
-.dashboard-alert {
-  padding: var(--space-4) var(--space-5);
-  border-radius: 18px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-}
+.parent-dashboard .fees-actions { display: flex; flex-wrap: wrap; gap: 9px; }
 
-.dashboard-alert.success {
-  border-color: var(--surface-success);
-}
-
-.dashboard-alert.error {
-  border-color: var(--surface-danger);
-}
-
-.parent-pill {
-  padding: 8px 12px;
-  border-radius: 999px;
+.parent-dashboard .module-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #ea580c;
+  border-radius: 10px;
+  background: #ea580c;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(234, 88, 12, 0.16);
+  cursor: pointer;
   font-size: 0.82rem;
-  font-weight: 700;
-  background: var(--surface-accent);
-  color: var(--app-accent);
+  font-weight: 800;
 }
 
-.status-success { background: var(--surface-success); color: var(--success); }
-.status-pending { background: var(--surface-warning); color: var(--warning); }
-.status-failed { background: var(--surface-danger); color: var(--danger); }
-.status-refunded { background: var(--surface-muted); color: var(--info); }
-.status-default { background: var(--surface-muted); color: var(--app-text-muted); }
+.parent-dashboard .module-button:hover:not(:disabled) { border-color: #c2410c; background: #c2410c; box-shadow: 0 8px 18px rgba(234, 88, 12, 0.22); }
+.parent-dashboard .module-button:disabled { cursor: not-allowed; opacity: 0.58; box-shadow: none; }
+
+.parent-dashboard .module-button.ghost { border-color: #ecd9ca; background: #ffffff; color: #754b31; box-shadow: none; }
+.parent-dashboard .module-button.ghost:hover:not(:disabled) { border-color: #fdba74; background: #fff7f1; color: #c2410c; }
+
+.parent-dashboard .fees-notice {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid #fb923c;
+  border-radius: 7px;
+  background: #fff8f2;
+  color: #7d6556;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.parent-dashboard .status-success { border-color: #bce9cd; background: #f0fdf4; color: #15803d; }
+.parent-dashboard .status-pending { border-color: #fde68a; background: #fffbeb; color: #a16207; }
+.parent-dashboard .status-failed { border-color: #fecaca; background: #fff1f2; color: #b91c1c; }
+.parent-dashboard .status-refunded, .parent-dashboard .status-default { border-color: #e9ddd5; background: #faf7f5; color: #76645a; }
 
 @media (max-width: 640px) {
-  .parent-list-item {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .dashboard-home-account-row {
-    justify-content: space-between;
-  }
+  .parent-dashboard .dashboard-home-account-row { width: 100%; justify-content: space-between; }
+  .parent-dashboard .parent-list-item-actions { justify-content: flex-start; }
+  .parent-dashboard .fees-actions .module-button { width: 100%; }
 }
