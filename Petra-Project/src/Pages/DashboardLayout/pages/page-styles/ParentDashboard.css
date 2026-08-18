@@ -52,14 +52,15 @@
    APP SURFACE
    ========================================================= */
 
-.dashboard-shell.parent-portal-theme .dashboard-main,
+/* .dashboard-shell.parent-portal-theme .dashboard-main,
 .dashboard-shell.parent-portal-theme .dashboard-content {
   background: var(--parent-bg);
-}
+} */
 
 .dashboard-shell.parent-portal-theme .dashboard-content {
   overflow-y: auto;
 }
+
 
 /* =========================================================
    SIDEBAR
@@ -250,7 +251,6 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-
   background: transparent;
 }
 
@@ -312,11 +312,8 @@
 .parent-dashboard .parent-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-
   gap: 14px;
-
   align-items: start;
-
   background: transparent;
 }
 

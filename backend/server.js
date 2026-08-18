@@ -31,8 +31,8 @@ const allowedOrigins = [
   // A comma-separated value permits the production site and preview sites to
   // be configured without changing code. Example: CLIENT_URL="https://app.example.com,https://staging.example.com"
   ...String(process.env.CLIENT_URL || "").split(","),
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
+ "http://localhost:5174",
+"http://127.0.0.1:5174",
 ].map((origin) => origin.trim()).filter(Boolean);
 
 const corsOptions = {
