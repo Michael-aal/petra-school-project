@@ -1,0 +1,666 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  font-family:
+    "Manrope",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background-color: #f5f6f0;
+  color: #172321;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --background: #f5f6f0;
+  --foreground: #172321;
+  --muted-foreground: #687673;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #f06b4e;
+  --primary-foreground: #ffffff;
+  --secondary: #cce8d4;
+  --secondary-foreground: #172321;
+  --muted: #e8eee9;
+  --border: rgba(23, 35, 33, 0.12);
+  --input: rgba(23, 35, 33, 0.18);
+  --ring: #f06b4e;
+  --app-bg: #f5f6f0;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f8fafc;
+  --app-text: #172321;
+  --app-text-muted: #687673;
+  --app-border: rgba(23, 35, 33, 0.12);
+  --app-accent: #f06b4e;
+  --app-accent-2: #5d8d78;
+  --success: #3f9b70;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --destructive: #ef4444;
+  --icon-primary: var(--app-text);
+  --icon-secondary: var(--app-text-muted);
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --dashboard-sidebar-bg: linear-gradient(160deg, #172321 0%, #20352e 100%);
+  --dashboard-sidebar-text: #f5f6f0;
+  --dashboard-sidebar-muted: #aabbb3;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.86);
+  --dashboard-topbar-text: #172321;
+  --dashboard-topbar-muted: #687673;
+  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-card-text: #172321;
+  --dashboard-card-muted: #687673;
+  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-panel-text: #172321;
+  --dashboard-panel-muted: #64748b;
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
+  --dashboard-accent-gradient: linear-gradient(90deg, #f06b4e 0%, #d9583d 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(
+    90deg,
+    #d9583d 0%,
+    #b94731 100%
+  );
+  --surface-muted: rgba(15, 23, 42, 0.04);
+  --surface-muted-strong: rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+  --shadow-soft-dark: 0 18px 40px rgba(0, 0, 0, 0.32);
+  --surface-accent: color-mix(in srgb, var(--app-accent) 16%, transparent);
+  --surface-success: color-mix(in srgb, var(--success) 16%, transparent);
+  --surface-danger: color-mix(in srgb, var(--danger) 16%, transparent);
+  --surface-warning: color-mix(in srgb, var(--warning) 16%, transparent);
+  --button-hover: color-mix(in srgb, var(--app-accent) 10%, var(--app-surface));
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+button:hover,
+a:hover {
+  transform: translateY(-1px);
+}
+
+.btn,
+button,
+input,
+select,
+textarea {
+  border-radius: 12px;
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
+  color: var(--primary-foreground);
+  border: 1px solid transparent;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--app-accent) 18%, transparent);
+}
+
+.btn-secondary,
+button:not(.btn-primary):not(.btn-ghost) {
+  background: var(--app-surface);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--app-text-muted);
+}
+
+.btn-ghost:hover {
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text);
+}
+
+.card,
+.panel,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.settings-card,
+.wallet-panel,
+.payments-panel,
+.stat-card,
+.dashboard-page .table-container,
+.modal-content,
+.form-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+body.dark .card,
+body.dark .panel,
+body.dark .dashboard-home-panel,
+body.dark .dashboard-home-summary-card,
+body.dark .settings-card,
+body.dark .wallet-panel,
+body.dark .payments-panel,
+body.dark .stat-card,
+body.dark .dashboard-page .table-container,
+body.dark .modal-content,
+body.dark .form-card {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+.form-input,
+.form-select,
+input,
+select,
+textarea {
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+
+/* Ensure placeholders have sufficient contrast and full opacity */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: color-mix(in srgb, var(--app-text) 64%, var(--app-text-muted) 36%);
+  opacity: 1;
+}
+
+.form-input:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-accent) 20%, transparent);
+}
+
+.data-table,
+.payments-table,
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.payments-table th,
+.table-container th {
+  text-align: left;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--app-border);
+  color: color-mix(in srgb, var(--app-text) 64%, var(--app-text-muted) 36%);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.data-table td,
+.payments-table td,
+.table-container td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+
+.data-table tbody tr:hover,
+.payments-table tbody tr:hover,
+.table-container tbody tr:hover {
+  background: var(--dashboard-muted-surface);
+}
+
+.status-badge,
+.badge,
+.dashboard-home-session-pill,
+.wallet-hero-chip,
+.wallet-panel-status,
+.dashboard-home-summary-action {
+  border-radius: 999px;
+}
+
+.status-badge.success,
+.tone-teal,
+.tone-emerald,
+.wallet-quick-stat-icon.success,
+.payments-action-button.success {
+  background: color-mix(in srgb, var(--success) 16%, transparent);
+  color: var(--success);
+}
+
+.status-badge.danger,
+.tone-rose,
+.wallet-quick-stat-icon.danger,
+.payments-action-button.danger {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+
+.status-badge.warning,
+.tone-amber,
+.wallet-quick-stat-icon.warning,
+.payments-action-button.warning {
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  color: var(--warning);
+}
+
+.layout-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.layout-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.layout-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.layout-card {
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: var(--app-surface);
+  padding: var(--space-4);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--app-accent) 8%, transparent);
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.app-fade-in {
+  animation: appFadeIn 220ms ease-out;
+}
+
+@keyframes appFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.14) 25%,
+    rgba(148, 163, 184, 0.24) 37%,
+    rgba(148, 163, 184, 0.14) 63%
+  );
+  background-size: 400% 100%;
+  border-radius: 14px;
+  animation: skeletonShimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.toast-viewport {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1000;
+  display: grid;
+  gap: 10px;
+  width: min(360px, calc(100vw - 24px));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 92%, transparent);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.toast strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.toast p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
+.toast-copy {
+  min-width: 0;
+}
+
+.toast-close {
+  border: 0;
+  background: transparent;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 1.1rem;
+}
+
+.toast-success {
+  border-color: rgba(16, 185, 129, 0.28);
+}
+
+.toast-error {
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.toast-warning {
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
+.toast-info {
+  border-color: rgba(59, 130, 246, 0.28);
+}
+
+body.light {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f8fafc;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted-foreground: #475569;
+  --input: rgba(148, 163, 184, 0.28);
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --app-border: rgba(15, 23, 42, 0.08);
+  --app-accent: #4f46e5;
+  --app-accent-2: #3b82f6;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --dashboard-sidebar-bg: linear-gradient(
+    145deg,
+    #f8fafc 0%,
+    #eef2ff 45%,
+    #f8fbff 100%
+  );
+  --dashboard-sidebar-text: #1f2937;
+  --dashboard-sidebar-muted: #6b7280;
+  --dashboard-topbar-bg: linear-gradient(90deg, #ffffff 0%, #f8faff 100%);
+  --dashboard-topbar-text: #1f2937;
+  --dashboard-topbar-muted: #64748b;
+  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-card-text: #0f172a;
+  --dashboard-card-muted: #64748b;
+  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+  --dashboard-panel-text: #0f172a;
+  --dashboard-panel-muted: #64748b;
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
+  --dashboard-accent-gradient: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(
+    90deg,
+    #4338ca 0%,
+    #2563eb 100%
+  );
+}
+
+body.dark {
+  --app-bg: #101614;
+  --app-surface: #19231f;
+  --app-surface-strong: #202d27;
+  --app-text: #f5f6f0;
+  --app-text-muted: #aabbb3;
+  --app-border: rgba(245, 246, 240, 0.12);
+  --app-accent: #f07a5d;
+  --app-accent-2: #78ad91;
+  --app-card: #1b2722;
+  --app-panel: #1b2722;
+  --dashboard-sidebar-bg: linear-gradient(160deg, #0d1412 0%, #172720 100%);
+  --dashboard-sidebar-text: #f5f6f0;
+  --dashboard-sidebar-muted: #aabbb3;
+  --dashboard-topbar-bg: rgba(24, 35, 31, 0.94);
+  --dashboard-topbar-text: #f5f6f0;
+  --dashboard-topbar-muted: #aabbb3;
+  --dashboard-card-bg: linear-gradient(145deg, #1b2722 0%, #22332b 100%);
+  --dashboard-card-text: #f5f6f0;
+  --dashboard-card-muted: #aabbb3;
+  --dashboard-panel-bg: linear-gradient(145deg, #19251f 0%, #22332b 100%);
+  --dashboard-panel-text: #f5f6f0;
+  --dashboard-panel-muted: #aabbb3;
+  --dashboard-page-bg: transparent;
+  --dashboard-muted-surface: rgba(245, 246, 240, 0.07);
+  --dashboard-accent-gradient: linear-gradient(90deg, #f06b4e 0%, #c9563e 100%);
+  --dashboard-accent-gradient-strong: linear-gradient(
+    90deg,
+    #f06b4e 0%,
+    #a94432 100%
+  );
+  --background: #101614;
+  --foreground: #f5f6f0;
+  --muted-foreground: #aabbb3;
+  --input: rgba(245, 246, 240, 0.16);
+  --card: #1b2722;
+  --card-foreground: #f5f6f0;
+  --popover: #19251f;
+  --popover-foreground: #f5f6f0;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
+body,
+body.light,
+body.dark {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+body.dark::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(240, 107, 78, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(120, 173, 145, 0.1),
+      transparent 24%
+    ),
+    linear-gradient(135deg, #0d1412 0%, #101614 45%, #14201a 100%);
+}
+
+body.dark::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent 100%);
+}
+
+body.dark #root {
+  background: transparent;
+}
+
+.dashboard-page {
+  color: var(--app-text);
+  background: transparent;
+}
+
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page h3,
+.dashboard-page p,
+.dashboard-page span {
+  color: inherit;
+}
+
+body.dark a,
+body.dark button,
+body.dark input,
+body.dark textarea,
+body.dark select {
+  color: inherit;
+  background: var(--card);
+  border-color: var(--border);
+}
+
+body.dark .navbar-container,
+body.dark .solutions-dropdown,
+body.dark .company-dropdown,
+body.dark .mobile-menu,
+body.dark section,
+body.dark .footer,
+body.dark .info-card,
+body.dark .testimonial-card,
+body.dark .section4-item,
+body.dark .section5-cards .info-card,
+body.dark .section11-form,
+body.dark .section11-input,
+body.dark form,
+body.dark .card,
+body.dark .panel,
+body.dark .homeSection1,
+body.dark .homeSection2,
+body.dark .homeSection3,
+body.dark .homeSection4,
+body.dark .homeSection5,
+body.dark .homeSection7,
+body.dark .homeSection8,
+body.dark .homeSection9,
+body.dark .homeSection10,
+body.dark .homeSection11,
+body.dark .fsos,
+body.dark .fparent,
+body.dark .ctc-page,
+body.dark .section7-stats,
+body.dark .feature-card,
+body.dark .homeSection4 .section4-item {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-color: var(--border);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--card-foreground) 4%, transparent),
+    0 20px 45px rgba(0, 0, 0, 0.24);
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark p,
+body.dark li,
+body.dark span {
+  text-shadow: none;
+}
+
+body.dark .section1-description,
+body.dark .section5-description,
+body.dark .section7-stats .stats-description,
+body.dark .section10-description,
+body.dark .section11-description,
+body.dark .section11-privacy,
+body.dark .card-text,
+body.dark .section4-info,
+body.dark .feature-text,
+body.dark .testimonial-text,
+body.dark .section8-subtitle,
+body.dark .section3-header p {
+  color: var(--app-text-muted);
+  font-weight: 400;
+}
+
+body.dark .section11-input::placeholder,
+body.dark input::placeholder,
+body.dark textarea::placeholder,
+body.dark select::placeholder {
+  color: color-mix(in srgb, var(--app-text) 88%, var(--app-text-muted) 12%);
+  opacity: 1;
+}
+
+body.dark .homeSection2,
+body.dark .homeSection3,
+body.dark .homeSection4,
+body.dark .homeSection5,
+body.dark .homeSection7,
+body.dark .homeSection8,
+body.dark .homeSection9,
+body.dark .homeSection10,
+body.dark .homeSection11,
+body.dark .fsos,
+body.dark .fparent,
+body.dark .ctc-page {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-home-summary-action {
+  padding: 10px;
+}

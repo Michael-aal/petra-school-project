@@ -1,0 +1,74 @@
+[
+  {
+    "id": "adm_1786573900196_1f04f08e",
+    "schoolId": 2,
+    "studentId": "cmsqnyzzv00003cc61fi3m6sk",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"applicantName\":\"Test Applicant\",\"intendedClass\":\"JSS 1\",\"parentEmail\":\"test-parent@example.com\",\"parentPhone1\":\"08000000000\",\"agreeTerms\":true,\"applicationCode\":\"ADM-2-20260812223140147-2C19FC\",\"admissionCode\":\"ADM-2-20260812223140147-2C19FC\",\"_generatedAt\":\"2026-08-12T22:31:40.183Z\"}",
+    "createdAt": "2026-08-12T23:31:40.237Z",
+    "updatedAt": "2026-08-12T22:31:40.196Z"
+  },
+  {
+    "id": "adm_1786573917408_e7e2dde0",
+    "schoolId": 2,
+    "studentId": "cmsqnzda00000r4c6l9bqvkgl",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"applicantName\":\"Test Applicant\",\"intendedClass\":\"JSS 1\",\"parentEmail\":\"test-parent@example.com\",\"parentPhone1\":\"08000000000\",\"agreeTerms\":true,\"applicationCode\":\"ADM-2-20260812223157354-19B505\",\"admissionCode\":\"ADM-2-20260812223157354-19B505\",\"_generatedAt\":\"2026-08-12T22:31:57.393Z\"}",
+    "createdAt": "2026-08-12T23:31:57.446Z",
+    "updatedAt": "2026-08-12T22:31:57.408Z"
+  },
+  {
+    "id": "adm_1786574204773_b964008b",
+    "schoolId": 2,
+    "studentId": "cmsqo5j0e0000e4c660ppdwpm",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"firstName\":\"HTTP\",\"lastName\":\"Applicant\",\"gender\":\"female\",\"dob\":\"2016-01-01\",\"stateOfOrigin\":\"State\",\"lga\":\"LGA\",\"admissionClass\":\"JSS 1\",\"studentStatus\":\"new\",\"religion\":\"None\",\"fatherName\":\"Father Name\",\"fatherAddress\":\"Father Address\",\"fatherOccupation\":\"Father Job\",\"fatherEmail\":\"father@example.com\",\"fatherPhone1\":\"08011112222\",\"motherName\":\"Mother Name\",\"motherAddress\":\"Mother Address\",\"motherOccupation\":\"Mother Job\",\"motherEmail\":\"mother@example.com\",\"motherPhone1\":\"08011113333\",\"feePaymentMethod\":\"bank\",\"agreeTerms\":\"true\",\"applicationCode\":\"ADM-2-20260812223644711-359461\",\"admissionCode\":\"ADM-2-20260812223644711-359461\",\"_generatedAt\":\"2026-08-12T22:36:44.759Z\"}",
+    "createdAt": "2026-08-12T23:36:44.811Z",
+    "updatedAt": "2026-08-12T22:36:44.774Z"
+  },
+  {
+    "id": "adm_1786574559475_4b9409da",
+    "schoolId": 2,
+    "studentId": "cmsqod4pa0000l8c6vhgulru5",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"email\":\"augustinemichael8910@gmail.com\",\"firstName\":\"Michael\",\"middleName\":\"\",\"lastName\":\"Augustine\",\"gender\":\"Male\",\"dob\":\"2026-08-12\",\"placeOfBirth\":\"Lagos\",\"nationality\":\"Nigerian\",\"stateOfOrigin\":\"Edo\",\"lga\":\"ikeja\",\"lin\":\"\",\"admissionClass\":\"SS2\",\"studentStatus\":\"Day\",\"previousSchool\":\"pathfinder model school\",\"religion\":\"Christianity\",\"ailments\":\"None\",\"challenges\":\"None\",\"bloodGroup\":\"B+\",\"genotype\":\"AA\",\"maritalStatus\":\"Married\",\"fatherName\":\"Akinola Augustine\",\"fatherDob\":\"2026-08-19\",\"fatherAddress\":\"3aregbesola street\",\"fatherOccupation\":\"Agric\",\"fatherJobTitle\":\"Boss\",\"fatherEmail\":\"augustinemichael8910@gmail.com\",\"fatherPhone1\":\"09152678915\",\"fatherPhone2\":\"09152678915\",\"motherName\":\"Oludayo Augustine\",\"motherDob\":\"2026-07-28\",\"motherAddress\":\"3aregbesola street\",\"motherOccupation\":\"Fashion Designer\",\"motherJobTitle\":\"Boss\",\"motherEmail\":\"martince8910@gmail.com\",\"motherPhone1\":\"09152678915\",\"motherPhone2\":\"09152678915\",\"financialAwareness\":true,\"feePaymentMethod\":\"Both Parents\",\"referredBy\":\"whatsapp\",\"agreeTerms\":true,\"applicationCode\":\"ADM-2-20260812224239429-B6A524\",\"admissionCode\":\"ADM-2-20260812224239429-B6A524\",\"_generatedAt\":\"2026-08-12T22:42:39.462Z\"}",
+    "createdAt": "2026-08-12T23:42:39.525Z",
+    "updatedAt": "2026-08-12T22:42:39.475Z"
+  },
+  {
+    "id": "adm_1786575578338_92fb4418",
+    "schoolId": 2,
+    "studentId": "cmsqoyyum000000c6v308kd3y",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"firstName\":\"Test\",\"lastName\":\"Applicant\",\"gender\":\"male\",\"dob\":\"2015-01-01\",\"stateOfOrigin\":\"Lagos\",\"lga\":\"Ikeja\",\"admissionClass\":\"JSS1\",\"studentStatus\":\"new\",\"religion\":\"Christianity\",\"fatherName\":\"Test Father\",\"fatherAddress\":\"123 Father St\",\"fatherOccupation\":\"Engineer\",\"fatherEmail\":\"father@example.com\",\"fatherPhone1\":\"08011111111\",\"motherName\":\"Test Mother\",\"motherAddress\":\"123 Mother St\",\"motherOccupation\":\"Teacher\",\"motherEmail\":\"mother@example.com\",\"motherPhone1\":\"08022222222\",\"feePaymentMethod\":\"offline\",\"agreeTerms\":\"true\",\"applicationCode\":\"ADM-2-20260812225938295-481DFC\",\"admissionCode\":\"ADM-2-20260812225938295-481DFC\",\"_generatedAt\":\"2026-08-12T22:59:38.332Z\"}",
+    "createdAt": "2026-08-12T23:59:38.364Z",
+    "updatedAt": "2026-08-12T22:59:38.338Z"
+  },
+  {
+    "id": "adm_1786576826326_17739d79",
+    "schoolId": 2,
+    "studentId": "cmsqpppsz0000ygc6nykd8r5c",
+    "academicYearId": null,
+    "termId": null,
+    "status": "pending",
+    "admissionDate": null,
+    "remarks": "{\"email\":\"augustinemichael8910@gmail.com\",\"firstName\":\"Michael\",\"middleName\":\"\",\"lastName\":\"Augustine\",\"gender\":\"Male\",\"dob\":\"2026-08-13\",\"placeOfBirth\":\"lagos\",\"nationality\":\"Nigerian\",\"stateOfOrigin\":\"Edo\",\"lga\":\"ikeji\",\"lin\":\"\",\"admissionClass\":\"SS2\",\"studentStatus\":\"Day\",\"previousSchool\":\"pathfinder model school\",\"religion\":\"Christianity\",\"ailments\":\"None\",\"challenges\":\"None\",\"bloodGroup\":\"B+\",\"genotype\":\"AA\",\"maritalStatus\":\"Married\",\"fatherName\":\"Akinola Augustine\",\"fatherDob\":\"2026-04-21\",\"fatherAddress\":\"3aregbesola street\",\"fatherOccupation\":\"Agriculture produce\",\"fatherJobTitle\":\"Boss\",\"fatherEmail\":\"augustinemichael8910@gmail.com\",\"fatherPhone1\":\"09152678915\",\"fatherPhone2\":\"09152678915\",\"motherName\":\"Oludayo Augustine\",\"motherDob\":\"2025-09-04\",\"motherAddress\":\"3aregbesola street\",\"motherOccupation\":\"fashion designer\",\"motherJobTitle\":\"Boss\",\"motherEmail\":\"martince8910@gmail.com\",\"motherPhone1\":\"09152678915\",\"motherPhone2\":\"09152678915\",\"financialAwareness\":true,\"feePaymentMethod\":\"Both Parents\",\"referredBy\":\"whatsapp\",\"agreeTerms\":true,\"applicationCode\":\"ADM-2-20260812232026291-FD5FF3\",\"admissionCode\":\"ADM-2-20260812232026291-FD5FF3\",\"_generatedAt\":\"2026-08-12T23:20:26.320Z\"}",
+    "createdAt": "2026-08-13T00:20:26.349Z",
+    "updatedAt": "2026-08-12T23:20:26.326Z"
+  }
+]

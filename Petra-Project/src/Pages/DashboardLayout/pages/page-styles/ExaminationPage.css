@@ -1,0 +1,52 @@
+.examination-page {
+  padding: 20px 18px 24px;
+}
+
+.examination-page-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--app-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-accent) 16%, transparent);
+}
+
+.examination-page-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--app-accent);
+  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
+  flex-shrink: 0;
+}
+
+.examination-page-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--app-text);
+}
+
+.examination-page-card p,
+.examination-page-list {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.examination-page-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.examination-page-list li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 88%, transparent);
+}

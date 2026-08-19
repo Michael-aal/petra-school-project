@@ -1,0 +1,65 @@
+.overview-page {
+  min-height: 100%;
+  padding: 20px 18px 24px;
+}
+
+.overview-error {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #ffe4e6;
+  color: #b91c1c;
+  border: 1px solid #fecdd3;
+}
+
+.overview-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.overview-flex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.overview-list {
+  display: grid;
+  gap: 12px;
+}
+
+.overview-list-item {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.overview-list-item strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.overview-list-item p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.9rem;
+}
+
+.overview-list-item span {
+  display: block;
+  margin-top: 10px;
+  color: var(--app-text-muted);
+  font-size: 0.8rem;
+}
+
+.overview-empty {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px dashed var(--app-border);
+  color: var(--app-text-muted);
+}

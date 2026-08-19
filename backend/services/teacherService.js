@@ -1,0 +1,417 @@
+import { prisma } from "../config/db.js";
+import { normalizeRole } from "../utils/roleUtils.js";
+import { announcementService } from "./announcementService.js";
+
+const normalizeClassList = (value) => {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
+const buildTeacherScope = (user) => {
+  const classNames = normalizeClassList(user?.staffClassAssigned || user?.assignedClass || user?.classAssigned);
+  const subjects = normalizeClassList(user?.staffSubjectsAssigned || user?.assignedSubjects || user?.subjectsAssigned);
+  return { classNames, subjects };
+};
+
+const buildTodaySchedule = (classNames = [], subjects = []) => {
+  if (!classNames.length || !subjects.length) {
+    return [];
+  }
+
+  return classNames.slice(0, 3).flatMap((className, index) => {
+    const subject = subjects[index] || subjects[0];
+    return [
+      {
+        time: `${index + 8}:00 AM`,
+        subject,
+        className,
+        room: `Room ${index + 1}`,
+      },
+    ];
+  });
+};
+
+const safeStudent = (student) => ({
+  id: student.id,
+  name: student.name,
+  admissionNumber: student.admissionNumber || "",
+  gender: student.gender || "",
+  className: student.className || "",
+  guardianName: student.guardianName || "",
+  parentPhone: student.parentPhone || "",
+  parentEmail: student.parentEmail || "",
+  status: student.status || "active",
+});
+
+const isAdminUser = (user) => ["principal", "super_admin"].includes(normalizeRole(user.role));
+
+const safeProfile = (user) => ({
+  id: user.id,
+  fullName: user.fullName,
+  email: user.email,
+  phone: user.phone || "",
+  profileImage: user.profileImage || user.profilePicture || "",
+  role: normalizeRole(user.role),
+  department: user.staffDepartment || user.institution || "",
+  accountStatus: user.accountStatus || "active",
+  createdAt: user.createdAt,
+  classAssigned: user.staffClassAssigned || "",
+  subjectsAssigned: normalizeClassList(user.staffSubjectsAssigned || []),
+});
+
+export const teacherService = {
+  getDashboard: async (user) => {
+    const scope = buildTeacherScope(user);
+    const studentsPromise = scope.classNames.length
+      ? prisma.student.findMany({
+          where: {
+            schoolId: user.schoolId ? Number(user.schoolId) : undefined,
+            className: { in: scope.classNames },
+          },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([]);
+
+    const [students, assessments, attendance, announcements] = await Promise.all([
+      studentsPromise,
+      prisma.assessment.findMany({
+        where: {
+          teacherId: user.id,
+        },
+        orderBy: { date: "desc" },
+        take: 5,
+      }),
+      prisma.studentAttendance.findMany({
+        where: {
+          schoolId: Number(user.schoolId),
+          markedById: user.id,
+          attendanceDate: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      }),
+      prisma.$queryRaw`SELECT title, description, createdAt FROM (SELECT 'School announcement'::text AS title, 'Check the latest school notice'::text AS description, CURRENT_TIMESTAMP AS createdAt) AS announcements`.then((rows) => rows),
+    ]);
+
+    const visibleStudents = scope.classNames.length ? students : [];
+
+    return {
+      teacherName: user.fullName,
+      role: normalizeRole(user.role),
+      department: user.staffDepartment || user.institution || "",
+      assignedClasses: scope.classNames,
+      assignedSubjects: scope.subjects,
+      stats: {
+        assignedStudents: visibleStudents.length,
+        assignedSubjects: scope.subjects.length,
+        attendanceStatus: attendance.length ? `${attendance.length} marked today` : "No attendance yet",
+        pendingAssessments: assessments.length,
+      },
+      todaySchedule: buildTodaySchedule(scope.classNames, scope.subjects),
+      recentAnnouncements: announcements,
+      students: visibleStudents.map(safeStudent),
+    };
+  },
+
+  listClasses: async (user) => {
+    const scope = buildTeacherScope(user);
+    if (!scope.classNames.length) {
+      return [];
+    }
+
+    const students = await prisma.student.findMany({
+      where: {
+        schoolId: user.schoolId ? Number(user.schoolId) : undefined,
+        className: { in: scope.classNames },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    const grouped = scope.classNames.map((className) => {
+      const classStudents = students.filter((student) => student.className === className);
+      return {
+        id: className,
+        name: className,
+        studentCount: classStudents.length,
+        subjectsTaught: scope.subjects,
+        teacherStatus: "Assigned",
+      };
+    });
+
+    return grouped;
+  },
+
+  getClassById: async (user, classId) => {
+    const scope = buildTeacherScope(user);
+    if (!scope.classNames.includes(classId)) {
+      const error = new Error("Class not assigned to this teacher");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const [students, attendance, assessments] = await Promise.all([
+      prisma.student.findMany({
+        where: { className: classId, schoolId: user.schoolId ? Number(user.schoolId) : undefined },
+        orderBy: { name: "asc" },
+      }),
+      prisma.studentAttendance.findMany({
+        where: { schoolId: Number(user.schoolId), markedById: user.id, student: { className: classId } },
+        orderBy: { attendanceDate: "desc" },
+        take: 5,
+        include: { student: true },
+      }),
+      prisma.assessment.findMany({
+        where: { teacherId: user.id, className: classId },
+        orderBy: { date: "desc" },
+        take: 5,
+      }),
+    ]);
+
+    return {
+      id: classId,
+      name: classId,
+      students: students.map(safeStudent),
+      subjects: scope.subjects,
+      recentAttendance: attendance,
+      upcomingAssessments: assessments,
+      teacherStatus: "Assigned",
+    };
+  },
+
+  listStudents: async (user) => {
+    const scope = buildTeacherScope(user);
+    if (!scope.classNames.length) {
+      return [];
+    }
+
+    const students = await prisma.student.findMany({
+      where: {
+        schoolId: user.schoolId ? Number(user.schoolId) : undefined,
+        className: { in: scope.classNames },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    return students.map(safeStudent);
+  },
+
+  getProfile: async (user) => safeProfile(user),
+
+  updateProfile: async (userId, payload) => {
+    const data = {};
+    if (payload.phone) data.phone = payload.phone;
+    if (payload.password) data.password = payload.password;
+    if (payload.profileImage) data.profileImage = payload.profileImage;
+    if (Object.keys(data).length === 0) return safeProfile(await prisma.user.findUnique({ where: { id: userId } }));
+    const updated = await prisma.user.update({ where: { id: userId }, data });
+    return safeProfile(updated);
+  },
+
+  listAttendance: async (user, query = {}) => {
+    const scope = buildTeacherScope(user);
+    const className = query.className || scope.classNames[0] || "";
+    const date = query.date ? new Date(query.date) : new Date();
+    const attendances = await prisma.attendance.findMany({
+      where: {
+        teacherId: user.id,
+        className,
+        date: {
+          gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
+          lt: new Date(new Date(date).setHours(23, 59, 59, 999)),
+        },
+      },
+      include: { student: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return attendances.map((item) => ({
+      id: item.id,
+      studentName: item.student?.name || "",
+      className: item.className,
+      status: item.status,
+      date: item.date,
+    }));
+  },
+
+  createAttendance: async (user, payload) => {
+    const className = payload.className;
+    const scope = buildTeacherScope(user);
+    if (!scope.classNames.includes(className)) {
+      const error = new Error("Class not assigned to this teacher");
+      error.statusCode = 403;
+      throw error;
+    }
+    const student = await prisma.student.findFirst({
+      where: { id: payload.studentId, schoolId: Number(user.schoolId), className },
+      select: { id: true },
+    });
+    if (!student) {
+      const error = new Error("Student is not in the selected class");
+      error.statusCode = 400;
+      throw error;
+    }
+    const schoolClass = await prisma.class.findFirst({
+      where: { schoolId: Number(user.schoolId), name: className },
+      select: { id: true },
+    });
+    const attendance = await prisma.studentAttendance.create({
+      data: {
+        schoolId: Number(user.schoolId),
+        studentId: student.id,
+        classId: schoolClass?.id || null,
+        attendanceDate: payload.date ? new Date(payload.date) : new Date(),
+        status: String(payload.status || "present").toLowerCase(),
+        markedById: user.id,
+      },
+    });
+    return attendance;
+  },
+
+  updateAttendance: async (user, id, payload) => {
+    const existing = await prisma.studentAttendance.findFirst({ where: { id, schoolId: Number(user.schoolId), markedById: user.id } });
+    if (!existing) {
+      const error = new Error("Attendance record not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const updated = await prisma.studentAttendance.update({ where: { id }, data: { status: String(payload.status || existing.status).toLowerCase() } });
+    return updated;
+  },
+
+  listAssessments: async (user) => {
+    const where = isAdminUser(user)
+      ? { schoolId: user.schoolId ? Number(user.schoolId) : undefined }
+      : { teacherId: user.id };
+
+    const assessments = await prisma.assessment.findMany({
+      where,
+      orderBy: { date: "desc" },
+      distinct: ["id"],
+    });
+    return assessments;
+  },
+
+  createAssessment: async (user, payload) => {
+    const assessment = await prisma.assessment.create({
+      data: {
+        teacherId: user.id,
+        title: payload.title,
+        subject: payload.subject,
+        className: payload.className,
+        maxScore: Number(payload.maxScore || 100),
+        date: payload.date ? new Date(payload.date) : new Date(),
+        description: payload.description || "",
+      },
+    });
+    return assessment;
+  },
+
+  updateAssessment: async (user, id, payload) => {
+    const existing = await prisma.assessment.findUnique({ where: { id } });
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
+      const error = new Error("Assessment not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const updated = await prisma.assessment.update({ where: { id }, data: { ...payload, maxScore: payload.maxScore ? Number(payload.maxScore) : undefined } });
+    return updated;
+  },
+
+  deleteAssessment: async (user, id) => {
+    const existing = await prisma.assessment.findUnique({ where: { id } });
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
+      const error = new Error("Assessment not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return prisma.assessment.delete({ where: { id } });
+  },
+
+  listResults: async (user) => {
+    const where = isAdminUser(user)
+      ? { schoolId: user.schoolId ? Number(user.schoolId) : undefined }
+      : { teacherId: user.id };
+
+    const results = await prisma.result.findMany({
+      where,
+      include: {
+        student: true,
+        assessment: {
+          include: {
+            exam: {
+              include: {
+                attempts: {
+                  orderBy: { updatedAt: "desc" },
+                  take: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    const latestAttempt = (assessment) => assessment?.exam?.attempts?.[0] || null;
+    return results.map((item) => ({
+      id: item.id,
+      studentName: item.student?.name || item.student?.admissionNumber || item.student?.parentEmail || "",
+      assessmentTitle: item.assessment?.title || "",
+      assessmentId: item.assessmentId || "",
+      assessmentDate: item.assessment?.date || null,
+      subject: item.subject,
+      className: item.className,
+      score: item.score,
+      maxScore: item.maxScore,
+      percentage: Number.isFinite(Number(item.maxScore)) && Number(item.maxScore) > 0 ? Math.round((Number(item.score) / Number(item.maxScore)) * 100) : null,
+      published: item.published,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      examAttemptNumber: latestAttempt(item.assessment)?.attemptNumber || null,
+      examStatus: latestAttempt(item.assessment)?.status || null,
+      examCompletedAt: latestAttempt(item.assessment)?.completedAt || null,
+      examExternalResultId: latestAttempt(item.assessment)?.externalResultId || null,
+      examCompletionTimeSeconds: latestAttempt(item.assessment)?.completionTimeSeconds || null,
+    }));
+  },
+
+  createResult: async (user, payload) => {
+    const result = await prisma.result.create({
+      data: {
+        teacherId: user.id,
+        studentId: payload.studentId,
+        assessmentId: payload.assessmentId || null,
+        subject: payload.subject,
+        className: payload.className,
+        score: Number(payload.score),
+        maxScore: Number(payload.maxScore || 100),
+        published: Boolean(payload.published),
+      },
+    });
+    return result;
+  },
+
+  updateResult: async (user, id, payload) => {
+    const existing = await prisma.result.findUnique({ where: { id } });
+    if (!existing || (!isAdminUser(user) && existing.teacherId !== user.id)) {
+      const error = new Error("Result not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return prisma.result.update({ where: { id }, data: { ...payload, score: payload.score ? Number(payload.score) : undefined, maxScore: payload.maxScore ? Number(payload.maxScore) : undefined } });
+  },
+
+  listAnnouncements: async (user) => {
+    const result = await announcementService.listForUser(user, { page: 1, limit: 20 });
+    return result.announcements;
+  },
+
+  createAnnouncement: async (user, payload) => {
+    return announcementService.createAnnouncement(user, payload);
+  },
+};
+

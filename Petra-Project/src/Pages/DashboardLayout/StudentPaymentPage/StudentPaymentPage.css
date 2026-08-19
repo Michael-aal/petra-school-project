@@ -1,0 +1,1191 @@
+/* =========================================================
+   NUVORA PAY — STUDENT PAYMENT PAGE
+   Matches StudentPaymentPage.jsx
+   ========================================================= */
+
+.sp-page {
+  min-height: 100vh;
+  padding: 48px 20px 64px;
+  box-sizing: border-box;
+  color: #f8fafc;
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(99, 102, 241, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(168, 85, 247, 0.10),
+      transparent 26%
+    ),
+    #0b1020;
+}
+
+.sp-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   SECURITY BAR
+   ========================================================= */
+
+.sp-security-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 28px;
+  color: #a7f3d0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sp-security-bar svg {
+  color: #6ee7b7;
+}
+
+/* =========================================================
+   STEPPER
+   ========================================================= */
+
+.sp-stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.sp-step-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 50px;
+}
+
+.sp-step-circle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  border: 2px solid #30384d;
+  border-radius: 50%;
+
+  background: #171d30;
+  color: #7c8499;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.sp-step.active .sp-step-circle {
+  border-color: #818cf8;
+  background: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.12);
+}
+
+.sp-step.completed .sp-step-circle {
+  border-color: #34d399;
+  background: #10b981;
+  color: #06130f;
+}
+
+.sp-step-label {
+  color: #717a91;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sp-step.active .sp-step-label {
+  color: #f8fafc;
+}
+
+.sp-step.completed .sp-step-label {
+  color: #a7f3d0;
+}
+
+.sp-step-line {
+  width: 55px;
+  height: 2px;
+  margin: 17px 8px 0;
+
+  background: #2a3144;
+  transition: background 0.25s ease;
+}
+
+.sp-step-line.completed {
+  background: #34d399;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.sp-card {
+  position: relative;
+  overflow: hidden;
+
+  padding: 32px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035),
+      transparent 45%
+    ),
+    #151b2c;
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  animation: spFadeInUp 0.3s ease;
+}
+
+.sp-card::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+
+  width: 240px;
+  height: 240px;
+
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.08);
+  filter: blur(40px);
+
+  pointer-events: none;
+}
+
+@keyframes spFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.sp-card-header {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+
+  margin-bottom: 26px;
+}
+
+.sp-card-header h2 {
+  margin: 0;
+
+  color: #f8fafc;
+
+  font-size: clamp(1.3rem, 3vw, 1.65rem);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.sp-card-header p {
+  margin: 7px 0 0;
+
+  color: #8b95aa;
+
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   ICON BOX
+   ========================================================= */
+
+.sp-icon-box {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  background: rgba(99, 102, 241, 0.10);
+  color: #818cf8;
+}
+
+.sp-icon-box.blue {
+  background: rgba(59, 130, 246, 0.10);
+  border-color: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+}
+
+.sp-icon-box.green {
+  background: rgba(16, 185, 129, 0.10);
+  border-color: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+.sp-icon-box.purple {
+  background: rgba(168, 85, 247, 0.10);
+  border-color: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+}
+
+.sp-icon-box.orange {
+  background: rgba(249, 115, 22, 0.10);
+  border-color: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.sp-form {
+  display: grid;
+  gap: 18px;
+}
+
+.sp-field {
+  display: grid;
+  gap: 9px;
+}
+
+.sp-field label {
+  color: #e5e7eb;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.sp-input {
+  width: 100%;
+  min-height: 56px;
+
+  box-sizing: border-box;
+
+  padding: 0 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 13px;
+
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.035);
+  color: #f8fafc;
+
+  font: inherit;
+  font-size: 0.95rem;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.sp-input::placeholder {
+  color: #626c81;
+}
+
+.sp-input:focus {
+  border-color: rgba(99, 102, 241, 0.65);
+
+  background: rgba(99, 102, 241, 0.035);
+
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.10);
+}
+
+.sp-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.code-input {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+}
+
+.sp-hint {
+  color: #687288;
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   ALERT
+   ========================================================= */
+
+.sp-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  padding: 12px 14px;
+
+  border-radius: 12px;
+
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.sp-alert.error {
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.07);
+  color: #fda4af;
+}
+
+.sp-alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.sp-btn {
+  min-height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding: 0 20px;
+
+  border: 1px solid transparent;
+  border-radius: 13px;
+
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.sp-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.sp-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sp-btn.primary {
+  width: 100%;
+
+  border-color: rgba(129, 140, 248, 0.25);
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #4f46e5
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(79, 70, 229, 0.22);
+}
+
+.sp-btn.primary:hover:not(:disabled) {
+  box-shadow:
+    0 14px 34px rgba(79, 70, 229, 0.30);
+}
+
+.sp-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.09);
+
+  background: rgba(255, 255, 255, 0.045);
+
+  color: #e5e7eb;
+}
+
+.sp-btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.sp-btn.ghost {
+  margin-top: 20px;
+
+  min-height: 42px;
+
+  border-color: transparent;
+
+  background: transparent;
+
+  color: #8b95aa;
+
+  font-size: 0.78rem;
+}
+
+.sp-btn.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.035);
+  color: #f8fafc;
+}
+
+.sp-btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.sp-btn-group .sp-btn {
+  flex: 1;
+}
+
+/* =========================================================
+   STUDENT CONFIRMATION
+   ========================================================= */
+
+.sp-student-confirm {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sp-student-avatar {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25),
+      rgba(168, 85, 247, 0.20)
+    );
+
+  border: 1px solid rgba(129, 140, 248, 0.20);
+
+  color: #c7d2fe;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.sp-student-details {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-student-name {
+  color: #f8fafc;
+
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+.sp-student-code {
+  color: #818cf8;
+  font-size: 0.75rem;
+}
+
+.sp-student-class {
+  color: #7d879b;
+  font-size: 0.75rem;
+}
+
+.mono {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+}
+
+/* =========================================================
+   PAYMENT SUMMARY HEADER
+   ========================================================= */
+
+.student-payment-summary {
+  margin-bottom: 16px;
+
+  padding: 16px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.student-payment-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.student-payment-summary-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.student-payment-summary-header span {
+  color: #f1f5f9;
+
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.student-payment-summary-header small {
+  color: #737d92;
+
+  font-size: 0.7rem;
+}
+
+.student-payment-summary-header svg {
+  color: #a78bfa;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.sp-loading-state {
+  min-height: 190px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  color: #858fa3;
+  text-align: center;
+}
+
+.sp-loading-state p {
+  margin: 0;
+
+  font-size: 0.82rem;
+}
+
+.spin {
+  animation: spSpin 1s linear infinite;
+}
+
+@keyframes spSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   PAYMENT OPTIONS
+   ========================================================= */
+
+.sp-payment-options {
+  display: grid;
+  gap: 10px;
+}
+
+.sp-payment-option {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 17px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  color: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.sp-payment-option:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(129, 140, 248, 0.35);
+
+  background: rgba(99, 102, 241, 0.045);
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.sp-option-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-option-info strong {
+  color: #f8fafc;
+
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.sp-option-info span {
+  color: #7d879b;
+
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.sp-option-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  flex-shrink: 0;
+
+  color: #818cf8;
+}
+
+.sp-option-amount {
+  color: #e0e7ff;
+
+  font-size: 0.86rem;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.sp-empty-state {
+  min-height: 160px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 20px;
+
+  border: 1px dashed rgba(255, 255, 255, 0.10);
+  border-radius: 15px;
+
+  color: #8a94a8;
+
+  text-align: center;
+}
+
+.sp-empty-state svg {
+  color: #f59e0b;
+}
+
+.sp-empty-state p {
+  max-width: 380px;
+
+  margin: 0;
+
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   REVIEW
+   ========================================================= */
+
+.sp-review-box {
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sp-review-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 13px 16px;
+}
+
+.sp-review-row + .sp-review-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.sp-review-row span {
+  color: #7c869a;
+
+  font-size: 0.77rem;
+}
+
+.sp-review-row strong {
+  max-width: 60%;
+
+  color: #f1f5f9;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  text-align: right;
+
+  overflow-wrap: anywhere;
+}
+
+.sp-review-divider {
+  height: 1px;
+  margin: 4px 16px;
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sp-review-row.total {
+  padding-top: 17px;
+  padding-bottom: 17px;
+
+  background: rgba(99, 102, 241, 0.045);
+}
+
+.sp-review-row.total span {
+  color: #a5aec0;
+
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.sp-review-row.total strong {
+  color: #a5b4fc;
+
+  font-size: 1.15rem;
+  font-weight: 850;
+}
+
+/* =========================================================
+   PROCESSING / CENTER STATES
+   ========================================================= */
+
+.sp-center {
+  min-height: 360px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.sp-center h2 {
+  margin: 20px 0 8px;
+
+  color: #f8fafc;
+
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.sp-center > p {
+  max-width: 430px;
+
+  margin: 0;
+
+  color: #858fa3;
+
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.sp-processing-note {
+  margin-top: 10px !important;
+
+  color: #636d82 !important;
+
+  font-size: 0.75rem !important;
+}
+
+.purple-spin {
+  color: #818cf8;
+}
+
+/* =========================================================
+   SUCCESS / FAILED
+   ========================================================= */
+
+.success-state,
+.failed-state {
+  text-align: center;
+}
+
+.sp-result-icon {
+  width: 86px;
+  height: 86px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 50%;
+}
+
+.success-ring {
+  border: 1px solid rgba(52, 211, 153, 0.25);
+
+  background: rgba(16, 185, 129, 0.08);
+
+  color: #34d399;
+
+  box-shadow:
+    0 0 0 10px rgba(16, 185, 129, 0.035);
+
+  animation: spPopIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.failed-ring {
+  border: 1px solid rgba(248, 113, 113, 0.25);
+
+  background: rgba(239, 68, 68, 0.08);
+
+  color: #f87171;
+}
+
+@keyframes spPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  70% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.success-state h2 {
+  margin: 0 0 8px;
+
+  color: #6ee7b7;
+
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.failed-state h2 {
+  margin: 0 0 8px;
+
+  color: #fca5a5;
+
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.success-state > p,
+.failed-state > p {
+  max-width: 470px;
+
+  margin: 0 auto 20px;
+
+  color: #858fa3;
+
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   RECEIPT
+   ========================================================= */
+
+.sp-receipt-box {
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  text-align: left;
+}
+
+.sp-receipt-box .sp-review-row {
+  padding: 12px 15px;
+}
+
+.sp-receipt-box .sp-review-row strong {
+  font-size: 0.78rem;
+}
+
+.sp-receipt-box .mono {
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   PRODUCTION NOTE
+   ========================================================= */
+
+.student-payment-production-note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 7px;
+
+  max-width: 520px;
+
+  margin: 16px auto 0;
+
+  color: #687287;
+
+  font-size: 0.7rem;
+  line-height: 1.5;
+
+  text-align: left;
+}
+
+.student-payment-production-note svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: #6ee7b7;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .sp-page {
+    padding: 30px 14px 48px;
+  }
+
+  .sp-container {
+    max-width: 100%;
+  }
+
+  .sp-card {
+    padding: 24px 18px;
+
+    border-radius: 17px;
+  }
+
+  .sp-stepper {
+    overflow-x: auto;
+
+    justify-content: flex-start;
+
+    padding: 0 4px 5px;
+
+    scrollbar-width: none;
+  }
+
+  .sp-stepper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sp-step-line {
+    width: 28px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .sp-card-header {
+    gap: 12px;
+  }
+
+  .sp-icon-box {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+  }
+
+  .sp-btn-group {
+    flex-direction: column-reverse;
+  }
+
+  .sp-btn-group .sp-btn {
+    width: 100%;
+  }
+
+  .sp-payment-option {
+    align-items: flex-start;
+  }
+
+  .sp-option-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .sp-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .sp-card {
+    padding: 21px 15px;
+  }
+
+  .sp-step-circle {
+    width: 32px;
+    height: 32px;
+
+    font-size: 0.72rem;
+  }
+
+  .sp-step-label {
+    font-size: 0.64rem;
+  }
+
+  .sp-step-line {
+    width: 20px;
+  }
+
+  .sp-student-confirm {
+    padding: 14px;
+  }
+
+  .sp-student-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sp-review-row {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .sp-review-row strong {
+    max-width: 55%;
+  }
+
+  .sp-option-info span {
+    font-size: 0.7rem;
+  }
+
+  .sp-option-amount {
+    font-size: 0.78rem;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-card,
+  .success-ring,
+  .sp-btn,
+  .sp-payment-option,
+  .sp-step-circle,
+  .sp-step-line {
+    animation: none !important;
+    transition: none !important;
+  }
+}
