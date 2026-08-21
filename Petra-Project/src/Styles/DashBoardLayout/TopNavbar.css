@@ -303,3 +303,52 @@
   letter-spacing: 0.04em;
   line-height: 1;
 }
+
+.top-navbar {
+  min-height: 64px;
+  padding: 10px clamp(14px, 2vw, 28px);
+  background: color-mix(in srgb, var(--dashboard-topbar-bg) 92%, transparent);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+.menu-btn,
+.icon-btn {
+  min-width: 40px;
+  min-height: 40px;
+  border: 1px solid transparent;
+}
+
+.menu-btn:hover,
+.icon-btn:hover {
+  border-color: var(--app-border);
+  background: var(--surface-accent);
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .top-navbar {
+    min-height: 58px;
+    padding: 8px 12px;
+  }
+
+  .top-welcome {
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .user-meta,
+  .user-caret {
+    display: none;
+  }
+
+  .notification-dropdown,
+  .account-dropdown {
+    position: fixed;
+    top: 68px;
+    right: 12px;
+    width: min(320px, calc(100vw - 24px));
+    max-width: none;
+  }
+}

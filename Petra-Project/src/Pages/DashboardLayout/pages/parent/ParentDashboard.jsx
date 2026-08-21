@@ -1,6 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../../context/UserContext";
-import { BookOpen, ClipboardCheck, FileText, GraduationCap } from "lucide-react";
+import {
+  BookOpen,
+  ClipboardCheck,
+  FileText,
+  GraduationCap,
+} from "lucide-react";
 import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
 import StatCard from "../../../../components/dashboard/StatCard";
 import QuickActions from "../../../../components/dashboard/QuickActions";
@@ -9,16 +14,57 @@ import EmptyState from "../../../../components/dashboard/EmptyState";
 import "../page-styles/ParentDashboard.css";
 import "../../../../components/dashboard/dashboard.css";
 import { getStudentDisplayName } from "../../../../utils/studentDisplay";
+import { parentApi } from "../../../../services/parentApi";
 
 export default function ParentDashboard() {
   const { userInfo } = useContext(UserContext);
   const myChildren = userInfo?.children || [];
+  const [hub, setHub] = useState(null);
+
+  useEffect(() => {
+    const childId = myChildren[0]?.id;
+    if (!childId) return;
+    parentApi
+      .childHub(childId)
+      .then(setHub)
+      .catch(() => setHub(null));
+  }, [myChildren]);
 
   const summaryItems = [
-    { label: "Linked Students", value: myChildren.length, icon: GraduationCap, description: myChildren.length ? `${myChildren.length} active profiles` : "No profiles linked yet", trend: "Live" },
-    { label: "Attendance", value: "On track", icon: ClipboardCheck, description: "Latest updates shared", trend: "Updated" },
-    { label: "Assignments", value: "Updated", icon: FileText, description: "Progress is current", trend: "Today" },
-    { label: "Resources", value: "Ready", icon: BookOpen, description: "Available for review", trend: "Ready" },
+    {
+      label: "Linked Students",
+      value: myChildren.length,
+      icon: GraduationCap,
+      description: myChildren.length
+        ? `${myChildren.length} active profiles`
+        : "No profiles linked yet",
+      trend: "Live",
+    },
+    {
+      label: "Attendance",
+      value: hub?.summary?.attendancePercentage
+        ? `${hub.summary.attendancePercentage}%`
+        : "On track",
+      icon: ClipboardCheck,
+      description: "Latest updates shared",
+      trend: "Live",
+    },
+    {
+      label: "Results",
+      value: hub?.summary?.performanceAverage
+        ? `${hub.summary.performanceAverage}%`
+        : "Pending",
+      icon: FileText,
+      description: "Published scores",
+      trend: "Live",
+    },
+    {
+      label: "Resources",
+      value: hub?.reportCards?.length || "Ready",
+      icon: BookOpen,
+      description: "Report cards available",
+      trend: "Ready",
+    },
   ];
 
   return (
@@ -33,23 +79,49 @@ export default function ParentDashboard() {
       />
 
       <section className="parent-summary-grid">
-        {summaryItems.map(({ label, value, icon: Icon, description, trend }) => (
-          <StatCard key={label} label={label} value={value} icon={Icon} tone="blue" description={description} trend={trend} />
-        ))}
+        {summaryItems.map(
+          ({ label, value, icon: Icon, description, trend }) => (
+            <StatCard
+              key={label}
+              label={label}
+              value={value}
+              icon={Icon}
+              tone="blue"
+              description={description}
+              trend={trend}
+            />
+          ),
+        )}
       </section>
 
       <section className="parent-grid">
         <QuickActions
           title="Parent shortcuts"
           items={[
-            { label: "View Child", meta: "Open profile details", icon: GraduationCap },
+            {
+              label: "View Child",
+              meta: "Open profile details",
+              icon: GraduationCap,
+            },
             { label: "Pay Fees", meta: "Review pending fees", icon: BookOpen },
-            { label: "Check Attendance", meta: "See the latest attendance", icon: ClipboardCheck },
-            { label: "View Results", meta: "Inspect recent scores", icon: FileText },
+            {
+              label: "Check Attendance",
+              meta: "See the latest attendance",
+              icon: ClipboardCheck,
+            },
+            {
+              label: "View Results",
+              meta: "Inspect recent scores",
+              icon: FileText,
+            },
           ]}
         />
 
-        <DashboardWidget title="Your children" subtitle="Linked students" actionLabel="Manage">
+        <DashboardWidget
+          title="Your children"
+          subtitle="Linked students"
+          actionLabel="Manage"
+        >
           {myChildren.length > 0 ? (
             <div className="parent-list">
               {myChildren.map((child) => {
@@ -60,13 +132,19 @@ export default function ParentDashboard() {
                       <strong>{childFullName}</strong>
                       <p>{child.className || "No class assigned"}</p>
                     </div>
-                    <div className="parent-pill">{child.status || "Active"}</div>
+                    <div className="parent-pill">
+                      {child.status || "Active"}
+                    </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <EmptyState title="No children linked yet" description="Link a student account to start viewing updates, attendance, and assignments here." icon={GraduationCap} />
+            <EmptyState
+              title="No children linked yet"
+              description="Link a student account to start viewing updates, attendance, and assignments here."
+              icon={GraduationCap}
+            />
           )}
         </DashboardWidget>
       </section>

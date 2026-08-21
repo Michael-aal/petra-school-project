@@ -1,3 +1,13 @@
+.subjects-item-actions select {
+  min-height: 34px;
+  max-width: 150px;
+  padding: 0 8px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: var(--app-surface-strong);
+  color: var(--app-text);
+  font-size: 0.76rem;
+}
 .subjects-page {
   padding: 18px;
 }
@@ -87,7 +97,9 @@
   border: 1px solid var(--app-border);
   border-radius: 14px;
   padding: 12px;
-  transition: transform 0.18s ease, border-color 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .subjects-item:hover {

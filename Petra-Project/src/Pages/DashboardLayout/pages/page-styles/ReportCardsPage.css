@@ -1,2 +1,183 @@
-/* Styles for ReportCardsPage */
-.reportcards-page{ padding:18px; }
+.reportcards-page {
+  display: grid;
+  gap: 18px;
+}
+.reportcards-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  .reportcards-state {
+    padding: 18px;
+    border: 1px solid var(--app-border);
+    border-radius: 14px;
+    background: var(--app-surface);
+    color: var(--app-text-muted);
+  }
+  .reportcards-state-error {
+    color: var(--danger);
+    border-color: color-mix(in srgb, var(--danger) 30%, var(--app-border));
+  }
+  .reportcards-list {
+    display: grid;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid var(--app-border);
+    border-radius: 18px;
+    background: var(--app-surface);
+  }
+  .reportcard-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--app-border);
+  }
+  .reportcard-row:last-child {
+    border-bottom: 0;
+  }
+  .reportcard-row strong,
+  .reportcard-row span {
+    display: block;
+  }
+  .reportcard-row > div:nth-child(2) span {
+    margin-top: 3px;
+    color: var(--app-text-muted);
+    font-size: 0.8rem;
+  }
+  .reportcard-status {
+    padding: 6px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+  .reportcard-status.published {
+    background: var(--surface-success);
+    color: var(--success);
+  }
+  .reportcard-status.draft {
+    background: var(--surface-warning);
+    color: var(--warning);
+  }
+  gap: 18px;
+  padding: 26px;
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: var(--dashboard-panel-bg);
+}
+.reportcards-hero h1 {
+  margin: 8px 0 6px;
+  @media (max-width: 620px) {
+    .reportcard-row {
+      grid-template-columns: auto 1fr;
+    }
+    .reportcard-status,
+    .reportcard-row button {
+      grid-column: 2;
+      width: fit-content;
+    }
+  }
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  letter-spacing: -0.05em;
+}
+.reportcards-hero p:not(.dashboard-page-label) {
+  margin: 0;
+  color: var(--app-text-muted);
+  max-width: 650px;
+}
+.reportcards-primary-action,
+.reportcards-secondary-action,
+.reportcards-ghost-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.reportcards-primary-action {
+  border: 0;
+  background: var(--dashboard-accent-gradient);
+  color: #fff;
+}
+.reportcards-secondary-action {
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+}
+.reportcards-ghost-action {
+  border: 0;
+  background: transparent;
+  color: var(--app-text-muted);
+}
+.reportcards-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.reportcards-stat-grid article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.reportcards-stat-grid svg {
+  grid-row: span 2;
+  color: var(--app-accent);
+}
+.reportcards-stat-grid strong {
+  font-size: 1.4rem;
+}
+.reportcards-stat-grid span {
+  color: var(--app-text-muted);
+  font-size: 0.82rem;
+}
+.reportcards-panel {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 58px 24px;
+  border: 1px dashed var(--app-border);
+  border-radius: 18px;
+  background: var(--app-surface);
+  text-align: center;
+}
+.reportcards-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
+.reportcards-panel h2 {
+  margin: 4px 0 0;
+}
+.reportcards-panel p {
+  max-width: 480px;
+  margin: 0 0 8px;
+  color: var(--app-text-muted);
+  line-height: 1.6;
+}
+.reportcards-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media (max-width: 720px) {
+  .reportcards-hero {
+    flex-direction: column;
+  }
+  .reportcards-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}

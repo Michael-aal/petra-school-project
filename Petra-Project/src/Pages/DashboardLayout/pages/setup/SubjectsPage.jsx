@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, BookOpen, ClipboardList, Plus, RefreshCcw, Save, Trash2 } from "lucide-react";
+import {
+  AlertCircle,
+  BookOpen,
+  ClipboardList,
+  Plus,
+  RefreshCcw,
+  Save,
+  Trash2,
+} from "lucide-react";
 import { academicApi } from "../../../../services/academicApi";
+import { adminApi } from "../../../../services/adminApi";
 import "../page-styles/SubjectsPage.css";
 
 const initialForm = {
@@ -9,22 +18,37 @@ const initialForm = {
   category: "",
 };
 
-const seedSubjects = ["Mathematics", "English Language", "Basic Science", "Civic Education", "Computer Studies", "Creative Arts", "Social Studies"];
+const seedSubjects = [
+  "Mathematics",
+  "English Language",
+  "Basic Science",
+  "Civic Education",
+  "Computer Studies",
+  "Creative Arts",
+  "Social Studies",
+];
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
+  const [selectedClass, setSelectedClass] = useState({});
+  const [assignmentMessage, setAssignmentMessage] = useState("");
 
   const load = async () => {
     setLoading(true);
     setError("");
     try {
-      const response = await academicApi.subjects();
-      setSubjects(response.subjects || []);
+      const [subjectResponse, classResponse] = await Promise.all([
+        academicApi.subjects(),
+        academicApi.classes(),
+      ]);
+      setSubjects(subjectResponse.subjects || []);
+      setClasses(classResponse.classes || []);
     } catch (err) {
       setError(err.message || "Unable to load subjects.");
     } finally {
@@ -32,14 +56,29 @@ export default function SubjectsPage() {
     }
   };
 
+  const assignToClass = async (subjectId) => {
+    const classId = selectedClass[subjectId];
+    if (!classId) return;
+    setAssignmentMessage("");
+    try {
+      await adminApi.assignClassSubject({ classId, subjectId });
+      setAssignmentMessage("Subject assigned to class successfully.");
+    } catch (err) {
+      setError(err.message || "Unable to assign subject to class.");
+    }
+  };
+
   useEffect(() => {
     load();
   }, []);
 
-  const summary = useMemo(() => ({
-    total: subjects.length,
-    active: subjects.length,
-  }), [subjects]);
+  const summary = useMemo(
+    () => ({
+      total: subjects.length,
+      active: subjects.length,
+    }),
+    [subjects],
+  );
 
   const submit = async (event) => {
     event.preventDefault();
@@ -76,7 +115,12 @@ export default function SubjectsPage() {
   };
 
   const deleteSubject = async (item) => {
-    if (!window.confirm(`Delete ${item.name}? This will affect schedules and results that use it.`)) return;
+    if (
+      !window.confirm(
+        `Delete ${item.name}? This will affect schedules and results that use it.`,
+      )
+    )
+      return;
     try {
       await academicApi.deleteSubject(item.id);
       await load();
@@ -92,7 +136,11 @@ export default function SubjectsPage() {
           <h1>Subjects</h1>
           <p>Manage the subject catalog from one DB-backed setup screen.</p>
         </div>
-        <button className="dashboard-home-summary-action tone-blue" onClick={load} type="button">
+        <button
+          className="dashboard-home-summary-action tone-blue"
+          onClick={load}
+          type="button"
+        >
           <RefreshCcw size={14} />
           <span>Refresh</span>
         </button>
@@ -129,6 +177,11 @@ export default function SubjectsPage() {
           <span>{error}</span>
         </div>
       ) : null}
+      {assignmentMessage ? (
+        <div className="students-inline-alert subjects-alert">
+          {assignmentMessage}
+        </div>
+      ) : null}
 
       <section className="dashboard-home-panel subjects-layout">
         <article className="subjects-form-card">
@@ -139,15 +192,27 @@ export default function SubjectsPage() {
           <form onSubmit={submit} className="subjects-form">
             <label>
               <span>Subject name</span>
-              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Mathematics" required />
+              <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="e.g. Mathematics"
+                required
+              />
             </label>
             <label>
               <span>Subject code</span>
-              <input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} placeholder="e.g. MTH" />
+              <input
+                value={form.code}
+                onChange={(e) => setForm({ ...form, code: e.target.value })}
+                placeholder="e.g. MTH"
+              />
             </label>
             <label>
               <span>Category</span>
-              <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+              >
                 <option value="">Select category</option>
                 <option value="Core">Core</option>
                 <option value="Science">Science</option>
@@ -157,9 +222,19 @@ export default function SubjectsPage() {
               </select>
             </label>
             <div className="subjects-form-actions full-width">
-              <button type="submit" className="dashboard-home-summary-action tone-blue" disabled={saving}>
+              <button
+                type="submit"
+                className="dashboard-home-summary-action tone-blue"
+                disabled={saving}
+              >
                 <Save size={14} />
-                <span>{saving ? "Saving..." : editingId ? "Update Subject" : "Save Subject"}</span>
+                <span>
+                  {saving
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Subject"
+                      : "Save Subject"}
+                </span>
               </button>
               {editingId ? (
                 <button
@@ -195,14 +270,47 @@ export default function SubjectsPage() {
                   <div>
                     <strong>{item.name}</strong>
                     <p>
-                      {item.code || "No code"} {item.category ? `• ${item.category}` : ""}
+                      {item.code || "No code"}{" "}
+                      {item.category ? `• ${item.category}` : ""}
                     </p>
                   </div>
                   <div className="subjects-item-actions">
-                    <button type="button" className="subjects-mini-btn" onClick={() => editSubject(item)}>
+                    <select
+                      value={selectedClass[item.id] || ""}
+                      onChange={(event) =>
+                        setSelectedClass((current) => ({
+                          ...current,
+                          [item.id]: event.target.value,
+                        }))
+                      }
+                      aria-label={`Assign ${item.name} to a class`}
+                    >
+                      <option value="">Assign to class</option>
+                      {classes.map((classItem) => (
+                        <option key={classItem.id} value={classItem.id}>
+                          {classItem.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="subjects-mini-btn"
+                      onClick={() => assignToClass(item.id)}
+                    >
+                      Assign
+                    </button>
+                    <button
+                      type="button"
+                      className="subjects-mini-btn"
+                      onClick={() => editSubject(item)}
+                    >
                       Edit
                     </button>
-                    <button type="button" className="subjects-mini-btn danger" onClick={() => deleteSubject(item)}>
+                    <button
+                      type="button"
+                      className="subjects-mini-btn danger"
+                      onClick={() => deleteSubject(item)}
+                    >
                       <Trash2 size={14} />
                       Remove
                     </button>

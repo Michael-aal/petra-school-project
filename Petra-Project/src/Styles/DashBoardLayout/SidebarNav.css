@@ -347,3 +347,48 @@ body.dark .sidebar-child:hover {
     display: none;
   }
 }
+
+/* Shared dashboard shell refinements. */
+.sidebar-container {
+  padding: 14px 10px;
+  box-shadow: 14px 0 40px color-mix(in srgb, var(--app-text) 14%, transparent);
+}
+
+.sidebar-header {
+  padding: 4px 6px 14px;
+  border-bottom: 1px solid rgba(245, 246, 240, 0.12);
+}
+
+.sidebar-contaner-logo {
+  border-radius: 12px;
+}
+
+.sidebar-nav {
+  gap: 4px;
+  padding: 14px 2px;
+}
+
+.sidebar-link,
+.sidebar-group {
+  min-height: 44px;
+  border-radius: 10px;
+}
+
+.sidebar-link.active,
+.sidebar-child.active {
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--app-accent) 22%, transparent);
+}
+
+.sidebar-child {
+  min-height: 38px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-content {
+    padding-top: 4px;
+  }
+
+  .dashboard-sidebar {
+    box-shadow: 24px 0 60px rgba(2, 6, 23, 0.28);
+  }
+}

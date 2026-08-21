@@ -1,2 +1,107 @@
-/* Styles for BusPage */
-.bus-page{ padding:20px; }
+.bus-page {
+  display: grid;
+  gap: 18px;
+}
+.bus-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 26px;
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: var(--dashboard-panel-bg);
+}
+.bus-hero h1 {
+  margin: 8px 0 6px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  letter-spacing: -0.05em;
+}
+.bus-hero p:not(.dashboard-page-label) {
+  margin: 0;
+  color: var(--app-text-muted);
+  max-width: 650px;
+}
+.bus-primary-action,
+.bus-secondary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.bus-primary-action {
+  border: 0;
+  background: var(--dashboard-accent-gradient);
+  color: #fff;
+}
+.bus-secondary-action {
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+}
+.bus-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.bus-stat-grid article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+.bus-stat-grid svg {
+  grid-row: span 2;
+  color: var(--app-accent);
+}
+.bus-stat-grid strong {
+  font-size: 1.4rem;
+}
+.bus-stat-grid span {
+  color: var(--app-text-muted);
+  font-size: 0.82rem;
+}
+.bus-empty-panel {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 58px 24px;
+  border: 1px dashed var(--app-border);
+  border-radius: 18px;
+  background: var(--app-surface);
+  text-align: center;
+}
+.bus-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
+.bus-empty-panel h2 {
+  margin: 4px 0 0;
+}
+.bus-empty-panel p {
+  max-width: 480px;
+  margin: 0 0 8px;
+  color: var(--app-text-muted);
+  line-height: 1.6;
+}
+@media (max-width: 720px) {
+  .bus-hero {
+    flex-direction: column;
+  }
+  .bus-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}

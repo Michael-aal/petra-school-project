@@ -13,10 +13,36 @@ const normalizeClassList = (value) => {
   return [];
 };
 
-const buildTeacherScope = (user) => {
-  const classNames = normalizeClassList(user?.staffClassAssigned || user?.assignedClass || user?.classAssigned);
-  const subjects = normalizeClassList(user?.staffSubjectsAssigned || user?.assignedSubjects || user?.subjectsAssigned);
-  return { classNames, subjects };
+const buildTeacherScope = async (user) => {
+  const classNames = normalizeClassList(
+    user?.staffClassAssigned || user?.assignedClass || user?.classAssigned,
+  );
+  const subjects = normalizeClassList(
+    user?.staffSubjectsAssigned ||
+      user?.assignedSubjects ||
+      user?.subjectsAssigned,
+  );
+  const teacher = await prisma.teacher.findUnique({
+    where: { userId: user.id },
+    include: {
+      classes: { include: { class: { select: { name: true } } } },
+      subjects: { include: { subject: { select: { name: true } } } },
+    },
+  });
+
+  return {
+    // Database assignments are authoritative; legacy profile fields remain a fallback for older staff records.
+    classNames: teacher?.classes
+      ?.map((item) => item.class?.name)
+      .filter(Boolean).length
+      ? teacher.classes.map((item) => item.class.name)
+      : classNames,
+    subjects: teacher?.subjects
+      ?.map((item) => item.subject?.name)
+      .filter(Boolean).length
+      ? teacher.subjects.map((item) => item.subject.name)
+      : subjects,
+  };
 };
 
 const buildTodaySchedule = (classNames = [], subjects = []) => {
@@ -49,7 +75,8 @@ const safeStudent = (student) => ({
   status: student.status || "active",
 });
 
-const isAdminUser = (user) => ["principal", "super_admin"].includes(normalizeRole(user.role));
+const isAdminUser = (user) =>
+  ["principal", "super_admin"].includes(normalizeRole(user.role));
 
 const safeProfile = (user) => ({
   id: user.id,
@@ -67,7 +94,7 @@ const safeProfile = (user) => ({
 
 export const teacherService = {
   getDashboard: async (user) => {
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     const studentsPromise = scope.classNames.length
       ? prisma.student.findMany({
           where: {
@@ -78,26 +105,29 @@ export const teacherService = {
         })
       : Promise.resolve([]);
 
-    const [students, assessments, attendance, announcements] = await Promise.all([
-      studentsPromise,
-      prisma.assessment.findMany({
-        where: {
-          teacherId: user.id,
-        },
-        orderBy: { date: "desc" },
-        take: 5,
-      }),
-      prisma.studentAttendance.findMany({
-        where: {
-          schoolId: Number(user.schoolId),
-          markedById: user.id,
-          attendanceDate: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      }),
-      prisma.$queryRaw`SELECT title, description, createdAt FROM (SELECT 'School announcement'::text AS title, 'Check the latest school notice'::text AS description, CURRENT_TIMESTAMP AS createdAt) AS announcements`.then((rows) => rows),
-    ]);
+    const [students, assessments, attendance, announcements] =
+      await Promise.all([
+        studentsPromise,
+        prisma.assessment.findMany({
+          where: {
+            teacherId: user.id,
+          },
+          orderBy: { date: "desc" },
+          take: 5,
+        }),
+        prisma.studentAttendance.findMany({
+          where: {
+            schoolId: Number(user.schoolId),
+            markedById: user.id,
+            attendanceDate: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        }),
+        prisma.$queryRaw`SELECT title, description, createdAt FROM (SELECT 'School announcement'::text AS title, 'Check the latest school notice'::text AS description, CURRENT_TIMESTAMP AS createdAt) AS announcements`.then(
+          (rows) => rows,
+        ),
+      ]);
 
     const visibleStudents = scope.classNames.length ? students : [];
 
@@ -110,7 +140,9 @@ export const teacherService = {
       stats: {
         assignedStudents: visibleStudents.length,
         assignedSubjects: scope.subjects.length,
-        attendanceStatus: attendance.length ? `${attendance.length} marked today` : "No attendance yet",
+        attendanceStatus: attendance.length
+          ? `${attendance.length} marked today`
+          : "No attendance yet",
         pendingAssessments: assessments.length,
       },
       todaySchedule: buildTodaySchedule(scope.classNames, scope.subjects),
@@ -120,7 +152,7 @@ export const teacherService = {
   },
 
   listClasses: async (user) => {
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     if (!scope.classNames.length) {
       return [];
     }
@@ -134,7 +166,9 @@ export const teacherService = {
     });
 
     const grouped = scope.classNames.map((className) => {
-      const classStudents = students.filter((student) => student.className === className);
+      const classStudents = students.filter(
+        (student) => student.className === className,
+      );
       return {
         id: className,
         name: className,
@@ -148,7 +182,7 @@ export const teacherService = {
   },
 
   getClassById: async (user, classId) => {
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     if (!scope.classNames.includes(classId)) {
       const error = new Error("Class not assigned to this teacher");
       error.statusCode = 403;
@@ -157,11 +191,18 @@ export const teacherService = {
 
     const [students, attendance, assessments] = await Promise.all([
       prisma.student.findMany({
-        where: { className: classId, schoolId: user.schoolId ? Number(user.schoolId) : undefined },
+        where: {
+          className: classId,
+          schoolId: user.schoolId ? Number(user.schoolId) : undefined,
+        },
         orderBy: { name: "asc" },
       }),
       prisma.studentAttendance.findMany({
-        where: { schoolId: Number(user.schoolId), markedById: user.id, student: { className: classId } },
+        where: {
+          schoolId: Number(user.schoolId),
+          markedById: user.id,
+          student: { className: classId },
+        },
         orderBy: { attendanceDate: "desc" },
         take: 5,
         include: { student: true },
@@ -185,7 +226,7 @@ export const teacherService = {
   },
 
   listStudents: async (user) => {
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     if (!scope.classNames.length) {
       return [];
     }
@@ -208,13 +249,16 @@ export const teacherService = {
     if (payload.phone) data.phone = payload.phone;
     if (payload.password) data.password = payload.password;
     if (payload.profileImage) data.profileImage = payload.profileImage;
-    if (Object.keys(data).length === 0) return safeProfile(await prisma.user.findUnique({ where: { id: userId } }));
+    if (Object.keys(data).length === 0)
+      return safeProfile(
+        await prisma.user.findUnique({ where: { id: userId } }),
+      );
     const updated = await prisma.user.update({ where: { id: userId }, data });
     return safeProfile(updated);
   },
 
   listAttendance: async (user, query = {}) => {
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     const className = query.className || scope.classNames[0] || "";
     const date = query.date ? new Date(query.date) : new Date();
     const attendances = await prisma.attendance.findMany({
@@ -240,14 +284,18 @@ export const teacherService = {
 
   createAttendance: async (user, payload) => {
     const className = payload.className;
-    const scope = buildTeacherScope(user);
+    const scope = await buildTeacherScope(user);
     if (!scope.classNames.includes(className)) {
       const error = new Error("Class not assigned to this teacher");
       error.statusCode = 403;
       throw error;
     }
     const student = await prisma.student.findFirst({
-      where: { id: payload.studentId, schoolId: Number(user.schoolId), className },
+      where: {
+        id: payload.studentId,
+        schoolId: Number(user.schoolId),
+        className,
+      },
       select: { id: true },
     });
     if (!student) {
@@ -273,13 +321,18 @@ export const teacherService = {
   },
 
   updateAttendance: async (user, id, payload) => {
-    const existing = await prisma.studentAttendance.findFirst({ where: { id, schoolId: Number(user.schoolId), markedById: user.id } });
+    const existing = await prisma.studentAttendance.findFirst({
+      where: { id, schoolId: Number(user.schoolId), markedById: user.id },
+    });
     if (!existing) {
       const error = new Error("Attendance record not found");
       error.statusCode = 404;
       throw error;
     }
-    const updated = await prisma.studentAttendance.update({ where: { id }, data: { status: String(payload.status || existing.status).toLowerCase() } });
+    const updated = await prisma.studentAttendance.update({
+      where: { id },
+      data: { status: String(payload.status || existing.status).toLowerCase() },
+    });
     return updated;
   },
 
@@ -318,7 +371,13 @@ export const teacherService = {
       error.statusCode = 404;
       throw error;
     }
-    const updated = await prisma.assessment.update({ where: { id }, data: { ...payload, maxScore: payload.maxScore ? Number(payload.maxScore) : undefined } });
+    const updated = await prisma.assessment.update({
+      where: { id },
+      data: {
+        ...payload,
+        maxScore: payload.maxScore ? Number(payload.maxScore) : undefined,
+      },
+    });
     return updated;
   },
 
@@ -356,10 +415,15 @@ export const teacherService = {
       },
       orderBy: { createdAt: "desc" },
     });
-    const latestAttempt = (assessment) => assessment?.exam?.attempts?.[0] || null;
+    const latestAttempt = (assessment) =>
+      assessment?.exam?.attempts?.[0] || null;
     return results.map((item) => ({
       id: item.id,
-      studentName: item.student?.name || item.student?.admissionNumber || item.student?.parentEmail || "",
+      studentName:
+        item.student?.name ||
+        item.student?.admissionNumber ||
+        item.student?.parentEmail ||
+        "",
       assessmentTitle: item.assessment?.title || "",
       assessmentId: item.assessmentId || "",
       assessmentDate: item.assessment?.date || null,
@@ -367,15 +431,20 @@ export const teacherService = {
       className: item.className,
       score: item.score,
       maxScore: item.maxScore,
-      percentage: Number.isFinite(Number(item.maxScore)) && Number(item.maxScore) > 0 ? Math.round((Number(item.score) / Number(item.maxScore)) * 100) : null,
+      percentage:
+        Number.isFinite(Number(item.maxScore)) && Number(item.maxScore) > 0
+          ? Math.round((Number(item.score) / Number(item.maxScore)) * 100)
+          : null,
       published: item.published,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
       examAttemptNumber: latestAttempt(item.assessment)?.attemptNumber || null,
       examStatus: latestAttempt(item.assessment)?.status || null,
       examCompletedAt: latestAttempt(item.assessment)?.completedAt || null,
-      examExternalResultId: latestAttempt(item.assessment)?.externalResultId || null,
-      examCompletionTimeSeconds: latestAttempt(item.assessment)?.completionTimeSeconds || null,
+      examExternalResultId:
+        latestAttempt(item.assessment)?.externalResultId || null,
+      examCompletionTimeSeconds:
+        latestAttempt(item.assessment)?.completionTimeSeconds || null,
     }));
   },
 
@@ -402,11 +471,21 @@ export const teacherService = {
       error.statusCode = 404;
       throw error;
     }
-    return prisma.result.update({ where: { id }, data: { ...payload, score: payload.score ? Number(payload.score) : undefined, maxScore: payload.maxScore ? Number(payload.maxScore) : undefined } });
+    return prisma.result.update({
+      where: { id },
+      data: {
+        ...payload,
+        score: payload.score ? Number(payload.score) : undefined,
+        maxScore: payload.maxScore ? Number(payload.maxScore) : undefined,
+      },
+    });
   },
 
   listAnnouncements: async (user) => {
-    const result = await announcementService.listForUser(user, { page: 1, limit: 20 });
+    const result = await announcementService.listForUser(user, {
+      page: 1,
+      limit: 20,
+    });
     return result.announcements;
   },
 
@@ -414,4 +493,3 @@ export const teacherService = {
     return announcementService.createAnnouncement(user, payload);
   },
 };
-

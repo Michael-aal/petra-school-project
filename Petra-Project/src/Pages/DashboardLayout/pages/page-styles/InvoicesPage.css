@@ -63,7 +63,7 @@
 .module-alert-error {
   border-color: rgba(239, 68, 68, 0.24);
   color: #b91c1c;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-danger);
 }
 
 .module-empty {
@@ -120,7 +120,7 @@
   border-radius: 24px;
   border: 1px solid var(--app-border);
   background: var(--app-surface);
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--app-text) 7%, transparent);
   padding: 20px;
 }
 

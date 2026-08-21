@@ -417,48 +417,43 @@ textarea:disabled {
 }
 
 body.light {
-  --app-bg: #f8fafc;
+  --app-bg: #f5f6f0;
   --app-surface: #ffffff;
-  --app-surface-strong: #f8fafc;
-  --app-text: #0f172a;
-  --app-text-muted: #475569;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --muted-foreground: #475569;
-  --input: rgba(148, 163, 184, 0.28);
+  --app-surface-strong: #f0f5ef;
+  --app-text: #172321;
+  --app-text-muted: #687673;
+  --background: #f5f6f0;
+  --foreground: #172321;
+  --muted-foreground: #687673;
+  --input: rgba(23, 35, 33, 0.18);
   --card: #ffffff;
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --app-border: rgba(15, 23, 42, 0.08);
-  --app-accent: #4f46e5;
-  --app-accent-2: #3b82f6;
+  --app-border: rgba(23, 35, 33, 0.12);
+  --app-accent: #f06b4e;
+  --app-accent-2: #5d8d78;
   --app-card: #ffffff;
   --app-panel: #ffffff;
-  --dashboard-sidebar-bg: linear-gradient(
-    145deg,
-    #f8fafc 0%,
-    #eef2ff 45%,
-    #f8fbff 100%
-  );
-  --dashboard-sidebar-text: #1f2937;
-  --dashboard-sidebar-muted: #6b7280;
-  --dashboard-topbar-bg: linear-gradient(90deg, #ffffff 0%, #f8faff 100%);
-  --dashboard-topbar-text: #1f2937;
-  --dashboard-topbar-muted: #64748b;
-  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-  --dashboard-card-text: #0f172a;
-  --dashboard-card-muted: #64748b;
-  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-  --dashboard-panel-text: #0f172a;
-  --dashboard-panel-muted: #64748b;
+  --dashboard-sidebar-bg: linear-gradient(160deg, #172321 0%, #20352e 100%);
+  --dashboard-sidebar-text: #f5f6f0;
+  --dashboard-sidebar-muted: #aabbb3;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.88);
+  --dashboard-topbar-text: #172321;
+  --dashboard-topbar-muted: #687673;
+  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-card-text: #172321;
+  --dashboard-card-muted: #687673;
+  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-panel-text: #172321;
+  --dashboard-panel-muted: #687673;
   --dashboard-page-bg: transparent;
   --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
-  --dashboard-accent-gradient: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%);
+  --dashboard-accent-gradient: linear-gradient(90deg, #f06b4e 0%, #5d8d78 100%);
   --dashboard-accent-gradient-strong: linear-gradient(
     90deg,
-    #4338ca 0%,
-    #2563eb 100%
+    #d9583d 0%,
+    #3f735d 100%
   );
 }
 
@@ -548,6 +543,62 @@ body.dark::after {
 
 body.dark #root {
   background: transparent;
+}
+
+/* Shared interaction and layout guardrails for the public and app surfaces. */
+::selection {
+  background: color-mix(in srgb, var(--app-accent) 28%, transparent);
+  color: var(--app-text);
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--app-accent) 45%, transparent);
+  outline-offset: 2px;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+table {
+  max-width: 100%;
+}
+
+button,
+.btn,
+.landing-button,
+.cta-btn {
+  min-height: 40px;
+}
+
+@media (max-width: 720px) {
+  .dashboard-content {
+    padding-bottom: 24px;
+  }
+
+  .data-table,
+  .payments-table,
+  .table-container table {
+    min-width: 640px;
+  }
+
+  .table-container,
+  .dashboard-page .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .dashboard-page {

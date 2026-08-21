@@ -42,8 +42,24 @@ export const messageService = {
         skip: (page - 1) * limit,
         take: limit,
         include: {
-          sender: { select: { id: true, fullName: true, email: true, role: true, profileImage: true } },
-          recipient: { select: { id: true, fullName: true, email: true, role: true, profileImage: true } },
+          sender: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+              role: true,
+              profileImage: true,
+            },
+          },
+          recipient: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+              role: true,
+              profileImage: true,
+            },
+          },
         },
       }),
     ]);
@@ -73,7 +89,9 @@ export const messageService = {
       throw err;
     }
 
-    const recipient = await prisma.user.findUnique({ where: { id: payload.recipientId } });
+    const recipient = await prisma.user.findUnique({
+      where: { id: payload.recipientId },
+    });
     if (!recipient || Number(recipient.schoolId) !== schoolId) {
       const err = new Error("Recipient not found in your school");
       err.statusCode = 404;
@@ -82,6 +100,7 @@ export const messageService = {
 
     const message = await prisma.message.create({
       data: {
+        schoolId,
         senderId: user.id,
         recipientId: recipient.id,
         subject: payload.subject ? String(payload.subject).trim() : "",
@@ -110,8 +129,24 @@ export const messageService = {
       },
       orderBy: { sentAt: "desc" },
       include: {
-        sender: { select: { id: true, fullName: true, email: true, role: true, profileImage: true } },
-        recipient: { select: { id: true, fullName: true, email: true, role: true, profileImage: true } },
+        sender: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+            role: true,
+            profileImage: true,
+          },
+        },
+        recipient: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+            role: true,
+            profileImage: true,
+          },
+        },
       },
     });
 

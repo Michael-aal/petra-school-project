@@ -1,0 +1,125 @@
+.company-page {
+  min-height: 70vh;
+  padding: 150px clamp(20px, 7vw, 96px) 96px;
+  background:
+    radial-gradient(
+      circle at 90% 8%,
+      rgba(204, 232, 212, 0.42),
+      transparent 26%
+    ),
+    var(--app-bg);
+  color: var(--app-text);
+}
+
+.company-page__inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.company-page__eyebrow,
+.company-page__label {
+  margin: 0;
+  color: var(--app-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.company-page__hero {
+  max-width: 760px;
+  margin-bottom: 64px;
+}
+
+.company-page h1 {
+  max-width: 780px;
+  margin: 18px 0;
+  font-size: clamp(3rem, 7vw, 6.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+}
+
+.company-page h1 em {
+  color: var(--app-accent);
+  font-style: normal;
+}
+
+.company-page__intro {
+  max-width: 620px;
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.company-page__grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 18px;
+}
+
+.company-page__panel {
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: var(--app-surface);
+  box-shadow: 0 22px 55px color-mix(in srgb, var(--app-text) 8%, transparent);
+}
+
+.company-page__panel h2 {
+  margin: 12px 0;
+  font-size: clamp(1.5rem, 3vw, 2.35rem);
+  letter-spacing: -0.05em;
+}
+
+.company-page__panel p:not(.company-page__label) {
+  margin: 0;
+  color: var(--app-text-muted);
+  line-height: 1.7;
+}
+
+.company-page__contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--dashboard-sidebar-bg);
+  color: var(--dashboard-sidebar-text);
+}
+
+.company-page__contact p:not(.company-page__label) {
+  color: var(--dashboard-sidebar-muted);
+}
+
+.company-page__contact .company-page__label {
+  color: #f6a087;
+}
+
+.company-page__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--app-accent);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.company-page__link:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 760px) {
+  .company-page {
+    padding: 120px 20px 64px;
+  }
+
+  .company-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

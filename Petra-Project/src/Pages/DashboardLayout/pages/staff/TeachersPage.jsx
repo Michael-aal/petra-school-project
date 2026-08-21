@@ -1,27 +1,63 @@
 import { useEffect, useState } from "react";
 import { Search, RefreshCcw, Users } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
+import { academicApi } from "../../../../services/academicApi";
 import "../page-styles/TeachersPage.css";
 
 const getTeacherName = (teacher) =>
-  teacher.fullName || [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") || teacher.email || "Teacher";
+  teacher.fullName ||
+  [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") ||
+  teacher.email ||
+  "Teacher";
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [classes, setClasses] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [assignment, setAssignment] = useState({});
+  const [assignmentMessage, setAssignmentMessage] = useState("");
 
   const load = async () => {
     setLoading(true);
     setError("");
     try {
-      const response = await adminApi.teachers({ search, limit: 20 });
-      setTeachers(response.data?.users || []);
+      const [teacherResponse, classResponse, subjectResponse] =
+        await Promise.all([
+          adminApi.teachers({ search, limit: 20 }),
+          academicApi.classes(),
+          academicApi.subjects(),
+        ]);
+      setTeachers(teacherResponse.data?.users || []);
+      setClasses(classResponse.classes || []);
+      setSubjects(subjectResponse.subjects || []);
     } catch (err) {
       setError(err.message || "Unable to load teachers");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const assign = async (teacherId, type) => {
+    const value = assignment[`${teacherId}-${type}`];
+    if (!value) return;
+    setAssignmentMessage("");
+    try {
+      if (type === "class")
+        await adminApi.assignTeacherClass({ teacherId, classId: value });
+      if (type === "subject")
+        await adminApi.assignTeacherSubject({ teacherId, subjectId: value });
+      setAssignment((current) => ({
+        ...current,
+        [`${teacherId}-${type}`]: "",
+      }));
+      setAssignmentMessage(
+        "Assignment saved. The staff workspace will use it on the next refresh.",
+      );
+    } catch (err) {
+      setError(err.message || "Unable to save assignment.");
     }
   };
 
@@ -34,7 +70,10 @@ export default function TeachersPage() {
       <section className="dashboard-home-header">
         <div>
           <h1>Teachers</h1>
-          <p>Manage teaching staff, subject assignments, and profile details from one polished dashboard.</p>
+          <p>
+            Manage teaching staff, subject assignments, and profile details from
+            one polished dashboard.
+          </p>
         </div>
         <div className="dashboard-home-session-pill">People operations</div>
       </section>
@@ -74,13 +113,20 @@ export default function TeachersPage() {
               placeholder="Search teachers..."
             />
           </div>
-          <button className="dashboard-home-summary-action tone-blue" type="button" onClick={load}>
+          <button
+            className="dashboard-home-summary-action tone-blue"
+            type="button"
+            onClick={load}
+          >
             <RefreshCcw size={14} />
             <span>Reload</span>
           </button>
         </div>
 
         {error ? <div className="students-inline-alert">{error}</div> : null}
+        {assignmentMessage ? (
+          <div className="students-inline-alert">{assignmentMessage}</div>
+        ) : null}
 
         {loading ? (
           <div className="module-empty">Loading teachers...</div>
@@ -92,7 +138,57 @@ export default function TeachersPage() {
                   <strong>{getTeacherName(teacher)}</strong>
                   <p>{teacher.staffDepartment || teacher.email}</p>
                 </div>
-                <span className="dashboard-home-session-pill">{teacher.role}</span>
+                <span className="dashboard-home-session-pill">
+                  {teacher.role}
+                </span>
+                <div className="teacher-assignment-controls">
+                  <select
+                    value={assignment[`${teacher.id}-class`] || ""}
+                    onChange={(event) =>
+                      setAssignment((current) => ({
+                        ...current,
+                        [`${teacher.id}-class`]: event.target.value,
+                      }))
+                    }
+                    aria-label={`Assign class to ${getTeacherName(teacher)}`}
+                  >
+                    <option value="">Assign class</option>
+                    {classes.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => assign(teacher.id, "class")}
+                  >
+                    Save
+                  </button>
+                  <select
+                    value={assignment[`${teacher.id}-subject`] || ""}
+                    onChange={(event) =>
+                      setAssignment((current) => ({
+                        ...current,
+                        [`${teacher.id}-subject`]: event.target.value,
+                      }))
+                    }
+                    aria-label={`Assign subject to ${getTeacherName(teacher)}`}
+                  >
+                    <option value="">Assign subject</option>
+                    {subjects.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => assign(teacher.id, "subject")}
+                  >
+                    Save
+                  </button>
+                </div>
               </article>
             ))}
           </div>

@@ -2,8 +2,8 @@
    1. PAGE LAYOUT & HEADER
    ========================================= */
 .admission-page {
-  background-color: oklch(0.12 0.02 260);
-  color: oklch(0.93 0.01 240);
+  background-color: var(--app-bg);
+  color: var(--app-text);
   padding: 32px 16px;
   min-height: 100vh;
   display: flex;
@@ -24,13 +24,13 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 8px 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
 }
 
 .admission-header p {
   font-size: 0.95rem;
   margin: 0;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted);
 }
 
 /* =========================================
@@ -101,16 +101,21 @@
 }
 
 @media (max-width: 600px) {
-  .step-title { display: none; }
-  .step-line { width: 24px; margin: 0 8px; }
+  .step-title {
+    display: none;
+  }
+  .step-line {
+    width: 24px;
+    margin: 0 8px;
+  }
 }
 
 /* =========================================
    3. FORM CARD & GRID
    ========================================= */
 .form-card {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border);
   border-radius: 16px;
   padding: 32px;
   margin-bottom: 24px;
@@ -118,17 +123,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 24px 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text);
   padding-bottom: 16px;
-  border-bottom: 1px solid oklch(1 0 0 / 10%);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .form-grid {
@@ -150,7 +161,7 @@
 .form-group label {
   font-size: 0.85rem;
   font-weight: 500;
-  color: oklch(0.85 0.02 250);
+  color: var(--app-text);
 }
 
 .form-group small {
@@ -159,19 +170,21 @@
   margin-top: -4px;
 }
 
-.form-input, 
+.form-input,
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background-color: oklch(1 0 0 / 8%);
-  border: 1px solid oklch(1 0 0 / 12%);
-  color: oklch(0.93 0.01 240);
+  background-color: var(--app-surface-strong);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
   padding: 12px 14px;
   border-radius: 8px;
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   width: 100%;
   box-sizing: border-box;
 }
@@ -216,9 +229,9 @@
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-  background-color: oklch(0.22 0.03 260);
+  background-color: var(--app-surface-strong);
   border-radius: 12px;
-  border: 1px solid oklch(1 0 0 / 8%);
+  border: 1px solid var(--app-border);
 }
 
 .parent-title {
@@ -291,7 +304,8 @@
   margin-top: 8px;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;

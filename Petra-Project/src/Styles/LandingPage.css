@@ -765,6 +765,101 @@
     font-size: 3rem;
   }
 }
+
+/* Theme-aware landing surfaces and a quieter small-screen rhythm. */
+.landing-page {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
+body.dark .landing-page {
+  --paper: var(--app-bg);
+  --ink: var(--app-text);
+  --muted: var(--app-text-muted);
+  --line: var(--app-border);
+  background-image:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(120, 173, 145, 0.12),
+      transparent 25%
+    ),
+    linear-gradient(180deg, #101614 0%, #14201a 100%);
+}
+
+body.dark .landing-preview,
+body.dark .landing-testimonial,
+body.dark .security-card,
+body.dark .landing-persona-paper {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+}
+
+body.dark .preview-sidebar,
+body.dark .preview-heading > span {
+  background: var(--app-surface-strong);
+  border-color: var(--app-border);
+}
+
+body.dark .preview-stats > div,
+body.dark .preview-chart,
+body.dark .preview-feed {
+  border-color: var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 70%, transparent);
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    min-height: auto;
+    padding-top: 130px;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .landing-hero-art {
+    min-height: 390px;
+  }
+
+  .art-orbit-one {
+    width: 90vw;
+    max-width: 620px;
+  }
+
+  .art-orbit-two {
+    width: 74vw;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 520px) {
+  .landing-hero {
+    padding: 112px 20px 70px;
+  }
+
+  .landing-hero h1 {
+    font-size: clamp(3rem, 15vw, 4.3rem);
+  }
+
+  .landing-hero-text {
+    font-size: 15px;
+  }
+
+  .landing-proof {
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  .landing-hero-art {
+    min-height: 300px;
+  }
+
+  .landing-preview {
+    transform: rotate(-1deg) scale(0.98);
+  }
+
+  .art-note {
+    display: none;
+  }
+}
 @media (max-width: 420px) {
   .landing-hero h1 {
     font-size: 2.9rem;

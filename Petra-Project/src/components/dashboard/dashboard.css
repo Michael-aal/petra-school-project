@@ -11,6 +11,15 @@
   box-shadow: 0 16px 36px rgba(23, 35, 33, 0.07);
 }
 
+/* Keep shared dashboard surfaces readable in both theme modes. */
+.dashboard-shell-header,
+.dashboard-home-header,
+.dashboard-page-header,
+.dashboard-page > header {
+  background: var(--dashboard-panel-bg);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--app-text) 8%, transparent);
+}
+
 /* Shared page frame used by the admin, parent, staff, and overview routes. */
 .dashboard-home,
 .dashboard-page {
@@ -19,6 +28,11 @@
   padding: 22px;
   background: linear-gradient(180deg, #f7f4ef 0%, #edf4ee 100%);
   color: var(--app-text);
+}
+
+.dashboard-home,
+.dashboard-page {
+  background: var(--dashboard-page-bg);
 }
 
 .dashboard-home-header,
@@ -74,8 +88,8 @@
 .dashboard-home-panel {
   border: 1px solid var(--app-border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 12px 28px rgba(23, 35, 33, 0.06);
+  background: var(--dashboard-card-bg);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--app-text) 7%, transparent);
 }
 
 .dashboard-home-summary-card {

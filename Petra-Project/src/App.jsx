@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "./Pages/components/Footer";
 import ForSchool from "./Pages/Forschool";
 import ForStudents from "./Pages/Forstusents";
@@ -126,8 +126,41 @@ function PublicLayout() {
 
 function DashboardLay() {
   const { userInfo, authReady } = useContext(UserContext);
-  const [collapsed, setCollapsed] = useState(false);
+  const sidebarStorageKey = `petra-dashboard-sidebar-${userInfo?.id || "guest"}`;
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return (
+        window.localStorage.getItem(
+          `petra-dashboard-sidebar-${userInfo?.id || "guest"}`,
+        ) === "collapsed"
+      );
+    } catch {
+      return false;
+    }
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!userInfo?.id) return;
+    try {
+      setCollapsed(
+        window.localStorage.getItem(sidebarStorageKey) === "collapsed",
+      );
+    } catch {
+      // Preferences are optional; the dashboard remains usable when storage is unavailable.
+    }
+  }, [sidebarStorageKey, userInfo?.id]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        sidebarStorageKey,
+        collapsed ? "collapsed" : "expanded",
+      );
+    } catch {
+      // Preferences are optional; the dashboard remains usable when storage is unavailable.
+    }
+  }, [collapsed, sidebarStorageKey]);
 
   const toggle = () => {
     if (window.innerWidth <= 900) {
@@ -150,7 +183,11 @@ function DashboardLay() {
   return (
     <div className="dashboard-shell">
       <div className={`dashboard-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
-        <SidebarNav collapsed={collapsed} onNavigate={closeSidebar} />
+        <SidebarNav
+          collapsed={collapsed}
+          onNavigate={closeSidebar}
+          onClose={closeSidebar}
+        />
       </div>
       {mobileOpen && (
         <button

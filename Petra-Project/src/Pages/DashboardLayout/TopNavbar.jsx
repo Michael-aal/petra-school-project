@@ -1,9 +1,20 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, ChevronDown, LogOut, Menu, Settings, User as UserIcon } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  LogOut,
+  Menu,
+  Settings,
+  User as UserIcon,
+} from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
-import { getDisplayName, getFirstName, normalizeUser } from "../../utils/userProfile";
+import {
+  getDisplayName,
+  getFirstName,
+  normalizeUser,
+} from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
 import { useToasts } from "../../context/ToastContext";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
@@ -18,7 +29,7 @@ export default function TopNavbar({ onToggle }) {
   const navigate = useNavigate();
 
   const handleMenuClick = () => {
-    if (onToggle) onToggle();
+    onToggle?.();
   };
 
   useEffect(() => {
@@ -57,12 +68,18 @@ export default function TopNavbar({ onToggle }) {
     }
   };
 
-  const unreadCount = Number(userInfo?.unreadNotifications || userInfo?.notificationCount || 0);
+  const unreadCount = Number(
+    userInfo?.unreadNotifications || userInfo?.notificationCount || 0,
+  );
 
   return (
     <header className="top-navbar">
       <div className="top-left">
-        <button className="menu-btn" onClick={handleMenuClick} aria-label="Toggle menu">
+        <button
+          className="menu-btn"
+          onClick={handleMenuClick}
+          aria-label="Toggle menu"
+        >
           <Menu size={20} />
         </button>
         <div className="top-welcome">Welcome, {getFirstName(userInfo)}</div>
@@ -78,7 +95,11 @@ export default function TopNavbar({ onToggle }) {
             aria-haspopup="menu"
           >
             <Bell size={20} />
-            {unreadCount > 0 ? <span className="nav-badge">{unreadCount > 9 ? "9+" : unreadCount}</span> : null}
+            {unreadCount > 0 ? (
+              <span className="nav-badge">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            ) : null}
           </button>
 
           {showNotifications ? (
@@ -102,7 +123,10 @@ export default function TopNavbar({ onToggle }) {
                 className="notification-action"
                 onClick={() => {
                   setShowNotifications(false);
-                  info("Notifications", "Live notifications will appear here as they arrive.");
+                  info(
+                    "Notifications",
+                    "Live notifications will appear here as they arrive.",
+                  );
                 }}
               >
                 See all Notifications
@@ -119,7 +143,12 @@ export default function TopNavbar({ onToggle }) {
             aria-expanded={showMenu}
             aria-haspopup="menu"
           >
-            <UserAvatar user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} />
+            <UserAvatar
+              user={userInfo}
+              size={36}
+              className="avatar"
+              alt={getDisplayName(userInfo)}
+            />
             <div className="user-meta">
               <div className="user-name">
                 <span className="greets">Hi,</span> {getDisplayName(userInfo)}
@@ -150,10 +179,16 @@ export default function TopNavbar({ onToggle }) {
                 </div>
               </div>
               <div className="account-dropdown-actions">
-                <button type="button" onClick={() => navigate("/dashboard/setup/profile")}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/setup/profile")}
+                >
                   <UserIcon size={16} /> Profile
                 </button>
-                <button type="button" onClick={() => navigate("/dashboard/settings")}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/settings")}
+                >
                   <Settings size={16} /> Settings
                 </button>
                 <button type="button" onClick={handleLogout}>

@@ -1,3 +1,36 @@
+/* Admin assignment controls feed the relational teacher workspace. */
+.teacher-assignment-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.teacher-assignment-controls select,
+.teacher-assignment-controls button {
+  min-height: 34px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: var(--app-surface-strong);
+  color: var(--app-text);
+  padding: 0 8px;
+  font-size: 0.76rem;
+}
+
+.teacher-assignment-controls button {
+  background: var(--surface-accent);
+  color: var(--app-accent);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .teacher-assignment-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
 .teachers-page {
   padding: 20px 18px 24px;
 }
