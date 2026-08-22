@@ -25,8 +25,8 @@
 .dashboard-page {
   width: 100%;
   min-height: 100%;
-  padding: 22px;
-  background: linear-gradient(180deg, #f7f4ef 0%, #edf4ee 100%);
+  padding: clamp(16px, 2.2vw, 22px);
+  background: var(--dashboard-page-bg);
   color: var(--app-text);
 }
 
@@ -114,9 +114,9 @@
 
 .dashboard-home-session-pill,
 .dashboard-home-summary-action {
-  border-color: rgba(240, 107, 78, 0.18);
-  background: rgba(240, 107, 78, 0.1);
-  color: #c9543e;
+  border-color: color-mix(in srgb, var(--app-accent) 22%, transparent);
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .dashboard-home-stats-grid {
@@ -518,14 +518,14 @@
 
 body.dark .dashboard-home,
 body.dark .dashboard-page {
-  background: linear-gradient(180deg, #101614 0%, #15211b 100%);
+  background: var(--dashboard-page-bg);
 }
 
 body.dark .dashboard-home-header,
 body.dark .dashboard-page-header,
 body.dark .dashboard-page > header {
-  background: linear-gradient(135deg, #1b2722 0%, #22332b 100%);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+  background: var(--dashboard-panel-bg);
+  box-shadow: 0 16px 34px color-mix(in srgb, #000 20%, transparent);
 }
 
 body.dark .dashboard-home-summary-card,
@@ -533,13 +533,13 @@ body.dark .dashboard-home-panel,
 body.dark .dashboard-shell-header,
 body.dark .dashboard-widget,
 body.dark .dashboard-stat-card {
-  background: #1b2722;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  background: var(--dashboard-card-bg);
+  box-shadow: 0 12px 28px color-mix(in srgb, #000 20%, transparent);
 }
 
 body.dark .dashboard-home-session-pill,
 body.dark .dashboard-home-summary-action {
-  color: #ffad98;
-  background: rgba(240, 107, 78, 0.16);
-  border-color: rgba(240, 107, 78, 0.24);
+  color: var(--app-accent);
+  background: var(--surface-accent);
+  border-color: color-mix(in srgb, var(--app-accent) 24%, transparent);
 }

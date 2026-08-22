@@ -262,10 +262,10 @@
 body.dark .parent-hero-card,
 body.dark .parent-summary-card,
 body.dark .parent-list-item {
-  background: #1b2722;
-  border-color: rgba(245, 246, 240, 0.12);
+  background: var(--app-card);
+  border-color: var(--app-border);
 }
 
 body.dark .parent-hero-card {
-  background: linear-gradient(135deg, #1b2722 0%, #22332b 100%);
+  background: var(--dashboard-card-bg);
 }

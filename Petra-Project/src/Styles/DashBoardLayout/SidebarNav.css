@@ -1,4 +1,4 @@
-.coll {
+.sidebar-container {
   --background: var(--app-bg);
   --foreground: var(--app-text);
   --card: var(--app-card);
@@ -6,16 +6,16 @@
   --popover: var(--app-surface);
   --popover-foreground: var(--app-text);
   --primary: var(--app-accent);
-  --primary-foreground: var(--primary-foreground);
-  --secondary: var(--secondary);
-  --secondary-foreground: var(--secondary-foreground);
-  --muted: var(--muted);
-  --muted-foreground: var(--muted-foreground);
+  --primary-foreground: #ffffff;
+  --secondary: var(--app-surface-strong);
+  --secondary-foreground: var(--app-text);
+  --muted: var(--dashboard-muted-surface);
+  --muted-foreground: var(--dashboard-sidebar-muted);
   --accent: var(--app-accent-2);
   --accent-foreground: var(--app-text);
   --destructive: #ef4444;
   --border: var(--app-border);
-  --input: var(--input);
+  --input: var(--app-border);
   --ring: var(--app-accent);
   --chart-1: var(--app-accent);
   --chart-2: var(--app-accent-2);
@@ -40,7 +40,7 @@
   background: var(--dashboard-sidebar-bg);
   color: var(--dashboard-sidebar-text);
   border-right: 1px solid var(--app-border);
-  box-shadow: 14px 0 40px rgba(23, 35, 33, 0.16);
+  box-shadow: 14px 0 40px color-mix(in srgb, #000 16%, transparent);
   height: 100vh;
   min-height: 100dvh;
   max-width: fit-content;
@@ -77,7 +77,7 @@
   height: 44px;
   border-radius: 8px;
   background: var(--dashboard-accent-gradient);
-  box-shadow: 0 10px 22px rgba(240, 107, 78, 0.22);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--app-accent) 22%, transparent);
 }
 
 .sidebar-logo {
@@ -108,7 +108,7 @@
   align-items: center;
   gap: var(--space-2);
   padding-top: var(--space-3);
-  border-top: 1px solid rgba(245, 246, 240, 0.14);
+  border-top: 1px solid color-mix(in srgb, var(--dashboard-sidebar-text) 14%, transparent);
 }
 
 .sidebar-avatar {
@@ -164,7 +164,7 @@
 
 .sidebar-link:hover,
 .sidebar-group:hover {
-  background: rgba(245, 246, 240, 0.1);
+  background: color-mix(in srgb, var(--dashboard-sidebar-text) 10%, transparent);
   color: var(--dashboard-sidebar-text);
 }
 
@@ -172,7 +172,7 @@
 .sidebar-child.active {
   background: var(--dashboard-accent-gradient);
   color: var(--primary-foreground);
-  box-shadow: 0 10px 20px rgba(240, 107, 78, 0.18);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--app-accent) 18%, transparent);
 }
 
 .sidebar-children {
@@ -182,7 +182,7 @@
   flex-direction: column;
   gap: var(--space-2);
   padding-left: var(--space-3);
-  border-left: 1px solid rgba(245, 246, 240, 0.16);
+  border-left: 1px solid color-mix(in srgb, var(--dashboard-sidebar-text) 16%, transparent);
 }
 
 .arrow-icon {
@@ -203,7 +203,7 @@
 }
 
 .sidebar-child:hover {
-  background: rgba(245, 246, 240, 0.08);
+  background: color-mix(in srgb, var(--dashboard-sidebar-text) 8%, transparent);
   color: var(--dashboard-sidebar-text);
 }
 
@@ -308,16 +308,16 @@ body.dark .sidebar-child:hover {
   }
 
   .sidebar-container {
-    width: 280px;
-    min-width: 280px;
+    width: min(280px, 88vw);
+    min-width: min(280px, 88vw);
     height: 100vh;
     min-height: 100dvh;
     max-width: fit-content;
   }
 
   .sidebar-container.collapsed {
-    width: 280px;
-    min-width: 280px;
+    width: min(280px, 88vw);
+    min-width: min(280px, 88vw);
   }
 }
 
@@ -356,7 +356,7 @@ body.dark .sidebar-child:hover {
 
 .sidebar-header {
   padding: 4px 6px 14px;
-  border-bottom: 1px solid rgba(245, 246, 240, 0.12);
+  border-bottom: 1px solid color-mix(in srgb, var(--dashboard-sidebar-text) 12%, transparent);
 }
 
 .sidebar-contaner-logo {
