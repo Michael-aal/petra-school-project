@@ -36,63 +36,32 @@ export default function AuthShell({ children, eyebrow, title, subtitle, footnote
   return (
     <main className="auth-page">
       <section className={`auth-shell ${variant ? `auth-shell--${variant}` : ""}`}>
-        <div className={`auth-card ${variant ? `auth-card--${variant}` : ""}`}>
-          {children}
-          {footnote ? <p className="auth-footnote">{footnote}</p> : null}
-        </div>
-
-        <div className="auth-visual">
-          <button
-            type="button"
-            className="auth-theme-btn"
-            onClick={() => setDarkMode((prev) => !prev)}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
+        <header className="auth-brand-header">
           <div className="auth-brand-row">
             <div className="auth-brand-mark">
-              <NuvoraLogo size={22} />
+              <NuvoraLogo size={20} />
             </div>
             <div>
               <p className="auth-brand">Nuvora</p>
               <p className="auth-brand-sub">The school operating system</p>
             </div>
           </div>
+          <button
+            type="button"
+            className="auth-theme-btn"
+            onClick={() => setDarkMode((prev) => !prev)}
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+        </header>
 
-          <div className="auth-copy">
-            <span className="auth-eyebrow">{eyebrow}</span>
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
-          </div>
-
-          <div className="auth-points">
-            <div className="auth-point">
-              <span className="auth-point-dot" />
-              <div>
-                <strong>Modern experience</strong>
-                <p>Clean, responsive sign in and registration screens.</p>
-              </div>
-            </div>
-            <div className="auth-point">
-              <span className="auth-point-dot" />
-              <div>
-                <strong>Secure sessions</strong>
-                <p>JWT is handled with an httpOnly cookie and protected routes.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Decorative status card — echoes the landing page dashboard mockup */}
-          <div className="auth-status-card">
-            <CheckCircle2 size={20} className="auth-status-icon" />
-            <div>
-              <strong>All systems synced</strong>
-              <span>Attendance, fees, and admissions in one view</span>
-            </div>
-          </div>
+        <div className={`auth-card ${variant ? `auth-card--${variant}` : ""}`}>
+          {children}
         </div>
+
+        {footnote ? <p className="auth-footnote">{footnote}</p> : null}
+        <p className="auth-copyright">Nuvora <span aria-hidden="true">·</span> School operating system</p>
       </section>
     </main>
   );

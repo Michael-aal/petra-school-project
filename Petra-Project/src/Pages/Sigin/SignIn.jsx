@@ -227,10 +227,7 @@ export default function SignIn() {
     return (
       <AuthShell>
         <div className="auth-loading">
-          <LoaderCircle
-            className="auth-spin"
-            size={24}
-          />
+          <LoaderCircle className="auth-spin" size={24} />
         </div>
       </AuthShell>
     );
@@ -239,26 +236,15 @@ export default function SignIn() {
   return (
     <AuthShell
       eyebrow="Welcome back"
-      title="Access your school workspace"
-      subtitle="Sign in to review operations, learning, finance, and every update across your school in one calm view."
+      title="Sign in"
+      subtitle="Enter your credentials to access your school workspace."
       variant="signin"
       footnote=""
     >
-      <form
-        className="auth-form"
-        onSubmit={handleSubmit}
-      >
+      <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header auth-signin-heading">
-          <div className="auth-form-heading-top">
-            <div>
-              <span className="auth-form-kicker">SECURE ACCESS</span>
-              <h2>Sign In</h2>
-            </div>
-            <span className="auth-secure-chip" aria-label="Secure sign in">
-              <ShieldCheck size={15} />
-              Protected
-            </span>
-          </div>
+          <span className="auth-form-kicker">WELCOME BACK</span>
+          <h2>Sign in</h2>
           <p>Enter your credentials to access your school workspace.</p>
         </div>
 
@@ -344,14 +330,14 @@ export default function SignIn() {
               onChange={handleChange}
             />
 
-            <span>Remember Me</span>
+            <span>Remember me</span>
           </label>
 
           <Link
             to="#"
             className="auth-link"
           >
-            Forgot Password?
+            Forgot password?
           </Link>
         </div>
 
@@ -380,7 +366,7 @@ export default function SignIn() {
           </p>
           <p className="auth-security-note">
             <ShieldCheck size={14} />
-            Your session is protected by secure authentication controls.
+            Your session is protected.
           </p>
         </div>
       </form>
