@@ -12,8 +12,8 @@ export default function QuickActions({ title, items }) {
       <div className="dashboard-quick-actions-grid">
         {items.map((item) => {
           const Icon = item.icon;
-          return (
-            <button key={item.label} className="dashboard-quick-action" type="button">
+          const content = (
+            <>
               <div className="dashboard-quick-action-icon">
                 <Icon size={16} />
               </div>
@@ -22,6 +22,16 @@ export default function QuickActions({ title, items }) {
                 <span>{item.meta}</span>
               </div>
               <ArrowRight size={14} />
+            </>
+          );
+
+          return item.href ? (
+            <a key={item.label} className="dashboard-quick-action" href={item.href}>
+              {content}
+            </a>
+          ) : (
+            <button key={item.label} className="dashboard-quick-action" type="button" onClick={item.onClick}>
+              {content}
             </button>
           );
         })}

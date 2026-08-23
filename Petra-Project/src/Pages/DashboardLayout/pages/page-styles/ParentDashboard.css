@@ -1,8 +1,7 @@
 .parent-dashboard {
   display: grid;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
-  padding: 6px;
 }
 
 .parent-hero {
@@ -84,7 +83,7 @@
 .parent-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .parent-summary-card {
@@ -122,7 +121,7 @@
 .parent-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
   align-items: start;
 }
 
@@ -157,7 +156,7 @@
 
 .parent-list-item {
   border: 1px solid var(--app-border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: color-mix(in srgb, var(--app-surface) 86%, var(--background));
   padding: 12px 13px;
   display: flex;
@@ -196,8 +195,8 @@
   gap: 8px;
   place-items: center;
   border: 1px dashed var(--app-border);
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: 10px;
+  padding: 20px;
   text-align: center;
   color: var(--app-text-muted);
 }
@@ -220,6 +219,22 @@
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.parent-dashboard .dashboard-shell-header-actions {
+  align-self: flex-start;
+}
+
+.parent-dashboard .dashboard-widget {
+  min-width: 0;
+}
+
+.parent-dashboard .dashboard-quick-action {
+  text-decoration: none;
+}
+
+.parent-dashboard .dashboard-empty-state {
+  min-height: 156px;
 }
 
 @media (max-width: 1000px) {
@@ -249,13 +264,13 @@
     gap: 14px;
   }
 
-  .parent-dashboard {
-    padding: 0;
-  }
-
   .parent-list-item {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .parent-dashboard .dashboard-shell-header-actions {
+    width: 100%;
   }
 }
 

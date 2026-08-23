@@ -305,16 +305,16 @@
 }
 
 .top-navbar {
-  min-height: 64px;
-  padding: 10px clamp(14px, 2vw, 28px);
+  min-height: 58px;
+  padding: 8px clamp(16px, 2.4vw, 32px);
   background: color-mix(in srgb, var(--dashboard-topbar-bg) 92%, transparent);
-  backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(120%);
 }
 
 .menu-btn,
 .icon-btn {
-  min-width: 40px;
-  min-height: 40px;
+  min-width: 38px;
+  min-height: 38px;
   border: 1px solid transparent;
 }
 

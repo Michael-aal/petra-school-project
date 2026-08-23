@@ -44,9 +44,9 @@
   height: 100vh;
   min-height: 100dvh;
   max-width: fit-content;
-  width: 260px;
-  min-width: 260px;
-  padding: 16px 12px;
+  width: 232px;
+  min-width: 232px;
+  padding: 14px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -103,6 +103,12 @@
   color: var(--dashboard-sidebar-muted);
 }
 
+@media (min-width: 901px) {
+  .sidebar-close {
+    display: none;
+  }
+}
+
 .sidebar-footer {
   display: flex;
   align-items: center;
@@ -136,7 +142,7 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 4px;
   padding: var(--space-2) var(--space-1);
   background: transparent;
 }
@@ -147,8 +153,8 @@
   align-items: center;
   gap: var(--space-3);
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
@@ -172,7 +178,7 @@
 .sidebar-child.active {
   background: var(--dashboard-accent-gradient);
   color: var(--primary-foreground);
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--app-accent) 18%, transparent);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--app-accent) 16%, transparent);
 }
 
 .sidebar-children {
@@ -327,9 +333,9 @@ body.dark .sidebar-child:hover {
     color: var(--dashboard-sidebar-text);
     min-height: 100vh;
     max-width: fit-content;
-    width: 260px;
-    min-width: 260px;
-    padding: 12px;
+    width: 232px;
+    min-width: 232px;
+    padding: 12px 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -350,8 +356,8 @@ body.dark .sidebar-child:hover {
 
 /* Shared dashboard shell refinements. */
 .sidebar-container {
-  padding: 14px 10px;
-  box-shadow: 14px 0 40px color-mix(in srgb, var(--app-text) 14%, transparent);
+  padding: 12px 10px;
+  box-shadow: 8px 0 24px color-mix(in srgb, var(--app-text) 9%, transparent);
 }
 
 .sidebar-header {

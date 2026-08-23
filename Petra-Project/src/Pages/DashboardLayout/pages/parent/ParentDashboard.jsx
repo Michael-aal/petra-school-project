@@ -102,17 +102,20 @@ export default function ParentDashboard() {
               label: "View Child",
               meta: "Open profile details",
               icon: GraduationCap,
+              href: "/portal/children",
             },
-            { label: "Pay Fees", meta: "Review pending fees", icon: BookOpen },
+            { label: "Pay Fees", meta: "Review pending fees", icon: BookOpen, href: "/portal/fees" },
             {
               label: "Check Attendance",
               meta: "See the latest attendance",
               icon: ClipboardCheck,
+              href: "/portal/attendance",
             },
             {
               label: "View Results",
               meta: "Inspect recent scores",
               icon: FileText,
+              href: "/portal/results",
             },
           ]}
         />
@@ -144,6 +147,8 @@ export default function ParentDashboard() {
               title="No children linked yet"
               description="Link a student account to start viewing updates, attendance, and assignments here."
               icon={GraduationCap}
+              actionLabel="Link a child"
+              actionHref="/dashboard/students/parent-links"
             />
           )}
         </DashboardWidget>
