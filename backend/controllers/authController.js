@@ -132,7 +132,7 @@ export const linkChild = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
-    const result = await authService.linkStudentToParent({ userId: req.user.id, accessCode: req.body.accessCode });
+    const result = await authService.linkStudentToParent({ userId: req.user.id, accessCode: req.body.accessCode, schoolId: req.schoolId });
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     next(error);

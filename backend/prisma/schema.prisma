@@ -25,6 +25,7 @@ model User {
   staffClassAssigned        String?
   staffSubjectsAssigned     String[]          @default([])
   schoolId                  Int?
+  selectedSchoolId          Int?
   staffPosition             String?
   profileImage              String?
   accountStatus             String            @default("active")
@@ -56,6 +57,7 @@ model User {
   teacherProfile            Teacher?
   transactions              Transaction[]
   roleRef                   Role?             @relation(fields: [roleId], references: [id])
+  selectedSchool             School?           @relation("UserSelectedSchool", fields: [selectedSchoolId], references: [id])
   vicePrincipalProfile      VicePrincipal?
   wallet                    Wallet?
   expensesCreated           Expense[]
@@ -273,6 +275,7 @@ model School {
   studentAttendances      StudentAttendance[]
   studentFees             StudentFee[]
   studentProfiles         StudentProfile[]
+  selectedByUsers         User[]                   @relation("UserSelectedSchool")
   studentTransports       StudentTransport[]
   subjects                Subject[]
   teachers                Teacher[]

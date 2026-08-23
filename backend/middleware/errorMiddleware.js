@@ -18,10 +18,11 @@ export const errorHandler = (err, req, res, next) => {
     stack: isProduction ? undefined : err.stack,
   });
 
+  const safeMessage = isProduction && statusCode >= 500 ? "Internal server error" : (err.message || "Server error");
   res.status(statusCode).json({
     success: false,
-    message: err.message || "Server error",
-    errors: err.details ? [err.details] : [],
+    message: safeMessage,
+    errors: isProduction ? [] : (err.details ? [err.details] : []),
     ...(isProduction ? {} : { stack: err.stack }),
   });
 };

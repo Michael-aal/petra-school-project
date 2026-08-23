@@ -69,20 +69,8 @@ const registerSchema = z
   });
 
 const validateWithZod = (schema) => (req, res, next) => {
-  // Debug: log incoming request body to help identify missing/undefined fields
-  // (temporary - remove after fixing the validation issue)
-  try {
-    console.log("[ZOD VALIDATION] incoming request body:", JSON.stringify(req.body));
-  } catch (err) {
-    console.log("[ZOD VALIDATION] incoming request body (unserializable):", req.body);
-  }
-
   const result = schema.safeParse(req.body);
   if (!result.success) {
-    // Log detailed zod error to help identify which field failed validation
-    const formatted = result.error.format ? result.error.format() : result.error;
-    console.error("[ZOD VALIDATION] errors:", formatted);
-
     const issues = result.error.issues.map((issue) => ({
       path: issue.path.join(".") || "body",
       msg: issue.message,
@@ -96,8 +84,6 @@ const validateWithZod = (schema) => (req, res, next) => {
       success: false,
       message: topMessage,
       errors: issues,
-      // include a debug object during development to aid diagnosis (remove in production)
-      debug: process.env.NODE_ENV === "development" ? { zod: formatted } : undefined,
     });
   }
 

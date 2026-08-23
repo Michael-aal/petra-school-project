@@ -44,6 +44,17 @@ body.dark .auth-page {
   align-items: stretch;
 }
 
+.auth-page:has(.auth-shell--signin) {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.auth-shell--signin {
+  height: 100%;
+  justify-content: center;
+}
+
 .auth-brand-header {
   display: flex;
   align-items: center;

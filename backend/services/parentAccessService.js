@@ -37,23 +37,24 @@ const toSummary = (student) => {
   };
 };
 
-const buildAuthorizedStudentWhere = (userId, studentId) => ({
+const buildAuthorizedStudentWhere = (userId, studentId, schoolId) => ({
   id: studentId,
+  ...(schoolId ? { schoolId } : {}),
   OR: [
     { parentId: userId },
-    { parents: { some: { parent: { userId } } } },
-    { guardians: { some: { guardian: { userId } } } },
+    { parents: { some: { parent: { userId, ...(schoolId ? { schoolId } : {}) } } } },
+    { guardians: { some: { guardian: { userId, ...(schoolId ? { schoolId } : {}) } } } },
   ],
 });
 
 export const parentAccessService = {
-  listChildren: async (userId) => {
+  listChildren: async (userId, schoolId = null) => {
     const normalizedUserId = normalizeUserId(userId);
     if (!normalizedUserId) return [];
 
     const [parent, guardian, linkedUser] = await Promise.all([
       prisma.parent.findFirst({
-        where: { userId: normalizedUserId },
+        where: { userId: normalizedUserId, ...(schoolId ? { schoolId } : {}) },
         include: {
           studentLinks: {
             include: {
@@ -65,7 +66,7 @@ export const parentAccessService = {
         },
       }),
       prisma.guardian.findFirst({
-        where: { userId: normalizedUserId },
+        where: { userId: normalizedUserId, ...(schoolId ? { schoolId } : {}) },
         include: {
           studentLinks: {
             include: {
@@ -93,7 +94,7 @@ export const parentAccessService = {
 
     if (linkedUser?.linkedStudentId) {
       const linkedStudent = await prisma.student.findUnique({
-        where: { id: linkedUser.linkedStudentId },
+        where: { id: linkedUser.linkedStudentId, ...(schoolId ? { schoolId } : {}) },
         include: childInclude,
       });
       pushStudent(linkedStudent);
@@ -102,11 +103,11 @@ export const parentAccessService = {
     return children;
   },
 
-  assertStudentAccess: async (userId, studentId) => {
+  assertStudentAccess: async (userId, studentId, schoolId = null) => {
     const normalizedUserId = normalizeUserId(userId);
     const normalizedStudentId = normalizeStudentId(studentId);
     const student = await prisma.student.findFirst({
-      where: buildAuthorizedStudentWhere(normalizedUserId, normalizedStudentId),
+      where: buildAuthorizedStudentWhere(normalizedUserId, normalizedStudentId, schoolId),
       include: childInclude,
     });
 
@@ -121,11 +122,11 @@ export const parentAccessService = {
     return toSummary(student);
   },
 
-  getStudentHub: async (userId, studentId) => {
+  getStudentHub: async (userId, studentId, schoolId = null) => {
     const normalizedUserId = normalizeUserId(userId);
     const normalizedStudentId = normalizeStudentId(studentId);
     const student = await prisma.student.findFirst({
-      where: buildAuthorizedStudentWhere(normalizedUserId, normalizedStudentId),
+      where: buildAuthorizedStudentWhere(normalizedUserId, normalizedStudentId, schoolId),
       include: childInclude,
     });
 
@@ -151,30 +152,30 @@ export const parentAccessService = {
       teachers,
     ] = await Promise.all([
       prisma.studentFee.findMany({
-        where: { studentId: student.id },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}) },
         include: { feeStructure: { include: { feeCategory: true } } },
         orderBy: { createdAt: "desc" },
       }),
       prisma.invoice.findMany({
-        where: { studentId: student.id },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}) },
         include: { items: true, payments: true },
         orderBy: { createdAt: "desc" },
       }),
       prisma.payment.findMany({
-        where: { studentId: student.id },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}) },
         include: { receipt: true, invoice: { include: { items: true } } },
         orderBy: { createdAt: "desc" },
         take: 10,
       }),
       prisma.studentAttendance.findMany({
-        where: { studentId: student.id },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}) },
         include: { class: true },
         orderBy: { attendanceDate: "desc" },
         take: 30,
       }),
       prisma.result.findMany({
         // Parents should only see results that a teacher has published.
-        where: { studentId: student.id, published: true },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}), published: true },
         include: {
           teacher: {
             include: { user: { select: { id: true, fullName: true } } },
@@ -186,7 +187,7 @@ export const parentAccessService = {
       }),
       prisma.reportCard.findMany({
         // A report becomes parent-visible only after the school publishes its file.
-        where: { studentId: student.id, fileUrl: { not: null } },
+        where: { studentId: student.id, ...(schoolId ? { schoolId } : {}), fileUrl: { not: null } },
         orderBy: { createdAt: "desc" },
         take: 20,
       }),
@@ -196,7 +197,7 @@ export const parentAccessService = {
         take: 20,
       }),
       prisma.assignment.findMany({
-        where: { OR: [{ studentId: student.id }, { studentId: null }] },
+        where: { ...(schoolId ? { schoolId } : {}), OR: [{ studentId: student.id }, { studentId: null }] },
         include: {
           teacher: {
             include: { user: { select: { id: true, fullName: true } } },
@@ -208,6 +209,7 @@ export const parentAccessService = {
       }),
       prisma.timetableEntry.findMany({
         where: {
+          ...(schoolId ? { schoolId } : {}),
           className:
             student.className || student.enrollments?.[0]?.class?.name || "",
         },
@@ -216,6 +218,7 @@ export const parentAccessService = {
       }),
       prisma.message.findMany({
         where: {
+          ...(schoolId ? { schoolId } : {}),
           OR: [
             { senderId: normalizedUserId },
             { recipientId: normalizedUserId },

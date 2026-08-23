@@ -22,6 +22,7 @@ import schoolRoutes from "./routes/schoolRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
 import admissionRoutes from "./routes/admissionRoutes.js";
 import classmarkerRoutes from "./routes/classmarkerRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import assessmentsRoutes from "./routes/assessmentsRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
@@ -72,6 +73,7 @@ app.use("/api/enrollment", enrollmentRoutes);
 app.use("/api/admissions", admissionRoutes);
 app.use("/api/teacher", teacherRoutes);
 app.use("/api/classmarker", classmarkerRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api/assessments", assessmentsRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/messages", messageRoutes);

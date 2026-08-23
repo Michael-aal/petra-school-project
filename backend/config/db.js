@@ -79,7 +79,7 @@ const WHERE_SCOPED_OPERATIONS = new Set([
   "deleteMany",
 ]);
 
-const scopeWhere = (where, tenant) => {
+export const scopeWhere = (where, tenant) => {
   if (!where) return { schoolId: tenant };
   if (!Object.prototype.hasOwnProperty.call(where, "schoolId")) {
     return { AND: [where, { schoolId: tenant }] };
@@ -87,11 +87,13 @@ const scopeWhere = (where, tenant) => {
   return { ...where, schoolId: tenant };
 };
 
-const scopeCreateData = (data, tenant) => {
+export const scopeTenantData = (data, tenant) => {
   if (!data || typeof data !== "object") return data;
-  // Don't override an explicit schoolId or a nested `school` relation write.
-  if (Object.prototype.hasOwnProperty.call(data, "schoolId")) return data;
-  if (Object.prototype.hasOwnProperty.call(data, "school")) return data;
+  if (Object.prototype.hasOwnProperty.call(data, "school")) {
+    throw Object.assign(new Error("Nested school relation writes are not allowed in a tenant context"), {
+      statusCode: 403,
+    });
+  }
   return { ...data, schoolId: tenant };
 };
 
@@ -111,16 +113,17 @@ const prisma = basePrisma.$extends({
           nextArgs.where = scopeWhere(nextArgs.where, tenant);
         }
 
-        if (operation === "create" && nextArgs.data && !Array.isArray(nextArgs.data)) {
-          nextArgs.data = scopeCreateData(nextArgs.data, tenant);
+        if ((operation === "create" || operation === "update") && nextArgs.data && !Array.isArray(nextArgs.data)) {
+          nextArgs.data = scopeTenantData(nextArgs.data, tenant);
         }
 
         if ((operation === "createMany" || operation === "createManyAndReturn") && Array.isArray(nextArgs.data)) {
-          nextArgs.data = nextArgs.data.map((item) => scopeCreateData(item, tenant));
+          nextArgs.data = nextArgs.data.map((item) => scopeTenantData(item, tenant));
         }
 
         if (operation === "upsert" && nextArgs.create) {
-          nextArgs.create = scopeCreateData(nextArgs.create, tenant);
+          nextArgs.create = scopeTenantData(nextArgs.create, tenant);
+          if (nextArgs.update) nextArgs.update = scopeTenantData(nextArgs.update, tenant);
         }
 
         return query(nextArgs);

@@ -13,6 +13,15 @@ const safeSession = (item) => ({ ...item, schoolId: item.schoolId });
 const safeClass = (item) => ({ ...item, schoolId: item.schoolId });
 const safeSubject = (item) => ({ ...item, schoolId: item.schoolId });
 const safeTimetable = (item) => ({ ...item, schoolId: item.schoolId });
+const assertScopedRecord = async (delegate, user, id, label) => {
+  const record = await delegate.findFirst({ where: { id, schoolId: getSchoolId(user) } });
+  if (!record) {
+    const error = new Error(`${label} not found`);
+    error.statusCode = 404;
+    throw error;
+  }
+  return record;
+};
 const toNumber = (value, fallback) => {
   const parsed = Number.parseInt(String(value), 10);
   return Number.isNaN(parsed) ? fallback : parsed;
@@ -23,24 +32,47 @@ export const academicService = {
     prisma.academicSession.findMany({ where: { schoolId: getSchoolId(user) }, orderBy: { startsAt: "desc" } }),
   createSession: async (user, payload) =>
     safeSession(await prisma.academicSession.create({ data: { ...payload, schoolId: getSchoolId(user), startsAt: new Date(payload.startsAt), endsAt: new Date(payload.endsAt), isActive: Boolean(payload.isActive) } })),
-  updateSession: async (user, id, payload) =>
-    safeSession(await prisma.academicSession.update({ where: { id }, data: { ...payload, startsAt: payload.startsAt ? new Date(payload.startsAt) : undefined, endsAt: payload.endsAt ? new Date(payload.endsAt) : undefined } })),
-  deleteSession: async (_user, id) => prisma.academicSession.delete({ where: { id } }),
+  updateSession: async (user, id, payload) => {
+    await assertScopedRecord(prisma.academicSession, user, id, "Session");
+    return safeSession(await prisma.academicSession.update({ where: { id }, data: { ...payload, startsAt: payload.startsAt ? new Date(payload.startsAt) : undefined, endsAt: payload.endsAt ? new Date(payload.endsAt) : undefined } }));
+  },
+  deleteSession: async (user, id) => {
+    await assertScopedRecord(prisma.academicSession, user, id, "Session");
+    return prisma.academicSession.delete({ where: { id } });
+  },
 
   listClasses: async (user) => prisma.academicClass.findMany({ where: { schoolId: getSchoolId(user) }, orderBy: { name: "asc" } }),
   createClass: async (user, payload) => safeClass(await prisma.academicClass.create({ data: { ...payload, schoolId: getSchoolId(user), capacity: Number(payload.capacity || 0) } })),
-  updateClass: async (_user, id, payload) => safeClass(await prisma.academicClass.update({ where: { id }, data: { ...payload, capacity: payload.capacity !== undefined ? Number(payload.capacity) : undefined } })),
-  deleteClass: async (_user, id) => prisma.academicClass.delete({ where: { id } }),
+  updateClass: async (user, id, payload) => {
+    await assertScopedRecord(prisma.academicClass, user, id, "Class");
+    return safeClass(await prisma.academicClass.update({ where: { id }, data: { ...payload, capacity: payload.capacity !== undefined ? Number(payload.capacity) : undefined } }));
+  },
+  deleteClass: async (user, id) => {
+    await assertScopedRecord(prisma.academicClass, user, id, "Class");
+    return prisma.academicClass.delete({ where: { id } });
+  },
 
   listSubjects: async (user) => prisma.academicSubject.findMany({ where: { schoolId: getSchoolId(user) }, orderBy: { name: "asc" } }),
   createSubject: async (user, payload) => safeSubject(await prisma.academicSubject.create({ data: { ...payload, schoolId: getSchoolId(user) } })),
-  updateSubject: async (_user, id, payload) => safeSubject(await prisma.academicSubject.update({ where: { id }, data: payload })),
-  deleteSubject: async (_user, id) => prisma.academicSubject.delete({ where: { id } }),
+  updateSubject: async (user, id, payload) => {
+    await assertScopedRecord(prisma.academicSubject, user, id, "Subject");
+    return safeSubject(await prisma.academicSubject.update({ where: { id }, data: payload }));
+  },
+  deleteSubject: async (user, id) => {
+    await assertScopedRecord(prisma.academicSubject, user, id, "Subject");
+    return prisma.academicSubject.delete({ where: { id } });
+  },
 
   listTimetable: async (user) => prisma.timetableEntry.findMany({ where: { schoolId: getSchoolId(user) }, orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }] }),
   createTimetable: async (user, payload) => safeTimetable(await prisma.timetableEntry.create({ data: { ...payload, schoolId: getSchoolId(user) } })),
-  updateTimetable: async (_user, id, payload) => safeTimetable(await prisma.timetableEntry.update({ where: { id }, data: payload })),
-  deleteTimetable: async (_user, id) => prisma.timetableEntry.delete({ where: { id } }),
+  updateTimetable: async (user, id, payload) => {
+    await assertScopedRecord(prisma.timetableEntry, user, id, "Timetable entry");
+    return safeTimetable(await prisma.timetableEntry.update({ where: { id }, data: payload }));
+  },
+  deleteTimetable: async (user, id) => {
+    await assertScopedRecord(prisma.timetableEntry, user, id, "Timetable entry");
+    return prisma.timetableEntry.delete({ where: { id } });
+  },
 
   listAttendance: async (user, query = {}) => {
     const currentPage = Math.max(1, toNumber(query.page, 1));

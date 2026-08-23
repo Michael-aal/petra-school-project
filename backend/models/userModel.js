@@ -116,8 +116,8 @@ export const userModel = {
     schoolId
       ? prisma.staffInvitation.updateMany({ where: { id, schoolId }, data })
       : runWithoutSchoolContext(() => prisma.staffInvitation.update({ where: { id }, data })),
-  findStudentByAccessCode: (accessCode) =>
-    prisma.student.findFirst({ where: { parentAccessCode: accessCode } }),
+  findStudentByAccessCode: (accessCode, schoolId = null) =>
+    prisma.student.findFirst({ where: { parentAccessCode: accessCode, ...(schoolId ? { schoolId } : {}) } }),
   findParentRecordByUserId: (userId) => prisma.parent.findFirst({ where: { userId } }),
   findGuardianRecordByUserId: (userId) => prisma.guardian.findFirst({ where: { userId } }),
   listChildrenByParentUserId: async (userId) => {
@@ -214,7 +214,14 @@ export const userModel = {
         throw new Error("Student not found");
       }
 
+      if (parentUser.schoolId && Number(parentUser.schoolId) !== Number(student.schoolId)) {
+        throw Object.assign(new Error("Student does not belong to the active school"), { statusCode: 403 });
+      }
+
       let parentRecord = await tx.parent.findFirst({ where: { userId: parentUserId } });
+      if (parentRecord && Number(parentRecord.schoolId) !== Number(student.schoolId)) {
+        throw Object.assign(new Error("Parent cannot be linked across schools"), { statusCode: 403 });
+      }
       if (!parentRecord) {
         parentRecord = await tx.parent.create({
           data: {

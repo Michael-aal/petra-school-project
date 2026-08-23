@@ -104,6 +104,19 @@ const parseRemarks = (admission) => {
   }
 };
 
+const getAdmissionForUser = async (id, user) => {
+  const schoolId = Number(user?.schoolId);
+  const admission = Number.isInteger(schoolId) && schoolId > 0
+    ? await prisma.admission.findFirst({ where: { id, schoolId } })
+    : await prisma.admission.findUnique({ where: { id } });
+  if (!admission) {
+    const error = new Error("Admission not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return admission;
+};
+
 // Cache admission column presence for this process to avoid repeated queries
 let _admissionColumnsCache = null;
 const getAdmissionColumns = async () => {
@@ -139,7 +152,7 @@ export const admissionService = {
   list: async ({ page = 1, limit = 25, search = "", status = "", className = "" } = {}, user) => {
     const currentPage = Number.isFinite(Number(page)) ? Math.max(1, Number(page)) : 1;
     const pageSize = Math.max(1, Math.min(200, Number(limit) || 25));
-    const where = {};
+    const where = Number(user?.schoolId) > 0 ? { schoolId: Number(user.schoolId) } : {};
 
     if (search) {
       const q = String(search).trim();
@@ -183,25 +196,11 @@ export const admissionService = {
   },
 
   getById: async (id, user) => {
-    // Use raw SQL for Admission row to avoid Prisma model vs DB column mismatches
-    const rows = await prisma.$queryRawUnsafe('SELECT * FROM "Admission" WHERE id = $1', id);
-    const admission = Array.isArray(rows) ? rows[0] : rows;
-    if (!admission) {
-      const error = new Error("Admission not found");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    return safeAdmission(admission);
+    return safeAdmission(await getAdmissionForUser(id, user));
   },
 
-  approve: async (id, userId) => {
-    const admission = await prisma.admission.findUnique({ where: { id } });
-    if (!admission) {
-      const error = new Error("Admission not found");
-      error.statusCode = 404;
-      throw error;
-    }
+  approve: async (id, userId, schoolId) => {
+    const admission = await getAdmissionForUser(id, { schoolId });
 
     if (admission.status !== "pending") {
       const error = new Error("Only pending applications can be approved");
@@ -210,7 +209,7 @@ export const admissionService = {
     }
 
     const updated = await prisma.admission.update({
-      where: { id },
+      where: { id: admission.id },
       data: {
         status: "approved",
         approvedAt: new Date(),
@@ -222,13 +221,8 @@ export const admissionService = {
   },
 
 
-  enroll: async (id, userId, payload = {}) => {
-    const admission = await prisma.admission.findUnique({ where: { id } });
-    if (!admission) {
-      const error = new Error("Admission not found");
-      error.statusCode = 404;
-      throw error;
-    }
+  enroll: async (id, userId, payload = {}, schoolId) => {
+    const admission = await getAdmissionForUser(id, { schoolId });
     if (!["admission_offered", "passed"].includes(admission.status) && !admission.admissionCode) {
       const error = new Error("Only applicants who have been offered admission can be enrolled");
       error.statusCode = 400;
@@ -333,13 +327,8 @@ export const admissionService = {
     return safeAdmission(enrolled.admission);
   },
 
-  reject: async (id, userId, reason = "") => {
-    const admission = await prisma.admission.findUnique({ where: { id } });
-    if (!admission) {
-      const error = new Error("Admission not found");
-      error.statusCode = 404;
-      throw error;
-    }
+  reject: async (id, userId, reason = "", schoolId) => {
+    const admission = await getAdmissionForUser(id, { schoolId });
 
     if (admission.status !== "pending") {
       const error = new Error("Only pending applications can be rejected");
@@ -348,7 +337,7 @@ export const admissionService = {
     }
 
     const updated = await prisma.admission.update({
-      where: { id },
+      where: { id: admission.id },
       data: {
         status: "rejected",
         rejectedAt: new Date(),
@@ -359,15 +348,8 @@ export const admissionService = {
 
     return safeAdmission(updated);
   },
-  completeStudentRecord: async (id, userId = null) => {
-    // Use raw SQL to fetch Admission to avoid Prisma model <> DB column mismatches
-    const rows = await prisma.$queryRawUnsafe('SELECT * FROM "Admission" WHERE id = $1', id);
-    const admission = Array.isArray(rows) ? rows[0] : rows;
-    if (!admission) {
-      const error = new Error("Admission not found");
-      error.statusCode = 404;
-      throw error;
-    }
+  completeStudentRecord: async (id, userId = null, schoolId) => {
+    const admission = await getAdmissionForUser(id, { schoolId });
 
     // We will not create a Student here; only complete missing related records
     if (!admission.studentId) {
@@ -376,7 +358,7 @@ export const admissionService = {
       throw error;
     }
 
-    const student = await prisma.student.findUnique({ where: { id: admission.studentId } });
+    const student = await prisma.student.findFirst({ where: { id: admission.studentId, schoolId: admission.schoolId } });
     if (!student) {
       const error = new Error("Linked student not found");
       error.statusCode = 404;

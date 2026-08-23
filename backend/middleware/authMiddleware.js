@@ -143,14 +143,20 @@ export const protect = async (req, res, next) => {
       let resolvedSchoolId = null;
 
       if (requestedSchoolId) {
-        const requestedSchool = await prisma.school.findUnique({ where: { id: requestedSchoolId }, select: { id: true } });
+        const requestedSchool = await prisma.school.findFirst({ where: { id: requestedSchoolId, isActive: true }, select: { id: true } });
+        if (!requestedSchool) {
+          return res.status(403).json({ success: false, message: "The requested school is not available." });
+        }
+        if (!user.selectedSchoolId || Number(user.selectedSchoolId) !== requestedSchool.id) {
+          return res.status(403).json({ success: false, message: "Select this school before accessing its data." });
+        }
         if (requestedSchool) {
           resolvedSchoolId = requestedSchool.id;
         }
       }
 
       if (!resolvedSchoolId && user.selectedSchoolId) {
-        const persistedSchool = await prisma.school.findUnique({ where: { id: Number(user.selectedSchoolId) }, select: { id: true } });
+        const persistedSchool = await prisma.school.findFirst({ where: { id: Number(user.selectedSchoolId), isActive: true }, select: { id: true } });
         if (persistedSchool) {
           resolvedSchoolId = persistedSchool.id;
         }

@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
 import { parentAccessService } from "./parentAccessService.js";
+import { normalizeRole } from "../utils/roleUtils.js";
 
 const getSchoolId = (user) => {
   if (!user || user?.schoolId === undefined || user?.schoolId === null) {
@@ -486,11 +487,11 @@ export const financeService = {
 
   getParentFees: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
-    const children = await parentAccessService.listChildren(user.id);
+    const children = await parentAccessService.listChildren(user.id, schoolId);
     const requestedStudentId = String(query.studentId || "").trim();
-    const selectedChild = requestedStudentId ? await parentAccessService.assertStudentAccess(user.id, requestedStudentId) : children[0] || null;
+    const selectedChild = requestedStudentId ? await parentAccessService.assertStudentAccess(user.id, requestedStudentId, schoolId) : children[0] || null;
     if (!selectedChild) {
-      return { student: null, fees: [], payments: [], summary: await calculateTotals(schoolId) };
+      return { student: null, fees: [], payments: [], summary: { totalDue: 0, totalPaid: 0, outstandingFees: 0 } };
     }
 
     const [fees, invoices, payments, structures] = await Promise.all([
@@ -499,7 +500,13 @@ export const financeService = {
       prisma.payment.findMany({ where: { schoolId, studentId: selectedChild.id }, include: paymentInclude, orderBy: { createdAt: "desc" } }),
       prisma.feeStructure.findMany({ where: { schoolId, isActive: true }, include: { feeCategory: true }, orderBy: { createdAt: "desc" } }),
     ]);
-    return { student: selectedChild, children, fees, invoices, payments: payments.map(mapPayment), feeStructures: structures, summary: await calculateTotals(schoolId) };
+    const mappedPayments = payments.map(mapPayment);
+    const totalDue = fees.reduce((sum, fee) => sum + Number(fee.amount || 0), 0) + invoices.reduce((sum, invoice) => sum + Number(invoice.totalAmount || 0), 0);
+    const totalPaid = mappedPayments.filter((payment) => payment.status === "Paid" || payment.status === "Successful").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+    const summary = normalizeRole(user.role) === "parent"
+      ? { totalDue, totalPaid, outstandingFees: Math.max(0, totalDue - totalPaid) }
+      : await calculateTotals(schoolId);
+    return { student: selectedChild, children, fees, invoices, payments: mappedPayments, feeStructures: structures, summary };
   },
 
   getAdminWallet: async (user) => {

@@ -7,6 +7,7 @@ import { normalizeRole } from "../utils/roleUtils.js";
 import crypto from "crypto";
 import { logger } from "../utils/logger.js";
 import { normalizeParentEmail } from "../utils/parentLinking.js";
+import { logAudit } from "../utils/auditLog.js";
 
 const resolvePublicRole = (role) => {
   const normalizedRole = normalizeRole(role);
@@ -304,6 +305,7 @@ export const authService = {
     }
 
     logger.info("authService.login: user authenticated", { userId: user.id, role: user.role });
+    await logAudit({ userId: user.id, schoolId: user.schoolId, action: "auth.login", entity: "User" });
 
     return {
       user: safeUser(user),
@@ -840,14 +842,15 @@ export const authService = {
     };
   },
 
-  linkStudentToParent: async ({ userId, accessCode }) => {
-    const student = await userModel.findStudentByAccessCode(accessCode);
+  linkStudentToParent: async ({ userId, accessCode, schoolId }) => {
+    const student = await userModel.findStudentByAccessCode(accessCode, schoolId);
     if (!student || student.parentAccessCodeUsed) {
       const error = new Error("Invalid or used Parent Access Code");
       error.statusCode = 400;
       throw error;
     }
     await userModel.linkParentToStudent({ parentUserId: userId, studentId: student.id });
+    await logAudit({ userId, schoolId: student.schoolId, action: "parent.link_child", entity: "Student", resourceId: student.id });
     return { message: "Child linked successfully" };
   },
 };

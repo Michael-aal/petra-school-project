@@ -26,7 +26,7 @@ export const getAdmissionById = async (req, res, next) => {
 
 export const approveAdmission = async (req, res, next) => {
   try {
-    const admission = await admissionService.approve(req.params.id, req.user.id);
+    const admission = await admissionService.approve(req.params.id, req.user.id, req.schoolId);
     return res.status(200).json({ success: true, message: "Applicant approved for entrance exam", admission });
   } catch (error) {
     return next(error);
@@ -35,7 +35,7 @@ export const approveAdmission = async (req, res, next) => {
 
 export const rejectAdmission = async (req, res, next) => {
   try {
-    const admission = await admissionService.reject(req.params.id, req.user.id, req.body.reason || "");
+    const admission = await admissionService.reject(req.params.id, req.user.id, req.body.reason || "", req.schoolId);
     return res.status(200).json({ success: true, message: "Applicant rejected", admission });
   } catch (error) {
     return next(error);
@@ -59,7 +59,7 @@ export const createAdmission = async (req, res, next) => {
 
 export const enrollAdmission = async (req, res, next) => {
   try {
-    const admission = await admissionService.enroll(req.params.id, req.user.id, req.body || {});
+    const admission = await admissionService.enroll(req.params.id, req.user.id, req.body || {}, req.schoolId);
     return res.status(200).json({ success: true, message: "Applicant enrolled successfully", admission });
   } catch (error) {
     return next(error);
@@ -68,7 +68,7 @@ export const enrollAdmission = async (req, res, next) => {
 
 export const completeStudentRecord = async (req, res, next) => {
   try {
-    const result = await admissionService.completeStudentRecord(req.params.id, req.user?.id || null);
+    const result = await admissionService.completeStudentRecord(req.params.id, req.user?.id || null, req.schoolId);
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     return next(error);
