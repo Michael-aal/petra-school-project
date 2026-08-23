@@ -6,7 +6,7 @@
   background: var(--dashboard-topbar-bg);
   color: var(--dashboard-topbar-text);
   border-bottom: 1px solid var(--app-border);
-  box-shadow: 0 10px 30px rgba(23, 35, 33, 0.08);
+  box-shadow: 0 4px 14px rgba(23, 35, 33, 0.06);
   position: sticky;
   top: 0;
   z-index: 10;

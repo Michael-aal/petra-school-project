@@ -57,13 +57,13 @@
   --dashboard-topbar-bg: rgba(255, 255, 255, 0.86);
   --dashboard-topbar-text: #172321;
   --dashboard-topbar-muted: #687673;
-  --dashboard-card-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-card-bg: #ffffff;
   --dashboard-card-text: #172321;
   --dashboard-card-muted: #687673;
-  --dashboard-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8faf5 100%);
+  --dashboard-panel-bg: #ffffff;
   --dashboard-panel-text: #172321;
   --dashboard-panel-muted: #64748b;
-  --dashboard-page-bg: transparent;
+  --dashboard-page-bg: var(--app-bg);
   --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
   --dashboard-accent-gradient: linear-gradient(90deg, #f06b4e 0%, #d9583d 100%);
   --dashboard-accent-gradient-strong: linear-gradient(

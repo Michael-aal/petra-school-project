@@ -17,7 +17,7 @@
 .dashboard-page-header,
 .dashboard-page > header {
   background: var(--dashboard-panel-bg);
-  box-shadow: 0 16px 36px color-mix(in srgb, var(--app-text) 8%, transparent);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--app-text) 5%, transparent);
 }
 
 /* Shared page frame used by the admin, parent, staff, and overview routes. */
