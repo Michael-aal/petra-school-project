@@ -634,55 +634,14 @@ function App() {
             element={parentSection({
               title: "Assignments and Homework",
               description:
-                "Stay on top of due dates and upcoming tasks for both children.",
+                "Homework for the selected linked child will appear here once it is published by the school.",
               heroTitle: "Stay prepared",
               heroDescription:
-                "See what is due soon and keep the week organised.",
-              heroChips: ["3 tasks due", "1 due tomorrow", "2 due next week"],
-              summaryCards: [
-                {
-                  icon: BookOpen,
-                  label: "Science Homework",
-                  value: "Tomorrow",
-                  meta: "Due 08:00",
-                  tone: "tone-blue",
-                },
-                {
-                  icon: FileText,
-                  label: "Reading Log",
-                  value: "Friday",
-                  meta: "Due 15:00",
-                  tone: "tone-teal",
-                },
-                {
-                  icon: CalendarDays,
-                  label: "Math Practice",
-                  value: "Monday",
-                  meta: "Due 12:00",
-                  tone: "tone-rose",
-                },
-              ],
-              sections: [
-                {
-                  title: "Upcoming tasks",
-                  items: [
-                    { title: "Science Homework", meta: "Due tomorrow • 08:00" },
-                    { title: "Reading Log", meta: "Due Friday • 15:00" },
-                  ],
-                },
-              ],
-              actions: [
-                {
-                  icon: BookOpen,
-                  title: "Open homework guide",
-                  meta: "Review learning instructions",
-                },
-                {
-                  icon: Bell,
-                  title: "Set task reminder",
-                  meta: "Receive a gentle nudge",
-                },
-              ],
+                "Assignments are loaded from the authenticated child’s school records.",
+              heroChips: [],
+              summaryCards: [],
+              sections: [],
+              actions: [],
             })}
           />
           <Route path="/portal/fees" element={<ParentFeesPage />} />
@@ -691,55 +650,14 @@ function App() {
             element={parentSection({
               title: "School Announcements",
               description:
-                "Stay updated with school notices and important family updates.",
+                "School notices for the linked child will appear here once they are published.",
               heroTitle: "Latest notices",
               heroDescription:
-                "Be informed about meetings, events, and changes in school routine.",
-              heroChips: [
-                "Parent-teacher meeting",
-                "Mid-term revision",
-                "Open day",
-              ],
-              summaryCards: [
-                {
-                  icon: Bell,
-                  label: "Meetings",
-                  value: "1",
-                  meta: "This week",
-                  tone: "tone-blue",
-                },
-                {
-                  icon: School,
-                  label: "Events",
-                  value: "2",
-                  meta: "Upcoming",
-                  tone: "tone-teal",
-                },
-              ],
-              sections: [
-                {
-                  title: "Announcements",
-                  items: [
-                    {
-                      title: "Parent-Teacher Meeting",
-                      meta: "Thursday • 10:00",
-                    },
-                    { title: "Mid-Term Revision", meta: "Friday • 14:00" },
-                  ],
-                },
-              ],
-              actions: [
-                {
-                  icon: Bell,
-                  title: "Turn on alerts",
-                  meta: "Receive updates instantly",
-                },
-                {
-                  icon: FileText,
-                  title: "Read details",
-                  meta: "Open full notice",
-                },
-              ],
+                "Announcements are loaded from the authenticated parent’s school and linked students.",
+              heroChips: [],
+              summaryCards: [],
+              sections: [],
+              actions: [],
             })}
           />
           <Route
@@ -747,54 +665,14 @@ function App() {
             element={parentSection({
               title: "Messages from Teachers",
               description:
-                "Read the latest teacher notes and school updates for your children.",
+                "Teacher notes and school updates will appear here for your linked children once they are sent.",
               heroTitle: "Stay connected",
               heroDescription:
-                "A simple view for important messages from teachers and school offices.",
-              heroChips: ["2 unread", "1 new note", "Quick replies"],
-              summaryCards: [
-                {
-                  icon: MessageSquare,
-                  label: "New messages",
-                  value: "2",
-                  meta: "Last 24 hours",
-                  tone: "tone-blue",
-                },
-                {
-                  icon: Bell,
-                  label: "Teacher notes",
-                  value: "3",
-                  meta: "This week",
-                  tone: "tone-teal",
-                },
-              ],
-              sections: [
-                {
-                  title: "Recent messages",
-                  items: [
-                    {
-                      title: "Mrs. Adeyemi",
-                      meta: "Your child improved in reading",
-                    },
-                    {
-                      title: "School Admin",
-                      meta: "Fee reminder for the next installment",
-                    },
-                  ],
-                },
-              ],
-              actions: [
-                {
-                  icon: MessageSquare,
-                  title: "Reply now",
-                  meta: "Send a note back",
-                },
-                {
-                  icon: FileText,
-                  title: "View thread",
-                  meta: "Open the full conversation",
-                },
-              ],
+                "Messages are loaded only for the authenticated parent and their linked students.",
+              heroChips: [],
+              summaryCards: [],
+              sections: [],
+              actions: [],
             })}
           />
           <Route
@@ -802,56 +680,14 @@ function App() {
             element={parentSection({
               title: "Downloads and Documents",
               description:
-                "Access school forms, notices, and lesson resources from one place.",
+                "Published school documents for the selected child will appear here automatically.",
               heroTitle: "Useful documents",
               heroDescription:
-                "Download the records you need without hunting through email.",
-              heroChips: ["4 available", "2 recent", "Ready to save"],
-              summaryCards: [
-                {
-                  icon: Download,
-                  label: "Reports",
-                  value: "2",
-                  meta: "Ready to download",
-                  tone: "tone-blue",
-                },
-                {
-                  icon: FileText,
-                  label: "Forms",
-                  value: "2",
-                  meta: "Available now",
-                  tone: "tone-teal",
-                },
-              ],
-              sections: [
-                {
-                  title: "Available resources",
-                  items: [
-                    {
-                      title: "Term report card",
-                      meta: "PDF • Updated today",
-                      value: "Download",
-                    },
-                    {
-                      title: "Transport form",
-                      meta: "PDF • For the next trip",
-                      value: "Download",
-                    },
-                  ],
-                },
-              ],
-              actions: [
-                {
-                  icon: Download,
-                  title: "Download all",
-                  meta: "Save the latest files",
-                },
-                {
-                  icon: FileText,
-                  title: "Open folder",
-                  meta: "Browse school documents",
-                },
-              ],
+                "No demo files are shown; only authorized records are loaded from the backend.",
+              heroChips: [],
+              summaryCards: [],
+              sections: [],
+              actions: [],
             })}
           />
           <Route
@@ -859,52 +695,14 @@ function App() {
             element={parentSection({
               title: "Parent Profile",
               description:
-                "Review the parent account details and preferred contact settings.",
+                "Your authenticated account details are shown in the settings area, not from demo data.",
               heroTitle: "Account overview",
               heroDescription:
-                "Make sure your profile details stay current for school communication.",
-              heroChips: [
-                "Primary guardian",
-                "Verified account",
-                "Notifications on",
-              ],
-              summaryCards: [
-                {
-                  icon: UserCircle2,
-                  label: "Profile",
-                  value: "Active",
-                  meta: "Verified account",
-                  tone: "tone-blue",
-                },
-                {
-                  icon: Bell,
-                  label: "Contacts",
-                  value: "2",
-                  meta: "Preferred channels",
-                  tone: "tone-teal",
-                },
-              ],
-              sections: [
-                {
-                  title: "Profile details",
-                  items: [
-                    { title: "Name", meta: "Mrs. Temitope Ogunleye" },
-                    { title: "Phone", meta: "+234 812 345 6789" },
-                  ],
-                },
-              ],
-              actions: [
-                {
-                  icon: UserCircle2,
-                  title: "Edit profile",
-                  meta: "Update your details",
-                },
-                {
-                  icon: Bell,
-                  title: "Notification settings",
-                  meta: "Adjust alerts",
-                },
-              ],
+                "Profile information is loaded from the signed-in parent record only.",
+              heroChips: [],
+              summaryCards: [],
+              sections: [],
+              actions: [],
             })}
           />
           <Route

@@ -166,7 +166,7 @@ export const userModel = {
         student.user?.fullName ||
         [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") ||
         student.admissionNumber ||
-        "Student";
+        "Unnamed learner";
       children.push({
         id: student.id,
         name: studentName,

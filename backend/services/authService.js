@@ -121,7 +121,7 @@ const mapChild = (student) => ({
     student.user?.fullName ||
     [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") ||
     student.admissionNumber ||
-    `Student ${String(student.id || "").slice(-4)}`,
+    "Unnamed learner",
   className: student.className || "",
   admissionNumber: student.admissionNumber || "",
   gender: student.gender || "",

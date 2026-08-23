@@ -61,5 +61,5 @@ export function getStudentDisplayName(student = {}) {
     return normalizeText(student.guardianName);
   }
 
-  return "Student";
+  return normalizeText(student?.admissionNumber || "Unnamed learner");
 }
