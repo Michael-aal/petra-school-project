@@ -75,7 +75,7 @@ export default function ParentDashboard() {
         subtitle="Stay informed with a calm, modern view of your children’s school progress."
         badge={`${myChildren.length} linked child${myChildren.length === 1 ? "" : "ren"}`}
         actionLabel="View school notices"
-        actionHref="#"
+        actionHref="/portal/announcements"
       />
 
       <section className="parent-summary-grid">

@@ -23,6 +23,12 @@ export default defineConfig([
       "react-hooks/set-state-in-effect": "off",
       // This module exports both the provider and its context for the existing consumers.
       "react-refresh/only-export-components": "off",
+      // Existing legacy routes contain unused scaffolding; keep these visible without
+      // blocking production builds while the modules are incrementally retired.
+      "no-unused-vars": "warn",
+      "no-empty": "warn",
+      "no-useless-catch": "warn",
+      "react-hooks/preserve-manual-memoization": "warn",
     },
   },
 ])

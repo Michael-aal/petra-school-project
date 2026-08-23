@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Inbox, Mail, MessageSquare, Search, Send, Users, Bell, Paperclip } from "lucide-react";
+import { Bell, Inbox, MessageSquare, Search, Send } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import { messageApi } from "../../../../services/messageApi";
 import "../page-styles/MessagesPage.css";
@@ -55,14 +55,6 @@ export default function MessagesPage() {
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    if (selectedUserId) {
-      fetchConversation(selectedUserId);
-    } else {
-      setConversation([]);
-    }
-  }, [selectedUserId]);
-
   const fetchConversation = async (recipientId) => {
     setError("");
     try {
@@ -72,6 +64,14 @@ export default function MessagesPage() {
       setError(err.message || "Unable to load conversation.");
     }
   };
+
+  useEffect(() => {
+    if (selectedUserId) {
+      fetchConversation(selectedUserId);
+    } else {
+      setConversation([]);
+    }
+  }, [selectedUserId]);
 
   const handleSend = async (event) => {
     event.preventDefault();

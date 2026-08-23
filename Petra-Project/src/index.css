@@ -80,6 +80,24 @@
   --surface-danger: color-mix(in srgb, var(--danger) 16%, transparent);
   --surface-warning: color-mix(in srgb, var(--warning) 16%, transparent);
   --button-hover: color-mix(in srgb, var(--app-accent) 10%, var(--app-surface));
+  /* Product-facing aliases keep new dashboard work on one vocabulary. */
+  --color-brand-primary: var(--app-accent-2);
+  --color-brand-accent: var(--app-accent);
+  --color-background: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-surface-muted: var(--app-surface-strong);
+  --color-text: var(--app-text);
+  --color-text-secondary: var(--app-text-muted);
+  --color-text-muted: var(--app-text-muted);
+  --color-border: var(--app-border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --space-10: 40px;
+  --space-12: 48px;
 }
 
 html,

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { applyTheme, getInitialTheme } from "../../utils/theme";
+import { solutionGroups } from "../solutions/solutionData";
 
 import "../../Styles/components/Navbar.css";
 

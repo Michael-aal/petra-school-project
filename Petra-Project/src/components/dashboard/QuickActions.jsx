@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function QuickActions({ title, items }) {
   return (
@@ -26,9 +27,9 @@ export default function QuickActions({ title, items }) {
           );
 
           return item.href ? (
-            <a key={item.label} className="dashboard-quick-action" href={item.href}>
+            <Link key={item.label} className="dashboard-quick-action" to={item.href}>
               {content}
-            </a>
+            </Link>
           ) : (
             <button key={item.label} className="dashboard-quick-action" type="button" onClick={item.onClick}>
               {content}
