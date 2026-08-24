@@ -29,7 +29,8 @@ import {
   PlusCircle,
   X,
   LogOut,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -39,6 +40,7 @@ import { getDisplayName, normalizeUser } from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
 
 const navGroups = [
+  { label: "Ask Nuvora", icon: Sparkles, href: "/dashboard/ask-nuvora" },
   { label: "Get Started", icon: LayoutDashboard, href: "/dashboard/get-started" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   {
@@ -126,6 +128,7 @@ const navGroups = [
 ];
 
 const staffNavGroups = [
+  { label: "Ask Nuvora", icon: Sparkles, href: "/staff/ask-nuvora" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/staff/dashboard" },
   { label: "My Classes", icon: School, href: "/staff/classes" },
   { label: "Students", icon: GraduationCap, href: "/staff/students" },
@@ -139,6 +142,7 @@ const staffNavGroups = [
 ];
 
 const portalNavGroups = [
+  { label: "Ask Nuvora", icon: Sparkles, href: "/portal/ask-nuvora" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/portal/dashboard" },
   { label: "Attendance", icon: ClipboardCheck, href: "/portal/attendance" },
   { label: "Results", icon: FileText, href: "/portal/results" },

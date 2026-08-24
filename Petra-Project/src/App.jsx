@@ -19,6 +19,7 @@ import DashboardHomePage from "./Pages/DashboardLayout/pages/DashboardHomePage";
 import GetStarted from "./Pages/DashboardLayout/pages/GetStarted";
 import ParentDashboard from "./Pages/DashboardLayout/pages/parent/ParentDashboard";
 import ParentSectionPage from "./Pages/DashboardLayout/pages/parent/ParentSectionPage";
+import AskNuvoraPage from "./Pages/DashboardLayout/pages/AskNuvoraPage";
 import DeleteAccountButton from "./components/DeleteAccountButton";
 import StaffManagementPage from "./Pages/DashboardLayout/pages/staff/StaffManagementPage";
 import TeacherWorkspacePage from "./Pages/DashboardLayout/pages/staff/TeacherWorkspacePage";
@@ -319,6 +320,7 @@ function App() {
 
         {/* Dashboard */}
         <Route element={<DashboardLay />}>
+          <Route path="/dashboard/ask-nuvora" element={<AskNuvoraPage />} />
           <Route path="/dashboard" element={<DashboardHomePage />} />
           <Route path="/dashboard/overview" element={<LiveOverviewPage />} />
           <Route
@@ -476,11 +478,13 @@ function App() {
             path="/staff/settings"
             element={<TeacherWorkspacePage activeView="settings" />}
           />
+          <Route path="/staff/ask-nuvora" element={<AskNuvoraPage />} />
 
           <Route
             path="/portal"
             element={<Navigate to="/portal/dashboard" replace />}
           />
+          <Route path="/portal/ask-nuvora" element={<AskNuvoraPage />} />
           <Route path="/portal/dashboard" element={<ParentDashboard />} />
           <Route
             path="/portal/children"

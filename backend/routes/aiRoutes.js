@@ -1,13 +1,10 @@
 import { Router } from "express";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, schoolGuard } from "../middleware/authMiddleware.js";
+import { queryAI } from "../controllers/aiController.js";
 
 const router = Router();
 
-router.post("/query", protect, (_req, res) => {
-  return res.status(503).json({
-    success: false,
-    message: "AI service is not configured",
-  });
-});
+// POST /api/ai/query
+router.post("/query", protect, schoolGuard, queryAI);
 
 export default router;

@@ -101,3 +101,14 @@ export function normalizeUser(user = {}) {
     linkedStudentId: user.linkedStudentId || null,
   };
 }
+
+export function normalizeRole(role = "") {
+  const normalized = String(role || "").trim().toLowerCase().replace(/\s+/g, "_");
+  if (["super_admin", "superadmin", "super-admin", "super admin"].includes(normalized)) return "super_admin";
+  if (["admin", "principal", "school_admin", "school-admin", "schooladministrator", "school_administrator"].includes(normalized)) return "principal";
+  if (["teacher", "staff", "instructor"].includes(normalized)) return "teacher";
+  if (["parent", "guardian"].includes(normalized)) return normalized;
+  if (["student", "learner"].includes(normalized)) return "student";
+  return normalized || "parent";
+}
+

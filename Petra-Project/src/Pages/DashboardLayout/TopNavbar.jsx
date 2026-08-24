@@ -1,11 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Bell,
   ChevronDown,
   LogOut,
   Menu,
   Settings,
+  Sparkles,
   User as UserIcon,
 } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
@@ -27,6 +28,17 @@ export default function TopNavbar({ onToggle }) {
   const menuRef = useRef(null);
   const notifRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleAskNuvoraClick = () => {
+    if (location.pathname.startsWith("/staff")) {
+      navigate("/staff/ask-nuvora");
+    } else if (location.pathname.startsWith("/portal")) {
+      navigate("/portal/ask-nuvora");
+    } else {
+      navigate("/dashboard/ask-nuvora");
+    }
+  };
 
   const handleMenuClick = () => {
     onToggle?.();
@@ -86,6 +98,16 @@ export default function TopNavbar({ onToggle }) {
       </div>
 
       <div className="top-right">
+        <button
+          type="button"
+          className="icon-btn flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 transition-colors border border-orange-200"
+          onClick={handleAskNuvoraClick}
+          title="Ask Nuvora AI"
+        >
+          <Sparkles size={16} className="text-orange-600" />
+          <span className="hidden sm:inline">Ask Nuvora</span>
+        </button>
+
         <div className="notification-menu" ref={notifRef}>
           <button
             className="icon-btn"
