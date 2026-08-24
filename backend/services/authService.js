@@ -828,14 +828,25 @@ export const authService = {
       throw error;
     }
 
-    const school = await prisma.school.findUnique({ where: { id: Number(schoolId) } });
+    const resolvedSchoolId = Number(schoolId);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) {
+      const error = new Error("Selected school not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const school = await prisma.school.findUnique({ where: { id: resolvedSchoolId } });
     if (!school) {
       const error = new Error("Selected school not found");
       error.statusCode = 404;
       throw error;
     }
 
-    const updatedUser = await userModel.updateGlobal(userId, { selectedSchoolId: school.id });
+    const updatedUser = await userModel.updateGlobal(userId, {
+      schoolId: school.id,
+      selectedSchoolId: school.id,
+    });
+
     return {
       user: safeUser(updatedUser),
       selectedSchool: { id: school.id, name: school.name },

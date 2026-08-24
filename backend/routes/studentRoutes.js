@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validationResult } from "express-validator";
-import { protect, requirePrincipal } from "../middleware/authMiddleware.js";
+import { protect, requirePrincipal, schoolGuard } from "../middleware/authMiddleware.js";
 import {
   createStudent,
   deleteStudent,
@@ -26,12 +26,12 @@ const validate = (req, res, next) => {
   return next();
 };
 
-router.get("/", protect, requirePrincipal, listStudentsValidator, validate, listStudents);
-router.get("/:id", protect, requirePrincipal, studentIdValidator, validate, getStudentById);
-router.post("/", protect, requirePrincipal, createStudentValidator, validate, createStudent);
-router.patch("/:id", protect, requirePrincipal, updateStudentValidator, validate, updateStudent);
-router.delete("/:id", protect, requirePrincipal, studentIdValidator, validate, deleteStudent);
-router.post("/:id/access-code", protect, requirePrincipal, studentIdValidator, validate, regenerateStudentAccessCode);
+router.get("/", protect, schoolGuard, requirePrincipal, listStudentsValidator, validate, listStudents);
+router.get("/:id", protect, schoolGuard, requirePrincipal, studentIdValidator, validate, getStudentById);
+router.post("/", protect, schoolGuard, requirePrincipal, createStudentValidator, validate, createStudent);
+router.patch("/:id", protect, schoolGuard, requirePrincipal, updateStudentValidator, validate, updateStudent);
+router.delete("/:id", protect, schoolGuard, requirePrincipal, studentIdValidator, validate, deleteStudent);
+router.post("/:id/access-code", protect, schoolGuard, requirePrincipal, studentIdValidator, validate, regenerateStudentAccessCode);
 
 export default router;
 

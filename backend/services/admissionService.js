@@ -232,14 +232,14 @@ export const admissionService = {
       return safeAdmission(admission);
     }
 
-    const schoolId = admission.schoolId;
+    const effectiveSchoolId = admission.schoolId ?? schoolId;
     const className = String(payload.className || admission.intendedClass || "").trim();
-    const admissionNumber = String(payload.admissionNumber || `STU-${schoolId}-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`).slice(0, 40);
+    const admissionNumber = String(payload.admissionNumber || `STU-${effectiveSchoolId}-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`).slice(0, 40);
 
     const enrolled = await prisma.$transaction(async (tx) => {
       const student = await tx.student.create({
         data: {
-          schoolId,
+          schoolId: effectiveSchoolId,
           name: admission.applicantName || [admission.applicantFirstName, admission.applicantMiddleName, admission.applicantLastName].filter(Boolean).join(" "),
           admissionNumber,
           className,
@@ -255,7 +255,7 @@ export const admissionService = {
       await tx.studentProfile.create({
         data: {
           studentId: student.id,
-          schoolId,
+          schoolId: effectiveSchoolId,
           admissionNumber,
           address: admission.fatherAddress || admission.motherAddress || null,
           bloodGroup: admission.bloodGroup || null,
@@ -273,12 +273,12 @@ export const admissionService = {
       for (const parentInput of parentInputs) {
         const email = String(parentInput.email || "").trim().toLowerCase();
         let parent = email
-          ? await tx.parent.findFirst({ where: { schoolId, email } })
+          ? await tx.parent.findFirst({ where: { schoolId: effectiveSchoolId, email } })
           : null;
         if (!parent) {
           parent = await tx.parent.create({
             data: {
-              schoolId,
+              schoolId: effectiveSchoolId,
               name: parentInput.name || "Parent/Guardian",
               email: email || null,
               phone: parentInput.phone || null,
@@ -306,7 +306,7 @@ export const admissionService = {
 
       const enrollment = await tx.enrollment.create({
         data: {
-          schoolId,
+          schoolId: effectiveSchoolId,
           studentId: student.id,
           classId: classRecord?.id || null,
           sectionId: payload.sectionId || null,

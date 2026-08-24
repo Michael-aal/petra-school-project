@@ -147,12 +147,8 @@ export const protect = async (req, res, next) => {
         if (!requestedSchool) {
           return res.status(403).json({ success: false, message: "The requested school is not available." });
         }
-        if (!user.selectedSchoolId || Number(user.selectedSchoolId) !== requestedSchool.id) {
-          return res.status(403).json({ success: false, message: "Select this school before accessing its data." });
-        }
-        if (requestedSchool) {
-          resolvedSchoolId = requestedSchool.id;
-        }
+
+        resolvedSchoolId = requestedSchool.id;
       }
 
       if (!resolvedSchoolId && user.selectedSchoolId) {
@@ -165,6 +161,7 @@ export const protect = async (req, res, next) => {
       req.schoolId = resolvedSchoolId;
       if (resolvedSchoolId) {
         req.user.schoolId = resolvedSchoolId;
+        req.user.selectedSchoolId = resolvedSchoolId;
       }
     } else {
       const fallbackSchoolId = resolveUserSchoolId(user) ?? decoded?.schoolId ?? null;
@@ -193,21 +190,25 @@ export const schoolGuard = (req, res, next) => {
   }
 
   const role = normalizeRole(req.user?.role);
-  if (role === "super_admin" && !req.schoolId) {
+  const currentSchoolId = req.schoolId ?? req.user?.schoolId ?? req.user?.selectedSchoolId ?? null;
+  console.log("DEBUG schoolGuard", { path: req.originalUrl, role, reqSchoolId: req.schoolId, userSchoolId: req.user?.schoolId, selectedSchoolId: req.user?.selectedSchoolId, header: req.get("x-school-id") });
+
+  if (role === "super_admin" && !currentSchoolId) {
     return res.status(403).json({
       success: false,
       message: "Select a school to continue.",
     });
   }
 
-  if (!req.user.schoolId && role !== "super_admin") {
+  if (role !== "super_admin" && !req.user.schoolId) {
     return res.status(403).json({
       success: false,
       message: "Select a school to continue.",
     });
   }
 
-  req.schoolId = req.schoolId ?? req.user.schoolId;
+  req.schoolId = currentSchoolId;
+  req.user.schoolId = currentSchoolId;
 
   next();
 };
