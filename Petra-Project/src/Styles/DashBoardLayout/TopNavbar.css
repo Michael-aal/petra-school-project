@@ -43,7 +43,40 @@
 .top-right {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
+  margin-left: auto;
+}
+
+.ask-nuvora-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--app-text);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.ask-nuvora-btn:hover {
+  background: rgba(248, 250, 252, 1);
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.ask-nuvora-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f07154 0%, #e46d57 100%);
+  color: #ffffff;
+  flex-shrink: 0;
 }
 
 .icon-btn {
@@ -337,6 +370,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .ask-nuvora-btn {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+
+  .ask-nuvora-label {
+    display: none;
   }
 
   .user-meta,

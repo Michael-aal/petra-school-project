@@ -100,12 +100,14 @@ export default function TopNavbar({ onToggle }) {
       <div className="top-right">
         <button
           type="button"
-          className="icon-btn flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 transition-colors border border-orange-200"
+          className="ask-nuvora-btn icon-btn"
           onClick={handleAskNuvoraClick}
           title="Ask Nuvora AI"
+          aria-label="Ask Nuvora"
         >
-          <Sparkles size={16} className="text-orange-600" />
-          <span className="hidden sm:inline">Ask Nuvora</span>
+          <span className="ask-nuvora-icon-wrap">
+            <Sparkles size={14} />
+          </span>
         </button>
 
         <div className="notification-menu" ref={notifRef}>
