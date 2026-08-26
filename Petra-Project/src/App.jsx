@@ -183,7 +183,9 @@ function DashboardLay() {
 
   return (
     <div className="dashboard-shell">
-      <div className={`dashboard-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
+      <div
+        className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}
+      >
         <SidebarNav
           collapsed={collapsed}
           onNavigate={closeSidebar}

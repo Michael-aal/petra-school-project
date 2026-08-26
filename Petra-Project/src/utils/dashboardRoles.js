@@ -21,14 +21,17 @@ const buildSections = (items) =>
     id: item.id || item.label,
   }));
 
+const principalDashboardConfig = {
+  routeBase: "/dashboard",
+  title: "School Admin Dashboard",
+  subtitle: "Manage people, finance, academics, and school operations from one secure workspace.",
+  sidebar: [],
+  pages: {},
+};
+
 const roleDashboardConfig = {
-  admin: {
-    routeBase: "/dashboard",
-    title: "Admin Dashboard",
-    subtitle: "Existing admin and principal workspace.",
-    sidebar: [],
-    pages: [],
-  },
+  principal: principalDashboardConfig,
+  admin: principalDashboardConfig,
   portal: {
     routeBase: "/portal",
     title: "Portal Dashboard",
@@ -121,11 +124,16 @@ const roleDashboardConfig = {
 };
 
 export function getDashboardRoleBase(pathname = "") {
+  if (!pathname) return "";
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) return "principal";
   if (pathname.startsWith("/portal")) return "portal";
   if (pathname.startsWith("/parent")) return "portal";
   if (pathname.startsWith("/student")) return "portal";
   if (pathname.startsWith("/staff")) return "staff";
-  return normalizeRole(pathname.split("/")[1] || "");
+  const nextSegment = pathname.split("/")[1] || "";
+  const normalized = normalizeRole(nextSegment);
+  if (["principal", "admin"].includes(normalized)) return "principal";
+  return normalized;
 }
 
 export function getDashboardConfigForRole(role = "") {
@@ -133,6 +141,10 @@ export function getDashboardConfigForRole(role = "") {
 
   if (role === "portal" || normalizedRole === "parent" || normalizedRole === "student") {
     return roleDashboardConfig.portal;
+  }
+
+  if (["principal", "admin"].includes(normalizedRole)) {
+    return roleDashboardConfig.principal;
   }
 
   return roleDashboardConfig[normalizedRole] || roleDashboardConfig.staff;

@@ -121,9 +121,9 @@ export default function DashboardHomePage() {
               <div className="preview-heading">
                 <div>
                   <small>MONDAY, 10 FEBRUARY 2025</small>
-                  <h3>Good morning, Admin.</h3>
+                  <h3>Good morning, {firstName}.</h3>
                 </div>
-                <span>2025/2026 Session</span>
+                <span>{sessionLabel}</span>
               </div>
 
               <div className="preview-stats">

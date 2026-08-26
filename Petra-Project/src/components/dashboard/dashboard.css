@@ -7,8 +7,8 @@
   padding: 20px 24px;
   border: 1px solid var(--app-border);
   border-radius: 12px;
-  background: var(--dashboard-panel-bg);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--app-text) 5%, transparent);
+  background: radial-gradient(circle at top left, rgba(242, 199, 166, 0.09), transparent 30%), var(--dashboard-panel-bg);
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.22);
 }
 
 /* Keep shared dashboard surfaces readable in both theme modes. */
@@ -28,13 +28,13 @@
   margin: 0 auto;
   min-height: 100%;
   padding: clamp(18px, 2.6vw, 32px) clamp(18px, 3vw, 44px) 40px;
-  background: var(--dashboard-page-bg);
+  background: linear-gradient(180deg, rgba(10, 16, 23, 0.96) 0%, rgba(8, 12, 17, 1) 100%);
   color: var(--app-text);
 }
 
 .dashboard-home,
 .dashboard-page {
-  background: var(--dashboard-page-bg);
+  background: linear-gradient(180deg, rgba(10, 16, 23, 0.96) 0%, rgba(8, 12, 17, 1) 100%);
 }
 
 .dashboard-home-header,
@@ -48,8 +48,8 @@
   padding: 20px 24px;
   border: 1px solid var(--app-border);
   border-radius: 14px;
-  background: var(--dashboard-panel-bg);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--app-text) 5%, transparent);
+  background: linear-gradient(180deg, rgba(17, 27, 38, 0.96) 0%, rgba(15, 23, 32, 0.96) 100%);
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.18);
 }
 
 .dashboard-home-header h1,
@@ -90,8 +90,8 @@
 .dashboard-home-panel {
   border: 1px solid var(--app-border);
   border-radius: 14px;
-  background: var(--dashboard-card-bg);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--app-text) 7%, transparent);
+  background: linear-gradient(180deg, rgba(17, 27, 38, 0.96) 0%, rgba(15, 23, 32, 0.96) 100%);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.16);
 }
 
 .dashboard-home-summary-card {

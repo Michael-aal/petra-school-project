@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family:
     "Manrope",
     system-ui,
@@ -9,8 +9,8 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background-color: #f4f7f5;
-  color: #172321;
+  background-color: #0a1017;
+  color: #edf3f6;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -19,57 +19,57 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
-  --background: #f4f7f5;
-  --foreground: #172321;
-  --muted-foreground: #5e6e69;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #c6533d;
-  --primary-foreground: #ffffff;
-  --secondary: #d8e9df;
-  --secondary-foreground: #172321;
-  --muted: #e8efeb;
-  --border: rgba(23, 35, 33, 0.12);
-  --input: rgba(23, 35, 33, 0.18);
-  --ring: #c6533d;
-  --app-bg: #f4f7f5;
-  --app-surface: #ffffff;
-  --app-surface-strong: #f8fafc;
-  --app-text: #172321;
-  --app-text-muted: #5e6e69;
-  --app-border: rgba(23, 35, 33, 0.12);
-  --app-accent: #c6533d;
-  --app-accent-2: #3d8063;
-  --success: #287a55;
-  --danger: #c2413b;
-  --warning: #a96708;
-  --info: #2869a8;
+  --background: #0a1017;
+  --foreground: #edf3f6;
+  --muted-foreground: #8c9aaa;
+  --card: #111b26;
+  --card-foreground: #edf3f6;
+  --popover: #111b26;
+  --popover-foreground: #edf3f6;
+  --primary: #f2c7a6;
+  --primary-foreground: #0b111a;
+  --secondary: #13212d;
+  --secondary-foreground: #edf3f6;
+  --muted: #131f2b;
+  --border: rgba(148, 163, 184, 0.14);
+  --input: rgba(148, 163, 184, 0.18);
+  --ring: #f2c7a6;
+  --app-bg: #0a1017;
+  --app-surface: #0f1720;
+  --app-surface-strong: #121d29;
+  --app-text: #edf3f6;
+  --app-text-muted: #8c9aaa;
+  --app-border: rgba(148, 163, 184, 0.14);
+  --app-accent: #f2c7a6;
+  --app-accent-2: #d68256;
+  --success: #7ad3a1;
+  --danger: #ff8a7a;
+  --warning: #f4c77d;
+  --info: #8ec5ff;
   --destructive: #ef4444;
   --icon-primary: var(--app-text);
   --icon-secondary: var(--app-text-muted);
-  --app-card: #ffffff;
-  --app-panel: #ffffff;
-  --dashboard-sidebar-bg: linear-gradient(160deg, #172321 0%, #20352e 100%);
-  --dashboard-sidebar-text: #f5f6f0;
-  --dashboard-sidebar-muted: #aabbb3;
-  --dashboard-topbar-bg: rgba(255, 255, 255, 0.86);
-  --dashboard-topbar-text: #172321;
-  --dashboard-topbar-muted: #687673;
-  --dashboard-card-bg: #ffffff;
-  --dashboard-card-text: #172321;
-  --dashboard-card-muted: #687673;
-  --dashboard-panel-bg: #ffffff;
-  --dashboard-panel-text: #172321;
-  --dashboard-panel-muted: #64748b;
-  --dashboard-page-bg: var(--app-bg);
-  --dashboard-muted-surface: rgba(15, 23, 42, 0.04);
-  --dashboard-accent-gradient: linear-gradient(90deg, #f06b4e 0%, #d9583d 100%);
+  --app-card: #111b26;
+  --app-panel: #0f1720;
+  --dashboard-sidebar-bg: linear-gradient(180deg, #0b111a 0%, #0f1720 100%);
+  --dashboard-sidebar-text: #edf3f6;
+  --dashboard-sidebar-muted: #9aa8b5;
+  --dashboard-topbar-bg: rgba(12, 17, 24, 0.82);
+  --dashboard-topbar-text: #edf3f6;
+  --dashboard-topbar-muted: #a3b1bf;
+  --dashboard-card-bg: #0f1720;
+  --dashboard-card-text: #edf3f6;
+  --dashboard-card-muted: #a3b1bf;
+  --dashboard-panel-bg: #111b26;
+  --dashboard-panel-text: #edf3f6;
+  --dashboard-panel-muted: #a3b1bf;
+  --dashboard-page-bg: #0a1017;
+  --dashboard-muted-surface: rgba(255, 255, 255, 0.03);
+  --dashboard-accent-gradient: linear-gradient(90deg, #f2c7a6 0%, #d68256 100%);
   --dashboard-accent-gradient-strong: linear-gradient(
     90deg,
-    #d9583d 0%,
-    #b94731 100%
+    #e7b38b 0%,
+    #c96f47 100%
   );
   --surface-muted: rgba(15, 23, 42, 0.04);
   --surface-muted-strong: rgba(15, 23, 42, 0.08);
@@ -104,12 +104,15 @@ html,
 body,
 #root {
   margin: 0;
+  width: 100%;
   min-height: 100%;
+  height: 100%;
 }
 
 body {
   background-color: var(--app-bg);
   color: var(--app-text);
+  overflow: hidden;
   transition:
     background-color 0.25s ease,
     color 0.25s ease;

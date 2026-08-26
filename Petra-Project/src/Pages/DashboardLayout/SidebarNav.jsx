@@ -209,87 +209,124 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
     }
   };
 
+  const workspaceItems = navItems.filter(
+    (item) => !["Ask Nuvora", "Links", "Settings", "Logout"].includes(item.label),
+  );
+  const utilityItems = navItems.filter((item) =>
+    ["Links", "Settings"].includes(item.label),
+  );
+
+  const renderNavItem = (item) => {
+    if (!item.children) {
+      if (item.label === "Logout") {
+        return (
+          <button
+            key={item.label}
+            onClick={() => {
+              if (onNavigate) onNavigate();
+              handleLogout();
+            }}
+            className="sidebar-link"
+          >
+            <item.icon className="sidebar-icon" />
+            <span className="sidebar-label">{item.label}</span>
+          </button>
+        );
+      }
+
+      return (
+        <NavLink
+          key={item.label}
+          to={item.href}
+          onClick={onNavigate}
+          className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
+        >
+          <item.icon className="sidebar-icon" />
+          <span className="sidebar-label">{item.label}</span>
+        </NavLink>
+      );
+    }
+
+    const isOpen = openGroups[item.label];
+    const groupActive = item.children.some((child) => isActive(child.href));
+
+    return (
+      <div key={item.label} className="sidebar-group-wrap">
+        <button
+          type="button"
+          onClick={() => toggleGroup(item.label)}
+          className={`sidebar-group ${groupActive ? "group-active" : ""}`}
+        >
+          <item.icon className="sidebar-icon" />
+          <span className="sidebar-title sidebar-label">{item.label}</span>
+          {item.children ? (
+            isOpen ? (
+              <ChevronDown className="arrow-icon" />
+            ) : (
+              <ChevronRight className="arrow-icon" />
+            )
+          ) : null}
+        </button>
+
+        {isOpen ? (
+          <div className="sidebar-children">
+            {item.children.map((child) => (
+              <NavLink
+                key={child.href}
+                to={child.href}
+                onClick={onNavigate}
+                className={`sidebar-child ${isActive(child.href) ? "active" : ""}`}
+              >
+                <child.icon className="child-icon" />
+                <span className="child-label">{child.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
   return (
     <div className={`sidebar-container ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <div className="sidebar-contaner-logo">
-          <School size={30} />
+        <div className="sidebar-contaner-logo" aria-label="School logo">
+          <School size={20} />
         </div>
         <div className="sidebar-brand">
           <h2 className="brand-title">{schoolName.toUpperCase()}</h2>
-          <h3 className="brand-sub">SCHOOL PLATFORM</h3>
+          <h3 className="brand-sub">School Platform</h3>
         </div>
         <button className="sidebar-close" onClick={onClose} aria-label="Close sidebar">
-          <X size={20} />
+          <X size={18} />
         </button>
       </div>
 
-      <nav className="sidebar-nav">
-        {navItems.map((item) => {
-          if (!item.children) {
-            // Render a logout button that calls the logout handler instead of a plain link
-            if (item.label === "Logout") {
-              return (
-                <button key={item.label} onClick={() => { if (onNavigate) onNavigate(); handleLogout(); }} className={`sidebar-link`}>
-                  <item.icon className="sidebar-icon" />
-                  <span className="sidebar-label">{item.label}</span>
-                </button>
-              );
-            }
+      <nav className="sidebar-nav" aria-label="Main navigation">
+        <div className="sidebar-section-label">AI</div>
+        <NavLink
+          to="/dashboard/ask-nuvora"
+          onClick={onNavigate}
+          className={`sidebar-assistant ${isActive("/dashboard/ask-nuvora") ? "active" : ""}`}
+        >
+          <span className="sidebar-assistant-icon">
+            <Sparkles size={16} />
+          </span>
+          <span>Ask Nuvora</span>
+        </NavLink>
 
-            return (
-              <NavLink
-                key={item.label}
-                to={item.href}
-                onClick={onNavigate}
-                className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
-              >
-                <item.icon className="sidebar-icon" />
-                <span className="sidebar-label">{item.label}</span>
-              </NavLink>
-            );
-          }
+        <div className="sidebar-section-label">Workspace</div>
+        {workspaceItems.map(renderNavItem)}
 
-          const isOpen = openGroups[item.label];
-          const groupActive = item.children.some((child) => isActive(child.href));
-
-          return (
-            <div key={item.label}>
-              <button
-                type="button"
-                onClick={() => toggleGroup(item.label)}
-                className={`sidebar-group ${groupActive ? "group-active" : ""}`}
-              >
-                <item.icon className="sidebar-icon" />
-                <span className="sidebar-title sidebar-label">{item.label}</span>
-                {isOpen ? <ChevronDown className="arrow-icon" /> : <ChevronRight className="arrow-icon" />}
-              </button>
-
-              {isOpen ? (
-                <div className="sidebar-children">
-                  {item.children.map((child) => (
-                    <NavLink
-                      key={child.href}
-                      to={child.href}
-                      onClick={onNavigate}
-                      className={`sidebar-child ${isActive(child.href) ? "active" : ""}`}
-                    >
-                      <child.icon className="child-icon" />
-                      <span className="child-label">{child.label}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
+        <div className="sidebar-section-label">System</div>
+        {utilityItems.map(renderNavItem)}
       </nav>
 
       <div className="sidebar-footer">
-        <UserAvatar user={userInfo} size={40} className="sidebar-avatar" />
+        <UserAvatar user={userInfo} size={32} className="sidebar-avatar" />
         <div className="sidebar-user">
           <h3>{getDisplayName(userInfo)}</h3>
-          <h4>{userInfo?.email || "Complete your profile"}</h4>
+          <h4>Administrator</h4>
         </div>
       </div>
     </div>
