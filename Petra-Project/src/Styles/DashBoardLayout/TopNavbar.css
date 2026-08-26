@@ -9,9 +9,9 @@
   width: 100%;
   height: var(--topbar-height);
   padding: 0 clamp(16px, 2vw, 28px);
-  background: rgba(11, 17, 24, 0.82);
+  background: var(--dashboard-topbar-bg);
   color: var(--dashboard-topbar-text);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid var(--app-border);
   backdrop-filter: blur(14px) saturate(130%);
   box-shadow: 0 8px 22px rgba(2, 6, 23, 0.12);
 }
