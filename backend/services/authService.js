@@ -130,7 +130,7 @@ const mapChild = (student) => ({
 });
 
 const makeCode = (prefix) =>
-  `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  `${prefix}-${crypto.randomBytes(4).toString("hex").slice(0, 6).toUpperCase()}`;
 
 const makeInvitationCode = () => `PET-STAFF-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 
@@ -770,7 +770,20 @@ export const authService = {
     if (payload.state !== undefined) updateData.state = payload.state.trim();
     if (payload.city !== undefined) updateData.city = payload.city.trim();
     if (payload.hearAbout !== undefined) updateData.hearAbout = payload.hearAbout.trim();
-    if (payload.password) updateData.password = await hashPassword(payload.password);
+    if (payload.password) {
+      if (!payload.currentPassword) {
+        const error = new Error("Current password is required to change password");
+        error.statusCode = 400;
+        throw error;
+      }
+      const isMatch = await comparePassword(payload.currentPassword, user.password);
+      if (!isMatch) {
+        const error = new Error("Invalid current password");
+        error.statusCode = 401;
+        throw error;
+      }
+      updateData.password = await hashPassword(payload.password);
+    }
 
     const updatedUser = await userModel.update(userId, updateData);
     return { user: safeUser(updatedUser) };

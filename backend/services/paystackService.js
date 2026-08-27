@@ -1,9 +1,9 @@
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual, randomBytes } from "crypto";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE = "https://api.paystack.co";
 
-const buildReference = () => `petra_ref_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+const buildReference = () => `petra_ref_${Date.now()}_${randomBytes(4).toString("hex")}`;
 
 const getPaystackHeaders = () => {
   if (!PAYSTACK_SECRET) {
@@ -55,12 +55,20 @@ export const paystackService = {
   },
 
   verifySignature: (rawBody, signatureHeader) => {
-    if (!signatureHeader) {
+    if (!signatureHeader || typeof signatureHeader !== "string") {
       return false;
     }
 
-    const hash = createHmac("sha512", PAYSTACK_SECRET || "").update(rawBody).digest("hex");
-    return hash === signatureHeader;
+    const secret = process.env.PAYSTACK_SECRET_KEY || "";
+    const hash = createHmac("sha512", secret).update(rawBody).digest("hex");
+    const hashBuf = Buffer.from(hash, "utf8");
+    const sigBuf = Buffer.from(signatureHeader, "utf8");
+
+    if (hashBuf.length !== sigBuf.length) {
+      return false;
+    }
+
+    return timingSafeEqual(hashBuf, sigBuf);
   },
 
   verifyTransaction: async (reference) => {

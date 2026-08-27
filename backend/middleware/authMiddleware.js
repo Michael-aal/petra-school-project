@@ -191,7 +191,6 @@ export const schoolGuard = (req, res, next) => {
 
   const role = normalizeRole(req.user?.role);
   const currentSchoolId = req.schoolId ?? req.user?.schoolId ?? req.user?.selectedSchoolId ?? null;
-  console.log("DEBUG schoolGuard", { path: req.originalUrl, role, reqSchoolId: req.schoolId, userSchoolId: req.user?.schoolId, selectedSchoolId: req.user?.selectedSchoolId, header: req.get("x-school-id") });
 
   if (role === "super_admin" && !currentSchoolId) {
     return res.status(403).json({

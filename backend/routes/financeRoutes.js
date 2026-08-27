@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/payments", protect, schoolGuard, requirePrincipal, listPaymentsValidator, listPayments);
 router.get("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, getPayment);
-router.get("/payments/:id/receipt", protect, idValidator, getPaymentReceipt);
+router.get("/payments/:id/receipt", protect, schoolGuard, idValidator, getPaymentReceipt);
 router.post("/payments", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentValidator, createPayment);
 router.put("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, paymentValidator, updatePayment);
 router.delete("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, deletePayment);
