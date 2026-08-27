@@ -132,6 +132,25 @@
   transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
+.sidebar-assistant,
+.sidebar-link,
+.sidebar-group,
+.sidebar-child,
+.sidebar-link:visited,
+.sidebar-link:hover,
+.sidebar-link:focus,
+.sidebar-link:active,
+.sidebar-assistant:hover,
+.sidebar-assistant:focus,
+.sidebar-group:hover,
+.sidebar-group:focus,
+.sidebar-child:hover,
+.sidebar-child:focus {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .sidebar-assistant {
   background: transparent;
   border-color: transparent;

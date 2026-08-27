@@ -158,7 +158,7 @@ button[type="submit"] {
 }
 
 .btn-secondary,
-button:not(.btn-primary):not(.btn-ghost) {
+button:not(.btn-primary):not(.btn-ghost):not(.sidebar-group):not(.sidebar-link):not(.sidebar-assistant):not(.sidebar-child):not(.sidebar-close) {
   background: var(--app-surface);
   color: var(--app-text);
   border: 1px solid var(--app-border);

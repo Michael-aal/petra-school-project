@@ -218,6 +218,8 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
 
   const renderNavItem = (item) => {
     if (!item.children) {
+      const useGroupStyle = ["Get Started", "Dashboard"].includes(item.label);
+
       if (item.label === "Logout") {
         return (
           <button
@@ -231,6 +233,20 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
             <item.icon className="sidebar-icon" />
             <span className="sidebar-label">{item.label}</span>
           </button>
+        );
+      }
+
+      if (useGroupStyle) {
+        return (
+          <NavLink
+            key={item.label}
+            to={item.href}
+            onClick={onNavigate}
+            className={`sidebar-group ${isActive(item.href) ? "group-active" : ""}`}
+          >
+            <item.icon className="sidebar-icon" />
+            <span className="sidebar-title sidebar-label">{item.label}</span>
+          </NavLink>
         );
       }
 
