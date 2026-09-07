@@ -290,14 +290,29 @@ export const authService = {
   },
 
   login: async ({ email, password }) => {
-    const user = await userModel.findByEmail(email);
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "");
+
+    if (!normalizedEmail) {
+      const error = new Error("Email is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!normalizedPassword) {
+      const error = new Error("Password is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await userModel.findByEmail(normalizedEmail);
     if (!user) {
       const error = new Error("Invalid email or password");
       error.statusCode = 401;
       throw error;
     }
 
-    const isMatch = await comparePassword(password, user.password);
+    const isMatch = await comparePassword(normalizedPassword, user.password);
     if (!isMatch) {
       const error = new Error("Invalid email or password");
       error.statusCode = 401;
