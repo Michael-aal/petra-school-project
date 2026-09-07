@@ -34,10 +34,19 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
 ].filter(Boolean);
 
+const isLocalDevOrigin = (origin) => {
+  try {
+    const { hostname } = new URL(origin);
+    return ["localhost", "127.0.0.1", "::1"].includes(hostname) || hostname.endsWith(".localhost");
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) return callback(null, true);
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,
@@ -80,6 +89,14 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/schools", schoolRoutes);
 app.use("/api/superadmin", superAdminRoutes);
+
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Petra School API is running",
+  });
+});
+
 
 app.use(notFound);
 app.use(errorHandler);
