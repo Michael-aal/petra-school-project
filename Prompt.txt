@@ -1,0 +1,1164 @@
+You are working on the existing Petra School Management System.
+
+Your job is to inspect the existing Petra codebase and complete the connected workflow for:
+
+Admission Form → Applicant → Applicant Code → Entrance Exam/TestPortal → Exam Result → Pass/Fail → Admission → Student Code → School Fees → Paystack Payment → Credit/Balance → Email
+
+🚨 MOST IMPORTANT RULE: ASK QUESTIONS BEFORE MAKING IMPORTANT DECISIONS
+
+Before changing architecture, database relationships, business rules, payment behavior, email behavior, admission logic, exam logic, or existing integrations:
+
+INSPECT THE EXISTING CODE FIRST.
+
+If something is unclear or there are multiple reasonable ways to implement it, STOP and ask me before deciding.
+
+Do NOT:
+
+- Guess business rules.
+- Invent new workflows.
+- Replace working Petra functionality.
+- Create duplicate database models unnecessarily.
+- Create a second payment system.
+- Create a second email system.
+- Create a second authentication system.
+- Replace the existing TestPortal integration without understanding it.
+- Automatically decide admission rules that I have not specified.
+
+For technical implementation details that are obvious and low-risk, you may make reasonable engineering decisions.
+
+For anything that changes how Petra operates as a school-management system, ask me first.
+
+When you have questions, group them together and ask me before proceeding with the affected implementation.
+
+---
+
+1. FIRST: ANALYZE THE EXISTING PETRA SYSTEM
+
+Before writing code, inspect the repository.
+
+Identify:
+
+Frontend
+
+- Framework
+- Routes
+- Admission/application form
+- Parent dashboard
+- Admin dashboard
+- Exam section
+- Student pages
+- School-fee pages
+- Payment pages
+
+Backend
+
+- Express/server structure
+- Authentication
+- Authorization/middleware
+- Applicant APIs
+- Student APIs
+- Exam APIs
+- Payment APIs
+- Email services
+- TestPortal integration
+
+Database
+
+Inspect the Prisma schema and existing relationships.
+
+Look for existing models such as:
+
+- User
+- Parent/Guardian
+- Applicant/Application
+- Student
+- Exam/Assessment
+- ExamAttempt
+- ExamResult
+- SchoolFee
+- Payment
+- Credit
+- EmailLog
+
+Do not assume these exact names exist.
+
+Reuse existing models whenever appropriate.
+
+After inspection, explain the current architecture to me briefly before making major changes.
+
+---
+
+2. ADMISSION APPLICATION FORM
+
+The parent should be able to complete the admission/application form.
+
+Workflow:
+
+Parent
+↓
+Admission/Application Form
+↓
+Enter child's information
+↓
+Submit
+↓
+Backend validates information
+↓
+Application stored in PostgreSQL
+↓
+Applicant Code generated
+↓
+Application status becomes "submitted"
+↓
+Parent receives email
+
+The form must have:
+
+- Client-side validation
+- Server-side validation
+- Required-field validation
+- Error handling
+- Loading state
+- Success state
+- Duplicate-submission protection
+- Proper database relationships
+
+Do not trust client-side validation alone.
+
+---
+
+3. APPLICANT CODE
+
+When an application is successfully created, Petra generates an Applicant Code.
+
+This code belongs to the applicant/application stage.
+
+Example:
+
+"APP-48291"
+
+This is only an example.
+
+Inspect the existing Petra implementation first.
+
+If the Applicant Code format is not already defined, ASK ME before deciding the format.
+
+The Applicant Code is used for:
+
+- Applicant identification
+- Entrance examination
+- Connecting the applicant to TestPortal
+- Retrieving/matching exam results
+
+The Applicant Code is NOT the student's final school identity.
+
+---
+
+4. APPLICANT EMAIL
+
+After the application is successfully submitted, send an email to the parent.
+
+The email should contain:
+
+Greeting
+
+A personalized greeting based on the parent's name.
+
+Example:
+
+"Dear [Parent/Guardian Name],"
+
+Application confirmation
+
+Tell the parent that the application for the child was successfully received.
+
+Applicant information
+
+Show:
+
+- Applicant/Child Name
+- Applicant Code
+
+The Applicant Code should be clearly visible.
+
+Exam/payment webpage
+
+The email should contain the appropriate Petra webpage/link that the parent can use to continue the applicant workflow.
+
+The email should clearly explain what the webpage is for.
+
+Do NOT invent a new URL if Petra already has an appropriate page.
+
+Inspect the existing routes first.
+
+If multiple pages could be used, ASK ME.
+
+---
+
+5. IMPORTANT: APPLICANT CODE VS STUDENT CODE
+
+There are TWO different codes.
+
+Applicant Code
+
+Generated when the admission application is submitted.
+
+Used for:
+
+- Applicant identification
+- Entrance exam
+- TestPortal candidate/exam relationship
+- Exam result retrieval
+
+Student Code
+
+Generated ONLY after:
+
+Applicant passes
+↓
+Admission is approved/confirmed
+↓
+Student record is created
+
+The Student Code is then used for:
+
+- Student identification
+- Parent dashboard
+- Student dashboard
+- School fees
+- Payment
+- Student records
+
+NEVER treat these two codes as the same thing.
+
+Do not generate a Student Code simply because an application was submitted.
+
+Do not generate a Student Code for a failed applicant.
+
+---
+
+6. ADMIN EXAM SECTION
+
+Redesign the existing Exam section inside the Admin Dashboard.
+
+Do not create a completely separate exam system if Petra already has one.
+
+The Admin Exam section should become the control center for entrance examinations.
+
+The admin should be able to see:
+
+- Applicant name
+- Applicant Code
+- Exam/Assessment
+- Exam status
+- Candidate status
+- Score
+- Maximum score
+- Percentage
+- Pass/Fail
+- Completion time
+- Admission status
+
+Example:
+
+Applicant| Applicant Code| Exam| Score| Result| Admission
+John Doe| APP-48291| Entrance Exam| 78%| Passed| Pending
+Jane Doe| APP-48292| Entrance Exam| 42%| Failed| Not Admitted
+
+The exact UI should fit the existing Petra design.
+
+---
+
+7. TESTPORTAL INTEGRATION
+
+Inspect the existing TestPortal integration carefully.
+
+Determine how Petra currently:
+
+- Creates exams
+- Creates candidates
+- Launches exams
+- Associates applicants with TestPortal
+- Retrieves results
+
+Do NOT assume TestPortal has a particular API endpoint.
+
+Determine what the actual integration supports.
+
+If TestPortal provides an official API for results, use it.
+
+If TestPortal supports webhooks, evaluate whether they are appropriate.
+
+If the existing system already has a working integration, extend it rather than replacing it.
+
+Do NOT scrape TestPortal webpages unless there is no supported integration and I explicitly approve it.
+
+---
+
+8. TESTPORTAL RESULT DATA
+
+The goal is to retrieve reliable result information from TestPortal.
+
+Where available, retrieve:
+
+- Applicant/candidate name
+- Applicant Code or candidate identifier
+- TestPortal candidate ID
+- TestPortal exam/assessment ID
+- Attempt ID
+- Result ID
+- Score
+- Maximum score
+- Percentage
+- Pass/Fail
+- Completion status
+- Submission/completion time
+- Attempt information
+- Other useful result metadata
+
+Do not assume every field exists.
+
+Use only information actually provided by TestPortal.
+
+---
+
+9. MATCHING TESTPORTAL RESULTS TO PETRA APPLICANTS
+
+This is extremely important.
+
+Petra must reliably determine which applicant a TestPortal result belongs to.
+
+Do NOT match applicants only by name.
+
+Names are not unique.
+
+Prefer a stable identifier.
+
+For example:
+
+Petra:
+
+Applicant ID: 123
+Applicant Code: APP-48291
+
+TestPortal:
+
+Candidate ID: TP-93821
+
+Petra should maintain the relationship:
+
+Applicant
+ ├── Applicant Code
+ ├── TestPortal Candidate ID
+ ├── TestPortal Exam ID
+ └── Exam Result
+
+The exact fields should depend on what the existing TestPortal integration actually provides.
+
+If the correct identifier relationship is unclear:
+
+ASK ME BEFORE IMPLEMENTING IT.
+
+---
+
+10. RESULT SYNCHRONIZATION
+
+Petra should be able to retrieve TestPortal results and store them in its own database.
+
+Workflow:
+
+TestPortal
+↓
+Result available
+↓
+Petra retrieves result
+↓
+Validate result
+↓
+Find matching Applicant
+↓
+Store/update ExamResult
+↓
+Calculate percentage if necessary
+↓
+Determine Pass/Fail
+↓
+Update Applicant status
+
+Synchronization must be idempotent.
+
+If the same result is retrieved multiple times:
+
+Do NOT create duplicate results.
+
+Update the existing record using a reliable external identifier.
+
+---
+
+11. ADMIN "SYNC RESULTS"
+
+If TestPortal supports it, provide an admin action such as:
+
+Sync Results
+
+The admin should be able to synchronize:
+
+- One applicant
+- One exam
+- Multiple applicants
+- All available results
+
+Show clear results.
+
+For example:
+
+12 results synchronized
+2 applicants have no completed result
+1 result could not be matched
+
+Do not silently fail.
+
+Log synchronization errors for debugging.
+
+---
+
+12. ADMIN EXAM DETAILS
+
+When an administrator opens an examination, show:
+
+Examination information
+
+- Exam name
+- TestPortal exam ID
+- Date
+- Number of applicants
+- Completed attempts
+- Pending attempts
+- Results synchronized
+
+Results
+
+Show:
+
+- Applicant name
+- Applicant Code
+- TestPortal candidate ID
+- Attempt status
+- Score
+- Percentage
+- Pass/Fail
+- Submission time
+- Admission status
+
+---
+
+13. PASS / FAIL WORKFLOW
+
+After retrieving the exam result:
+
+Applicant
+↓
+Exam completed
+↓
+Score retrieved
+↓
+Petra determines result
+↓
+PASS / FAIL
+
+However:
+
+Do not invent the pass mark.
+
+If Petra already has a defined pass mark, use it.
+
+If it does not exist, ASK ME.
+
+Also ask me whether:
+
+Option A
+
+Passing automatically creates an admission.
+
+OR
+
+Option B
+
+Passing only makes the applicant eligible and an admin must approve admission.
+
+Do not choose between these without confirmation if the existing system does not already define it.
+
+---
+
+14. FAILED APPLICANT
+
+If the applicant fails:
+
+Applicant
+↓
+Exam result
+↓
+FAIL
+↓
+Applicant remains an applicant
+↓
+No Student Code
+
+The parent receives an appropriate email.
+
+The email must NOT congratulate the parent.
+
+The message should respectfully communicate the result and any appropriate next step.
+
+The exact wording can follow Petra's existing communication style.
+
+---
+
+15. PASSED APPLICANT
+
+If the applicant passes and admission is approved:
+
+Applicant
+↓
+PASS
+↓
+Admission approved
+↓
+Student record created
+↓
+NEW Student Code generated
+↓
+Applicant linked to Student
+↓
+Parent receives admission email
+
+The new Student Code must be different from the Applicant Code.
+
+Example:
+
+Applicant Code:
+APP-48291
+
+Student Code:
+STU-73942
+
+These are separate identifiers.
+
+---
+
+16. PASS/FAIL EMAIL
+
+The greeting and message must depend on the actual result.
+
+Do not use one generic email for both outcomes.
+
+PASS EMAIL
+
+The email should include:
+
+- Personalized greeting
+- Child/student name
+- Congratulations/admission message
+- Applicant Code where useful
+- NEW Student Code
+- Admission information
+- Relevant next steps
+- School-fee/payment webpage link if applicable
+
+The Student Code is the identifier that should now be used for the student's school-related workflow.
+
+FAIL EMAIL
+
+The email should include:
+
+- Personalized greeting
+- Applicant name
+- Appropriate result message
+- Applicant Code if useful
+- Relevant next steps if Petra has them
+
+Do NOT generate a Student Code for a failed applicant.
+
+---
+
+17. STUDENT CREATION
+
+When admission is approved:
+
+Create the student using the existing Petra student architecture.
+
+Link the student correctly to:
+
+- Parent/Guardian
+- School
+- Class/section where applicable
+- Original application
+- Exam result where appropriate
+
+Do not create duplicate student records if the student already exists.
+
+Use database constraints/logic to prevent accidental duplication.
+
+---
+
+18. SCHOOL FEES
+
+After the applicant becomes an actual student:
+
+Student created
+↓
+Student Code generated
+↓
+Student linked to Parent
+↓
+School fee record assigned
+↓
+Parent can view child's school fees
+
+The parent dashboard should show the correct child.
+
+If a parent has multiple children:
+
+Parent
+ ├── Student A
+ │    └── School Fees
+ │
+ └── Student B
+      └── School Fees
+
+The parent must be able to select the appropriate child.
+
+---
+
+19. SCHOOL-FEE PAYMENT
+
+The parent should be able to pay their child's school fees.
+
+Workflow:
+
+Parent logs in
+↓
+Parent dashboard
+↓
+Select child
+↓
+View outstanding school fees
+↓
+Click Pay School Fees
+↓
+Payment initialized
+↓
+Paystack
+↓
+Payment completed
+↓
+Backend verifies transaction
+↓
+Payment recorded
+↓
+School-fee balance updated
+↓
+Credit/balance updated where applicable
+↓
+Receipt/confirmation generated
+↓
+Parent receives confirmation email
+
+---
+
+20. PAYSTACK SECURITY
+
+Never trust the frontend to declare a payment successful.
+
+The backend MUST verify the transaction with Paystack before marking it successful.
+
+Prevent:
+
+- Fake successful-payment requests
+- Duplicate payments
+- Duplicate payment records
+- Paying another student's fees
+- Updating the wrong student's balance
+- Manually changing payment status from the frontend
+- Reusing transaction references
+
+Every payment should have a unique transaction/reference.
+
+Use clear payment statuses such as:
+
+pending
+successful
+failed
+cancelled
+
+Adapt these to the existing Petra database if equivalent statuses already exist.
+
+---
+
+21. PARENT/CHILD AUTHORIZATION
+
+A parent can only:
+
+- See their own linked children
+- See their children's school fees
+- Make payments for their linked children
+- View their own payment history
+
+A parent must NOT be able to use a Student Code or other identifier to access another student's private information.
+
+All important authorization checks must happen on the backend.
+
+---
+
+22. CREDIT SYSTEM
+
+Petra should support credit tracking where the existing school-fee/business requirements call for it.
+
+Examples could include:
+
+School Fee: ₦100,000
+Payment:    ₦110,000
+--------------------
+Possible Credit: ₦10,000
+
+However:
+
+DO NOT assume that Petra's "credit" means overpayment.
+
+Before implementing the credit business rules, ASK ME what credit means in Petra if the existing codebase does not already define it.
+
+Determine:
+
+- What creates credit?
+- Can overpayments create credit?
+- Can an admin manually add credit?
+- Can credit be applied to future school fees?
+- Can credit be refunded?
+- Does credit belong to the student or parent?
+- Should credit appear on the parent dashboard?
+- How should credit appear on receipts?
+- How should credit affect outstanding balance?
+
+Do not invent these rules.
+
+Technically, maintain a proper transaction/audit history for credit changes.
+
+Do not simply overwrite a single credit number without traceability.
+
+---
+
+23. BALANCE CALCULATION
+
+The system should clearly distinguish:
+
+Total Fees
+- Payments
+- Applied Credit
++ Applicable Charges
+--------------------
+Outstanding Balance
+
+The exact formula must follow Petra's existing business rules.
+
+If those rules are unclear:
+
+ASK ME.
+
+Avoid floating-point errors for money.
+
+Use the existing database's appropriate monetary representation.
+
+---
+
+24. PAYMENT CONFIRMATION EMAIL
+
+After a successful school-fee payment, send a confirmation email.
+
+It should contain appropriate information such as:
+
+- Parent name
+- Student name
+- Student Code
+- Amount paid
+- Payment reference
+- Date
+- Remaining balance
+- Credit where applicable
+
+Do not expose internal database IDs or sensitive information.
+
+---
+
+25. EMAIL ARCHITECTURE
+
+Inspect Petra's existing email service.
+
+If one exists:
+
+Reuse it.
+
+Do not create another unrelated email system.
+
+Use reusable templates/functions for:
+
+- Application submitted
+- Exam passed
+- Exam failed
+- Admission confirmation
+- School-fee payment confirmation
+
+For example, conceptually:
+
+sendApplicationSubmittedEmail()
+sendExamResultEmail()
+sendAdmissionEmail()
+sendSchoolFeePaymentConfirmationEmail()
+
+Do not necessarily use these exact function names.
+
+Follow the existing Petra architecture.
+
+If SMTP/email credentials are unavailable:
+
+- Do not crash the application.
+- Log the email event.
+- Make the failure observable to administrators/developers.
+
+---
+
+26. DATABASE RELATIONSHIPS
+
+Inspect Prisma before modifying it.
+
+The conceptual relationships should be:
+
+Parent
+  ↓
+Application
+  ↓
+Applicant Code
+  ↓
+Exam
+  ↓
+Exam Result
+  ↓
+Admission
+  ↓
+Student
+  ↓
+Student Code
+  ↓
+School Fees
+  ↓
+Payments
+  ↓
+Credit / Balance
+
+The actual Prisma models should follow the existing Petra schema.
+
+Avoid unnecessary duplication.
+
+---
+
+27. DATA TRACEABILITY
+
+An administrator should be able to trace a student's journey:
+
+Application
+   ↓
+Applicant Code
+   ↓
+TestPortal Candidate
+   ↓
+Exam
+   ↓
+Exam Result
+   ↓
+Admission Decision
+   ↓
+Student
+   ↓
+Student Code
+   ↓
+School Fees
+   ↓
+Payments
+   ↓
+Credit/Balance
+
+This is important for debugging and administration.
+
+---
+
+28. ADMIN AUDITABILITY
+
+Important operations should be traceable.
+
+Where appropriate, record:
+
+- Payment verification
+- Exam synchronization
+- Admission decision
+- Student creation
+- Credit adjustments
+- Fee adjustments
+
+Do not expose unnecessary internal information to parents.
+
+---
+
+29. UI REQUIREMENTS
+
+Keep Petra's existing design language.
+
+Do not redesign unrelated parts of the application.
+
+Focus UI changes on:
+
+Parent
+
+- Application form
+- Application success page
+- Payment page
+- Student selection
+- School fees
+- Payment history
+- Credit/balance
+
+Admin
+
+- Applicants
+- Exams
+- TestPortal results
+- Result synchronization
+- Pass/Fail status
+- Admission approval
+- Student creation
+- Fees/payment records
+- Credit tracking
+
+Everything should be responsive.
+
+---
+
+30. ERROR HANDLING
+
+Handle cases such as:
+
+- Invalid form
+- Duplicate application
+- Email failure
+- TestPortal unavailable
+- TestPortal result unavailable
+- Result cannot be matched
+- Payment initialization failure
+- Payment verification failure
+- Duplicate payment
+- Unauthorized parent
+- Student not found
+- Invalid Applicant Code
+- Invalid Student Code
+- Database failure
+
+Errors should be meaningful and should not expose sensitive information.
+
+---
+
+31. TESTING
+
+After implementation, test the complete workflow.
+
+Application
+
+- Submit valid form
+- Submit invalid form
+- Attempt duplicate submission
+- Verify Applicant Code generation
+- Verify database record
+- Verify email/log
+
+Exam
+
+- Create/assign exam
+- Connect applicant to TestPortal
+- Launch exam
+- Retrieve result
+- Match result to correct applicant
+- Prevent duplicate result records
+
+PASS
+
+- Verify pass result
+- Admin approval if required
+- Create Student
+- Generate Student Code
+- Link student to parent
+- Send correct email
+
+FAIL
+
+- Verify failed result
+- No Student Code
+- Correct failed-result email
+
+School Fees
+
+- Parent sees only their children
+- Correct fee displayed
+- Payment initialized
+- Paystack verification succeeds
+- Payment stored
+- Balance updated
+- Credit handled correctly
+- Receipt/email generated
+
+Security
+
+Test that one parent cannot:
+
+- Access another student's fees
+- Pay another student's fees
+- Modify payment status
+- Fake payment success
+- Modify exam results
+- Create unauthorized students
+
+---
+
+32. DEVELOPMENT ORDER
+
+Do not modify everything at once.
+
+Work in stages:
+
+Stage 1
+
+Analyze existing architecture.
+
+Stage 2
+
+Report what already works and what is missing.
+
+Stage 3
+
+Ask me clarification questions for ambiguous business decisions.
+
+Stage 4
+
+Implement the admission form → Applicant Code → email workflow.
+
+Stage 5
+
+Implement/refine Admin Exam → TestPortal → result synchronization.
+
+Stage 6
+
+Implement Pass/Fail → admission → Student Code.
+
+Stage 7
+
+Connect student → parent → school fees.
+
+Stage 8
+
+Connect Paystack payment verification.
+
+Stage 9
+
+Implement/finish credit and balance tracking after confirming the business rules.
+
+Stage 10
+
+Test the entire end-to-end workflow.
+
+Do not move into a stage that depends on an unanswered business decision.
+
+---
+
+33. FINAL TARGET WORKFLOW
+
+The final Petra workflow should be:
+
+                 APPLICATION
+                     │
+                     ▼
+              Admission Form
+                     │
+                     ▼
+              Applicant Created
+                     │
+                     ▼
+             Applicant Code
+                     │
+                     ▼
+             Parent Email
+          ┌──────────┴──────────┐
+          │                     │
+          ▼                     ▼
+       Applicant            Payment/Webpage
+         Exam
+          │
+          ▼
+       TestPortal
+          │
+          ▼
+     Result Retrieved
+          │
+          ▼
+       PASS / FAIL
+       ┌───┴────┐
+       │        │
+      FAIL     PASS
+       │        │
+       ▼        ▼
+   Applicant  Admission
+   remains      Review
+   applicant      │
+       │           ▼
+       │       Student Created
+       │           │
+       │           ▼
+       │      NEW Student Code
+       │           │
+       │           ▼
+       │      Parent Email
+       │           │
+       │           ▼
+       │       School Fees
+       │           │
+       │           ▼
+       │        Paystack
+       │           │
+       │           ▼
+       │    Backend Verification
+       │           │
+       │           ▼
+       │    Payment Recorded
+       │           │
+       │           ▼
+       │     Balance / Credit
+       │           │
+       │           ▼
+       │      Receipt + Email
+       │
+       ▼
+   Result Email
+
+FINAL NON-NEGOTIABLE PRINCIPLES
+
+1. Applicant Code and Student Code are different.
+2. Applicant Code is for the applicant/exam stage.
+3. Student Code is generated only after successful admission/student creation.
+4. TestPortal results must be reliably associated with the correct Applicant.
+5. Do not match exam results using names alone.
+6. Paystack payments must be verified server-side.
+7. Parents can only access their own linked children.
+8. Do not duplicate existing Petra systems.
+9. Preserve working functionality.
+10. Do not invent business rules.
+11. Ask me questions whenever an important decision is unclear.
+12. Credit rules must be confirmed before implementation if they are not already defined.
+13. Test the complete workflow instead of only testing individual pages.
+14. Keep the implementation maintainable and production-minded.
+
+The objective is to make Petra's existing pieces work together as one coherent school workflow, rather than building disconnected features.
