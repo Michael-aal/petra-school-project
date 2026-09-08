@@ -3,13 +3,14 @@ import { protect, requirePrincipal, requireRole, schoolGuard } from "../middlewa
 import { assignFeeStructure, createFeeStructure, createPayment, deleteFeeStructure, deletePayment, getAdminWallet, getCashflow, getFeeStructures, getInvoices, getInstallmentPlans, getParentFees, getPayment, getPaymentReceipt, listPayments, updateFeeStructure, updatePayment } from "../controllers/financeController.js";
 import { idValidator, listPaymentsValidator, paymentValidator } from "../validators/financeValidator.js";
 import { authorizeStudentResource } from "../middleware/authorizeResource.js";
+import { paymentIdempotency } from "../middleware/idempotency.js";
 
 const router = Router();
 
 router.get("/payments", protect, schoolGuard, requirePrincipal, listPaymentsValidator, listPayments);
 router.get("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, getPayment);
 router.get("/payments/:id/receipt", protect, schoolGuard, idValidator, getPaymentReceipt);
-router.post("/payments", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentValidator, authorizeStudentResource(), createPayment);
+router.post("/payments", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentIdempotency, paymentValidator, authorizeStudentResource(), createPayment);
 router.put("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, paymentValidator, updatePayment);
 router.delete("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, deletePayment);
 

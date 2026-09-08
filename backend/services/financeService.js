@@ -4,6 +4,8 @@ import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
 import { parentAccessService } from "./parentAccessService.js";
 import { normalizeRole } from "../utils/roleUtils.js";
+import { recordAuditMutation } from "../middleware/audit.js";
+import { resolveAcademicContext } from "../utils/academicContext.js";
 
 const getSchoolId = (user) => {
   if (!user || user?.schoolId === undefined || user?.schoolId === null) {
@@ -69,22 +71,22 @@ const notifyAdmin = async ({ schoolId, title, body }) => {
 const formatMoney = (amount) =>
   new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 2 }).format(toDecimal(amount).toNumber());
 
-const calculateTotals = async (schoolId) => {
+const calculateTotals = async (schoolId, context = {}) => {
   const [successful, pending, failed, refunded, outstanding] = await Promise.all([
-    prisma.payment.aggregate({ where: { schoolId, status: "Successful" }, _sum: { amount: true } }),
-    prisma.payment.aggregate({ where: { schoolId, status: "Pending" }, _sum: { amount: true } }),
-    prisma.payment.aggregate({ where: { schoolId, status: "Failed" }, _sum: { amount: true } }),
-    prisma.payment.aggregate({ where: { schoolId, status: "Refunded" }, _sum: { amount: true } }),
-    prisma.invoice.aggregate({ where: { schoolId, outstandingBalance: { gt: 0 } }, _sum: { outstandingBalance: true } }),
+    prisma.payment.aggregate({ where: { schoolId, ...context, status: "Successful" }, _sum: { amount: true } }),
+    prisma.payment.aggregate({ where: { schoolId, ...context, status: "Pending" }, _sum: { amount: true } }),
+    prisma.payment.aggregate({ where: { schoolId, ...context, status: "Failed" }, _sum: { amount: true } }),
+    prisma.payment.aggregate({ where: { schoolId, ...context, status: "Refunded" }, _sum: { amount: true } }),
+    prisma.invoice.aggregate({ where: { schoolId, ...context, outstandingBalance: { gt: 0 } }, _sum: { outstandingBalance: true } }),
   ]);
 
   const [today, month] = await Promise.all([
     prisma.payment.aggregate({
-      where: { schoolId, status: "Successful", paidAt: { gte: startOfDay() } },
+      where: { schoolId, ...context, status: "Successful", paidAt: { gte: startOfDay() } },
       _sum: { amount: true },
     }),
     prisma.payment.aggregate({
-      where: { schoolId, status: "Successful", paidAt: { gte: startOfMonth() } },
+      where: { schoolId, ...context, status: "Successful", paidAt: { gte: startOfMonth() } },
       _sum: { amount: true },
     }),
   ]);
@@ -97,9 +99,9 @@ const calculateTotals = async (schoolId) => {
     totalRevenue: successful._sum.amount || 0,
     todaysRevenue: today._sum.amount || 0,
     monthlyRevenue: month._sum.amount || 0,
-    successfulPayments: await prisma.payment.count({ where: { schoolId, status: "Successful" } }),
-    failedPayments: await prisma.payment.count({ where: { schoolId, status: "Failed" } }),
-    refundedPayments: await prisma.payment.count({ where: { schoolId, status: "Refunded" } }),
+    successfulPayments: await prisma.payment.count({ where: { schoolId, ...context, status: "Successful" } }),
+    failedPayments: await prisma.payment.count({ where: { schoolId, ...context, status: "Failed" } }),
+    refundedPayments: await prisma.payment.count({ where: { schoolId, ...context, status: "Refunded" } }),
     outstandingFees: outstanding._sum.outstandingBalance || 0,
   };
 };
@@ -149,7 +151,7 @@ export const financeService = {
       error.statusCode = 400;
       throw error;
     }
-    return prisma.feeStructure.create({
+    const feeStructure = await prisma.feeStructure.create({
       data: {
         schoolId,
         feeCategoryId: payload.feeCategoryId || null,
@@ -162,6 +164,8 @@ export const financeService = {
       },
       include: { feeCategory: true },
     });
+    await recordAuditMutation({ user, schoolId, entity: "Fee", entityId: feeStructure.id, action: "CREATE", after: feeStructure });
+    return feeStructure;
   },
 
   updateFeeStructure: async (user, id, payload) => {
@@ -172,7 +176,7 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
-    return prisma.feeStructure.update({
+    const updated = await prisma.feeStructure.update({
       where: { id },
       data: {
         feeCategoryId: payload.feeCategoryId !== undefined ? payload.feeCategoryId || null : undefined,
@@ -185,6 +189,8 @@ export const financeService = {
       },
       include: { feeCategory: true },
     });
+    await recordAuditMutation({ user, schoolId, entity: "Fee", entityId: id, action: "UPDATE", before: existing, after: updated });
+    return updated;
   },
 
   deleteFeeStructure: async (user, id) => {
@@ -195,11 +201,14 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
-    return prisma.feeStructure.delete({ where: { id } });
+    const deleted = await prisma.feeStructure.delete({ where: { id } });
+    await recordAuditMutation({ user, schoolId, entity: "Fee", entityId: id, action: "DELETE", before: deleted });
+    return deleted;
   },
 
   assignFeeStructure: async (user, payload) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId, payload);
     const structure = await prisma.feeStructure.findFirst({ where: { id: payload.feeStructureId, schoolId } });
     if (!structure) {
       const error = new Error("Fee structure not found");
@@ -231,6 +240,8 @@ export const financeService = {
                 schoolId,
                 studentId: student.id,
                 feeStructureId: structure.id,
+                academicYearId: context.academicYearId,
+                termId: context.termId,
                 amount: structure.amount,
                 outstandingBalance: structure.amount,
               },
@@ -244,9 +255,10 @@ export const financeService = {
 
   listPayments: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId, query);
     const currentPage = Math.max(1, toNumber(query.page, 1));
     const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 20)));
-    const where = { schoolId };
+    const where = { schoolId, ...context };
 
     if (query.search) {
       const search = String(query.search).trim();
@@ -325,6 +337,7 @@ export const financeService = {
 
   createPayment: async (user, payload) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId, payload);
     const student = await prisma.student.findFirst({ where: { id: payload.studentId, schoolId } });
     if (!student) {
       const error = new Error("Student not found");
@@ -365,6 +378,8 @@ export const financeService = {
       data: {
         schoolId,
         studentId: student.id,
+        academicYearId: context.academicYearId,
+        termId: context.termId,
         invoiceId: invoices[0]?.id || null,
         method: "Paystack",
         status: "Pending",
@@ -376,6 +391,7 @@ export const financeService = {
       },
       include: paymentInclude,
     }));
+    await recordAuditMutation({ user, schoolId, entity: "Payment", entityId: payment.id, action: "CREATE", after: payment });
 
     const metadata = {
       studentId: student.id,
@@ -420,6 +436,7 @@ export const financeService = {
       },
       include: paymentInclude,
     });
+    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "UPDATE", before: existing, after: updated });
     return mapPayment(updated);
   },
 
@@ -431,7 +448,9 @@ export const financeService = {
       throw error;
     }
     await prisma.receipt.deleteMany({ where: { paymentId: id } });
-    return prisma.payment.delete({ where: { id } });
+    const deleted = await prisma.payment.delete({ where: { id } });
+    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "DELETE", before: deleted });
+    return deleted;
   },
 
   listInvoices: async (user) =>
@@ -450,6 +469,7 @@ export const financeService = {
 
   getCashflow: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId, query);
     const parseBoundary = (value, end = false) => {
       if (!value) return null;
       const date = new Date(value);
@@ -463,17 +483,17 @@ export const financeService = {
     const paymentDate = Object.keys(range).length ? { paidAt: range } : {};
     const expenseDate = Object.keys(range).length ? { occurredAt: range } : {};
     const [payments, expenses] = await Promise.all([
-      prisma.payment.findMany({ where: { schoolId, ...paymentDate }, orderBy: { paidAt: "desc" }, take: 100, include: { student: true } }),
+      prisma.payment.findMany({ where: { schoolId, ...context, ...paymentDate }, orderBy: { paidAt: "desc" }, take: 100, include: { student: true } }),
       prisma.expense.findMany({ where: { schoolId, ...expenseDate }, orderBy: { occurredAt: "desc" }, take: 100, include: { expenseCategory: true } }),
     ]);
 
     const [revenue, expenseTotal, outstanding, todayRevenue, monthRevenue, yearRevenue, categoryRows] = await Promise.all([
-      prisma.payment.aggregate({ where: { schoolId, status: "Successful" }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { schoolId, ...context, status: "Successful" }, _sum: { amount: true } }),
       prisma.expense.aggregate({ where: { schoolId }, _sum: { amount: true } }),
-      prisma.invoice.aggregate({ where: { schoolId, outstandingBalance: { gt: 0 } }, _sum: { outstandingBalance: true } }),
-      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: startOfDay() } }, _sum: { amount: true } }),
-      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: startOfMonth() } }, _sum: { amount: true } }),
-      prisma.payment.aggregate({ where: { schoolId, status: "Successful", paidAt: { gte: new Date(new Date().getFullYear(), 0, 1) } }, _sum: { amount: true } }),
+      prisma.invoice.aggregate({ where: { schoolId, ...context, outstandingBalance: { gt: 0 } }, _sum: { outstandingBalance: true } }),
+      prisma.payment.aggregate({ where: { schoolId, ...context, status: "Successful", paidAt: { gte: startOfDay() } }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { schoolId, ...context, status: "Successful", paidAt: { gte: startOfMonth() } }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { schoolId, ...context, status: "Successful", paidAt: { gte: new Date(new Date().getFullYear(), 0, 1) } }, _sum: { amount: true } }),
       prisma.expense.findMany({ where: { schoolId }, select: { amount: true, expenseCategory: { select: { id: true, name: true } } } }),
     ]);
 
@@ -502,6 +522,7 @@ export const financeService = {
 
   getParentFees: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId, query);
     const children = await parentAccessService.listChildren(user.id, schoolId);
     const requestedStudentId = String(query.studentId || "").trim();
     const selectedChild = requestedStudentId ? await parentAccessService.assertStudentAccess(user.id, requestedStudentId, schoolId) : children[0] || null;
@@ -510,9 +531,9 @@ export const financeService = {
     }
 
     const [fees, invoices, payments, structures] = await Promise.all([
-      prisma.studentFee.findMany({ where: { schoolId, studentId: selectedChild.id }, include: { feeStructure: { include: { feeCategory: true } } }, orderBy: { createdAt: "desc" } }),
-      prisma.invoice.findMany({ where: { schoolId, studentId: selectedChild.id }, include: { items: true, payments: true }, orderBy: { createdAt: "desc" } }),
-      prisma.payment.findMany({ where: { schoolId, studentId: selectedChild.id }, include: paymentInclude, orderBy: { createdAt: "desc" } }),
+      prisma.studentFee.findMany({ where: { schoolId, ...context, studentId: selectedChild.id }, include: { feeStructure: { include: { feeCategory: true } } }, orderBy: { createdAt: "desc" } }),
+      prisma.invoice.findMany({ where: { schoolId, ...context, studentId: selectedChild.id }, include: { items: true, payments: true }, orderBy: { createdAt: "desc" } }),
+      prisma.payment.findMany({ where: { schoolId, ...context, studentId: selectedChild.id }, include: paymentInclude, orderBy: { createdAt: "desc" } }),
       prisma.feeStructure.findMany({ where: { schoolId, isActive: true }, include: { feeCategory: true }, orderBy: { createdAt: "desc" } }),
     ]);
     const mappedPayments = payments.map(mapPayment);
@@ -524,14 +545,15 @@ export const financeService = {
       .reduce((sum, payment) => sum.plus(toDecimal(payment.amount)), new Prisma.Decimal(0));
     const summary = normalizeRole(user.role) === "parent"
       ? { totalDue, totalPaid, outstandingFees: totalDue.gt(totalPaid) ? totalDue.minus(totalPaid) : new Prisma.Decimal(0) }
-      : await calculateTotals(schoolId);
+      : await calculateTotals(schoolId, context);
     return { student: selectedChild, children, fees, invoices, payments: mappedPayments, feeStructures: structures, summary };
   },
 
   getAdminWallet: async (user) => {
     const schoolId = getSchoolId(user);
+    const context = await resolveAcademicContext(schoolId);
     const [summary, recentPayments, settings, bankDetails, refunds] = await Promise.all([
-      calculateTotals(schoolId),
+      calculateTotals(schoolId, context),
       prisma.payment.findMany({ where: { schoolId }, include: paymentInclude, orderBy: { createdAt: "desc" }, take: 25 }),
       prisma.settings.findMany({ where: { schoolId, key: { in: ["payment_settings", "bank_details"] } } }),
       prisma.settings.findFirst({ where: { schoolId, key: "bank_details" } }),

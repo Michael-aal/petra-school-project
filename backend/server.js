@@ -119,6 +119,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 let server;
+let isShuttingDown = false;
 
 const start = async () => {
   await connectDB();
@@ -143,15 +144,35 @@ process.on("uncaughtException", async (err) => {
   process.exit(1);
 });
 
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received, shutting down gracefully");
-  if (server) {
-    server.close(async () => {
-      await disconnectDB();
-      process.exit(0);
-    });
+const shutdown = async (signal) => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.log(`${signal} received, shutting down gracefully`);
+
+  const forceExit = setTimeout(() => {
+    console.error("Graceful shutdown timed out after 10 seconds");
+    process.exit(1);
+  }, 10_000);
+  forceExit.unref();
+
+  try {
+    if (server) {
+      await new Promise((resolve, reject) => {
+        server.close((error) => (error ? reject(error) : resolve()));
+      });
+    }
+    await disconnectDB();
+    clearTimeout(forceExit);
+    process.exit(0);
+  } catch (error) {
+    console.error("Graceful shutdown failed:", error);
+    clearTimeout(forceExit);
+    process.exit(1);
   }
-});
+};
+
+process.on("SIGTERM", () => { void shutdown("SIGTERM"); });
+process.on("SIGINT", () => { void shutdown("SIGINT"); });
 
 console.log(`QUIZLAB_API_KEY loaded: ${Boolean(process.env.QUIZLAB_API_KEY)}`);
 start();

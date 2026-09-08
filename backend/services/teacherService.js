@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { resolveAcademicContext } from "../utils/academicContext.js";
 import { normalizeRole } from "../utils/roleUtils.js";
 import { announcementService } from "./announcementService.js";
 
@@ -307,10 +308,13 @@ export const teacherService = {
       where: { schoolId: Number(user.schoolId), name: className },
       select: { id: true },
     });
+    const context = await resolveAcademicContext(Number(user.schoolId), payload);
     const attendance = await prisma.studentAttendance.create({
       data: {
         schoolId: Number(user.schoolId),
         studentId: student.id,
+        academicYearId: context.academicYearId,
+        termId: context.termId,
         classId: schoolClass?.id || null,
         attendanceDate: payload.date ? new Date(payload.date) : new Date(),
         status: String(payload.status || "present").toLowerCase(),
