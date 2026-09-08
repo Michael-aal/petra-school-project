@@ -576,6 +576,19 @@ export const financeService = {
     const metadata = verificationData.metadata || {};
 
     const updated = await prisma.$transaction(async (tx) => {
+      const lockedRows = await tx.$queryRaw`SELECT "id" FROM "Payment" WHERE "reference" = ${reference} FOR UPDATE`;
+      if (!lockedRows.length) {
+        throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
+      }
+
+      const lockedPayment = await tx.payment.findUnique({ where: { reference }, include: paymentInclude });
+      if (!lockedPayment) {
+        throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
+      }
+      if (["Successful", "Refunded"].includes(lockedPayment.status)) {
+        return { payment: lockedPayment, alreadyProcessed: true };
+      }
+
       const payment = await tx.payment.update({
         where: { reference },
         data: { status: "Successful", paidAt, method: "Paystack" },
@@ -647,14 +660,16 @@ export const financeService = {
         update: {},
         create: { schoolId, paymentId: payment.id, receiptNumber: makeReceiptNumber() },
       });
-      return { ...payment, receipt };
+      return { payment: { ...payment, receipt }, alreadyProcessed: false };
     });
+
+    if (updated.alreadyProcessed) return mapPayment(updated.payment);
 
     const student = await prisma.student.findUnique({ where: { id: existing.studentId } });
     await notifyUser({ schoolId, userId: student?.parentId || existing.createdById, title: "Payment successful", body: `Payment ${reference} has been verified.` });
     await notifyUser({ schoolId, userId: existing.createdById, title: "Receipt available", body: `Receipt for ${reference} is now available.` });
     await notifyAdmin({ schoolId, title: "Payment received", body: `Payment ${reference} was verified successfully.` });
-    return mapPayment(updated);
+    return mapPayment(updated.payment);
   },
 
   processFailedPayment: async (reference, reason) => {
@@ -662,17 +677,28 @@ export const financeService = {
     if (!existing) {
       throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
     }
-    if (existing.status === "Successful") {
-      return mapPayment(existing);
-    }
-    const updated = await prisma.payment.update({
-      where: { reference },
-      data: { status: "Failed" },
-      include: paymentInclude,
+    const updated = await prisma.$transaction(async (tx) => {
+      const lockedRows = await tx.$queryRaw`SELECT "id" FROM "Payment" WHERE "reference" = ${reference} FOR UPDATE`;
+      if (!lockedRows.length) {
+        throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
+      }
+      const lockedPayment = await tx.payment.findUnique({ where: { reference }, include: paymentInclude });
+      if (!lockedPayment || ["Successful", "Refunded", "Failed"].includes(lockedPayment.status)) {
+        return { payment: lockedPayment || existing, alreadyProcessed: true };
+      }
+      return {
+        payment: await tx.payment.update({
+          where: { reference },
+          data: { status: "Failed" },
+          include: paymentInclude,
+        }),
+        alreadyProcessed: false,
+      };
     });
+    if (updated.alreadyProcessed) return mapPayment(updated.payment);
     await notifyUser({ schoolId: existing.schoolId, userId: existing.createdById, title: "Payment failed", body: `Payment ${reference} failed: ${reason || "Paystack verification failed"}.` });
     await notifyAdmin({ schoolId: existing.schoolId, title: "Payment failed", body: `Payment ${reference} failed verification.` });
-    return mapPayment(updated);
+    return mapPayment(updated.payment);
   },
 
   processPaystackWebhook: async (rawBody, signatureHeader) => {
