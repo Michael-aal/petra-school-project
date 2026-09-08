@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { logger } from "../utils/logger.js";
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 
@@ -39,11 +40,15 @@ export const paymentIdempotency = async (req, res, next) => {
 
   const originalJson = res.json.bind(res);
   res.json = (body) => {
+    const response = JSON.parse(JSON.stringify(body, (_key, value) => {
+      if (value && typeof value === "object" && typeof value.toJSON === "function") return value.toJSON();
+      return value;
+    }));
     void prisma.paymentIdempotency.update({
       where: { key },
-      data: { statusCode: res.statusCode, response: body },
+      data: { statusCode: res.statusCode, response },
     }).catch((error) => {
-      req.log?.error?.(error);
+      logger.error("failed to persist payment idempotency response", { error, key });
     });
     return originalJson(body);
   };
