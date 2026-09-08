@@ -49,6 +49,20 @@ ALTER TABLE "User"
 CREATE UNIQUE INDEX IF NOT EXISTS "User_username_key" ON "User"("username");
 CREATE INDEX IF NOT EXISTS "User_username_idx" ON "User"("username");
 
+CREATE TABLE IF NOT EXISTS "Role" (
+  "id" TEXT NOT NULL,
+  "schoolId" INTEGER,
+  "name" TEXT NOT NULL,
+  "displayName" TEXT,
+  "isSystem" BOOLEAN NOT NULL DEFAULT false,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "Role_schoolId_name_key" ON "Role"("schoolId", "name");
+CREATE INDEX IF NOT EXISTS "Role_schoolId_name_idx" ON "Role"("schoolId", "name");
+
 DO $$
 BEGIN
   IF NOT EXISTS (
