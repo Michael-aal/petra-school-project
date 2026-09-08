@@ -83,13 +83,33 @@ jobs:
           cache-dependency-path: backend/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Verify PostgreSQL readiness
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: |
+          for attempt in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres -d petra && exit 0
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time."
+          exit 1
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: npx prisma generate
       - name: Run TypeScript compiler check
         run: npx tsc --noEmit
       - name: Validate Prisma schema
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx prisma validate
       - name: Run database migrations
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx prisma migrate deploy
       - name: Run database seed
-        run: npx prisma db seed
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: node prisma/seed.js
       - name: Execute test suite
         run: npm test
