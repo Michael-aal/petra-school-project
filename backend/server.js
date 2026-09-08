@@ -2,6 +2,7 @@ import "./config/loadEnv.js";
 import { env } from "./utils/env.js";
 import app from "./app.js";
 import { connectDB, disconnectDB } from "./config/db.js";
+import { closeQueues } from "./jobs/queue.js";
 
 let server;
 let isShuttingDown = false;
@@ -29,6 +30,7 @@ const shutdown = async (signal) => {
         server.close((error) => (error ? reject(error) : resolve()));
       });
     }
+    await closeQueues();
     await disconnectDB();
     clearTimeout(forceExit);
     process.exit(0);

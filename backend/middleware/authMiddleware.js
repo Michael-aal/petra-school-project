@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { userModel } from "../models/userModel.js";
 import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
 import { prisma, runWithSchoolContext, runWithoutSchoolContext } from "../config/db.js";
+import { getJwtPublicKey } from "../utils/jwtKeys.js";
 
 const extractToken = (req) => {
   const authHeader = req.get("authorization") || "";
@@ -100,15 +101,7 @@ export const protect = async (req, res, next) => {
   }
 
   try {
-    const publicKey = String(process.env.JWT_PUBLIC_KEY || "").replace(/\\n/g, "\n");
-    if (!publicKey) {
-      return res.status(500).json({
-        success: false,
-        message: "Server authentication configuration error",
-      });
-    }
-
-    const decoded = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+    const decoded = jwt.verify(token, getJwtPublicKey(), { algorithms: ["RS256"] });
     const { userId: resolvedUserId, email: resolvedEmail } = resolveTokenClaims(decoded);
 
     if (!resolvedUserId) {

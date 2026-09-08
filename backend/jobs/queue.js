@@ -34,3 +34,9 @@ export const closeQueues = async () => {
     connection ? connection.quit() : Promise.resolve("disabled"),
   ]);
 };
+
+export const checkQueueHealth = async () => {
+  if (!connection) return { required: false, connected: true };
+  await connection.ping();
+  return { required: true, connected: true };
+};

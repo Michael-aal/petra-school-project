@@ -1,9 +1,15 @@
-const configuredApiUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/+$/, "");
+const configuredApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "" : "http://localhost:5000");
+
+if (!configuredApiUrl) {
+  throw new Error("VITE_API_URL must be configured for production builds.");
+}
+
+const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, "");
 
 const resolveApiBaseUrl = () => {
-  if (typeof window === "undefined") return configuredApiUrl;
+  if (typeof window === "undefined") return normalizedApiUrl;
 
-  const configured = new URL(configuredApiUrl);
+  const configured = new URL(normalizedApiUrl);
   const browserHost = window.location.hostname;
   const isLocalBrowserHost = ["localhost", "127.0.0.1", "::1"].includes(browserHost);
 
@@ -16,16 +22,16 @@ const resolveApiBaseUrl = () => {
   return configured.toString().replace(/\/+$/, "");
 };
 
-const API_BASE_URL = resolveApiBaseUrl();
-const AUTH_TOKEN_KEY = "petra_auth_token";
+export const API_BASE_URL = resolveApiBaseUrl();
+export const AUTH_TOKEN_KEY = "petra_auth_token";
 
-const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
-const writeAuthToken = (token) => {
+export const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
+export const writeAuthToken = (token) => {
   if (token) {
     window.sessionStorage.setItem(AUTH_TOKEN_KEY, token);
   }
 };
-const clearAuthToken = () => {
+export const clearAuthToken = () => {
   window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
 };
 
@@ -124,4 +130,3 @@ export const authApi = {
     }),
 };
 
-export { API_BASE_URL, AUTH_TOKEN_KEY, clearAuthToken, readAuthToken, writeAuthToken };

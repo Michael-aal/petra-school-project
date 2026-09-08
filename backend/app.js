@@ -25,6 +25,8 @@ import aiRoutes from "./routes/aiRoutes.js";
 import assessmentsRoutes from "./routes/assessmentsRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import { originLock } from "./middleware/originLock.js";
+import { prisma } from "./config/db.js";
+import { checkQueueHealth } from "./jobs/queue.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -95,7 +97,20 @@ app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 
 app.use("/", healthRoutes);
 app.get("/.well-known/jwks.json", jwksHandler);
-app.get("/health", (_req, res) => res.status(200).json({ success: true, message: "API is running" }));
+app.get("/health", async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+  } catch {
+    return res.status(503).json({ status: "unhealthy", database: "disconnected" });
+  }
+
+  try {
+    const redis = await checkQueueHealth();
+    return res.status(200).json({ status: "healthy", database: "connected", redis: redis.connected ? "connected" : "disconnected" });
+  } catch {
+    return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
+  }
+});
 app.use(originLock);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);

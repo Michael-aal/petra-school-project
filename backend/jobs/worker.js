@@ -1,3 +1,4 @@
+import "../config/loadEnv.js";
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 import fs from "node:fs/promises";

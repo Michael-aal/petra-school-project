@@ -17,17 +17,19 @@ const signedToken = (schoolId: number): string => {
   );
 };
 
-(integrationEnabled ? describe : describe.skip)("security integration", () => {
-  afterAll(async () => {
-    await prisma.$disconnect().catch(() => undefined);
-  });
-
+describe("origin lock", () => {
   test("rejects missing and invalid origin secrets", async () => {
     const app = await appPromise;
     const missing = await request(app).get("/api/students");
     const invalid = await request(app).get("/api/students").set("x-origin-secret", "invalid");
     expect(missing.status).toBe(403);
     expect(invalid.status).toBe(403);
+  });
+});
+
+(integrationEnabled ? describe : describe.skip)("security integration", () => {
+  afterAll(async () => {
+    await prisma.$disconnect().catch(() => undefined);
   });
 
   test("does not expose records from another school", async () => {

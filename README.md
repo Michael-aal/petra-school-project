@@ -84,9 +84,12 @@ Create `backend/.env`:
 PORT=5000
 NODE_ENV=development
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME?schema=public"
-JWT_SECRET="replace-with-a-long-random-secret"
-JWT_EXPIRES_IN="7d"
+JWT_PRIVATE_KEY="base64-encoded-RSA-4096-private-key"
+JWT_PUBLIC_KEY="base64-encoded-RSA-4096-public-key"
+JWT_KEY_ID="petra-2026"
+ORIGIN_SECRET="replace-with-edge-origin-secret"
 CLIENT_URL="http://localhost:5173"
+REDIS_URL="redis://127.0.0.1:6379"
 ```
 
 Optional integrations may require additional variables. Inspect the relevant service before enabling Paystack, email, ClassMarker, QuizLab, or AI functionality. Never commit `.env` files or production credentials.
@@ -129,6 +132,8 @@ The web app is normally available at `http://localhost:5173` and the API at `htt
 GET http://localhost:5000/health
 ```
 
+Production frontend builds must set `VITE_API_URL` to the public API base URL. The API origin secret is an edge-to-API control and must not be bundled into browser code; configure the reverse proxy or gateway to inject `x-origin-secret`.
+
 For a deployed frontend, set `VITE_API_URL` to the public API base URL. When it is unset, the frontend API client defaults to `http://localhost:5000`.
 
 ## Backend Commands
@@ -139,6 +144,7 @@ Run these from `backend/`:
 | --- | --- |
 | `npm run dev` | Start the API with Nodemon |
 | `npm start` | Start the API as a production process |
+| `npm run worker` | Start the BullMQ background worker process |
 | `npm test` | Run the Node.js test suite |
 | `npm run db:validate` | Validate the Prisma schema |
 | `npm run db:generate` | Generate the Prisma client |
