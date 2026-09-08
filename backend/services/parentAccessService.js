@@ -20,6 +20,13 @@ const childInclude = {
   },
 };
 
+const childSummaryInclude = {
+  user: {
+    select: { id: true, fullName: true, email: true, profileImage: true },
+  },
+  profile: true,
+};
+
 const toSummary = (student) => {
   const enrollment = student.enrollments?.[0];
   return {
@@ -62,7 +69,7 @@ export const parentAccessService = {
           studentLinks: {
             include: {
               student: {
-                include: childInclude,
+                include: childSummaryInclude,
               },
             },
           },
@@ -74,7 +81,7 @@ export const parentAccessService = {
           studentLinks: {
             include: {
               student: {
-                include: childInclude,
+                include: childSummaryInclude,
               },
             },
           },
@@ -98,7 +105,7 @@ export const parentAccessService = {
     if (linkedUser?.linkedStudentId) {
       const linkedStudent = await prisma.student.findUnique({
         where: { id: linkedUser.linkedStudentId, ...(schoolId ? { schoolId } : {}) },
-        include: childInclude,
+        include: childSummaryInclude,
       });
       pushStudent(linkedStudent);
     }
