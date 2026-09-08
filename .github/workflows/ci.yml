@@ -99,5 +99,5 @@ jobs:
         run: npm run lint
       - name: Build frontend
         env:
-          VITE_API_URL: ${{ vars.PETRA_API_URL }}
+          VITE_API_URL: http://localhost:5000
         run: npm run build
