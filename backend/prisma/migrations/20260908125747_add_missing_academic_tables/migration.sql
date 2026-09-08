@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "StudentAttendance" (
   "id" TEXT NOT NULL,
-  "schoolId" TEXT NOT NULL,
+  "schoolId" INTEGER NOT NULL,
   "studentId" TEXT NOT NULL,
   "academicYearId" TEXT NOT NULL,
   "termId" TEXT NOT NULL,
