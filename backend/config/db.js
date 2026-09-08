@@ -198,7 +198,7 @@ const connectDB = async () => {
       cause: err?.cause,
       stack: err?.stack,
     });
-    process.exit(1);
+    throw err;
   }
 };
 
