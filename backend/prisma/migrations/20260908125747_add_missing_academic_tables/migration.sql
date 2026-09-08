@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS "StudentAttendance" (
+CREATE TABLE IF NOT EXISTS "StudentAttendance" (
   "id" TEXT NOT NULL,
   "schoolId" TEXT NOT NULL,
   "studentId" TEXT NOT NULL,
