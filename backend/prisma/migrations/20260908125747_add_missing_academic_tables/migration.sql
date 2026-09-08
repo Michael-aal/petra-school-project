@@ -34,11 +34,6 @@ ALTER TABLE "StudentAttendance"
   FOREIGN KEY ("termId") REFERENCES "Term"("id") 
   ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_classId_fkey" 
-  FOREIGN KEY ("classId") REFERENCES "Class"("id") 
-  ON DELETE SET NULL ON UPDATE CASCADE;
-
 CREATE INDEX IF NOT EXISTS "StudentAttendance_schoolId_attendanceDate_idx" 
   ON "StudentAttendance"("schoolId", "attendanceDate");
 
