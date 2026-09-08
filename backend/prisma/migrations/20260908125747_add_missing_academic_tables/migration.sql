@@ -1,6 +1,39 @@
+CREATE TABLE IF NOT EXISTS "Class" (
+  "id" TEXT NOT NULL,
+  "schoolId" INTEGER NOT NULL,
+  "academicYearId" TEXT,
+  "name" TEXT NOT NULL,
+  "level" TEXT,
+  "capacity" INTEGER NOT NULL DEFAULT 0,
+  "teacherName" TEXT,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "Class_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "Class_schoolId_name_key"
+  ON "Class"("schoolId", "name");
+
+CREATE INDEX IF NOT EXISTS "Class_schoolId_name_idx"
+  ON "Class"("schoolId", "name");
+
+ALTER TABLE IF EXISTS "Class"
+  ADD CONSTRAINT "Class_schoolId_fkey"
+  FOREIGN KEY ("schoolId")
+  REFERENCES "School"("id")
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE IF EXISTS "Class"
+  ADD CONSTRAINT "Class_academicYearId_fkey"
+  FOREIGN KEY ("academicYearId")
+  REFERENCES "AcademicYear"("id")
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+
 CREATE TABLE IF NOT EXISTS "StudentAttendance" (
   "id" TEXT NOT NULL,
-  "schoolId" TEXT NOT NULL,
+  "schoolId" INTEGER NOT NULL,
   "studentId" TEXT NOT NULL,
   "academicYearId" TEXT NOT NULL,
   "termId" TEXT NOT NULL,
@@ -14,36 +47,46 @@ CREATE TABLE IF NOT EXISTS "StudentAttendance" (
   CONSTRAINT "StudentAttendance_pkey" PRIMARY KEY ("id")
 );
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_schoolId_fkey" 
-  FOREIGN KEY ("schoolId") REFERENCES "School"("id") 
-  ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StudentAttendance"
+  ADD CONSTRAINT "StudentAttendance_schoolId_fkey"
+  FOREIGN KEY ("schoolId")
+  REFERENCES "School"("id")
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_studentId_fkey" 
-  FOREIGN KEY ("studentId") REFERENCES "Student"("id") 
-  ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StudentAttendance"
+  ADD CONSTRAINT "StudentAttendance_studentId_fkey"
+  FOREIGN KEY ("studentId")
+  REFERENCES "Student"("id")
+  ON DELETE RESTRICT
+  ON UPDATE CASCADE;
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_academicYearId_fkey" 
-  FOREIGN KEY ("academicYearId") REFERENCES "AcademicYear"("id") 
-  ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StudentAttendance"
+  ADD CONSTRAINT "StudentAttendance_academicYearId_fkey"
+  FOREIGN KEY ("academicYearId")
+  REFERENCES "AcademicYear"("id")
+  ON DELETE RESTRICT
+  ON UPDATE CASCADE;
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_termId_fkey" 
-  FOREIGN KEY ("termId") REFERENCES "Term"("id") 
-  ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StudentAttendance"
+  ADD CONSTRAINT "StudentAttendance_termId_fkey"
+  FOREIGN KEY ("termId")
+  REFERENCES "Term"("id")
+  ON DELETE RESTRICT
+  ON UPDATE CASCADE;
 
-ALTER TABLE "StudentAttendance" 
-  ADD CONSTRAINT "StudentAttendance_classId_fkey" 
-  FOREIGN KEY ("classId") REFERENCES "Class"("id") 
-  ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "StudentAttendance"
+  ADD CONSTRAINT "StudentAttendance_classId_fkey"
+  FOREIGN KEY ("classId")
+  REFERENCES "Class"("id")
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
 
-CREATE INDEX IF NOT EXISTS "StudentAttendance_schoolId_attendanceDate_idx" 
+CREATE INDEX IF NOT EXISTS "StudentAttendance_schoolId_attendanceDate_idx"
   ON "StudentAttendance"("schoolId", "attendanceDate");
 
-CREATE INDEX IF NOT EXISTS "StudentAttendance_studentId_attendanceDate_idx" 
+CREATE INDEX IF NOT EXISTS "StudentAttendance_studentId_attendanceDate_idx"
   ON "StudentAttendance"("studentId", "attendanceDate");
 
-CREATE INDEX IF NOT EXISTS "StudentAttendance_studentId_academicYearId_termId_idx" 
+CREATE INDEX IF NOT EXISTS "StudentAttendance_studentId_academicYearId_termId_idx"
   ON "StudentAttendance"("studentId", "academicYearId", "termId");

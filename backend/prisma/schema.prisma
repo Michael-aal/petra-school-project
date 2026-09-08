@@ -837,23 +837,24 @@ model Attendance {
 }
 
 model StudentAttendance {
-  id             String       @id @default(cuid())
+  id             String   @id @default(cuid())
   schoolId       Int
   studentId      String
   academicYearId String
   termId         String
   classId        String?
   attendanceDate DateTime
-  status         String       @default("present")
+  status         String   @default("present")
   remarks        String?
   markedById     String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  class          Class?       @relation(fields: [classId], references: [id])
-  school         School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student        Student      @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
-  term           Term         @relation(fields: [termId], references: [id], onDelete: Restrict)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  class        Class?       @relation(fields: [classId], references: [id])
+  school       School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  term         Term         @relation(fields: [termId], references: [id], onDelete: Restrict)
 
   @@index([schoolId, attendanceDate])
   @@index([studentId, attendanceDate])
