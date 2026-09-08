@@ -449,7 +449,7 @@ export const teacherService = {
   },
 
   createResult: async (user, payload) => {
-    const result = await prisma.result.create({
+    const result = await prisma.$transaction((tx) => tx.result.create({
       data: {
         teacherId: user.id,
         studentId: payload.studentId,
@@ -460,7 +460,7 @@ export const teacherService = {
         maxScore: Number(payload.maxScore || 100),
         published: Boolean(payload.published),
       },
-    });
+    }));
     return result;
   },
 

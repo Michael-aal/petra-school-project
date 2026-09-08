@@ -108,9 +108,9 @@ const resolveSchoolId = async (preferredSchoolId) => {
 };
 
 export const studentService = {
-  list: async ({ page = 1, limit = 10, search = "", className = "", gender = "", status = "" } = {}, user) => {
+  list: async ({ page = 1, limit = 20, search = "", className = "", gender = "", status = "" } = {}, user) => {
     const currentPage = Math.max(1, toNumber(page, 1));
-    const pageSize = Math.max(1, Math.min(200, toNumber(limit, 10)));
+    const pageSize = Math.max(1, Math.min(100, toNumber(limit, 20)));
     const where = buildWhere({ search, className, gender, status });
     const schoolId = user?.schoolId;
     if (!schoolId) {

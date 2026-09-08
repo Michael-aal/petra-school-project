@@ -14,7 +14,7 @@ router.put("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator,
 router.delete("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, deletePayment);
 
 router.get("/invoices", protect, schoolGuard, requirePrincipal, getInvoices);
-router.get("/fees", protect, schoolGuard, requirePrincipal, getFeeStructures);
+router.get("/fees", protect, schoolGuard, requirePrincipal, listPaymentsValidator, getFeeStructures);
 router.post("/fees", protect, schoolGuard, requirePrincipal, createFeeStructure);
 router.put("/fees/:id", protect, schoolGuard, requirePrincipal, updateFeeStructure);
 router.delete("/fees/:id", protect, schoolGuard, requirePrincipal, deleteFeeStructure);

@@ -3,8 +3,8 @@ import { body, param, query } from "express-validator";
 const studentStatusValues = ["active", "inactive", "suspended"];
 
 export const listStudentsValidator = [
-  query("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive integer"),
-  query("limit").optional().isInt({ min: 1, max: 200 }).withMessage("Limit must be between 1 and 200"),
+  query("page").optional().isInt({ min: 1 }).toInt().withMessage("Page must be a positive integer"),
+  query("limit").optional().isInt({ min: 1, max: 100 }).toInt().withMessage("Limit must be between 1 and 100"),
 ];
 
 export const studentIdValidator = [

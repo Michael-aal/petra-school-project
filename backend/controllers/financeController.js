@@ -84,7 +84,7 @@ export const getInvoices = async (req, res, next) => {
 
 export const getFeeStructures = async (req, res, next) => {
   try {
-    return res.json({ success: true, feeStructures: await financeService.listFeeStructures(req.user) });
+    return res.json({ success: true, ...(await financeService.listFeeStructures(req.user, req.query)) });
   } catch (error) {
     next(error);
   }

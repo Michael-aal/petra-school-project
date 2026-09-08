@@ -110,16 +110,29 @@ const mapPayment = (payment) => ({
 
 export const financeService = {
   listFeeStructures: async (user, query = {}) =>
-    prisma.feeStructure.findMany({
-      where: {
+    (() => {
+      const currentPage = Math.max(1, toNumber(query.page, 1));
+      const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 20)));
+      const where = {
         schoolId: getSchoolId(user),
         ...(query.className ? { className: String(query.className).trim() } : {}),
         ...(query.level ? { className: { contains: String(query.level).trim(), mode: "insensitive" } } : {}),
         ...(query.isActive !== undefined ? { isActive: String(query.isActive) === "true" } : {}),
-      },
-      orderBy: [{ isActive: "desc" }, { createdAt: "desc" }],
-      include: { feeCategory: true, studentFees: { include: { student: { include: { user: { select: { id: true, fullName: true } } } } } } },
-    }),
+      };
+      return Promise.all([
+        prisma.feeStructure.count({ where }),
+        prisma.feeStructure.findMany({
+          where,
+          orderBy: [{ isActive: "desc" }, { createdAt: "desc" }],
+          skip: (currentPage - 1) * pageSize,
+          take: pageSize,
+          include: { feeCategory: true },
+        }),
+      ]).then(([total, feeStructures]) => ({
+        feeStructures,
+        pagination: { page: currentPage, limit: pageSize, total, totalPages: Math.max(1, Math.ceil(total / pageSize)) },
+      }));
+    })(),
 
   createFeeStructure: async (user, payload) => {
     const schoolId = getSchoolId(user);
@@ -230,7 +243,7 @@ export const financeService = {
   listPayments: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
     const currentPage = Math.max(1, toNumber(query.page, 1));
-    const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 25)));
+    const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 20)));
     const where = { schoolId };
 
     if (query.search) {
