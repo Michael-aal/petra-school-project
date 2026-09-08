@@ -24,6 +24,7 @@ import {
   removeClassSubject,
   removeTeacherClass,
 } from "../controllers/schoolConnectionController.js";
+import { queueReportGeneration } from "../controllers/reportController.js";
 
 const router = Router();
 
@@ -92,6 +93,7 @@ router.delete(
   removeClassSubject,
 );
 router.get("/report-cards", protect, requirePrincipal, listReportCards);
+router.post("/report-cards/:id/generate", protect, requirePrincipal, queueReportGeneration);
 router.patch(
   "/report-cards/:id/publish",
   protect,

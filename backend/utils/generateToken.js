@@ -8,7 +8,11 @@ export const generateToken = (payload = {}) => {
     sub: payload?.sub ?? payload?.id ?? payload?.userId,
   };
 
-  return jwt.sign(normalizedPayload, process.env.JWT_SECRET, {
+  const privateKey = String(process.env.JWT_PRIVATE_KEY || "").replace(/\\n/g, "\n");
+  if (!privateKey) throw new Error("JWT_PRIVATE_KEY is not configured.");
+  return jwt.sign(normalizedPayload, privateKey, {
+    algorithm: "RS256",
+    keyid: process.env.JWT_KEY_ID || "petra-2026",
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 };
