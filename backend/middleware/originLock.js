@@ -1,4 +1,6 @@
 export const originLock = (req, res, next) => {
+  if (req.path === "/healthz" || req.path === "/readyz") return next();
+
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");
   if (!configured || supplied.length !== configured.length) {
@@ -11,3 +13,5 @@ export const originLock = (req, res, next) => {
   if (mismatch !== 0) return res.status(403).json({ success: false, message: "Forbidden" });
   return next();
 };
+
+export const enforceOriginLock = originLock;

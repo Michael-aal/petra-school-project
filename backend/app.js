@@ -96,7 +96,7 @@ app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 app.use("/", healthRoutes);
 app.get("/.well-known/jwks.json", jwksHandler);
 app.get("/health", (_req, res) => res.status(200).json({ success: true, message: "API is running" }));
-app.use("/api", originLock);
+app.use(originLock);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/academic", academicRoutes);
