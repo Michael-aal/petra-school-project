@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { Prisma } from "@prisma/client";
 import { walletModel } from "../models/walletModel.js";
 import { userModel } from "../models/userModel.js";
 import { paystackService } from "./paystackService.js";
@@ -6,6 +7,7 @@ import { paystackService } from "./paystackService.js";
 const generateAccountNumber = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
 
 const buildReference = () => `wallet_tx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prisma.Decimal(String(value ?? 0));
 
 const getUser = async (userId, email) => {
   if (userId) {
@@ -31,7 +33,7 @@ const createWallet = async (userId, email) => {
     bankName: "Petra Bank",
     bankCode: "101",
     currency: "NGN",
-    balance: 0.0,
+    balance: new Prisma.Decimal(0),
   });
 };
 
@@ -63,12 +65,12 @@ export const walletService = {
 
     const totals = transactions.reduce(
       (acc, transaction) => {
-        if (transaction.type === "DEPOSIT") acc.deposits += transaction.amount;
-        if (transaction.type === "WITHDRAW") acc.withdrawals += transaction.amount;
-        if (transaction.type === "TRANSFER") acc.transfers += transaction.amount;
+        if (transaction.type === "DEPOSIT") acc.deposits = acc.deposits.plus(toDecimal(transaction.amount));
+        if (transaction.type === "WITHDRAW") acc.withdrawals = acc.withdrawals.plus(toDecimal(transaction.amount));
+        if (transaction.type === "TRANSFER") acc.transfers = acc.transfers.plus(toDecimal(transaction.amount));
         return acc;
       },
-      { deposits: 0, withdrawals: 0, transfers: 0 },
+      { deposits: new Prisma.Decimal(0), withdrawals: new Prisma.Decimal(0), transfers: new Prisma.Decimal(0) },
     );
 
     return {
@@ -88,21 +90,21 @@ export const walletService = {
   },
 
   withdraw: async (userId, amount, description) => {
-    const parsedAmount = Number(amount);
-    if (!parsedAmount || parsedAmount <= 0) {
+    const parsedAmount = toDecimal(amount);
+    if (parsedAmount.lte(0)) {
       const error = new Error("Withdrawal amount must be a positive number");
       error.statusCode = 400;
       throw error;
     }
 
     const wallet = await ensureWallet(userId);
-    if (wallet.balance < parsedAmount) {
+    if (toDecimal(wallet.balance).lt(parsedAmount)) {
       const error = new Error("Insufficient wallet balance");
       error.statusCode = 400;
       throw error;
     }
 
-    const newBalance = wallet.balance - parsedAmount;
+    const newBalance = toDecimal(wallet.balance).minus(parsedAmount);
 
     const [updatedWallet] = await prisma.$transaction([
       walletModel.update({ userId }, { balance: newBalance }),
@@ -124,15 +126,15 @@ export const walletService = {
   },
 
   transfer: async (userId, recipient, amount, note) => {
-    const parsedAmount = Number(amount);
-    if (!parsedAmount || parsedAmount <= 0) {
+    const parsedAmount = toDecimal(amount);
+    if (parsedAmount.lte(0)) {
       const error = new Error("Transfer amount must be a positive number");
       error.statusCode = 400;
       throw error;
     }
 
     const senderWallet = await ensureWallet(userId);
-    if (senderWallet.balance < parsedAmount) {
+    if (toDecimal(senderWallet.balance).lt(parsedAmount)) {
       const error = new Error("Insufficient balance to transfer");
       error.statusCode = 400;
       throw error;
@@ -158,8 +160,8 @@ export const walletService = {
       throw error;
     }
 
-    const newSenderBalance = senderWallet.balance - parsedAmount;
-    const newRecipientBalance = recipientWallet.balance + parsedAmount;
+    const newSenderBalance = toDecimal(senderWallet.balance).minus(parsedAmount);
+    const newRecipientBalance = toDecimal(recipientWallet.balance).plus(parsedAmount);
 
     await prisma.$transaction([
       walletModel.update({ userId }, { balance: newSenderBalance }),
@@ -217,7 +219,7 @@ export const walletService = {
       return payload;
     }
 
-    const amount = Number(data.amount) / 100;
+    const amount = new Prisma.Decimal(String(data.amount || 0)).dividedBy(100);
     const customerEmail = data.customer?.email;
     const user = await getUser(data.metadata?.userId, customerEmail);
     if (!user) {
@@ -227,7 +229,7 @@ export const walletService = {
     }
 
     const wallet = await ensureWallet(user.id, customerEmail);
-    const updatedWallet = await walletModel.update({ userId: wallet.userId }, { balance: wallet.balance + amount });
+    const updatedWallet = await walletModel.update({ userId: wallet.userId }, { balance: toDecimal(wallet.balance).plus(amount) });
 
     await walletModel.createTransaction({
       walletId: wallet.id,

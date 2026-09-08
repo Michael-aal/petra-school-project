@@ -7,7 +7,13 @@ export const notFound = (req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || (res.statusCode >= 400 ? res.statusCode : 500);
+  const prismaStatus = {
+    P2002: 409,
+    P2025: 404,
+    P2003: 409,
+    P2034: 409,
+  };
+  const statusCode = err.statusCode || prismaStatus[err.code] || (res.statusCode >= 400 ? res.statusCode : 500);
   const isProduction = process.env.NODE_ENV === "production";
 
   logger.error("request failed", {
@@ -19,7 +25,9 @@ export const errorHandler = (err, req, res, next) => {
     stack: isProduction ? undefined : err.stack,
   });
 
-  const safeMessage = isProduction && statusCode >= 500 ? "Internal server error" : (err.message || "Server error");
+  const safeMessage = isProduction
+    ? (statusCode >= 500 ? "Internal server error" : (statusCode === 409 ? "The request conflicts with existing data" : err.statusCode ? err.message : "Request could not be completed"))
+    : (err.message || "Server error");
   res.status(statusCode).json({
     success: false,
     requestId: req.requestId,

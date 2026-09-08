@@ -168,19 +168,19 @@ model Wallet {
   bankName                String
   bankCode                String
   currency                String        @default("NGN")
-  balance                 Float         @default(0.0)
+  balance                 Decimal       @default(0.00) @db.Decimal(12, 2)
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
   autoPaymentEnabled      Boolean       @default(false)
-  dailyTransactionLimit   Float?
+  dailyTransactionLimit   Decimal?      @db.Decimal(12, 2)
   defaultPaymentMethod    String?
-  frozenBalance           Float         @default(0.0)
-  monthlyTransactionLimit Float?
+  frozenBalance           Decimal       @default(0.00) @db.Decimal(12, 2)
+  monthlyTransactionLimit Decimal?      @db.Decimal(12, 2)
   nickname                String?
   notes                   String?
   notificationPreferences Json?
   parentUserId            String?
-  spendingLimit           Float?
+  spendingLimit           Decimal?      @db.Decimal(12, 2)
   status                  String        @default("active")
   studentUserId           String?
   transactions            Transaction[]
@@ -193,7 +193,7 @@ model Transaction {
   userId      String
   reference   String   @unique
   type        String
-  amount      Float
+  amount      Decimal  @db.Decimal(12, 2)
   status      String
   description String?
   source      String?
@@ -1096,7 +1096,7 @@ model FeeStructure {
   className     String?
   session       String?
   term          String?
-  amount        Float
+  amount        Decimal      @db.Decimal(12, 2)
   dueDate       DateTime?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
@@ -1113,8 +1113,8 @@ model StudentFee {
   schoolId           Int
   studentId          String
   feeStructureId     String?
-  amount             Float
-  outstandingBalance Float         @default(0)
+  amount             Decimal       @db.Decimal(12, 2)
+  outstandingBalance Decimal       @default(0.00) @db.Decimal(12, 2)
   status             String        @default("Unpaid")
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
@@ -1133,8 +1133,8 @@ model Invoice {
   invoiceNumber      String        @unique
   status             String        @default("Unpaid")
   dueDate            DateTime?
-  totalAmount        Float
-  outstandingBalance Float         @default(0)
+  totalAmount        Decimal       @db.Decimal(12, 2)
+  outstandingBalance Decimal       @default(0.00) @db.Decimal(12, 2)
   notes              String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
@@ -1149,8 +1149,8 @@ model InvoiceItem {
   invoiceId   String
   description String
   quantity    Int      @default(1)
-  unitPrice   Float
-  amount      Float
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  amount      Decimal  @db.Decimal(12, 2)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
@@ -1176,7 +1176,7 @@ model Payment {
   invoiceId       String?
   method          String
   status          String
-  amount          Float
+  amount          Decimal        @db.Decimal(12, 2)
   paidAt          DateTime
   reference       String         @unique
   note            String?
@@ -1211,7 +1211,7 @@ model Scholarship {
   schoolId    Int
   name        String
   description String?
-  amount      Float    @default(0)
+  amount      Decimal  @default(0.00) @db.Decimal(12, 2)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -1237,7 +1237,7 @@ model Fine {
   id        String   @id @default(cuid())
   schoolId  Int
   name      String
-  amount    Float    @default(0)
+  amount    Decimal  @default(0.00) @db.Decimal(12, 2)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1252,7 +1252,7 @@ model InstallmentPlan {
   studentId    String
   session      String?
   term         String?
-  totalAmount  Float
+  totalAmount  Decimal              @db.Decimal(12, 2)
   installments Int                  @default(1)
   status       String               @default("Active")
   createdAt    DateTime             @default(now())
@@ -1265,7 +1265,7 @@ model InstallmentPlan {
 model InstallmentPayment {
   id        String          @id @default(cuid())
   planId    String
-  amount    Float
+  amount    Decimal         @db.Decimal(12, 2)
   dueDate   DateTime
   paidAt    DateTime?
   status    String          @default("Pending")
@@ -1606,7 +1606,7 @@ model Expense {
   termId            String?
   createdById       String?
   title             String
-  amount            Float
+  amount            Decimal          @db.Decimal(12, 2)
   occurredAt        DateTime
   note              String?
   createdAt         DateTime         @default(now())

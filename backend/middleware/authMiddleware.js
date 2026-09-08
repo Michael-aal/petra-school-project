@@ -129,6 +129,13 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    if (user.accountStatus && user.accountStatus !== "active") {
+      return res.status(401).json({
+        success: false,
+        message: "This account is not active",
+      });
+    }
+
     req.auth = {
       token,
       decoded,

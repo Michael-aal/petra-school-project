@@ -35,12 +35,12 @@ const buildTeacherScope = async (user) => {
     classNames: teacher?.classes
       ?.map((item) => item.class?.name)
       .filter(Boolean).length
-      ? teacher.classes.map((item) => item.class.name)
+      ? teacher.classes.map((item) => item.class?.name).filter(Boolean)
       : classNames,
     subjects: teacher?.subjects
       ?.map((item) => item.subject?.name)
       .filter(Boolean).length
-      ? teacher.subjects.map((item) => item.subject.name)
+      ? teacher.subjects.map((item) => item.subject?.name).filter(Boolean)
       : subjects,
   };
 };
@@ -374,7 +374,11 @@ export const teacherService = {
     const updated = await prisma.assessment.update({
       where: { id },
       data: {
-        ...payload,
+        ...(payload.title !== undefined ? { title: String(payload.title).trim() } : {}),
+        ...(payload.subject !== undefined ? { subject: String(payload.subject).trim() } : {}),
+        ...(payload.className !== undefined ? { className: String(payload.className).trim() } : {}),
+        ...(payload.date !== undefined ? { date: new Date(payload.date) } : {}),
+        ...(payload.description !== undefined ? { description: String(payload.description) } : {}),
         maxScore: payload.maxScore ? Number(payload.maxScore) : undefined,
       },
     });
@@ -474,7 +478,9 @@ export const teacherService = {
     return prisma.result.update({
       where: { id },
       data: {
-        ...payload,
+        ...(payload.subject !== undefined ? { subject: String(payload.subject).trim() } : {}),
+        ...(payload.className !== undefined ? { className: String(payload.className).trim() } : {}),
+        ...(payload.published !== undefined ? { published: Boolean(payload.published) } : {}),
         score: payload.score ? Number(payload.score) : undefined,
         maxScore: payload.maxScore ? Number(payload.maxScore) : undefined,
       },

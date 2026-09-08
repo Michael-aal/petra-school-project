@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
 import { parentAccessService } from "./parentAccessService.js";
@@ -39,6 +40,7 @@ const normalizeMethod = (value = "") => {
 
 const makeReceiptNumber = () => `RCP-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 const makeInvoiceNumber = () => `INV-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prisma.Decimal(String(value ?? 0));
 
 const paymentInclude = {
   student: true,
@@ -65,7 +67,7 @@ const notifyAdmin = async ({ schoolId, title, body }) => {
 };
 
 const formatMoney = (amount) =>
-  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 2 }).format(amount || 0);
+  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 2 }).format(toDecimal(amount).toNumber());
 
 const calculateTotals = async (schoolId) => {
   const [successful, pending, failed, refunded, outstanding] = await Promise.all([
@@ -136,13 +138,13 @@ export const financeService = {
 
   createFeeStructure: async (user, payload) => {
     const schoolId = getSchoolId(user);
-    const amount = Number(payload.amount);
+    const amount = toDecimal(payload.amount);
     if (!payload.name && !payload.feeCategoryId) {
       const error = new Error("Fee name or category is required");
       error.statusCode = 400;
       throw error;
     }
-    if (!amount || amount <= 0) {
+    if (amount.lte(0)) {
       const error = new Error("Amount must be a positive number");
       error.statusCode = 400;
       throw error;
@@ -177,7 +179,7 @@ export const financeService = {
         className: payload.className !== undefined ? payload.className || null : undefined,
         session: payload.session !== undefined ? payload.session || null : undefined,
         term: payload.term !== undefined ? payload.term || null : undefined,
-        amount: payload.amount !== undefined ? Number(payload.amount) : undefined,
+        amount: payload.amount !== undefined ? toDecimal(payload.amount) : undefined,
         dueDate: payload.dueDate !== undefined ? (payload.dueDate ? new Date(payload.dueDate) : null) : undefined,
         isActive: payload.isActive !== undefined ? Boolean(payload.isActive) : undefined,
       },
@@ -348,12 +350,12 @@ export const financeService = {
       ? await prisma.studentFee.findMany({ where: { id: { in: studentFeeIds }, schoolId } })
       : [];
 
-    const invoiceDue = invoices.reduce((sum, invoice) => sum + Number(invoice.outstandingBalance || invoice.totalAmount || 0), 0);
-    const feeDue = fees.reduce((sum, fee) => sum + Number(fee.outstandingBalance || fee.amount || 0), 0);
-    const requestedAmount = payload.amount !== undefined && payload.amount !== null ? Number(payload.amount) : invoiceDue + feeDue;
-    const amount = Number(requestedAmount);
+    const invoiceDue = invoices.reduce((sum, invoice) => sum.plus(toDecimal(invoice.outstandingBalance || invoice.totalAmount)), new Prisma.Decimal(0));
+    const feeDue = fees.reduce((sum, fee) => sum.plus(toDecimal(fee.outstandingBalance || fee.amount)), new Prisma.Decimal(0));
+    const requestedAmount = payload.amount !== undefined && payload.amount !== null ? toDecimal(payload.amount) : invoiceDue.plus(feeDue);
+    const amount = toDecimal(requestedAmount);
 
-    if (!amount || amount <= 0) {
+    if (amount.lte(0)) {
       const error = new Error("Amount must be a positive number");
       error.statusCode = 400;
       throw error;
@@ -380,7 +382,7 @@ export const financeService = {
       invoiceIds,
       studentFeeIds,
       schoolId,
-      totalDue: invoiceDue + feeDue,
+      totalDue: invoiceDue.plus(feeDue).toFixed(2),
     };
 
     const session = await paystackService.initializePayment({
@@ -477,15 +479,15 @@ export const financeService = {
 
     const expensesByCategory = Object.values(categoryRows.reduce((acc, row) => {
       const key = row.expenseCategory?.id || "uncategorized";
-      if (!acc[key]) acc[key] = { categoryId: row.expenseCategory?.id || null, category: row.expenseCategory?.name || "Uncategorized", amount: 0 };
-      acc[key].amount += Number(row.amount || 0);
+      if (!acc[key]) acc[key] = { categoryId: row.expenseCategory?.id || null, category: row.expenseCategory?.name || "Uncategorized", amount: new Prisma.Decimal(0) };
+      acc[key].amount = toDecimal(acc[key].amount).plus(toDecimal(row.amount));
       return acc;
     }, {}));
 
     return {
       totalRevenue: revenue._sum.amount || 0,
       totalExpenses: expenseTotal._sum.amount || 0,
-      netIncome: (revenue._sum.amount || 0) - (expenseTotal._sum.amount || 0),
+      netIncome: toDecimal(revenue._sum.amount).minus(toDecimal(expenseTotal._sum.amount)),
       outstandingFees: outstanding._sum.outstandingBalance || 0,
       revenueToday: todayRevenue._sum.amount || 0,
       revenueThisMonth: monthRevenue._sum.amount || 0,
@@ -514,10 +516,14 @@ export const financeService = {
       prisma.feeStructure.findMany({ where: { schoolId, isActive: true }, include: { feeCategory: true }, orderBy: { createdAt: "desc" } }),
     ]);
     const mappedPayments = payments.map(mapPayment);
-    const totalDue = fees.reduce((sum, fee) => sum + Number(fee.amount || 0), 0) + invoices.reduce((sum, invoice) => sum + Number(invoice.totalAmount || 0), 0);
-    const totalPaid = mappedPayments.filter((payment) => payment.status === "Paid" || payment.status === "Successful").reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+    const totalDue = fees.reduce((sum, fee) => sum.plus(toDecimal(fee.amount)), new Prisma.Decimal(0)).plus(
+      invoices.reduce((sum, invoice) => sum.plus(toDecimal(invoice.totalAmount)), new Prisma.Decimal(0)),
+    );
+    const totalPaid = mappedPayments
+      .filter((payment) => payment.status === "Paid" || payment.status === "Successful")
+      .reduce((sum, payment) => sum.plus(toDecimal(payment.amount)), new Prisma.Decimal(0));
     const summary = normalizeRole(user.role) === "parent"
-      ? { totalDue, totalPaid, outstandingFees: Math.max(0, totalDue - totalPaid) }
+      ? { totalDue, totalPaid, outstandingFees: totalDue.gt(totalPaid) ? totalDue.minus(totalPaid) : new Prisma.Decimal(0) }
       : await calculateTotals(schoolId);
     return { student: selectedChild, children, fees, invoices, payments: mappedPayments, feeStructures: structures, summary };
   },
@@ -555,23 +561,23 @@ export const financeService = {
       });
       const invoiceIds = Array.isArray(metadata.invoiceIds) ? metadata.invoiceIds : [];
       const studentFeeIds = Array.isArray(metadata.studentFeeIds) ? metadata.studentFeeIds : [];
-      let remaining = Number(payment.amount || 0);
+      let remaining = toDecimal(payment.amount);
 
       if (invoiceIds.length) {
         const invoices = await tx.invoice.findMany({ where: { id: { in: invoiceIds }, schoolId } });
         for (const invoice of invoices) {
           if (remaining <= 0) break;
-          const currentOutstanding = Number(invoice.outstandingBalance || invoice.totalAmount || 0);
-          const paymentPortion = Math.min(remaining, currentOutstanding);
-          const newOutstanding = Math.max(0, currentOutstanding - paymentPortion);
+          const currentOutstanding = toDecimal(invoice.outstandingBalance || invoice.totalAmount);
+          const paymentPortion = remaining.lt(currentOutstanding) ? remaining : currentOutstanding;
+          const newOutstanding = currentOutstanding.minus(paymentPortion);
           await tx.invoice.update({
             where: { id: invoice.id },
             data: {
               outstandingBalance: newOutstanding,
-              status: newOutstanding <= 0 ? "Paid" : "Partially Paid",
+              status: newOutstanding.lte(0) ? "Paid" : "Partially Paid",
             },
           });
-          remaining -= paymentPortion;
+          remaining = remaining.minus(paymentPortion);
         }
       }
 
@@ -579,24 +585,24 @@ export const financeService = {
         const fees = await tx.studentFee.findMany({ where: { id: { in: studentFeeIds }, schoolId } });
         for (const fee of fees) {
           if (remaining <= 0) break;
-          const currentOutstanding = Number(fee.outstandingBalance || fee.amount || 0);
-          const paymentPortion = Math.min(remaining, currentOutstanding);
-          const newOutstanding = Math.max(0, currentOutstanding - paymentPortion);
-          await tx.studentFee.update({ where: { id: fee.id }, data: { outstandingBalance: newOutstanding, status: newOutstanding <= 0 ? "Paid" : "Partially Paid" } });
-          remaining -= paymentPortion;
+          const currentOutstanding = toDecimal(fee.outstandingBalance || fee.amount);
+          const paymentPortion = remaining.lt(currentOutstanding) ? remaining : currentOutstanding;
+          const newOutstanding = currentOutstanding.minus(paymentPortion);
+          await tx.studentFee.update({ where: { id: fee.id }, data: { outstandingBalance: newOutstanding, status: newOutstanding.lte(0) ? "Paid" : "Partially Paid" } });
+          remaining = remaining.minus(paymentPortion);
         }
       }
 
       if (!invoiceIds.length && !studentFeeIds.length && payment.invoiceId) {
         const invoice = await tx.invoice.findUnique({ where: { id: payment.invoiceId } });
         if (invoice) {
-          const currentOutstanding = Number(invoice.outstandingBalance || invoice.totalAmount || 0);
-          const newOutstanding = Math.max(0, currentOutstanding - Number(payment.amount || 0));
+          const currentOutstanding = toDecimal(invoice.outstandingBalance || invoice.totalAmount);
+          const newOutstanding = currentOutstanding.minus(toDecimal(payment.amount));
           await tx.invoice.update({
             where: { id: invoice.id },
             data: {
               outstandingBalance: newOutstanding,
-              status: newOutstanding <= 0 ? "Paid" : "Partially Paid",
+              status: newOutstanding.lte(0) ? "Paid" : "Partially Paid",
             },
           });
         }
@@ -606,11 +612,11 @@ export const financeService = {
         const fees = await tx.studentFee.findMany({ where: { studentId: existing.studentId, schoolId, outstandingBalance: { gt: 0 } }, orderBy: { createdAt: "asc" } });
         for (const fee of fees) {
           if (remaining <= 0) break;
-          const currentOutstanding = Number(fee.outstandingBalance || fee.amount || 0);
-          const paymentPortion = Math.min(remaining, currentOutstanding);
-          const newOutstanding = Math.max(0, currentOutstanding - paymentPortion);
-          await tx.studentFee.update({ where: { id: fee.id }, data: { outstandingBalance: newOutstanding, status: newOutstanding <= 0 ? "Paid" : "Partially Paid" } });
-          remaining -= paymentPortion;
+          const currentOutstanding = toDecimal(fee.outstandingBalance || fee.amount);
+          const paymentPortion = remaining.lt(currentOutstanding) ? remaining : currentOutstanding;
+          const newOutstanding = currentOutstanding.minus(paymentPortion);
+          await tx.studentFee.update({ where: { id: fee.id }, data: { outstandingBalance: newOutstanding, status: newOutstanding.lte(0) ? "Paid" : "Partially Paid" } });
+          remaining = remaining.minus(paymentPortion);
         }
       }
 
