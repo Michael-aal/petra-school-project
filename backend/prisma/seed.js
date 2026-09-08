@@ -33,9 +33,16 @@ const getRequiredEnv = (name) => {
 };
 
 async function seedBaseline() {
-  let school = await prisma.school.findFirst({ where: { name: "Petra School", country: "Nigeria" } });
+  console.log("Seeding baseline school and academic context...");
+  let school = await prisma.school.findFirst({
+    where: { name: "Petra School" },
+    select: { id: true },
+  });
   if (!school) {
-    school = await prisma.school.create({ data: { name: "Petra School", country: "Nigeria", isActive: true } });
+    school = await prisma.school.create({
+      data: { name: "Petra School", address: "Petra School" },
+      select: { id: true },
+    });
   }
 
   const academicYear = await prisma.academicYear.upsert({
@@ -130,19 +137,21 @@ async function seedSuperAdmin() {
 }
 
 async function main() {
-  await connectDB();
-
   try {
+    console.log("Connecting to the database...");
+    await connectDB();
     await seedBaseline();
     if (process.env.SUPERADMIN_EMAIL && process.env.SUPERADMIN_PASSWORD) await seedSuperAdmin();
     else console.log("SUPERADMIN_EMAIL/PASSWORD not supplied; skipping super-admin user.");
     console.log("Seed completed successfully.");
   } finally {
-    await disconnectDB();
+    await disconnectDB().catch((disconnectError) => {
+      console.error("Database disconnect failed:", disconnectError instanceof Error ? disconnectError.message : disconnectError);
+    });
   }
 }
 
 main().catch((error) => {
-  console.error("Seed failed:", error.message);
+  console.error("Seed failed:", error instanceof Error ? error.message : error);
   process.exit(1);
 });
