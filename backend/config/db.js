@@ -6,6 +6,13 @@ import "./loadEnv.js";
 
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
+const withPoolLimits = (databaseUrl) => {
+  const url = new URL(databaseUrl);
+  if (!url.searchParams.has("connection_limit")) url.searchParams.set("connection_limit", process.env.DATABASE_CONNECTION_LIMIT || "15");
+  if (!url.searchParams.has("pool_timeout")) url.searchParams.set("pool_timeout", process.env.DATABASE_POOL_TIMEOUT || "30");
+  return url.toString();
+};
+
 const createBasePrisma = () => {
   if (!hasDatabaseUrl) {
     return {
@@ -18,7 +25,7 @@ const createBasePrisma = () => {
   }
 
   const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: withPoolLimits(process.env.DATABASE_URL),
   });
 
   return new PrismaClient({
@@ -28,10 +35,7 @@ const createBasePrisma = () => {
 };
 
 const basePrisma = globalThis.prisma || createBasePrisma();
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.prisma = basePrisma;
-}
+globalThis.prisma = basePrisma;
 
 const schoolContext = new AsyncLocalStorage();
 

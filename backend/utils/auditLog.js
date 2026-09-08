@@ -22,7 +22,9 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
       userId,
       schoolId: schoolId ? Number(schoolId) : null,
       action: String(action || "unknown").slice(0, 120),
-      entity: entity ? String(entity).slice(0, 120) : null,
+      entity: entity ? String(entity).slice(0, 120) : "System",
+      entityId: resourceId ? String(resourceId) : "unknown",
+      performedBy: userId ? String(userId) : "system",
       details: safeDetails,
     },
   });

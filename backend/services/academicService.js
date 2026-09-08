@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { resolveAcademicContext } from "../utils/academicContext.js";
 
 const getSchoolId = (user) => {
   if (!user || user?.schoolId === undefined || user?.schoolId === null) {
@@ -130,7 +131,8 @@ export const academicService = {
     const currentPage = Math.max(1, toNumber(query.page, 1));
     const pageSize = Math.max(1, Math.min(100, toNumber(query.limit, 25)));
     const schoolId = getSchoolId(user);
-    const where = { schoolId };
+    const context = await resolveAcademicContext(schoolId, query);
+    const where = { schoolId, ...context };
 
     if (query.className) {
       where.student = { className: { contains: String(query.className).trim(), mode: "insensitive" } };
