@@ -11,7 +11,3 @@ dotenv.config({
   override: false,
   quiet: true,
 });
-
-if (!process.env.JWT_SECRET) {
-  process.env.JWT_SECRET = "change_this_to_a_long_random_secret";
-}
