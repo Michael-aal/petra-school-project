@@ -100,14 +100,15 @@ export const protect = async (req, res, next) => {
   }
 
   try {
-    if (!process.env.JWT_SECRET) {
+    const publicKey = String(process.env.JWT_PUBLIC_KEY || "").replace(/\\n/g, "\n");
+    if (!publicKey) {
       return res.status(500).json({
         success: false,
         message: "Server authentication configuration error",
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
     const { userId: resolvedUserId, email: resolvedEmail } = resolveTokenClaims(decoded);
 
     if (!resolvedUserId) {

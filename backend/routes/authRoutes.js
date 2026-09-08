@@ -4,8 +4,22 @@ import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUs
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
+import crypto from "node:crypto";
 
 const router = Router();
+
+export const jwksHandler = (_req, res, next) => {
+  try {
+    const publicKey = String(process.env.JWT_PUBLIC_KEY || "").replace(/\\n/g, "\n");
+    if (!publicKey) return res.status(503).json({ error: "JWKS unavailable" });
+    const jwk = crypto.createPublicKey(publicKey).export({ format: "jwk" });
+    return res.json({
+      keys: [{ ...jwk, kid: process.env.JWT_KEY_ID || "petra-2026", alg: "RS256", use: "sig" }],
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 router.post("/register", authRateLimiter, registerValidator, registerUser);
 router.post("/staff/pending", protect, schoolGuard, requirePrincipal, createPendingStaff);

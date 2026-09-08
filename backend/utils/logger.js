@@ -1,14 +1,39 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
 const requestContext = new AsyncLocalStorage();
+const REDACTED = "[REDACTED]";
+const sensitiveKeys = new Set([
+  "authorization",
+  "password",
+  "confirmpassword",
+  "email",
+  "phonenumber",
+  "address",
+  "nationalid",
+]);
+
+const sanitize = (value, key = "") => {
+  if (sensitiveKeys.has(key.toLowerCase())) return REDACTED;
+  if (Array.isArray(value)) return value.map((item) => sanitize(item));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([childKey, childValue]) => [
+      childKey,
+      sanitize(childValue, childKey),
+    ]));
+  }
+  return value;
+};
 
 const formatMessage = (level, message, meta = {}) => {
   const requestId = requestContext.getStore();
+  const sanitizedMessage = message && typeof message === "object"
+    ? sanitize(message)
+    : message;
   const base = {
     level,
-    message,
+    message: sanitizedMessage,
     ...(requestId ? { requestId } : {}),
-    ...(Object.keys(meta).length ? { meta } : {}),
+    ...(Object.keys(meta).length ? { meta: sanitize(meta) } : {}),
   };
 
   return base;

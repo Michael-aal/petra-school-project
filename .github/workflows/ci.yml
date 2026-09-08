@@ -29,8 +29,49 @@ jobs:
     env:
       NODE_ENV: test
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/petra?connection_limit=15&pool_timeout=30
-      JWT_SECRET: ci-test-secret-with-at-least-32-characters
+      JWT_PRIVATE_KEY: |
+        -----BEGIN PRIVATE KEY-----
+        MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDEFEMCgoVoGxC1
+        JbSpex67b2VxE7t6kB27fIE66Zt5zI21pGRrK10B6/u44htLUBdVyRx1LIhasHn8
+        04R+VcUPFzsOfZkCDZ1oztFI9xMAI/KAO0movMTJAea+1VExF+zBkUViX6/vK+Ls
+        u19/wnIA844bfGcQS1Oer9bjLaqReg+aepXh5krx6zOIMAC3Uw3GBxau54tvxEVP
+        F+Q3mmY3Z4qn5xYlgeumtJHtP1mVUl7KkMUyHm871Qw+fefy2fK7PU5CyNBS2LjN
+        5SgDCDirGcquQPg9p+PPRnFk0pOCxcGZ5XoTJT2IkyExfbsaKTILxSo4qrvMK2qt
+        Ai72KhcHAgMBAAECggEAH3sp/RZWnqMweLJql1wd+uBaQaBLlVSGft/GYd6Nk1h3
+        whui8cqfCVwe6LgIw3vtmzI0avhblhqdI1i/KNzSzDxMbjmqc3gbIe+JY4p5Fv3Z
+        L/m/jE4ZLDVYG6M6gMQuGNqe8LnwkIO+ezK5lP9zoq/NTPVuw2DMtqmAZK4kI2yq
+        FZVsMBYTn6HkTHmCRma+7bMFd5EHHGBzhJI0kQeoxdak4ErcFZ9GBLu1XCfZzkgj
+        4Im0eOtLR4IgDXQtlR4dj8lwd5+JL5EflzPeFGGorih/9dpaVjm9lyn5P+v1wiqX
+        D6lK/D5dX1DC9nCUgjoLZh/vmtUAkIBSojajfWIU6QKBgQD3fA8kMsQ/ATj0qu3M
+        ipEW2rIJARyF56kRw/Tm0+Vm8Bcwd0TEYXyR4o2MBLpllmFtztXT6OpwfOD+uNJM
+        8jZ5VZmVkEXMlaa3ZRXQc7hVxMdtMT5ZwIwj5DKZfQQjO1GbL2zwIcwncWItCZ+y
+        y6DyZf/xSp03UEANApBSBKYzqQKBgQDK02c+oui3izzJvJ31+XAdpjWDoXInSYh4
+        3sCGTGwS9AHgRJEA97NNxYWDTFWf+GwS1nFyVth0SXbJUPeCRLEVDlphwQY4eqJc
+        GilXrOc4C6jCv2LKEsD22DqHjz/sc0E024WXlz0oO2YEleFwmaotXzTZXF1XY5rO
+        rQVpu/KjLwKBgBxucyrcbjEyycFJ9cG+1YZDn5prN0Sm5YR196ehBkS6Jl/aA9tv
+        u6ji1xIT5PoQuaas0WHj6zL7FboNr5NJbDqqO9ez2GD1fE6rXUMyWCX6UlLYCmqz
+        NSZWa/24IAaQJQLoAuLfbx3E59t2tJMM07OlRi8JPGCDZqhX+A6EHDfpAoGAKcYk
+        y5fOCo+Y84vvlMvNNa4X84Z69nCEtTBbws1WrQiookI9A1ABFBGMkCBWul32FGMq
+        dnxAlKLU3l3YvHHdbxLHtr6Ew3kum32f6jjoXni4R3QXqrr2F2EtnOH6Ln8GfRaB
+        i1lQ9UpWlrcv+XsMu8+SGPqXFvqi1dJ4/PAC520CgYEAugDsHHS0gqecFGMUEWRi
+        EAzc5xBES3BR4ZcU4aZsN5yO0xFe58pTDFRJ0fM3aECPMemzdl/8tMeDIYRcI9Su
+        xB+KWFbu7egXKOK/zGbVDWsK4voOt1xGqQnEqb+L4domkwrs3iYJVezEHiqSc4/R
+        E9ANYjhtECRzi2lpIyxF+/w=
+        -----END PRIVATE KEY-----
+      JWT_PUBLIC_KEY: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxBRDAoKFaBsQtSW0qXse
+        u29lcRO7epAdu3yBOumbecyNtaRkaytdAev7uOIbS1AXVckcdSyIWrB5/NOEflXF
+        Dxc7Dn2ZAg2daM7RSPcTACPygDtJqLzEyQHmvtVRMRfswZFFYl+v7yvi7Ltff8Jy
+        APOOG3xnEEtTnq/W4y2qkXoPmnqV4eZK8esziDAAt1MNxgcWrueLb8RFTxfkN5pm
+        N2eKp+cWJYHrprSR7T9ZlVJeypDFMh5vO9UMPn3n8tnyuz1OQsjQUti4zeUoAwg4
+        qxnKrkD4Pafjz0ZxZNKTgsXBmeV6EyU9iJMhMX27GikyC8UqOKq7zCtqrQIu9ioX
+        BwIDAQAB
+        -----END PUBLIC KEY-----
+      JWT_KEY_ID: ci
       CORS_ORIGIN: http://localhost:5173
+      ORIGIN_SECRET: ci-origin-secret
+      REDIS_URL: redis://localhost:6379
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

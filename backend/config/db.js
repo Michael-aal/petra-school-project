@@ -15,13 +15,28 @@ const withPoolLimits = (databaseUrl) => {
 
 const createBasePrisma = () => {
   if (!hasDatabaseUrl) {
-    return {
+    const unavailableDelegate = new Proxy({}, {
+      get: () => async () => {
+        throw new Error("DATABASE_URL is not configured.");
+      },
+    });
+    let fallback;
+    fallback = new Proxy({
       _dmmf: null,
       _runtimeDataModel: null,
-      $extends: () => ({}),
+      $extends: () => fallback,
       $connect: async () => undefined,
       $disconnect: async () => undefined,
-    };
+      $executeRaw: async () => {
+        throw new Error("DATABASE_URL is not configured.");
+      },
+      $queryRaw: async () => {
+        throw new Error("DATABASE_URL is not configured.");
+      },
+    }, {
+      get: (target, property) => property in target ? target[property] : unavailableDelegate,
+    });
+    return fallback;
   }
 
   const adapter = new PrismaPg({
@@ -112,6 +127,9 @@ const prisma = basePrisma.$extends({
         if (!tenant || !modelHasSchoolId(model)) return query(args);
 
         const nextArgs = args ? { ...args } : {};
+        if (typeof basePrisma.$executeRaw === "function") {
+          await basePrisma.$executeRaw`SELECT set_config('app.current_school_id', ${String(tenant)}, false)`;
+        }
 
         if (WHERE_SCOPED_OPERATIONS.has(operation)) {
           nextArgs.where = scopeWhere(nextArgs.where, tenant);

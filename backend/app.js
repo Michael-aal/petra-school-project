@@ -5,7 +5,7 @@ import compression from "compression";
 import morgan from "morgan";
 import { requestId } from "./middleware/requestId.js";
 import healthRoutes from "./routes/healthRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
+import authRoutes, { jwksHandler } from "./routes/authRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import academicRoutes from "./routes/academicRoutes.js";
 import financeRoutes from "./routes/financeRoutes.js";
@@ -24,8 +24,10 @@ import classmarkerRoutes from "./routes/classmarkerRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import assessmentsRoutes from "./routes/assessmentsRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import { originLock } from "./middleware/originLock.js";
 
 const app = express();
+app.set("trust proxy", 1);
 const allowedOrigins = [
   process.env.CORS_ORIGIN,
   process.env.CLIENT_URL,
@@ -67,7 +69,19 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      frameAncestors: ["'none'"],
+      objectSrc: ["'none'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"],
+    },
+  },
+  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+}));
 app.use(compression());
 app.use(requestId);
 app.use(express.json({
@@ -80,7 +94,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 
 app.use("/", healthRoutes);
+app.get("/.well-known/jwks.json", jwksHandler);
 app.get("/health", (_req, res) => res.status(200).json({ success: true, message: "API is running" }));
+app.use("/api", originLock);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/academic", academicRoutes);

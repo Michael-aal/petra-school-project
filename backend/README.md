@@ -15,9 +15,10 @@ npm install
 ```env
 PORT=5000
 NODE_ENV=development
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME?schema=public"
-JWT_SECRET="change_this_to_a_long_random_secret"
-JWT_EXPIRES_IN="7d"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME?schema=public&connection_limit=15&pool_timeout=30"
+JWT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\nreplace-with-private-key\\n-----END PRIVATE KEY-----"
+JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----\\nreplace-with-public-key\\n-----END PUBLIC KEY-----"
+ORIGIN_SECRET="replace-with-edge-origin-secret"
 CLIENT_URL="http://localhost:3000"
 ```
 
