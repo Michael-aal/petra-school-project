@@ -6,8 +6,10 @@
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true
   },
-  "include": ["**/*.js"],
+  "include": ["**/*.js", "src/**/*.ts"],
   "exclude": ["node_modules", "tmp", "backups"]
 }
