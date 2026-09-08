@@ -1,4 +1,7 @@
 import { prisma } from "../config/db.js";
+import { Prisma } from "@prisma/client";
+
+const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prisma.Decimal(String(value ?? 0));
 
 const normalizeUserId = (value) => String(value || "").trim();
 const normalizeStudentId = (value) => String(value || "").trim();
@@ -265,8 +268,8 @@ export const parentAccessService = {
         ) / 10
       : 0;
     const outstandingFees = fees.reduce(
-      (sum, fee) => sum + Number(fee.outstandingBalance || 0),
-      0,
+      (sum, fee) => sum.plus(toDecimal(fee.outstandingBalance)),
+      new Prisma.Decimal(0),
     );
 
     return {

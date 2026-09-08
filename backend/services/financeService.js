@@ -414,7 +414,7 @@ export const financeService = {
         invoiceId: payload.invoiceId || null,
         method: payload.method ? normalizeMethod(payload.method) : undefined,
         status: payload.status ? normalizeStatus(payload.status) : undefined,
-        amount: payload.amount !== undefined ? Number(payload.amount) : undefined,
+        amount: payload.amount !== undefined ? toDecimal(payload.amount) : undefined,
         paidAt: payload.paidAt ? new Date(payload.paidAt) : undefined,
         note: payload.note,
       },
