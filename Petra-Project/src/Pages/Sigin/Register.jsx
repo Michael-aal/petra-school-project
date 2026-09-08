@@ -3,7 +3,7 @@ import { Eye, EyeOff, Lock, Mail, LoaderCircle, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
-import { authApi, writeAuthToken } from "../../services/authApi";
+import { authApi, readAuthToken, writeAuthToken } from "../../services/authApi";
 import { normalizeUser, splitFullName } from "../../utils/userProfile";
 import { normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
@@ -36,6 +36,11 @@ export default function Register({ rolePreset = "" }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!readAuthToken()) {
+      setCheckingSession(false);
+      return;
+    }
+
     authApi
       .me()
       .then((response) => {

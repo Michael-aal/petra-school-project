@@ -1,27 +1,4 @@
-import { API_BASE_URL, readAuthToken } from "./authApi";
-
-async function request(path, options = {}) {
-  const authHeader = readAuthToken();
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-      ...(authHeader ? { Authorization: `Bearer ${authHeader}` } : {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(data.message || "Request failed");
-    error.status = response.status;
-    error.data = data;
-    throw error;
-  }
-
-  return data;
-}
+import { request } from "./apiClient";
 
 export const walletApi = {
   getWallet: () => request("/api/wallet", { method: "GET" }),

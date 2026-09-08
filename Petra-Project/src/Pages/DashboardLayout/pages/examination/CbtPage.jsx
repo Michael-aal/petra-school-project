@@ -1,9 +1,24 @@
 import { useEffect, useState } from "react";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, RefreshCw, X } from "lucide-react";
 import { teacherApi } from "../../../../services/teacherApi";
 import { admissionApi } from "../../../../services/admissionApi";
 import { request } from "../../../../services/apiClient";
 import "../page-styles/CbtPage.css";
+
+const examSyncSignals = new Set([
+  "exam_complete",
+  "exam-complete",
+  "portal_complete",
+  "portal-complete",
+  "testportal_result",
+  "testportal-result",
+  "result_sync",
+  "result-sync",
+  "portal_result",
+  "portal-result",
+  "cbt_result",
+  "cbt-result",
+]);
 
 export default function CbtPage() {
   const [assessmentId, setAssessmentId] = useState("");
@@ -12,6 +27,8 @@ export default function CbtPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [applicantId, setApplicantId] = useState("");
+  const [launchUrl, setLaunchUrl] = useState("");
+  const [syncStatus, setSyncStatus] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -34,8 +51,45 @@ export default function CbtPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!assessmentId) return undefined;
+
+    const onMessage = (event) => {
+      const payload = event?.data;
+      if (!payload || typeof payload !== "object") return;
+
+      const eventType = String(payload.type || payload.event || payload.status || "").toLowerCase();
+      const shouldSync =
+        examSyncSignals.has(eventType) ||
+        payload.completed === true ||
+        payload.status === "completed" ||
+        payload.passed !== undefined ||
+        payload.score !== undefined ||
+        payload.percentage !== undefined;
+
+      if (!shouldSync) return;
+
+      setSyncStatus("Synchronizing latest TestPortal results...");
+
+      request(`/api/classmarker/exams/${assessmentId}/sync-results`, {
+        method: "POST",
+      })
+        .then(() => {
+          setSyncStatus("Result synchronization completed.");
+        })
+        .catch((syncErr) => {
+          const msg = syncErr?.message || "Unable to sync TestPortal results.";
+          setSyncStatus(msg);
+        });
+    };
+
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [assessmentId]);
+
   const handleCreateRemoteExam = async () => {
     setError(null);
+    setSyncStatus("");
     if (!assessmentId) return setError("Please select an assessment");
     if (!applicantId) return setError("Please select an applicant");
     if (assessments.length && !assessments.some((assessment) => String(assessment.id) === String(assessmentId))) {
@@ -49,7 +103,8 @@ export default function CbtPage() {
       });
       const quizUrl = json.quizUrl || json.url || json.data?.url;
       if (!quizUrl) throw new Error("Assessment started but no QuizLab launch URL returned");
-      window.location.href = quizUrl;
+      setLaunchUrl(quizUrl);
+      setSyncStatus("TestPortal is open in the iframe below.");
     } catch (err) {
       const step = err?.data?.step ? ` (${err.data.step})` : "";
       setError(`${err.message || String(err)}${step}`);
@@ -58,43 +113,87 @@ export default function CbtPage() {
     }
   };
 
+  const handleSyncResults = async () => {
+    if (!assessmentId) return;
+    setSyncStatus("Synchronizing latest TestPortal results...");
+    try {
+      await request(`/api/classmarker/exams/${assessmentId}/sync-results`, { method: "POST" });
+      setSyncStatus("Result synchronization completed.");
+    } catch (err) {
+      const step = err?.data?.step ? ` (${err.data.step})` : "";
+      setSyncStatus(`${err.message || String(err)}${step}`);
+    }
+  };
+
   return (
     <div className="dashboard-page cbt-page simple">
       <section className="cbt-card">
-        <h1>Create Assessment</h1>
-        <p>Select an applicant and an assessment to launch the configured QuizLab examination.</p>
+        <div className="cbt-header-row">
+          <div>
+            <h1>Create Assessment</h1>
+            <p>Select an applicant and an assessment to launch the configured TestPortal examination inside Petra.</p>
+          </div>
+          {assessmentId ? (
+            <button type="button" className="cbt-secondary-btn" onClick={handleSyncResults}>
+              <RefreshCw size={14} />
+              <span>Sync Results</span>
+            </button>
+          ) : null}
+        </div>
 
-        <label className="cbt-input-label">Applicant</label>
-        {applicants.length ? (
-          <select className="cbt-input" value={applicantId} onChange={(e) => setApplicantId(e.target.value)}>
-            <option value="">-- Select applicant --</option>
-            {applicants.map((applicant) => {
-              const value = applicant.applicantId || applicant.admissionCode || applicant.applicationCode || applicant.id;
-              const label = applicant.applicantName ? `${applicant.applicantName} — ${value}` : value;
-              return <option key={value} value={value}>{label}</option>;
-            })}
-          </select>
+        {!launchUrl ? (
+          <>
+            <label className="cbt-input-label">Applicant</label>
+            {applicants.length ? (
+              <select className="cbt-input" value={applicantId} onChange={(e) => setApplicantId(e.target.value)}>
+                <option value="">-- Select applicant --</option>
+                {applicants.map((applicant) => {
+                  const value = applicant.applicantId || applicant.admissionCode || applicant.applicationCode || applicant.id;
+                  const label = applicant.applicantName ? `${applicant.applicantName} — ${value}` : value;
+                  return <option key={value} value={value}>{label}</option>;
+                })}
+              </select>
+            ) : (
+              <div className="cbt-empty-state">No applicants available. Submit an admission form first.</div>
+            )}
+
+            <label className="cbt-input-label">Assessment</label>
+            {assessments.length ? (
+              <select className="cbt-input" value={assessmentId} onChange={(e) => setAssessmentId(e.target.value)}>
+                <option value="">-- Select assessment --</option>
+                {assessments.map((assessment) => (
+                  <option key={assessment.id} value={assessment.id}>{assessment.title || assessment.id}</option>
+                ))}
+              </select>
+            ) : (
+              <div className="cbt-empty-state">No assessments available.</div>
+            )}
+
+            <button className="cbt-primary-btn" onClick={handleCreateRemoteExam} disabled={loading}>
+              {loading ? <Loader2 className="spinner" /> : <Plus size={14} />}
+              <span>{loading ? "Creating..." : "Launch in Portal"}</span>
+            </button>
+          </>
         ) : (
-          <div className="cbt-empty-state">No applicants available. Submit an admission form first.</div>
+          <div className="cbt-exam-shell">
+            <div className="cbt-portal-toolbar">
+              <strong>Online exam</strong>
+              <button type="button" className="cbt-close-btn" onClick={() => setLaunchUrl("")}>
+                <X size={14} />
+                <span>Close</span>
+              </button>
+            </div>
+            <iframe
+              title="TestPortal examination"
+              className="cbt-iframe"
+              src={launchUrl}
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
         )}
 
-        <label className="cbt-input-label">Assessment</label>
-        {assessments.length ? (
-          <select className="cbt-input" value={assessmentId} onChange={(e) => setAssessmentId(e.target.value)}>
-            <option value="">-- Select assessment --</option>
-            {assessments.map((assessment) => (
-              <option key={assessment.id} value={assessment.id}>{assessment.title || assessment.id}</option>
-            ))}
-          </select>
-        ) : (
-          <div className="cbt-empty-state">No assessments available.</div>
-        )}
-
-        <button className="cbt-primary-btn" onClick={handleCreateRemoteExam} disabled={loading}>
-          {loading ? <Loader2 className="spinner" /> : <Plus size={14} />}
-          <span>{loading ? "Creating..." : "Create Assessment"}</span>
-        </button>
-
+        {syncStatus ? <div className="cbt-sync-status">{syncStatus}</div> : null}
         {error ? <div className="cbt-error">{error}</div> : null}
       </section>
     </div>

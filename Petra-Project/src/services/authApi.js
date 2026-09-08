@@ -1,4 +1,22 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const configuredApiUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/+$/, "");
+
+const resolveApiBaseUrl = () => {
+  if (typeof window === "undefined") return configuredApiUrl;
+
+  const configured = new URL(configuredApiUrl);
+  const browserHost = window.location.hostname;
+  const isLocalBrowserHost = ["localhost", "127.0.0.1", "::1"].includes(browserHost);
+
+  if (!isLocalBrowserHost && ["localhost", "127.0.0.1", "::1"].includes(configured.hostname)) {
+    const forwardedHost = browserHost.replace(/-(\d+)(\.[^.]+\..+)$/, "-5000$2");
+    configured.protocol = window.location.protocol;
+    configured.hostname = forwardedHost;
+  }
+
+  return configured.toString().replace(/\/+$/, "");
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 const AUTH_TOKEN_KEY = "petra_auth_token";
 
 const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
@@ -13,6 +31,7 @@ const clearAuthToken = () => {
 
 async function request(path, options = {}) {
   const authHeader = readAuthToken();
+  const requestUrl = `${API_BASE_URL}${path}`;
   const mergedHeaders = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
@@ -22,7 +41,7 @@ async function request(path, options = {}) {
     mergedHeaders.Authorization = `Bearer ${authHeader}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch(requestUrl, {
     ...options,
     credentials: "include",
     headers: mergedHeaders,

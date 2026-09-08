@@ -263,6 +263,7 @@ function App() {
         <Route path="/student_Payment" element={<StudentPaymentPage />} />
         {/* <Route path="/Payment" element={<Payment />} ></Route> */}
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/dev/schools/:id" element={<SuperAdminDashboard />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />
         <Route path="/register" element={<RegistrationEntry />} />
         <Route path="/register/select" element={<RegistrationEntry />} />

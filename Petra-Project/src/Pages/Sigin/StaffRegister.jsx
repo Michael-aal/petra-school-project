@@ -3,7 +3,8 @@ import { Eye, EyeOff, LoaderCircle, Mail, Lock, Code2, UserRound, Briefcase, Ima
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { authApi, writeAuthToken } from "../../services/authApi";
-import { normalizeRole } from "../../utils/roleAccess";
+import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
+import { readAuthToken } from "../../services/authApi";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = { invitationCode: "", fullName: "", email: "", department: "", position: "", password: "", confirmPassword: "", profilePicture: "" };
@@ -33,9 +34,14 @@ export default function StaffRegister() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!readAuthToken()) {
+      setCheckingSession(false);
+      return;
+    }
+
     authApi.me().then((response) => {
       const role = normalizeRole(response?.user?.role);
-      navigate(role === "staff" ? "/staff/dashboard" : role === "parent" ? "/portal/dashboard" : "/dashboard", { replace: true });
+      navigate(getDashboardPathForRole(role), { replace: true });
     }).catch(() => setCheckingSession(false));
   }, [navigate]);
 

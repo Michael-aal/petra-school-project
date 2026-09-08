@@ -32,7 +32,7 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-].filter(Boolean);
+].filter(Boolean).map((origin) => origin.trim().replace(/\/+$/, ""));
 
 const isLocalDevOrigin = (origin) => {
   try {
@@ -43,13 +43,28 @@ const isLocalDevOrigin = (origin) => {
   }
 };
 
+const isCodespacesOrigin = (origin) => {
+  try {
+    const url = new URL(origin);
+    return url.protocol === "https:" &&
+      /^[a-z0-9-]+-\d+\.app\.github\.dev$/i.test(url.hostname);
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) return callback(null, true);
+    const normalizedOrigin = origin.trim().replace(/\/+$/, "");
+    if (allowedOrigins.includes(normalizedOrigin) || isLocalDevOrigin(normalizedOrigin) || isCodespacesOrigin(normalizedOrigin)) {
+      return callback(null, true);
+    }
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,
+  optionsSuccessStatus: 204,
+  maxAge: 600,
 };
 
 app.use(cors(corsOptions));

@@ -8,13 +8,14 @@
   --auth-line: rgba(23, 35, 33, 0.14);
   --auth-accent: #c6533d;
   --auth-accent-soft: rgba(198, 83, 61, 0.11);
-  min-height: 100dvh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   background: var(--auth-paper);
   color: var(--auth-ink);
   font-family: "Manrope", sans-serif;
   padding: 32px 20px 24px;
+  overflow-y:  scroll;
 }
 
 body.dark .auth-page {

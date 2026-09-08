@@ -137,12 +137,12 @@ export default function AdmissionForm() {
         message: response.message || "Application submitted successfully.",
         applicantId: applicantId || "",
         assessmentId: assessmentId || "",
-        admissionCode: admCode || "",
+        applicantCode: admCode || "",
       });
       showSuccess(
         "Application submitted",
         applicantId
-          ? `Applicant ID: ${applicantId}${admCode ? ` • Admission Code: ${admCode}` : ""}`
+          ? `Applicant ID: ${applicantId}${admCode ? ` • Applicant Code: ${admCode}` : ""}`
           : "The applicant was saved successfully."
       );
       if (admCode || applicantId) {
@@ -218,11 +218,11 @@ export default function AdmissionForm() {
                 </button>
               </div>
             ) : null}
-            {submissionSummary.admissionCode ? (
+            {submissionSummary.applicantCode ? (
               <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
-                <strong>Admission Code: {submissionSummary.admissionCode}</strong>
-                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.admissionCode)}>
-                  {copiedCode === submissionSummary.admissionCode ? "Copied" : "Copy"}
+                <strong>Applicant Code: {submissionSummary.applicantCode}</strong>
+                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.applicantCode)}>
+                  {copiedCode === submissionSummary.applicantCode ? "Copied" : "Copy"}
                 </button>
               </div>
             ) : null}

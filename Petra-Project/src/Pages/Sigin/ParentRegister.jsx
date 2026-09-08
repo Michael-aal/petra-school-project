@@ -3,7 +3,7 @@ import { Eye, EyeOff, LoaderCircle, Mail, Lock, UserRound, Phone } from "lucide-
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { UserContext } from "../../context/UserContext";
-import { authApi, writeAuthToken } from "../../services/authApi";
+import { authApi, readAuthToken, writeAuthToken } from "../../services/authApi";
 import { normalizeUser } from "../../utils/userProfile";
 import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
 import "../../Styles/Sigin/auth.css";
@@ -22,9 +22,14 @@ export default function ParentRegister() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!readAuthToken()) {
+      setCheckingSession(false);
+      return;
+    }
+
     authApi.me().then((response) => {
       const role = normalizeRole(response?.user?.role);
-      navigate(role === "staff" ? "/staff/dashboard" : role === "parent" ? "/portal/dashboard" : "/dashboard", { replace: true });
+      navigate(getDashboardPathForRole(role), { replace: true });
     }).catch(() => setCheckingSession(false));
   }, [navigate]);
 
