@@ -13,6 +13,7 @@ export const errorHandler = (err, req, res, next) => {
   logger.error("request failed", {
     method: req.method,
     path: req.originalUrl,
+    requestId: req.requestId,
     statusCode,
     message: err.message,
     stack: isProduction ? undefined : err.stack,
@@ -21,6 +22,7 @@ export const errorHandler = (err, req, res, next) => {
   const safeMessage = isProduction && statusCode >= 500 ? "Internal server error" : (err.message || "Server error");
   res.status(statusCode).json({
     success: false,
+    requestId: req.requestId,
     message: safeMessage,
     errors: isProduction ? [] : (err.details ? [err.details] : []),
     ...(isProduction ? {} : { stack: err.stack }),

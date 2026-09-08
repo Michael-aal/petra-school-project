@@ -57,7 +57,7 @@ model User {
   teacherProfile            Teacher?
   transactions              Transaction[]
   roleRef                   Role?             @relation(fields: [roleId], references: [id])
-  selectedSchool             School?           @relation("UserSelectedSchool", fields: [selectedSchoolId], references: [id])
+  selectedSchool            School?           @relation("UserSelectedSchool", fields: [selectedSchoolId], references: [id])
   vicePrincipalProfile      VicePrincipal?
   wallet                    Wallet?
   expensesCreated           Expense[]
@@ -812,8 +812,10 @@ model Attendance {
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  teacher   User     @relation("TeacherAttendance", fields: [teacherId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  teacher   User     @relation("TeacherAttendance", fields: [teacherId], references: [id], onDelete: Restrict)
+
+  @@index([studentId, date])
 }
 
 model StudentAttendance {
@@ -829,7 +831,7 @@ model StudentAttendance {
   updatedAt      DateTime @updatedAt
   class          Class?   @relation(fields: [classId], references: [id])
   school         School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student        Student  @relation(fields: [studentId], references: [id], onDelete: Restrict)
 
   @@index([schoolId, attendanceDate])
   @@index([studentId, attendanceDate])
@@ -1050,9 +1052,10 @@ model Grade {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   gradeScale   GradeScale? @relation(fields: [gradeScaleId], references: [id])
-  school       School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  subject      Subject?    @relation(fields: [subjectId], references: [id])
+  school       School      @relation(fields: [schoolId], references: [id], onDelete: Restrict)
+  subject      Subject?    @relation(fields: [subjectId], references: [id], onDelete: Restrict)
 
+  @@index([schoolId, subjectId])
   @@index([schoolId, value])
 }
 
@@ -1116,10 +1119,11 @@ model StudentFee {
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   feeStructure       FeeStructure? @relation(fields: [feeStructureId], references: [id])
-  school             School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student            Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  school             School        @relation(fields: [schoolId], references: [id], onDelete: Restrict)
+  student            Student       @relation(fields: [studentId], references: [id], onDelete: Restrict)
 
   @@index([schoolId, studentId])
+  @@index([schoolId, status])
 }
 
 model Invoice {
@@ -1182,8 +1186,8 @@ model Payment {
   paymentMethodId String?
   invoice         Invoice?       @relation(fields: [invoiceId], references: [id])
   paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
-  school          School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  student         Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  school          School         @relation(fields: [schoolId], references: [id], onDelete: Restrict)
+  student         Student        @relation(fields: [studentId], references: [id], onDelete: Restrict)
   receipt         Receipt?
 
   @@index([schoolId, status])

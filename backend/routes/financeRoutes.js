@@ -2,13 +2,14 @@ import { Router } from "express";
 import { protect, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { assignFeeStructure, createFeeStructure, createPayment, deleteFeeStructure, deletePayment, getAdminWallet, getCashflow, getFeeStructures, getInvoices, getInstallmentPlans, getParentFees, getPayment, getPaymentReceipt, listPayments, updateFeeStructure, updatePayment } from "../controllers/financeController.js";
 import { idValidator, listPaymentsValidator, paymentValidator } from "../validators/financeValidator.js";
+import { authorizeStudentResource } from "../middleware/authorizeResource.js";
 
 const router = Router();
 
 router.get("/payments", protect, schoolGuard, requirePrincipal, listPaymentsValidator, listPayments);
 router.get("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, getPayment);
 router.get("/payments/:id/receipt", protect, schoolGuard, idValidator, getPaymentReceipt);
-router.post("/payments", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentValidator, createPayment);
+router.post("/payments", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentValidator, authorizeStudentResource(), createPayment);
 router.put("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, paymentValidator, updatePayment);
 router.delete("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, deletePayment);
 
@@ -20,7 +21,7 @@ router.delete("/fees/:id", protect, schoolGuard, requirePrincipal, deleteFeeStru
 router.post("/fees/assign", protect, schoolGuard, requirePrincipal, assignFeeStructure);
 router.get("/flexpay", protect, schoolGuard, requirePrincipal, getInstallmentPlans);
 router.get("/cashflow", protect, schoolGuard, requirePrincipal, getCashflow);
-router.get("/parent/fees", protect, getParentFees);
+router.get("/parent/fees", protect, authorizeStudentResource({ source: "query", allowMissing: true }), getParentFees);
 router.get("/wallet/summary", protect, schoolGuard, requirePrincipal, getAdminWallet);
 
 export default router;

@@ -346,7 +346,7 @@ export const financeService = {
       throw error;
     }
 
-    const payment = await prisma.payment.create({
+    const payment = await prisma.$transaction((tx) => tx.payment.create({
       data: {
         schoolId,
         studentId: student.id,
@@ -360,7 +360,7 @@ export const financeService = {
         createdById: user.id,
       },
       include: paymentInclude,
-    });
+    }));
 
     const metadata = {
       studentId: student.id,

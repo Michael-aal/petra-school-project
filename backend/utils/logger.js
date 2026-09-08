@@ -1,12 +1,21 @@
+import { AsyncLocalStorage } from "node:async_hooks";
+
+const requestContext = new AsyncLocalStorage();
+
 const formatMessage = (level, message, meta = {}) => {
+  const requestId = requestContext.getStore();
   const base = {
     level,
     message,
+    ...(requestId ? { requestId } : {}),
     ...(Object.keys(meta).length ? { meta } : {}),
   };
 
   return base;
 };
+
+export const runWithRequestContext = (requestId, callback) =>
+  requestContext.run(requestId, callback);
 
 export const logger = {
   info: (message, meta) => console.log(JSON.stringify(formatMessage("info", message, meta))),

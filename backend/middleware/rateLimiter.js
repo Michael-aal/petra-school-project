@@ -51,7 +51,12 @@ export const createRateLimiter = ({
 // Specialized limiters
 export const authRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 5,
+  keyGenerator: (req) => {
+    const body = req.body || {};
+    const credential = String(body.email || body.username || "anonymous").trim().toLowerCase();
+    return `${req.ip || "unknown"}:${credential}`;
+  },
   message: "Too many authentication attempts. Please try again after 15 minutes.",
 });
 

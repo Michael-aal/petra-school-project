@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
+import { requestId } from "./middleware/requestId.js";
 
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -71,6 +72,7 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 app.use(helmet());
 app.use(compression());
+app.use(requestId);
 app.use(express.json({
   limit: "1mb",
   verify: (req, _res, buf) => {
