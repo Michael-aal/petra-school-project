@@ -453,19 +453,41 @@ export const financeService = {
     return deleted;
   },
 
-  listInvoices: async (user) =>
-    prisma.invoice.findMany({
-      where: { schoolId: getSchoolId(user) },
-      orderBy: { createdAt: "desc" },
-      include: { items: true, payments: true, student: true },
-    }),
+  listInvoices: async (user, query = {}) => {
+    const schoolId = getSchoolId(user);
+    const page = Math.max(1, toNumber(query.page, 1));
+    const limit = Math.max(1, Math.min(100, toNumber(query.limit, 20)));
+    const where = { schoolId };
+    const [total, invoices] = await Promise.all([
+      prisma.invoice.count({ where }),
+      prisma.invoice.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { items: true, payments: true, student: true },
+      }),
+    ]);
+    return { invoices, pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) } };
+  },
 
-  listInstallmentPlans: async (user) =>
-    prisma.installmentPlan.findMany({
-      where: { schoolId: getSchoolId(user) },
-      orderBy: { createdAt: "desc" },
-      include: { student: true, payments: true },
-    }),
+  listInstallmentPlans: async (user, query = {}) => {
+    const schoolId = getSchoolId(user);
+    const page = Math.max(1, toNumber(query.page, 1));
+    const limit = Math.max(1, Math.min(100, toNumber(query.limit, 20)));
+    const where = { schoolId };
+    const [total, installmentPlans] = await Promise.all([
+      prisma.installmentPlan.count({ where }),
+      prisma.installmentPlan.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { student: true, payments: true },
+      }),
+    ]);
+    return { installmentPlans, pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) } };
+  },
 
   getCashflow: async (user, query = {}) => {
     const schoolId = getSchoolId(user);

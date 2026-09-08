@@ -1180,6 +1180,8 @@ model Invoice {
   term               Term          @relation(fields: [termId], references: [id], onDelete: Restrict)
   items              InvoiceItem[]
   payments           Payment[]
+
+  @@index([schoolId, createdAt])
 }
 
 model InvoiceItem {
@@ -1303,6 +1305,8 @@ model InstallmentPlan {
   payments     InstallmentPayment[]
   school       School               @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   student      Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, createdAt])
 }
 
 model InstallmentPayment {
