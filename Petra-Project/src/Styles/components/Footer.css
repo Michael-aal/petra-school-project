@@ -301,8 +301,15 @@ body.dark .last-place {
 }
 
 .footer-1-section-1 h2 .sch {
-    background: var(--footer-coral);
-    color: #ffffff;
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    box-sizing: border-box;
+    border-radius: 9px;
+    background: #172321;
+    color: #f8d9cf;
 }
 
 .footer-1-section-1 p,

@@ -197,7 +197,7 @@ export default function LandingPage() {
             <NavLink to="/get-started" className="landing-button landing-button-primary">See Nuvora in action <ArrowRight size={17} /></NavLink>
             <a href="#platform" className="landing-button landing-button-quiet"><span className="play-icon"><Play size={13} fill="currentColor" /></span> Explore the platform</a>
           </div>
-          <div className="landing-proof"><ShieldCheck size={16} /><span>Built for Nigerian schools</span><i /><span>No implementation theatre</span></div>
+          <div className="landing-proof"><ShieldCheck size={16} /><span>Built for Nigerian schools</span><i /><span>One clear operating rhythm</span></div>
         </div>
         <div className="landing-hero-art"><div className="art-orbit art-orbit-one" /><div className="art-orbit art-orbit-two" /><ProductPreview /><div className="art-note art-note-top"><span className="art-note-icon"><WalletCards size={16} /></span><div><b>Fees are moving</b><small>+18.4% this month</small></div></div><div className="art-note art-note-bottom"><span className="art-avatar">JM</span><div><b>Joyce Mensah</b><small>Attendance is up today</small></div><Check size={16} /></div></div>
       </section>

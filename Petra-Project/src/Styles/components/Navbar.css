@@ -557,6 +557,94 @@ body.dark .company-item {
   }
 }
 
+/* Futuristic theme control: a compact status instrument, not a generic icon button. */
+.navbar .theme-btn {
+  width: 48px;
+  height: 30px;
+  min-width: 48px;
+  min-height: 30px;
+  padding: 3px;
+  border: 1px solid #dfe4df;
+  border-radius: 999px;
+  background: #f4f6f2 !important;
+  color: var(--app-text);
+}
+
+.navbar .theme-btn:hover {
+  border-color: #f2bd98;
+  background: #fff1e8 !important;
+  transform: none;
+}
+
+.theme-btn-track {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+}
+
+.theme-btn-orb {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--app-accent);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(232, 117, 47, 0.25);
+  transition: transform 180ms ease;
+}
+
+body.dark .navbar .theme-btn {
+  background: #26322d !important;
+  border-color: rgba(245, 245, 240, 0.18);
+}
+
+body.dark .theme-btn-track {
+  justify-content: flex-end;
+}
+
+body.dark .navbar .theme-btn:hover {
+  background: #35443c !important;
+}
+
+/* Final light dropdown treatment: anchor menus to the trigger instead of shifting them off canvas. */
+.navbar .solutions-dropdown,
+.navbar .company-dropdown {
+  top: calc(100% + 10px);
+  transform: none;
+  z-index: 10001;
+  background: #ffffff;
+  border: 1px solid #dfe4df;
+  box-shadow: 0 20px 44px rgba(32, 35, 33, 0.14), 0 0 0 4px rgba(232, 117, 47, 0.05);
+  backdrop-filter: none;
+}
+
+.navbar .solutions-dropdown {
+  left: 0;
+  width: min(790px, calc(100vw - 32px));
+  max-height: min(520px, calc(100vh - 100px));
+  overflow-y: auto;
+}
+
+.navbar .company-dropdown {
+  left: 0;
+  width: min(250px, calc(100vw - 32px));
+}
+
+.navbar .solution-item:hover,
+.navbar .company-item:hover {
+  background: #fff1e8;
+}
+
+@media (max-width: 900px) {
+  .navbar .solutions-dropdown {
+    left: 0;
+    width: min(790px, calc(100vw - 32px));
+  }
+}
+
 @media (max-width: 768px) {
   .navbar-container {
     border-radius: 50px;

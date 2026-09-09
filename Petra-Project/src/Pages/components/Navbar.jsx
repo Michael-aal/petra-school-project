@@ -3,11 +3,14 @@ import { NavLink } from "react-router-dom";
 import {
   Menu,
   X,
+  Sun,
+  Moon,
   Shield,
   ChevronDown,
 } from "lucide-react";
 
 import { solutionGroups } from "../solutions/solutionData";
+import { applyTheme, getInitialTheme } from "../../utils/theme";
 
 import "../../Styles/components/Navbar.css";
 
@@ -50,6 +53,7 @@ const companyInfo = [
 
 export default function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
+  const [theme, setTheme] = useState(() => getInitialTheme());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
@@ -68,6 +72,10 @@ export default function Navbar() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -204,6 +212,17 @@ export default function Navbar() {
 
         {/* RIGHT */}
         <div className="navbar-right">
+          <button
+            type="button"
+            className="theme-btn"
+            onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className="theme-btn-track" aria-hidden="true">
+              <span className="theme-btn-orb">{theme === "dark" ? <Moon size={13} /> : <Sun size={13} />}</span>
+            </span>
+          </button>
           {!isMobile && (
             <NavLink to="/get-started" className="cta-btn">
               Get Started
