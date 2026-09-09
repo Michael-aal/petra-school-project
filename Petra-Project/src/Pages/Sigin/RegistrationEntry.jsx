@@ -30,10 +30,15 @@ export default function RegistrationEntry() {
       eyebrow="Choose your path"
       title="Choose Your Registration Type"
       subtitle="Select how you want to register to continue."
-      footnote="Already have an account? Sign in below."
     >
       <div className="auth-form">
-          <Link to="/" className="auth-link auth-back-link">
+        <div className="registration-entry-heading">
+          <span>NUVORA ACCESS / 04</span>
+          <h1>Choose your path into Nuvora</h1>
+          <p>Select the workspace that matches how you work with your school.</p>
+        </div>
+
+        <Link to="/" className="auth-link auth-back-link">
           ← Back to Home
         </Link>
 

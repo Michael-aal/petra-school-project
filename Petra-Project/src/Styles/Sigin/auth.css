@@ -465,3 +465,298 @@ body.dark .auth-form {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Futuristic registration entry surface. */
+.auth-page:has(.registration-choice-grid) {
+  --auth-ink: #edf3ef;
+  --auth-muted: #9aa9a2;
+  --auth-paper: #071b16;
+  --auth-surface: rgba(17, 26, 24, 0.86);
+  --auth-line: rgba(234, 239, 235, 0.13);
+  --auth-accent: #ff9560;
+  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  position: relative;
+  min-height: 100svh;
+  height: auto;
+  justify-content: flex-start;
+  padding: 118px max(20px, 7vw) 72px;
+  overflow-x: hidden;
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.auth-page:has(.registration-choice-grid)::before {
+  content: "REGISTRATION NETWORK / ONLINE";
+  position: absolute;
+  top: 82px;
+  left: max(20px, 7vw);
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-shell {
+  width: 100%;
+  max-width: none;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-header,
+.auth-page:has(.registration-choice-grid) .auth-form,
+.auth-page:has(.registration-choice-grid) .auth-footnote,
+.auth-page:has(.registration-choice-grid) .auth-copyright {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-header {
+  margin-bottom: 34px;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-mark {
+  background: var(--auth-accent);
+  color: #071b16;
+  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand,
+.auth-page:has(.registration-choice-grid) .auth-form,
+.auth-page:has(.registration-choice-grid) .auth-form h1,
+.auth-page:has(.registration-choice-grid) .auth-form h3 {
+  color: var(--auth-ink);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-sub,
+.auth-page:has(.registration-choice-grid) .auth-footnote,
+.auth-page:has(.registration-choice-grid) .auth-copyright {
+  color: var(--auth-muted);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-form {
+  display: block;
+  padding: clamp(30px, 5vw, 72px);
+  border: 1px solid var(--auth-line);
+  border-radius: 8px;
+  background: rgba(17, 26, 24, 0.68);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.registration-entry-heading {
+  max-width: 1000px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.registration-entry-heading > span {
+  color: var(--auth-accent);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.registration-entry-heading h1 {
+  margin: 18px 0 16px;
+  color: var(--auth-ink);
+  font-size: clamp(3rem, 6vw, 6.2rem);
+  line-height: 0.96;
+  letter-spacing: -0.075em;
+}
+
+.registration-entry-heading p {
+  width: min(100%, 650px);
+  margin: 0 auto;
+  color: var(--auth-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-back-link {
+  display: inline-flex;
+  margin-bottom: 26px;
+  color: var(--auth-muted);
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 0.04em;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-back-link:hover {
+  color: var(--auth-accent);
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-card {
+  min-height: 280px;
+  padding: 25px;
+  border: 1px solid var(--auth-line);
+  border-radius: 7px;
+  background: rgba(9, 20, 16, 0.72);
+  box-shadow: none;
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 149, 96, 0.54);
+  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.24);
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 32px;
+  border: 1px solid rgba(255, 149, 96, 0.35);
+  border-radius: 5px;
+  background: rgba(255, 149, 96, 0.12);
+  color: var(--auth-accent);
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-card h3 {
+  color: var(--auth-ink);
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-card p {
+  color: var(--auth-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-button {
+  min-height: 42px;
+  margin-top: auto;
+  border: 1px solid rgba(255, 149, 96, 0.58);
+  border-radius: 5px;
+  background: var(--auth-accent);
+  color: #071b16;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-switch {
+  margin-top: 28px;
+  text-align: center;
+  color: var(--auth-muted);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-switch a {
+  color: var(--auth-accent);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-footnote {
+  margin-top: 18px;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-copyright {
+  padding-top: 26px;
+}
+
+body.dark .auth-page:has(.registration-choice-grid) {
+  --auth-ink: #edf3ef;
+  --auth-muted: #9aa9a2;
+  --auth-paper: #071b16;
+  --auth-surface: rgba(17, 26, 24, 0.86);
+  --auth-line: rgba(234, 239, 235, 0.13);
+  --auth-accent: #ff9560;
+  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-header {
+  position: relative;
+  min-height: 58px;
+  margin-bottom: 24px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--auth-line);
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-header::after {
+  content: "ACCESS NODE / READY";
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-row {
+  gap: 12px;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand {
+  font-size: 0.95rem;
+  letter-spacing: -0.03em;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-brand-sub {
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.02em;
+}
+
+.auth-page:has(.registration-choice-grid) .auth-form {
+  border-radius: 8px;
+  border-color: rgba(255, 149, 96, 0.2);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+}
+
+@media (max-width: 600px) {
+  .auth-page:has(.registration-choice-grid) .auth-brand-header::after {
+    right: 0;
+    bottom: 20px;
+    max-width: 132px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 900px) {
+  .auth-page:has(.registration-choice-grid) .registration-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-page:has(.registration-choice-grid) .registration-choice-card {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-page:has(.registration-choice-grid) {
+    padding: 108px 20px 48px;
+  }
+
+  .auth-page:has(.registration-choice-grid)::before {
+    left: 20px;
+  }
+
+  .auth-page:has(.registration-choice-grid) .auth-form {
+    padding: 25px 20px;
+  }
+
+  .registration-entry-heading {
+    margin-bottom: 32px;
+  }
+
+  .registration-entry-heading h1 {
+    font-size: clamp(3rem, 15vw, 4.8rem);
+  }
+}
