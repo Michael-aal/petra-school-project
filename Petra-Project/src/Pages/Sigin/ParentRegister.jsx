@@ -68,7 +68,7 @@ export default function ParentRegister() {
   if (checkingSession) return <main className="auth-page auth-page-loading"><LoaderCircle className="auth-spinner" size={34} /></main>;
 
   return (
-    <AuthShell eyebrow="Parent registration" title="Create parent account" subtitle="Use your details to create a parent account." footnote="Already have an account? Sign in below.">
+    <AuthShell variant="parent-register" eyebrow="Parent registration" title="Create parent account" subtitle="Use your details to create a parent account." footnote="Already have an account? Sign in below.">
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header"><h2>Parent Registration</h2><p>Fill in your details to register.</p></div>
         {serverError ? <div className="auth-alert">{serverError}</div> : null}

@@ -466,6 +466,121 @@ body.dark .auth-form {
   }
 }
 
+body.dark .auth-page:has(.auth-shell--parent-register),
+body.dark .auth-page:has(.auth-shell--signin) {
+  --auth-ink: #edf3ef;
+  --auth-muted: #9aa9a2;
+  --auth-paper: #071b16;
+  --auth-surface: rgba(17, 26, 24, 0.86);
+  --auth-line: rgba(234, 239, 235, 0.13);
+  --auth-accent: #ff9560;
+  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.auth-page:has(.auth-shell--parent-register) {
+  justify-content: center;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.auth-page:has(.auth-shell--parent-register)::before,
+.auth-page:has(.auth-shell--parent-register) .auth-brand-header,
+.auth-page:has(.auth-shell--parent-register) .auth-footnote,
+.auth-page:has(.auth-shell--parent-register) .auth-copyright {
+  display: none;
+}
+
+.auth-page:has(.auth-shell--parent-register)::before {
+  content: none;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-shell {
+  max-width: 760px;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-form {
+  margin: 0;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-switch {
+  text-align: center;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-submit {
+  background: rgba(9, 20, 16, 0.72);
+  border-color: rgba(234, 239, 235, 0.13);
+  color: #edf3ef;
+  box-shadow: none;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled) {
+  background: #ff9560;
+  border-color: #ff9560;
+  color: #071b16;
+  box-shadow: none;
+}
+
+body .auth-page:has(.auth-shell--parent-register)::before,
+body .auth-page:has(.auth-shell--parent-register) .auth-brand-header::after {
+  display: none !important;
+  content: none !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-submit {
+  background: rgba(9, 20, 16, 0.72) !important;
+  border-color: rgba(234, 239, 235, 0.13) !important;
+  color: #edf3ef !important;
+  box-shadow: none !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled) {
+  background: #ff9560 !important;
+  border-color: #ff9560 !important;
+  color: #071b16 !important;
+  box-shadow: none !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) {
+  justify-content: center !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-shell {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-input-wrap input {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-eye-btn {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--auth-muted) !important;
+}
+
+body .auth-page:has(.auth-shell--parent-register) .auth-eye-btn:hover {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--auth-accent) !important;
+}
+
+@media (max-width: 600px) {
+  .auth-page:has(.auth-shell--parent-register) {
+    padding: 24px 16px;
+  }
+}
+
 /* Futuristic registration entry surface. */
 .auth-page:has(.registration-choice-grid) {
   --auth-ink: #edf3ef;
@@ -672,6 +787,184 @@ body.dark .auth-page:has(.registration-choice-grid) {
     radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
     linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
   background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+/* Parent registration and sign-in console surfaces. */
+.auth-page:has(.auth-shell--parent-register),
+.auth-page:has(.auth-shell--signin) {
+  --auth-ink: #edf3ef;
+  --auth-muted: #9aa9a2;
+  --auth-paper: #071b16;
+  --auth-surface: rgba(17, 26, 24, 0.86);
+  --auth-line: rgba(234, 239, 235, 0.13);
+  --auth-accent: #ff9560;
+  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  position: relative;
+  min-height: 100svh;
+  height: auto;
+  justify-content: flex-start;
+  padding: 118px max(20px, 7vw) 72px;
+  overflow-x: hidden;
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.auth-page:has(.auth-shell--parent-register)::before,
+.auth-page:has(.auth-shell--signin)::before {
+  content: "PARENT ACCESS NETWORK / ONLINE";
+  position: absolute;
+  top: 82px;
+  left: max(20px, 7vw);
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-shell,
+.auth-page:has(.auth-shell--signin) .auth-shell {
+  width: 100%;
+  max-width: 920px;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-brand-header,
+.auth-page:has(.auth-shell--signin) .auth-brand-header {
+  position: relative;
+  min-height: 58px;
+  margin-bottom: 24px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--auth-line);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-brand-header::after,
+.auth-page:has(.auth-shell--signin) .auth-brand-header::after {
+  content: "ACCESS NODE / READY";
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-brand-mark,
+.auth-page:has(.auth-shell--signin) .auth-brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--auth-accent);
+  color: #071b16;
+  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-brand,
+.auth-page:has(.auth-shell--signin) .auth-brand {
+  color: var(--auth-ink);
+  letter-spacing: -0.03em;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-brand-sub,
+.auth-page:has(.auth-shell--signin) .auth-brand-sub {
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-form,
+.auth-page:has(.auth-shell--signin) .auth-form {
+  padding: clamp(30px, 5vw, 72px);
+  border: 1px solid rgba(255, 149, 96, 0.2);
+  border-radius: 8px;
+  background: rgba(17, 26, 24, 0.68);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-form-header h2,
+.auth-page:has(.auth-shell--signin) .auth-form-header h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-form-header p,
+.auth-page:has(.auth-shell--signin) .auth-form-header p {
+  color: var(--auth-muted);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-input-wrap,
+.auth-page:has(.auth-shell--signin) .auth-input-wrap {
+  min-height: 52px;
+  border-radius: 6px;
+  background: rgba(9, 20, 16, 0.72);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-input-wrap:focus-within,
+.auth-page:has(.auth-shell--signin) .auth-input-wrap:focus-within {
+  border-color: var(--auth-accent);
+  box-shadow: 0 0 0 3px var(--auth-accent-soft), 0 0 20px rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-submit,
+.auth-page:has(.auth-shell--signin) .auth-submit {
+  min-height: 52px;
+  border: 1px solid rgba(255, 149, 96, 0.65);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #ff9560, #e86b46);
+  color: #071b16;
+  box-shadow: 0 12px 26px rgba(255, 149, 96, 0.2);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled),
+.auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffab7e, #f27a52);
+  box-shadow: 0 16px 30px rgba(255, 149, 96, 0.28);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-field > span,
+.auth-page:has(.auth-shell--signin) .auth-field > span {
+  color: var(--auth-ink);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-form .auth-link,
+.auth-page:has(.auth-shell--signin) .auth-form .auth-link,
+.auth-page:has(.auth-shell--parent-register) .auth-switch a,
+.auth-page:has(.auth-shell--signin) .auth-switch a {
+  color: var(--auth-accent);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-footnote,
+.auth-page:has(.auth-shell--signin) .auth-footnote,
+.auth-page:has(.auth-shell--parent-register) .auth-copyright,
+.auth-page:has(.auth-shell--signin) .auth-copyright {
+  color: var(--auth-muted);
+}
+
+.auth-page:has(.auth-shell--parent-register) .auth-switch,
+.auth-page:has(.auth-shell--signin) .auth-switch,
+.auth-page:has(.auth-shell--signin) .auth-security-note {
+  color: var(--auth-muted);
+}
+
+@media (max-width: 600px) {
+  .auth-page:has(.auth-shell--parent-register),
+  .auth-page:has(.auth-shell--signin) {
+    padding: 108px 20px 48px;
+  }
+
+  .auth-page:has(.auth-shell--parent-register)::before,
+  .auth-page:has(.auth-shell--signin)::before {
+    left: 20px;
+  }
+
+  .auth-page:has(.auth-shell--parent-register) .auth-brand-header::after,
+  .auth-page:has(.auth-shell--signin) .auth-brand-header::after {
+    max-width: 132px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .auth-page:has(.registration-choice-grid) .auth-brand-header {
