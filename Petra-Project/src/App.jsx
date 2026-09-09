@@ -66,6 +66,7 @@ import ParentFeesPage from "./Pages/DashboardLayout/pages/parent/ParentFeesPage"
 import Contact from "./Pages/Contact";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
 import { UserContext } from "./context/UserContext";
+import { applyTheme } from "./utils/theme.js";
 import {
   BrowserRouter as Router,
   Routes,
@@ -141,6 +142,10 @@ function DashboardLay() {
     }
   });
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    applyTheme("light");
+  }, []);
 
   useEffect(() => {
     if (!userInfo?.id) return;

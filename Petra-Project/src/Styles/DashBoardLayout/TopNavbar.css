@@ -428,6 +428,22 @@
 .menu-btn:hover,
 .icon-btn:hover,
 .ask-nuvora-btn:hover {
+  background: #fff1e8;
+  border-color: #f1b58d;
+  color: #e8752f;
+}
+
+@media (max-width: 480px) {
+  .top-right {
+    gap: 4px;
+  }
+
+  .user-info {
+    padding-right: 5px;
+  }
+}
+
+.ask-nuvora-btn:focus-visible {
   border-color: #f2bd98;
   background: var(--surface-accent);
   color: var(--app-accent);

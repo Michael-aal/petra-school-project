@@ -1,7 +1,18 @@
 .gs {
-  --gs-ink: var(--app-text);
-  --gs-muted: var(--app-text-muted);
-  --gs-line: var(--app-border);
+  --app-bg: #f7f8f6;
+  --app-surface: #ffffff;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --app-text: #202321;
+  --app-text-muted: #69716b;
+  --app-border: #e2e5e1;
+  --app-accent: #e8752f;
+  --app-accent-2: #cf5f22;
+  --primary-foreground: #ffffff;
+  --gs-ink: #202321;
+  --gs-muted: #69716b;
+  --gs-line: #e2e5e1;
+  background: #f7f8f6;
   min-height: 100%;
   max-width: 1240px;
   margin: 0 auto;
@@ -17,12 +28,9 @@
   overflow: hidden;
   padding: clamp(32px, 6vw, 72px);
   border: 1px solid var(--gs-line);
-  border-radius: 30px;
-  background:
-    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--app-accent) 20%, transparent), transparent 25%),
-    radial-gradient(circle at 66% 90%, color-mix(in srgb, var(--app-accent-2) 16%, transparent), transparent 28%),
-    var(--app-surface);
-  box-shadow: 0 22px 70px color-mix(in srgb, var(--app-text) 8%, transparent);
+  border-radius: 18px;
+  background: var(--app-surface);
+  box-shadow: 0 12px 28px rgba(32, 35, 33, 0.06);
 }
 
 .gs-intro::after {
@@ -101,9 +109,8 @@
   align-self: end;
   padding: 24px;
   border: 1px solid color-mix(in srgb, var(--app-accent) 20%, var(--gs-line));
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--app-card) 82%, transparent);
-  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  background: #fafbf9;
 }
 
 .gs-progress-topline,
@@ -137,7 +144,7 @@
 .gs-section-heading > p { max-width: 410px; margin: 0; color: var(--gs-muted); line-height: 1.6; }
 
 .gs-step-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
-.gs-step-card { display: flex; min-height: 285px; flex-direction: column; padding: 24px; border: 1px solid var(--gs-line); border-radius: 20px; background: var(--app-card); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.gs-step-card { display: flex; min-height: 285px; flex-direction: column; padding: 24px; border: 1px solid var(--gs-line); border-radius: 14px; background: var(--app-card); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
 .gs-step-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--app-accent) 45%, var(--gs-line)); box-shadow: 0 18px 36px color-mix(in srgb, var(--app-text) 8%, transparent); }
 .gs-step-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
 .gs-step-number { color: var(--gs-muted); font-size: 0.74rem; font-weight: 750; letter-spacing: 0.1em; }

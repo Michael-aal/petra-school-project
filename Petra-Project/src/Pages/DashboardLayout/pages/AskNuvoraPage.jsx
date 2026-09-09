@@ -149,6 +149,11 @@ export default function AskNuvoraPage() {
 
   return (
     <div className="ask-nuvora-page">
+      <div className="ask-nuvora-context">
+        <p className="ask-nuvora-context-label">Workspace assistant</p>
+        <h1 className="ask-nuvora-context-title">Get clarity from your school data.</h1>
+      </div>
+
       {/* Header */}
       <header className="ask-nuvora-header">
         <div className="ask-nuvora-header-left">

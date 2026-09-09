@@ -553,3 +553,86 @@
   background: rgba(32, 35, 33, 0.24);
 }
 
+/* Keep the dashboard on one predictable document scroll. */
+.dashboard-shell {
+  min-height: 100dvh;
+  height: auto;
+  overflow: visible;
+  --app-bg: #f7f8f6;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f1f3f0;
+  --app-text: #202321;
+  --app-text-muted: #69716b;
+  --app-border: #e2e5e1;
+  --app-accent: #e8752f;
+  --app-accent-2: #cf5f22;
+  --dashboard-page-bg: #f7f8f6;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.96);
+  --dashboard-topbar-text: #202321;
+  --dashboard-topbar-muted: #69716b;
+  --dashboard-card-bg: #ffffff;
+  --dashboard-panel-bg: #ffffff;
+  --dashboard-muted-surface: #f1f3f0;
+  --surface-muted: #f1f3f0;
+  --surface-accent: #fff1e8;
+  --surface-danger: #fff0ee;
+  --danger: #b64739;
+  --sidebar-width: 224px;
+  --sidebar-collapsed-width: 68px;
+}
+
+.dashboard-main {
+  min-height: 100dvh;
+}
+
+.dashboard-content {
+  min-height: calc(100dvh - 64px);
+  overflow: visible;
+}
+
+.sidebar-container {
+  width: var(--sidebar-width, 224px);
+  min-width: var(--sidebar-width, 224px);
+  height: 100dvh;
+  min-height: 100dvh;
+  padding: 12px 10px 10px;
+}
+
+.sidebar-nav {
+  gap: 2px;
+  padding-top: 8px;
+}
+
+.sidebar-section-label {
+  padding-top: 10px;
+}
+
+.sidebar-assistant,
+.sidebar-link,
+.sidebar-group,
+.sidebar-child {
+  min-height: 34px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.sidebar-footer {
+  margin-top: 8px;
+  padding-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell {
+    min-height: 100dvh;
+  }
+
+  .dashboard-main,
+  .dashboard-content {
+    min-height: 0;
+  }
+
+  .dashboard-content {
+    overflow: visible;
+  }
+}
+

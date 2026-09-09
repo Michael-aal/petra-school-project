@@ -179,6 +179,38 @@ button[type="submit"] {
   box-shadow: 0 14px 34px color-mix(in srgb, var(--app-accent) 18%, transparent);
 }
 
+/* Dashboard product theme: light surfaces with a restrained orange accent. */
+:root {
+  color-scheme: light;
+  background: #f7f7f5;
+  color: #202321;
+  --app-bg: #f7f7f5;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f7f7f5;
+  --app-text: #202321;
+  --app-text-muted: #69716b;
+  --app-border: #e2e5e1;
+  --app-accent: #e8752f;
+  --app-accent-2: #d95f1f;
+  --primary: #e8752f;
+  --primary-foreground: #ffffff;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.96);
+  --dashboard-topbar-text: #202321;
+  --dashboard-topbar-muted: #69716b;
+  --dashboard-panel-bg: #ffffff;
+  --dashboard-page-bg: #f7f7f5;
+  --surface-muted: #f7f7f5;
+  --surface-accent: #fff1e8;
+  --surface-danger: #fff0ee;
+}
+
+html,
+body,
+#root {
+  background: #f7f7f5;
+  color: #202321;
+}
+
 .btn-secondary,
 button:not(.btn-primary):not(.btn-ghost):not(.sidebar-group):not(.sidebar-link):not(.sidebar-assistant):not(.sidebar-child):not(.sidebar-close) {
   background: var(--app-surface);

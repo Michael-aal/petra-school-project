@@ -1,21 +1,46 @@
+/* Ask Nuvora uses the dashboard document flow; the page itself owns no scroll container. */
 .ask-nuvora-page {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 110px);
-  max-width: 1100px;
+  --ask-ink: #202321;
+  --ask-muted: #69716b;
+  --ask-border: #e2e5e1;
+  --ask-surface: #ffffff;
+  --ask-soft: #f7f7f5;
+  --ask-orange: #e8752f;
+  --ask-orange-soft: #fff1e8;
+  width: min(100%, 1040px);
   margin: 0 auto;
-  gap: 16px;
+  padding: 28px clamp(16px, 3vw, 40px) 48px;
+  color: var(--ask-ink);
+}
+
+.ask-nuvora-context {
+  margin-bottom: 18px;
+}
+
+.ask-nuvora-context-label {
+  margin: 0 0 6px;
+  color: var(--ask-orange);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ask-nuvora-context-title {
+  margin: 0;
+  color: var(--ask-ink);
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
 }
 
 .ask-nuvora-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background: var(--dashboard-panel-bg);
-  border: 1px solid var(--app-border);
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  padding: 14px 0 16px;
+  background: transparent;
+  border-bottom: 1px solid var(--ask-border);
 }
 
 .ask-nuvora-header-left {
@@ -28,18 +53,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #c6533d 0%, #e06c55 100%);
-  color: #ffffff;
+  background: var(--ask-orange-soft);
+  color: var(--ask-orange);
 }
 
 .ask-nuvora-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--app-text);
+  color: var(--ask-ink);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -50,8 +75,8 @@
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 6px;
-  background: var(--surface-accent);
-  color: var(--app-accent);
+  background: var(--ask-orange-soft);
+  color: var(--ask-orange);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -59,7 +84,7 @@
 .ask-nuvora-subtitle {
   margin: 2px 0 0;
   font-size: 0.85rem;
-  color: var(--app-text-muted);
+  color: var(--ask-muted);
 }
 
 .ask-nuvora-header-actions {
@@ -75,78 +100,81 @@
   padding: 8px 12px;
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--app-text-muted);
+  color: var(--ask-muted);
   background: transparent;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--ask-border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .ask-nuvora-btn-ghost:hover {
-  background: var(--surface-muted);
-  color: var(--app-text);
+  background: var(--ask-soft);
+  color: var(--ask-ink);
 }
 
 .ask-nuvora-messages-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  background: var(--dashboard-panel-bg);
-  border: 1px solid var(--app-border);
-  border-radius: 14px;
+  padding: 24px 0 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .ask-nuvora-empty-state {
-  margin: auto;
+  margin: 0;
   text-align: center;
-  max-width: 580px;
-  padding: 30px 20px;
+  max-width: 680px;
+  padding: 18px 0 8px;
+  align-self: center;
 }
 
 .ask-nuvora-empty-icon {
   display: inline-flex;
-  padding: 16px;
-  border-radius: 50%;
-  background: var(--surface-muted);
-  color: var(--app-accent);
-  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--ask-orange-soft);
+  color: var(--ask-orange);
+  margin-bottom: 12px;
 }
 
 .ask-nuvora-empty-title {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--app-text);
-  margin-bottom: 8px;
+  color: var(--ask-ink);
+  margin: 0 0 6px;
 }
 
 .ask-nuvora-empty-desc {
   font-size: 0.95rem;
-  color: var(--app-text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
+  color: var(--ask-muted);
+  line-height: 1.55;
+  margin: 0 auto 18px;
+  max-width: 560px;
 }
 
 .ask-nuvora-suggestions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 8px;
   text-align: left;
+  justify-content: center;
 }
 
 .ask-nuvora-suggestion-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--app-surface-strong);
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  color: var(--app-text);
-  font-size: 0.9rem;
+  flex: 1 1 220px;
+  min-height: 46px;
+  padding: 10px 12px;
+  background: var(--ask-surface);
+  border: 1px solid var(--ask-border);
+  border-radius: 9px;
+  color: var(--ask-ink);
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -154,10 +182,9 @@
 }
 
 .ask-nuvora-suggestion-btn:hover {
-  background: var(--surface-accent);
-  border-color: var(--app-accent);
-  color: var(--app-accent);
-  transform: translateX(2px);
+  background: var(--ask-orange-soft);
+  border-color: #f1b58d;
+  color: var(--ask-orange);
 }
 
 .ask-nuvora-msg-row {
@@ -184,7 +211,7 @@
 }
 
 .ask-nuvora-avatar.ai {
-  background: linear-gradient(135deg, #c6533d 0%, #e06c55 100%);
+  background: var(--ask-orange);
   color: #ffffff;
 }
 
@@ -209,17 +236,17 @@
 }
 
 .ask-nuvora-msg-row.ai .ask-nuvora-bubble {
-  background: var(--app-surface-strong);
-  color: var(--app-text);
-  border: 1px solid var(--app-border);
+  background: var(--ask-surface);
+  color: var(--ask-ink);
+  border: 1px solid var(--ask-border);
   border-bottom-left-radius: 2px;
 }
 
 .ask-nuvora-data-card {
   margin-top: 12px;
   padding: 12px 14px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
+  background: var(--ask-surface);
+  border: 1px solid var(--ask-border);
   border-radius: 8px;
   font-size: 0.85rem;
 }
@@ -233,13 +260,13 @@
 
 .ask-nuvora-data-item {
   padding: 8px 10px;
-  background: var(--surface-muted);
+  background: var(--ask-soft);
   border-radius: 6px;
 }
 
 .ask-nuvora-data-label {
   font-size: 0.75rem;
-  color: var(--app-text-muted);
+  color: var(--ask-muted);
   text-transform: uppercase;
   margin-bottom: 2px;
 }
@@ -247,14 +274,14 @@
 .ask-nuvora-data-val {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--app-text);
+  color: var(--ask-ink);
 }
 
 .ask-nuvora-loading {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--app-text-muted);
+  color: var(--ask-muted);
   font-style: italic;
 }
 
@@ -291,11 +318,17 @@
 }
 
 .ask-nuvora-input-card {
-  background: var(--dashboard-panel-bg);
-  border: 1px solid var(--app-border);
-  border-radius: 14px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  margin-top: 16px;
+  background: var(--ask-surface);
+  border: 1px solid var(--ask-border);
+  border-radius: 10px;
+  padding: 8px 10px 8px 14px;
+  box-shadow: 0 8px 24px rgba(32, 35, 33, 0.05);
+}
+
+.ask-nuvora-input-card:focus-within {
+  border-color: #f1b58d;
+  box-shadow: 0 0 0 3px var(--ask-orange-soft);
 }
 
 .ask-nuvora-child-selector-row {
@@ -304,16 +337,16 @@
   gap: 10px;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--app-border);
+  border-bottom: 1px solid var(--ask-border);
   font-size: 0.85rem;
 }
 
 .ask-nuvora-select {
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text);
+  border: 1px solid var(--ask-border);
+  background: var(--ask-surface);
+  color: var(--ask-ink);
   font-size: 0.85rem;
 }
 
@@ -330,7 +363,7 @@
   resize: none;
   font-family: inherit;
   font-size: 0.95rem;
-  color: var(--app-text);
+  color: var(--ask-ink);
   outline: none;
   min-height: 24px;
   max-height: 120px;
@@ -338,7 +371,7 @@
 }
 
 .ask-nuvora-textarea::placeholder {
-  color: var(--app-text-muted);
+  color: var(--ask-muted);
 }
 
 .ask-nuvora-send-btn {
@@ -348,7 +381,7 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: var(--app-accent);
+  background: var(--ask-orange);
   color: #ffffff;
   border: none;
   cursor: pointer;
@@ -369,10 +402,50 @@
 .ask-nuvora-error-banner {
   padding: 10px 14px;
   border-radius: 8px;
-  background: var(--surface-danger);
-  color: var(--danger);
+  background: #fff0ee;
+  color: #b64739;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .ask-nuvora-page {
+    padding: 22px 14px 32px;
+  }
+
+  .ask-nuvora-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ask-nuvora-header-left {
+    min-width: 0;
+  }
+
+  .ask-nuvora-title {
+    flex-wrap: wrap;
+  }
+
+  .ask-nuvora-subtitle {
+    max-width: 230px;
+  }
+
+  .ask-nuvora-empty-state {
+    padding-top: 10px;
+  }
+
+  .ask-nuvora-empty-desc {
+    font-size: 0.88rem;
+  }
+
+  .ask-nuvora-suggestion-btn {
+    flex-basis: 100%;
+  }
+
+  .ask-nuvora-bubble {
+    max-width: calc(100% - 42px);
+    padding: 12px 14px;
+  }
 }
