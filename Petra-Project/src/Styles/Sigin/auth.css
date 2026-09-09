@@ -652,6 +652,31 @@ body .auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
   box-shadow: none !important;
 }
 
+body .auth-page:has(.registration-choice-grid) {
+  justify-content: center !important;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+body .auth-page:has(.registration-choice-grid)::before,
+body .auth-page:has(.registration-choice-grid) .auth-brand-header,
+body .auth-page:has(.registration-choice-grid) .auth-footnote,
+body .auth-page:has(.registration-choice-grid) .auth-copyright {
+  display: none !important;
+  content: none !important;
+}
+
+body .auth-page:has(.registration-choice-grid) .auth-brand-header::after {
+  display: none !important;
+  content: none !important;
+}
+
+body .auth-page:has(.registration-choice-grid) .auth-shell {
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media (max-width: 600px) {
   .auth-page:has(.auth-shell--parent-register) {
     padding: 24px 16px;
