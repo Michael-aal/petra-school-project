@@ -50,11 +50,11 @@ const modules = [
   },
 ];
 
-const impactStats = [
-  { value: "4.2x", label: "Faster fee collection", note: "vs. manual reconciliation" },
-  { value: "94%", label: "Parent engagement rate", note: "across active schools" },
-  { value: "18hrs", label: "Saved per week", note: "per administrator" },
-  { value: "99.9%", label: "Platform uptime", note: "bank-grade reliability" },
+const outcomes = [
+  { value: "One workspace", label: "Coordinate school operations", note: "Bring people, classes, sessions, and setup into one place." },
+  { value: "Clear finance", label: "Follow fees and payments", note: "Track invoices, receipts, wallets, and collections with context." },
+  { value: "Visible progress", label: "Support better learning", note: "Connect attendance, assessments, results, and report cards." },
+  { value: "Shared context", label: "Keep families informed", note: "Give staff, parents, and students the workflows they need." },
 ];
 
 const personas = [
@@ -109,54 +109,33 @@ const workflowSteps = [
   },
 ];
 
-const testimonials = [
-  {
-    quote: "We used to chase fees for weeks. Now parents pay before we even send the reminder.",
-    name: "Chioma Eze",
-    role: "Bursar, Riverside Academy",
-    initials: "CE",
-  },
-  {
-    quote: "My teachers finally have time to teach. The admin work just… disappears into Nuvora.",
-    name: "Dr. Ibrahim Musa",
-    role: "Principal, Greenfield College",
-    initials: "IM",
-  },
-  {
-    quote: "As a parent of three, seeing everything in one place has genuinely changed our mornings.",
-    name: "Funke Adeyemi",
-    role: "Parent, Lagos",
-    initials: "FA",
-  },
-];
-
 const securityPoints = [
-  { icon: Lock, title: "End-to-end encryption", text: "Every record, every payment, every message is encrypted in transit and at rest." },
-  { icon: Shield, title: "NDPR compliant", text: "Built from the ground up to meet Nigerian data protection standards." },
-  { icon: Server, title: "Daily encrypted backups", text: "Your school's data is mirrored across three geographically separate servers." },
-  { icon: CreditCard, title: "PCI-DSS payments", text: "Card data never touches our servers — Paystack handles it all." },
+  { icon: Lock, title: "Protected access", text: "Authentication and role-aware access keep school data behind the right boundaries." },
+  { icon: Shield, title: "School-aware workflows", text: "Tenant context and resource authorization help keep each school's records separate." },
+  { icon: Server, title: "Structured data", text: "Academic, finance, admissions, and communication workflows are handled through the API." },
+  { icon: CreditCard, title: "Payment integrations", text: "Paystack payment flows and webhooks are handled through dedicated backend routes." },
 ];
 
 const faqs = [
   {
-    q: "How long does it take to set up Nuvora?",
-    a: "Most schools are fully operational within 48 hours. Our onboarding team imports your data, configures your sessions, and trains your staff — so you can go live before the next Monday.",
+    q: "What can Nuvora help our school coordinate?",
+    a: "Nuvora brings together school setup, students and admissions, academics, finance, communication, parent workflows, and platform administration.",
   },
   {
     q: "Do parents need to download an app?",
     a: "No. Nuvora works entirely in the browser on any phone. There is an optional native app for parents who prefer it, but nothing is locked behind a download.",
   },
   {
-    q: "Can we use Nuvora alongside our existing tools?",
-    a: "Yes. Nuvora integrates with Paystack, Flutterwave, WhatsApp, and common accounting tools. We also offer a full API for custom integrations.",
+    q: "Does Nuvora support different school roles?",
+    a: "Yes. The application includes role-specific experiences for school leaders, staff, teachers, parents, students, and platform administrators.",
   },
   {
-    q: "What happens to our data if we stop using Nuvora?",
-    a: "Your data is yours. You can export every record — students, payments, results — in open formats at any time. No lock-in, ever.",
+    q: "Can Nuvora connect to payment workflows?",
+    a: "Yes. The platform includes payment-provider routes and finance workflows for fees, invoices, payments, receipts, wallets, and related records.",
   },
   {
-    q: "Is there a contract or minimum term?",
-    a: "No. Nuvora is billed term-by-term. You can pause or cancel between terms with zero penalties.",
+    q: "Where can I learn more about the product?",
+    a: "Use the Solutions menu to explore focused workflows, or choose Get Started to enter the product journey.",
   },
 ];
 
@@ -174,17 +153,17 @@ function ProductPreview() {
         </aside>
         <div className="preview-content">
           <div className="preview-heading">
-            <div><small>MONDAY, 10 FEBRUARY 2025</small><h3>Good morning, Admin.</h3></div>
-            <span>2024/2025 Session</span>
+            <div><small>NUVORA SCHOOL WORKSPACE</small><h3>Good morning, Admin.</h3></div>
+            <span>Product preview</span>
           </div>
           <div className="preview-stats">
-            <div><small>COLLECTED THIS TERM</small><strong>₦48.6m</strong><em>+12.8%</em></div>
-            <div><small>STUDENT ATTENDANCE</small><strong>94.8%</strong><em>+4.2%</em></div>
-            <div><small>ACTIVE LEARNERS</small><strong>2,841</strong><em>+8.4%</em></div>
+            <div><small>ADMISSIONS</small><strong>Review</strong><em>Applications</em></div>
+            <div><small>ACADEMICS</small><strong>Track</strong><em>Attendance</em></div>
+            <div><small>FINANCE</small><strong>Manage</strong><em>Collections</em></div>
           </div>
           <div className="preview-lower">
-            <div className="preview-chart"><div className="preview-line" /><div className="chart-labels"><span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span><span>JAN</span><span>FEB</span></div></div>
-            <div className="preview-feed"><strong>Latest activity</strong><p><BellRing size={13} /> 42 fee reminders sent</p><p><Check size={13} /> 18 admissions approved</p><p><BarChart3 size={13} /> Weekly report ready</p></div>
+            <div className="preview-chart"><div className="preview-line" /><div className="chart-labels"><span>SETUP</span><span>PEOPLE</span><span>LEARNING</span><span>FINANCE</span></div></div>
+            <div className="preview-feed"><strong>One clear view</strong><p><BellRing size={13} /> Fee collection status</p><p><Check size={13} /> Attendance trends</p><p><BarChart3 size={13} /> Reports and results</p></div>
           </div>
         </div>
       </div>
@@ -249,15 +228,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ========== IMPACT STATS (NEW) ========== */}
+      {/* ========== PROBLEM TO SOLUTION ========== */}
       <section className="landing-impact">
         <div className="landing-section-intro">
-          <div className="landing-eyebrow"><span /> The Nuvora difference</div>
-          <h2>Numbers that <em>move schools forward.</em></h2>
-          <p>Measured across every school running on Nuvora, term after term. These are not projections — they are the quiet results of a system that just works.</p>
+          <div className="landing-eyebrow"><span /> From fragmented work to one workspace</div>
+          <h2>Less chasing. <em>More clarity.</em></h2>
+          <p>Schools often split daily work across spreadsheets, messages, payment records, and disconnected academic tools. Nuvora brings the core workflows together so teams can act from shared context.</p>
         </div>
         <div className="landing-impact-grid">
-          {impactStats.map((stat) => (
+          {outcomes.map((stat) => (
             <div className="landing-impact-card" key={stat.label}>
               <div className="impact-value">{stat.value}</div>
               <div className="impact-label">{stat.label}</div>
@@ -286,19 +265,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ========== FIRST TESTIMONIAL ========== */}
+      {/* ========== PRODUCT BENEFIT ========== */}
       <section className="landing-quote">
-        <div className="quote-mark">"</div>
-        <blockquote>Nuvora helps us see the whole school at once, without making the work feel bigger than it is.</blockquote>
-        <div className="quote-person"><span>AO</span><div><b>Amaka Okafor</b><small>School administrator, Lagos</small></div></div>
+        <div className="quote-mark" aria-hidden="true">+</div>
+        <blockquote>One operating rhythm for the whole school, from the first setup task to the daily work that keeps learning moving.</blockquote>
+        <div className="quote-person"><span>NV</span><div><b>Built around school workflows</b><small>Operations, finance, academics, and communication in one product.</small></div></div>
       </section>
 
       {/* ========== HOW IT WORKS (NEW) ========== */}
       <section className="landing-workflow">
         <div className="landing-section-intro">
-          <div className="landing-eyebrow"><span /> From signup to momentum</div>
-          <h2>Live in <em>48 hours.</em><br />Not 48 weeks.</h2>
-          <p>Other platforms sell you a project. Nuvora gives you a Monday morning where everything just… works.</p>
+          <div className="landing-eyebrow"><span /> A straightforward way to begin</div>
+          <h2>Start with <em>the work.</em></h2>
+          <p>Set up the school context, organize the people and records that matter, then use the workflows your team needs every day.</p>
         </div>
         <div className="landing-workflow-steps">
           {workflowSteps.map((step) => {
@@ -315,25 +294,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ========== MORE TESTIMONIALS (NEW) ========== */}
+      {/* ========== PRODUCT FIT ========== */}
       <section className="landing-testimonials">
         <div className="landing-section-intro">
-          <div className="landing-eyebrow"><span /> Loved by schools across Nigeria</div>
-          <h2>Quiet confidence, <em>loud results.</em></h2>
+          <div className="landing-eyebrow"><span /> One platform, many roles</div>
+          <h2>Everyone sees <em>their next step.</em></h2>
+          <p>School leaders, administrators, teachers, parents, and students each get a clearer path through the work that belongs to them.</p>
         </div>
         <div className="landing-testimonial-grid">
-          {testimonials.map((t) => (
-            <figure className="landing-testimonial" key={t.name}>
-              <div className="testimonial-mark">"</div>
-              <blockquote>{t.quote}</blockquote>
-              <figcaption>
-                <span className="testimonial-avatar">{t.initials}</span>
-                <div>
-                  <b>{t.name}</b>
-                  <small>{t.role}</small>
-                </div>
-              </figcaption>
-            </figure>
+          {personas.slice(0, 3).map(({ icon: Icon, role, title, text }) => (
+            <article className="landing-testimonial" key={role}>
+              <div className="testimonial-mark"><Icon size={18} /></div>
+              <blockquote>{title}</blockquote>
+              <p>{text}</p>
+              <small>{role}</small>
+            </article>
           ))}
         </div>
       </section>
