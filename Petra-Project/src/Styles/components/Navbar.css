@@ -223,6 +223,74 @@ body.dark .company-dropdown {
   transform: translateY(-2px);
 }
 
+/* Public navigation: compact, calm, and readable on the light landing surface. */
+.navbar {
+  top: 0;
+  padding: 16px 20px;
+}
+
+.navbar-container {
+  max-width: 1180px;
+  min-height: 58px;
+  padding: 7px 10px 7px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--app-border);
+  box-shadow: 0 8px 24px rgba(32, 35, 33, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.navbar-left {
+  gap: 34px;
+}
+
+.navbar-logo {
+  color: var(--app-text);
+  gap: 9px;
+}
+
+.navbar-logo svg {
+  color: var(--app-accent);
+}
+
+.petra {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.nav-links {
+  gap: 24px;
+}
+
+.nav-link,
+.nav-link-btn {
+  min-height: 36px;
+  color: var(--app-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.nav-link:hover,
+.nav-link-btn:hover {
+  color: var(--app-text);
+}
+
+.cta-btn {
+  min-height: 40px;
+  align-items: center;
+  padding: 0 17px;
+  border-radius: var(--radius-md);
+  background: var(--app-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.cta-btn:hover {
+  background: var(--app-accent-2);
+  transform: none;
+}
+
 /* =========================
    DROPDOWNS
 ========================= */
