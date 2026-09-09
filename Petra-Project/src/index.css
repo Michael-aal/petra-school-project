@@ -106,13 +106,14 @@ body,
   margin: 0;
   width: 100%;
   min-height: 100%;
-  height: 100%;
+  height: auto;
 }
 
 body {
   background-color: var(--app-bg);
   color: var(--app-text);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   transition:
     background-color 0.25s ease,
     color 0.25s ease;
@@ -845,7 +846,8 @@ body,
 body.light {
   background: var(--app-bg);
   color: var(--app-text);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 button,

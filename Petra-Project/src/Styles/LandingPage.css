@@ -10,7 +10,8 @@
   --blue: #b8dce5;
   background: var(--paper);
   color: var(--ink);
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   font-family: "Manrope", sans-serif;
   background-image:
     radial-gradient(
@@ -1098,6 +1099,11 @@ body.dark .preview-feed {
 .landing-section-intro {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
   gap: 32px;
+  align-items: start;
+}
+
+.landing-platform {
+  padding-top: 64px;
 }
 
 .landing-section-intro h2 {
@@ -1480,6 +1486,79 @@ body.dark .preview-feed {
   background: #c85b1d;
   border-color: #c85b1d;
   color: #ffffff;
+}
+
+/* Keep the problem-to-solution band inside the light landing system. */
+.landing-page .landing-impact {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 84px 24px;
+  background: #f0f2ee;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.landing-page .landing-impact .landing-eyebrow,
+.landing-page .landing-impact .landing-section-intro > p {
+  color: var(--muted);
+}
+
+.landing-page .landing-impact .landing-impact-grid {
+  background: var(--line);
+  border-color: var(--line);
+}
+
+.landing-page .landing-impact .landing-impact-card {
+  background: #ffffff;
+  border-color: var(--line);
+}
+
+.landing-page .landing-impact .impact-value,
+.landing-page .landing-impact .impact-label {
+  color: var(--ink);
+}
+
+.landing-page .landing-impact .impact-note {
+  color: var(--muted);
+}
+
+/* Keep the workflow section in normal flow and inside the same light container system. */
+.landing-page .landing-workflow {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 84px 24px;
+  position: static;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.landing-page .landing-workflow .landing-eyebrow,
+.landing-page .landing-workflow .landing-section-intro > p {
+  color: var(--muted);
+}
+
+.landing-page .landing-workflow .landing-workflow-step {
+  background: #ffffff;
+  border-color: var(--line);
+}
+
+.landing-page .quote-person > span {
+  background: var(--coral);
+  color: #ffffff;
+}
+
+.landing-page .landing-button-dark {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--coral);
+}
+
+.landing-page .landing-button-dark:hover {
+  background: #fff7f1;
+  border-color: #fff7f1;
+  color: var(--coral);
 }
 /* Keep card content readable and isolated from global button defaults. */
 .landing-module {
