@@ -25,8 +25,9 @@
   text-decoration: none;
 }
 .landing-hero {
-  min-height: 790px;
-  max-width: 1320px;
+  min-height: min(790px, 100svh);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 170px 7vw 110px;
   display: grid;
@@ -478,7 +479,8 @@
   font-weight: 700;
 }
 .landing-platform {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 140px 7vw 125px;
 }
@@ -2236,7 +2238,8 @@ body.dark .landing-page {
    6. IMPACT STATS SECTION
    ========================================= */
 .landing-impact {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 120px 7vw 140px;
   border-top: 1px solid var(--line);
@@ -2302,7 +2305,8 @@ body.dark .landing-page {
    7. PERSONAS SECTION
    ========================================= */
 .landing-personas {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 60px 7vw 140px;
 }
@@ -2384,7 +2388,8 @@ body.dark .landing-page {
    8. WORKFLOW SECTION
    ========================================= */
 .landing-workflow {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 120px 7vw 140px;
   background: var(--ink);
@@ -2479,7 +2484,8 @@ body.dark .landing-page {
    9. TESTIMONIALS GRID
    ========================================= */
 .landing-testimonials {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 120px 7vw;
 }
@@ -2568,7 +2574,8 @@ body.dark .landing-page {
    10. SECURITY SECTION
    ========================================= */
 .landing-security {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 120px 7vw;
   display: grid;
@@ -2654,7 +2661,8 @@ body.dark .landing-page {
    11. FAQ SECTION
    ========================================= */
 .landing-faq {
-  max-width: 1320px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 120px 7vw 160px;
 }
