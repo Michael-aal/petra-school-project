@@ -1,5 +1,18 @@
+const isLocalDevelopmentOrigin = (origin) => {
+  if (process.env.NODE_ENV === "production" || !origin) return false;
+
+  try {
+    const { hostname } = new URL(origin);
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1" || hostname.endsWith(".localhost");
+  } catch {
+    return false;
+  }
+};
+
 export const originLock = (req, res, next) => {
   if (req.path === "/healthz" || req.path === "/readyz") return next();
+
+  if (isLocalDevelopmentOrigin(req.get("origin"))) return next();
 
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");
