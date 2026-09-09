@@ -114,6 +114,7 @@ import ApplicationStatusPage from "./Pages/DashboardLayout/ApplicationStatusPage
 
 import StudentPaymentPage from "./Pages/DashboardLayout/StudentPaymentPage/StudentPaymentPage";
 import AdminPaymentSettings from "./Pages/DashboardLayout/AdminPaymentSettings/AdminPaymentSettings";
+import Payment from "./Payment";
 
 function PublicLayout() {
   return (
@@ -261,7 +262,8 @@ function App() {
         <Route path="/admission_form" element={<AdmissionForm />} />
         <Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
         <Route path="/student_Payment" element={<StudentPaymentPage />} />
-        {/* <Route path="/Payment" element={<Payment />} ></Route> */}
+        <Route path="/Payment" element={<Payment />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dev/schools/:id" element={<SuperAdminDashboard />} />
         <Route path="/dev/*" element={<SuperAdminDashboard />} />

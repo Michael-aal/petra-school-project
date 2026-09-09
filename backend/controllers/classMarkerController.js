@@ -1,7 +1,7 @@
 import { prisma } from "../config/db.js";
 // import { classMarkerService } from "../services/classMarkerService.js";
 import { quizlabService } from "../services/quizlabService.js";
-import { sendAdmissionEmail } from "../services/emailService.js";
+import { sendAdmissionEmail, sendAdmissionFailureEmail } from "../services/emailService.js";
 import crypto from "crypto";
 
 const teacherOrAdminRole = ["teacher", "principal"];
@@ -2662,31 +2662,39 @@ export const syncResultsForAssessment = async (
         const dedupeKey =
           `admission-offer:${item.admission.id}:${item.admissionCode}`;
 
-        const emailResult =
-          await sendAdmissionEmail({
-            school,
-
-            admission:
-              item.admission,
-
-            studentName:
-              item.admission
-                .applicantName ||
-              "",
-
-            admissionCode:
-              item.admissionCode,
-
-            paymentUrl:
-              `${base.replace(/\/$/, "")}/school_Fees`,
-
-            dedupeKey,
-          });
+        await sendAdmissionEmail({
+          school,
+          admission: item.admission,
+          studentName: item.admission.applicantName || "",
+          admissionCode: item.admissionCode,
+          paymentUrl: `${base.replace(/\/$/, "")}/payment`,
+          dedupeKey,
+        });
       } catch (emailError) {
         console.error(
           "Admission email delivery failed:",
           emailError
         );
+      }
+    }
+
+    const failedAdmissions = processed.filter((entry) => entry.passed === false && entry.admissionId);
+    for (const failed of failedAdmissions) {
+      try {
+        const admission = await prisma.admission.findUnique({ where: { id: failed.admissionId } });
+        if (!admission) continue;
+
+        const school = await prisma.school.findUnique({ where: { id: admission.schoolId } });
+        const dedupeKey = `admission-failure:${admission.id}:${admission.status || "failed"}`;
+
+        await sendAdmissionFailureEmail({
+          school,
+          admission,
+          studentName: admission.applicantName || "Applicant",
+          dedupeKey,
+        });
+      } catch (emailError) {
+        console.error("Admission failure email delivery failed:", emailError);
       }
     }
 

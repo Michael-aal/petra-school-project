@@ -1,354 +1,172 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Payment.css";
+import { financeApi } from "./services/financeApi";
 
-const paymentItems = [
-  {
-    id: "school-fees",
-    name: "School Fees",
-    price: 90000,
-    maxQuantity: 1,
-  },
-  {
-    id: "textbooks",
-    name: "Textbooks",
-    price: 5000,
-    maxQuantity: 10,
-  },
-  {
-    id: "uniform",
-    name: "School Uniform",
-    price: 12000,
-    maxQuantity: 5,
-  },
-  {
-    id: "sportswear",
-    name: "Sportswear",
-    price: 10000,
-    maxQuantity: 3,
-  },
-];
+const APPLICATION_FEE = 15000;
+
+const formatMoney = (amount) => `₦${Number(amount || 0).toLocaleString()}`;
 
 function Payment() {
-  const [studentId, setStudentId] = useState("");
-  const [student, setStudent] = useState(null);
+  const navigate = useNavigate();
+  const [linkedStudents, setLinkedStudents] = useState([]);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [selectedPayments, setSelectedPayments] = useState({});
+  useEffect(() => {
+    let active = true;
 
-  const findStudent = () => {
-    const id = studentId.trim().toUpperCase();
+    const loadStudents = async () => {
+      setLoadingStudents(true);
+      setError("");
+      try {
+        const response = await financeApi.parentFees();
+        const students = Array.isArray(response?.children) ? response.children : [];
+        if (!active) return;
 
-    if (!id) {
-      alert("Please enter a student ID");
+        setLinkedStudents(students);
+        if (students.length) {
+          const first = students[0];
+          setSelectedStudentId(first?.id || "");
+        }
+      } catch (requestError) {
+        if (!active) return;
+        if (requestError.status === 401) {
+          navigate("/signin", { replace: true });
+          return;
+        }
+        setError(requestError.data?.message || requestError.message || "Unable to load your linked students.");
+      } finally {
+        if (active) setLoadingStudents(false);
+      }
+    };
+
+    loadStudents();
+
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
+  const continuePayment = async () => {
+    if (!selectedStudentId) {
+      setError("Select a linked student before continuing.");
       return;
     }
 
-    // TEST STUDENT
-    if (id === "PET-22312") {
-      setStudent({
-        id: "PET-22312",
-        fullName: "John Adewale",
+    setProcessingPayment(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await financeApi.createPayment({
+        studentId: selectedStudentId,
+        amount: APPLICATION_FEE,
+        method: "Paystack",
+        note: "Admission application fee",
       });
-      return;
-    }
 
-    setStudent(null);
-    alert("Student not found. Try PET-22312");
-  };
+      const checkoutUrl = response?.session?.authorization_url || response?.session?.data?.authorization_url;
 
-  const handlePaymentToggle = (item) => {
-    setSelectedPayments((previous) => {
-      const updated = { ...previous };
-
-      if (updated[item.id]) {
-        delete updated[item.id];
-      } else {
-        updated[item.id] = {
-          quantity: 1,
-          price: item.price,
-        };
+      if (!checkoutUrl) {
+        localStorage.setItem("petra_application_fee_paid", "true");
+        localStorage.setItem("petra_application_student_id", selectedStudentId);
+        setSuccess("Application payment initialized. Please check the payment status in your account.");
+        return;
       }
 
-      return updated;
-    });
-  };
-
-  const changeQuantity = (item, quantity) => {
-    setSelectedPayments((previous) => ({
-      ...previous,
-      [item.id]: {
-        ...previous[item.id],
-        quantity,
-      },
-    }));
-  };
-
-  const totalAmount = Object.entries(selectedPayments).reduce(
-    (total, [itemId, payment]) => {
-      const item = paymentItems.find(
-        (item) => item.id === itemId
-      );
-
-      return total + item.price * payment.quantity;
-    },
-    0
-  );
-
-  const formatMoney = (amount) => {
-    return `₦${amount.toLocaleString()}`;
-  };
-
-  const continuePayment = () => {
-    if (totalAmount === 0) {
-      alert("Please select what you want to pay for.");
-      return;
+      localStorage.setItem("petra_application_fee_paid", "true");
+      localStorage.setItem("petra_application_student_id", selectedStudentId);
+      window.location.assign(checkoutUrl);
+    } catch (requestError) {
+      if (requestError.status === 401) {
+        navigate("/signin", { replace: true });
+        return;
+      }
+      setError(requestError.data?.message || requestError.message || "Unable to initialize the application payment.");
+    } finally {
+      setProcessingPayment(false);
     }
-
-    console.log({
-      student: student,
-      payments: selectedPayments,
-      total: totalAmount,
-    });
-
-    alert(`Payment total: ${formatMoney(totalAmount)}`);
   };
+
+  const selectedStudent = linkedStudents.find((student) => student.id === selectedStudentId) || null;
 
   return (
     <div className="payment-screen">
       <div className="payment-container">
-
-        {/* HEADER */}
-
         <div className="payment-header">
           <div className="logo">PETRA</div>
           <span>School Portal</span>
         </div>
 
-
-        {/* TITLE */}
-
         <div className="payment-content">
-
           <div className="payment-title">
-            <h1>Make Payment</h1>
-
+            <h1>Pay Application Fee</h1>
             <p>
-              Enter your student ID to make a payment.
+              Complete your application fee to unlock and submit the admission form.
             </p>
           </div>
 
-
-          {/* MAIN CARD */}
-
           <div className="payment-card">
+            {error ? <div className="payment-error" role="alert">{error}</div> : null}
+            {success ? <div className="payment-success" role="status">{success}</div> : null}
 
-            {/* STUDENT ID */}
-
-            <label>
-              Student ID
-            </label>
-
-            <div className="student-input">
-
-              <input
-                type="text"
-                placeholder="e.g. PET-22312"
-                value={studentId}
-                onChange={(e) =>
-                  setStudentId(e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    findStudent();
-                  }
-                }}
-              />
-
-              <button onClick={findStudent}>
-                Find Student
-              </button>
-
+            <div className="payment-summary" style={{ marginBottom: 16 }}>
+              <h3 style={{ margin: 0 }}>Application Fee</h3>
+              <div style={{ fontSize: 32, fontWeight: 800, marginTop: 8 }}>{formatMoney(APPLICATION_FEE)}</div>
             </div>
 
+            <label>Linked Student</label>
+            <div className="student-input" style={{ display: "block", marginTop: 8 }}>
+              {loadingStudents ? (
+                <p className="payment-muted">Loading linked students...</p>
+              ) : linkedStudents.length ? (
+                <select
+                  value={selectedStudentId}
+                  onChange={(event) => setSelectedStudentId(event.target.value)}
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: "1px solid #dfe2ea" }}
+                >
+                  {linkedStudents.map((student) => (
+                    <option key={student.id} value={student.id}>
+                      {student.name || "Student"} {student.className ? `(${student.className})` : ""}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="payment-muted">No linked student was found for this parent account.</p>
+              )}
+            </div>
 
-            {/* STUDENT INFORMATION */}
-
-            {student && (
-              <div className="student-result">
-
-                <div className="student-info">
+            {selectedStudent ? (
+              <div className="student-result" style={{ marginTop: 16 }}>
+                <div className="student-row">
                   <span>Student</span>
-
-                  <strong>
-                    {student.fullName}
-                  </strong>
+                  <strong>{selectedStudent.name}</strong>
                 </div>
-
-                <div className="student-info">
-                  <span>Student ID</span>
-
-                  <strong>
-                    {student.id}
-                  </strong>
+                <div className="student-row">
+                  <span>Class</span>
+                  <strong>{selectedStudent.className || "Not assigned"}</strong>
                 </div>
-
+                <div className="student-row">
+                  <span>Application fee</span>
+                  <strong>{formatMoney(APPLICATION_FEE)}</strong>
+                </div>
               </div>
-            )}
+            ) : null}
 
-
-            {/* PAYMENT OPTIONS */}
-
-        
-              <div className="payment-options">
-
-                <div className="section-heading">
-
-                  <h2>
-                    What would you like to pay for?
-                  </h2>
-
-                  <p>
-                    Select a payment and choose the quantity.
-                  </p>
-
-                </div>
-
-
-                {paymentItems.map((item) => {
-
-                  const selected =
-                    selectedPayments[item.id];
-
-                  return (
-                    <div
-                      key={item.id}
-                      className={`payment-item ${
-                        selected ? "selected" : ""
-                      }`}
-                    >
-
-                      {/* PAYMENT NAME */}
-
-                      <div className="payment-item-left">
-
-                        <input
-                          type="checkbox"
-                          checked={!!selected}
-                          onChange={() =>
-                            handlePaymentToggle(item)
-                          }
-                        />
-
-                        <div>
-
-                          <h3>
-                            {item.name}
-                          </h3>
-
-                          <p>
-                            {formatMoney(item.price)} per unit
-                          </p>
-
-                        </div>
-
-                      </div>
-
-
-                      {/* QUANTITY */}
-
-                      {selected && (
-                        <div className="quantity-control">
-
-                          <button
-                            onClick={() =>
-                              changeQuantity(
-                                item,
-                                Math.max(
-                                  1,
-                                  selected.quantity - 1
-                                )
-                              )
-                            }
-                          >
-                            −
-                          </button>
-
-                          <span>
-                            {selected.quantity}
-                          </span>
-
-                          <button
-                            onClick={() =>
-                              changeQuantity(
-                                item,
-                                Math.min(
-                                  item.maxQuantity,
-                                  selected.quantity + 1
-                                )
-                              )
-                            }
-                          >
-                            +
-                          </button>
-
-                        </div>
-                      )}
-
-
-                      {/* ITEM TOTAL */}
-
-                      {selected && (
-                        <strong className="item-total">
-
-                          {formatMoney(
-                            item.price *
-                            selected.quantity
-                          )}
-
-                        </strong>
-                      )}
-
-                    </div>
-                  );
-                })}
-
-
-                {/* TOTAL */}
-
-                <div className="payment-total">
-
-                  <div>
-
-                    <span>
-                      Total Amount
-                    </span>
-
-                    <strong>
-                      {formatMoney(totalAmount)}
-                    </strong>
-
-                  </div>
-
-
-                  <button
-                    className="continue-button"
-                    onClick={continuePayment}
-                    disabled={totalAmount === 0}
-                  >
-                    Continue to Payment →
-                  </button>
-
-                </div>
-
-              </div>
-        
-
+            <button
+              type="button"
+              onClick={continuePayment}
+              disabled={processingPayment || loadingStudents || !selectedStudentId}
+              className="payment-button"
+              style={{ marginTop: 22, width: "100%" }}
+            >
+              {processingPayment ? "Processing payment..." : "Pay with Paystack"}
+            </button>
           </div>
-
-
-          <p className="secure-text">
-            🔒 Secure payment powered by Paystack
-          </p>
-
         </div>
       </div>
     </div>

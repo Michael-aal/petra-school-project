@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   UserPlus, Heart, Users, Wallet, ChevronRight, ChevronLeft, 
   CheckCircle2, AlertCircle 
@@ -21,6 +21,14 @@ export default function AdmissionForm() {
   const [submissionSummary, setSubmissionSummary] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
   const { success: showSuccess, error: showError } = useToasts();
+
+  useEffect(() => {
+    const paid = localStorage.getItem("petra_application_fee_paid") === "true";
+    if (!paid) {
+      showError("Application fee required", "Please complete the application fee payment before accessing the form.");
+      window.location.href = "/payment";
+    }
+  }, [showError]);
   
   // Single state object for the entire massive form
   const [formData, setFormData] = useState({
@@ -59,8 +67,6 @@ export default function AdmissionForm() {
     }
 
     try {const payload = {
-  applicationCode: null,
-
   // Applicant
   applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
   firstName: formData.firstName,
@@ -121,7 +127,7 @@ export default function AdmissionForm() {
 };
 
       const response = await admissionApi.submit(payload);
-      // Response contains safe `admission` with admissionCode/applicationCode
+      // The applicant ID and assessment reference are the workflow identifiers.
       const admission = response?.admission;
       const safeRemarks = (() => {
         try {
@@ -132,20 +138,18 @@ export default function AdmissionForm() {
       })();
       const applicantId = admission?.applicantId || safeRemarks.applicantId;
       const assessmentId = admission?.examReference || safeRemarks.examReference;
-      const admCode = admission?.admissionCode || admission?.applicationCode || safeRemarks.admissionCode || safeRemarks.applicationCode;
       setSubmissionSummary({
         message: response.message || "Application submitted successfully.",
         applicantId: applicantId || "",
         assessmentId: assessmentId || "",
-        applicantCode: admCode || "",
       });
       showSuccess(
         "Application submitted",
         applicantId
-          ? `Applicant ID: ${applicantId}${admCode ? ` • Applicant Code: ${admCode}` : ""}`
+          ? "Your application was saved and the entrance assessment is ready."
           : "The applicant was saved successfully."
       );
-      if (admCode || applicantId) {
+      if (applicantId && assessmentId) {
         const startNow = window.confirm("Admission submitted successfully.\n\nOpen CBT page now?");
         if (startNow) {
           const params = new URLSearchParams();
@@ -215,14 +219,6 @@ export default function AdmissionForm() {
                 <strong>Assessment ID: {submissionSummary.assessmentId}</strong>
                 <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.assessmentId)}>
                   {copiedCode === submissionSummary.assessmentId ? "Copied" : "Copy"}
-                </button>
-              </div>
-            ) : null}
-            {submissionSummary.applicantCode ? (
-              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
-                <strong>Applicant Code: {submissionSummary.applicantCode}</strong>
-                <button type="button" className="btn-secondary" onClick={() => copyText(submissionSummary.applicantCode)}>
-                  {copiedCode === submissionSummary.applicantCode ? "Copied" : "Copy"}
                 </button>
               </div>
             ) : null}
