@@ -1214,7 +1214,8 @@ body.dark .landing-page .preview-feed svg {
 
 .landing-hero {
   min-height: 0;
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   padding: 138px 24px 78px;
   grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
   gap: clamp(28px, 4vw, 60px);
@@ -1387,7 +1388,8 @@ body.dark .landing-page .preview-feed svg {
 }
 
 .landing-trust {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 18px 24px;
   border-color: var(--line);
@@ -1419,7 +1421,8 @@ body.dark .landing-page .preview-feed svg {
 .landing-testimonials,
 .landing-security,
 .landing-faq {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 96px 24px;
 }
@@ -1600,7 +1603,8 @@ body.dark .landing-page .preview-feed svg {
 }
 
 .landing-quote {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 56px 24px 96px;
   border-top: 1px solid var(--line);
@@ -1694,7 +1698,8 @@ body.dark .landing-page .preview-feed svg {
 }
 
 .landing-final {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto 72px;
   padding: 48px clamp(24px, 5vw, 64px);
   border-radius: var(--radius-lg);
@@ -1842,7 +1847,8 @@ body.dark .landing-page .preview-feed svg {
 
 /* Keep the problem-to-solution band inside the light landing system. */
 .landing-page .landing-impact {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   padding: 84px 24px;
   background: #f0f2ee;
@@ -1878,7 +1884,7 @@ body.dark .landing-page .preview-feed svg {
 /* Keep the workflow section in normal flow and inside the same light container system. */
 .landing-page .landing-workflow {
   width: 100%;
-  max-width: 1180px;
+  max-width: none;
   margin: 0 auto;
   padding: 84px 24px;
   position: static;
@@ -2895,7 +2901,7 @@ body.dark .landing-faq-item {
 
 .landing-page .landing-workflow {
   width: 100%;
-  max-width: 1180px;
+  max-width: none;
   margin: 0 auto;
   padding: 84px 24px;
   position: static;
