@@ -1948,3 +1948,347 @@ body.dark .marketing-page.fparent .marketing-card {
     animation: none;
   }
 }
+
+/* Student page: futuristic learning workspace system. */
+.fsu-section {
+  --student-ink: #172321;
+  --student-muted: #687673;
+  --student-paper: #f5f6f0;
+  --student-line: rgba(23, 35, 33, 0.13);
+  --student-coral: #f06b4e;
+  position: relative;
+  align-items: stretch;
+  gap: 0;
+  min-height: 100svh;
+  padding: 150px 0 96px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(23, 35, 33, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 35, 33, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 5%, rgba(204, 232, 212, 0.48), transparent 28%),
+    linear-gradient(180deg, #f8f8f1 0%, var(--student-paper) 55%, #edf3ee 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.fsu-section::before {
+  content: "STUDENT OPERATING SYSTEM / 03";
+  position: absolute;
+  top: 112px;
+  left: 7vw;
+  color: var(--student-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.fsu-hero {
+  width: 100%;
+  max-width: none;
+  padding: clamp(34px, 5vw, 74px);
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--student-line);
+  border-radius: 8px;
+  background: rgba(250, 251, 247, 0.62);
+  box-shadow: 0 22px 60px rgba(23, 35, 33, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.fsu-hero::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  right: -160px;
+  top: -200px;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 107, 78, 0.2);
+  box-shadow: 0 0 0 44px rgba(240, 107, 78, 0.035), 0 0 0 88px rgba(240, 107, 78, 0.025);
+  pointer-events: none;
+}
+
+.fsu-badge {
+  margin-bottom: 22px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--student-muted);
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+}
+
+.fsu-badge svg { color: var(--student-coral); }
+
+.fsu-title {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 22px;
+  color: var(--student-ink);
+  font-size: clamp(3.2rem, 7vw, 6.9rem);
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+}
+
+.fsu-title span {
+  background: none;
+  color: var(--student-coral);
+  -webkit-text-fill-color: initial;
+}
+
+.fsu-text {
+  width: min(100%, 860px);
+  max-width: none;
+  margin: 0 0 30px;
+  color: var(--student-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.fsu-actions {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.fsu-btnPrimary,
+.fsu-btnSecondary {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.fsu-btnPrimary {
+  background: var(--student-coral);
+  box-shadow: 0 12px 26px rgba(240, 107, 78, 0.2);
+}
+
+.fsu-btnSecondary {
+  background: transparent;
+  border: 1px solid var(--student-line);
+  color: var(--student-ink);
+}
+
+.fsu-grid {
+  width: 100%;
+  max-width: none;
+  margin-top: 32px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fsu-card {
+  min-height: 300px;
+  padding: 25px;
+  border: 1px solid var(--student-line);
+  border-radius: 7px;
+  background: rgba(250, 251, 247, 0.72);
+  box-shadow: none;
+}
+
+.fsu-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--student-coral);
+  box-shadow: 0 18px 40px rgba(23, 35, 33, 0.1);
+}
+
+.fsu-card-glow {
+  top: -60px;
+  right: -60px;
+  filter: blur(50px);
+}
+
+.fsu-card-badge,
+.fsu-card-icon {
+  border-radius: 5px;
+}
+
+.fsu-card-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 48px;
+}
+
+.fsu-card-title {
+  color: var(--student-ink);
+  font-size: 22px;
+  letter-spacing: -0.045em;
+}
+
+.fsu-card-text {
+  color: var(--student-muted);
+  font-size: 13px;
+}
+
+.fsu-card-link {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.fsu-footer {
+  width: 100%;
+  max-width: none;
+  margin-top: 76px;
+}
+
+.fsu-footer-card {
+  min-height: 390px;
+  padding: clamp(44px, 7vw, 88px) clamp(25px, 7vw, 90px);
+  border: 1px solid rgba(255, 149, 96, 0.34);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(255, 149, 96, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 149, 96, 0.055) 1px, transparent 1px),
+    radial-gradient(circle at 82% 50%, rgba(255, 149, 96, 0.24), transparent 24%),
+    linear-gradient(135deg, #0b1d18 0%, #102a24 58%, #091511 100%);
+  background-size: 30px 30px, 30px 30px, auto, auto;
+  text-align: left;
+  box-shadow: 0 28px 70px rgba(7, 27, 22, 0.24);
+}
+
+.fsu-footer-card::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: linear-gradient(180deg, transparent 65%, rgba(255, 149, 96, 0.08) 100%);
+  filter: none;
+  opacity: 1;
+}
+
+.fsu-footer-card::after {
+  width: min(38vw, 470px);
+  height: 210px;
+  right: 7%;
+  top: 50%;
+  border: 1px solid rgba(255, 149, 96, 0.4);
+  border-radius: 8px;
+  background: rgba(5, 15, 12, 0.72);
+  box-shadow: 0 0 0 13px rgba(255, 149, 96, 0.14), 0 24px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(-50%);
+  filter: none;
+  opacity: 1;
+}
+
+.fsu-footer-card h2,
+.fsu-footer-card p,
+.fsu-footer-btn {
+  position: relative;
+  z-index: 2;
+}
+
+.fsu-footer-card h2 {
+  width: min(100%, 760px);
+  color: #edf3ef;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+}
+
+.fsu-footer-card p {
+  width: min(100%, 680px);
+  max-width: none;
+  color: #a9b9b0;
+  font-size: 14px;
+}
+
+.fsu-footer-btn {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 5px;
+  background: var(--student-coral);
+  color: #ffffff;
+  font-size: 12px;
+  box-shadow: 0 12px 26px rgba(255, 149, 96, 0.24);
+}
+
+body.dark .fsu-section {
+  --student-ink: #edf3ef;
+  --student-muted: #9aa9a2;
+  --student-line: rgba(234, 239, 235, 0.12);
+  --student-coral: #ff9560;
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 5%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+}
+
+body.dark .fsu-hero,
+body.dark .fsu-card {
+  background: rgba(17, 26, 24, 0.84);
+  border-color: var(--student-line);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+@keyframes student-page-enter {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes student-signal {
+  0%, 100% { opacity: 0.25; transform: translateX(-10%); }
+  50% { opacity: 0.8; transform: translateX(10%); }
+}
+
+.fsu-hero,
+.fsu-grid,
+.fsu-footer {
+  animation: student-page-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fsu-grid { animation-delay: 160ms; }
+.fsu-footer { animation-delay: 300ms; }
+
+.fsu-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--student-coral), transparent);
+  animation: student-signal 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .fsu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .fsu-footer-card {
+    min-height: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .fsu-footer-card::after { display: none; }
+
+  .fsu-footer-card h2,
+  .fsu-footer-card p {
+    width: 100%;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .fsu-section { padding: 125px 20px 60px; }
+  .fsu-section::before { left: 20px; }
+  .fsu-hero { padding: 34px 20px; }
+  .fsu-title { font-size: clamp(3rem, 15vw, 4.5rem); }
+  .fsu-grid { grid-template-columns: 1fr; }
+  .fsu-footer { margin-top: 56px; }
+  .fsu-footer-card { padding: 44px 25px; }
+  .fsu-actions { flex-direction: column; width: 100%; }
+  .fsu-btnPrimary, .fsu-btnSecondary { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fsu-hero,
+  .fsu-grid,
+  .fsu-footer,
+  .fsu-card::after {
+    animation: none;
+  }
+}
