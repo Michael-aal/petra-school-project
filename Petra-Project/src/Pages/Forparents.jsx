@@ -1,5 +1,5 @@
 import { 
-  Users, Smartphone, CreditCard, PiggyBank, GraduationCap, 
+  Users, CreditCard, PiggyBank, GraduationCap, 
   Heart, Clock, CircleCheck, ArrowRight, Shield, Bell 
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -11,24 +11,24 @@ const parentFeatures = [
     title: "Seamless Fee Payments",
     info: "Pay tuition, buy uniforms, and settle bills in seconds. Get instant digital receipts and track your complete spending history.",
     to: "Nuvora Pay",
-    color: "#3B82F6", // Blue
-    bgColor: "rgba(59, 130, 246, 0.1)",
+    color: "#ff9560",
+    bgColor: "rgba(255, 149, 96, 0.14)",
   },
   {
     logo: <PiggyBank size={24} />,
     title: "Flexible Payment Plans",
     info: "Can't pay all at once? Split tuition into convenient, interest-free monthly installments with Nuvora Flexpay.",
     to: "Flexpay",
-    color: "#10B981", // Emerald
-    bgColor: "rgba(16, 185, 129, 0.1)",
+    color: "#7ed6a0",
+    bgColor: "rgba(126, 214, 160, 0.14)",
   },
   {
     logo: <GraduationCap size={24} />,
     title: "Academic Insights",
     info: "Access real-time homework tracking, attendance records, and progress reports to keep your child ahead of the curve.",
     to: "Learning Hub",
-    color: "#8B5CF6", // Purple
-    bgColor: "rgba(139, 92, 246, 0.1)",
+    color: "#9ed8e3",
+    bgColor: "rgba(158, 216, 227, 0.14)",
   },
 ];
 
@@ -146,20 +146,17 @@ export default function ForParents() {
       {/* FOOTER CTA */}
       <section className="marketing-section marketing-cta fparent-cta">
         <div className="cta-badge">
-          <Smartphone size={18} />
-          <span>Download the Nuvora App</span>
+          <Users size={18} />
+          <span>Stay connected to school</span>
         </div>
-        <h2 className="marketing-cta-title">Your Child's School, In Your Pocket</h2>
+        <h2 className="marketing-cta-title">Your Child's School, In One Clear View</h2>
         <p className="marketing-cta-text">
-          Join thousands of parents who use Nuvora to simplify school payments, monitor academic progress, and stay connected with teachers.
+          Create your parent account to simplify school payments, monitor academic progress, and stay connected with teachers from the web.
         </p>
         <div className="marketing-actions">
-          <a href="/" className="marketing-btn marketing-btn-primary cta-btn">
-            <Smartphone size={18} /> Get it on Google Play
-          </a>
-          <a href="/" className="marketing-btn marketing-btn-secondary cta-btn">
-            Download on App Store
-          </a>
+          <NavLink to="/register/parent" className="marketing-btn marketing-btn-primary cta-btn">
+            Create Parent Account <ArrowRight size={18} />
+          </NavLink>
         </div>
       </section>
 

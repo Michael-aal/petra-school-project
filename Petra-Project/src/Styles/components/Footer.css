@@ -602,16 +602,59 @@ body.dark .footer {
 
 @media (max-width: 600px) {
     .footer {
-        padding-top: 68px;
+        padding: 72px 20px 24px;
     }
 
     .footer::before {
         left: 20px;
         right: auto;
+        max-width: calc(100% - 40px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .footer-1-section {
+        width: 100%;
         grid-template-columns: 1fr;
         gap: 42px;
+    }
+
+    .footer-1-section-1,
+    .footer-1-section-2,
+    .footer-2-section,
+    .footer-3-section {
+        width: 100%;
+        max-width: none;
+    }
+
+    .footer-1-section-1 p,
+    .footer-2-section p {
+        max-width: 100%;
+    }
+
+    .footer-1-section-2 {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .type:last-child {
+        grid-column: auto;
+    }
+
+    .footer-2-section {
+        padding: 22px 0;
+    }
+
+    .footer-3-section {
+        align-items: flex-start;
+        gap: 10px;
+        padding-top: 20px;
+    }
+
+    .footer-3-section h2,
+    .last-place {
+        max-width: 100%;
+        line-height: 1.6;
     }
 }

@@ -1242,3 +1242,133 @@ body.dark .company-content p {
     max-height: 900px;
   }
 }
+
+/* Futuristic mobile navigation surface. */
+@keyframes mobile-menu-scan {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(-12%);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(12%);
+  }
+}
+
+@media (max-width: 900px) {
+  .mobile-menu {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin-top: 10px;
+    padding: 14px;
+    gap: 8px;
+    overflow-x: hidden;
+    border: 1px solid rgba(255, 149, 96, 0.28);
+    border-radius: 16px;
+    background:
+      linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(17, 29, 25, 0.98), rgba(9, 20, 16, 0.98));
+    background-size: 26px 26px, 26px 26px, auto;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+  }
+
+  .mobile-menu::before {
+    content: "NUVORA OS / MENU";
+    display: block;
+    padding: 2px 10px 12px;
+    border-bottom: 1px solid rgba(234, 239, 235, 0.12);
+    color: #9aa9a2;
+    font: 10px "DM Mono", monospace;
+    letter-spacing: 0.12em;
+  }
+
+  .mobile-menu::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32%;
+    height: 1px;
+    background: linear-gradient(90deg, #ff9560, transparent);
+    animation: mobile-menu-scan 3.8s ease-in-out infinite;
+  }
+
+  .mobile-section-header {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(234, 239, 235, 0.1);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.025);
+    color: #edf3ef;
+    font: 600 12px "DM Mono", monospace;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease;
+  }
+
+  .mobile-section-header:hover,
+  .mobile-section-header[aria-expanded="true"] {
+    border-color: rgba(255, 149, 96, 0.34);
+    background: rgba(255, 149, 96, 0.08);
+    color: #ffb182;
+  }
+
+  .section-chevron {
+    color: #ff9560;
+  }
+
+  .accordion-body.show {
+    margin: 0 4px 4px;
+    padding: 10px 8px 4px;
+    border-top: 1px solid rgba(255, 149, 96, 0.22);
+  }
+
+  .mobile-menu a {
+    min-height: 38px;
+    padding: 9px 12px;
+    border-left: 1px solid rgba(255, 149, 96, 0.28);
+    border-radius: 3px;
+    color: #dce7e1;
+    font-size: 13px;
+    transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, transform 220ms ease;
+  }
+
+  .mobile-menu a:hover {
+    border-left-color: #ff9560;
+    background: rgba(255, 149, 96, 0.08);
+    color: #ffb182;
+    transform: translateX(3px);
+  }
+
+  .mobile-cta-btn {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 6px;
+    border: 1px solid rgba(255, 149, 96, 0.68);
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff9560, #e86b46);
+    color: #ffffff;
+    box-shadow: 0 10px 24px rgba(255, 149, 96, 0.2);
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 900px) {
+  body.dark .mobile-menu {
+    border-color: rgba(255, 149, 96, 0.28);
+    background:
+      linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(17, 29, 25, 0.98), rgba(9, 20, 16, 0.98));
+    background-size: 26px 26px, 26px 26px, auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu::after {
+    animation: none;
+  }
+}

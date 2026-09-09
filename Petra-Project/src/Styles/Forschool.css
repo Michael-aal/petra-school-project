@@ -936,8 +936,8 @@ body.dark .fparent .marketing-card:hover {
   max-width: none;
   margin: 0;
   padding: clamp(34px, 5vw, 74px);
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
   border: 1px solid var(--school-line);
   border-radius: 8px;
   background: rgba(250, 251, 247, 0.62);
@@ -974,7 +974,8 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .marketing-title {
-  max-width: 800px;
+  width: 100%;
+  max-width: none;
   margin: 0 0 22px;
   color: var(--school-ink);
   font-size: clamp(3.2rem, 7vw, 6.9rem);
@@ -989,7 +990,8 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .marketing-description {
-  max-width: 560px;
+  width: min(100%, 860px);
+  max-width: none;
   margin: 0 0 30px;
   color: var(--school-muted);
   font-size: 16px;
@@ -997,7 +999,7 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .marketing-actions {
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 34px;
 }
 
@@ -1021,7 +1023,7 @@ body.dark .fparent .marketing-card:hover {
 
 .marketing-page.fsos .marketing-trust-bar {
   width: 100%;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 18px;
   padding: 16px 0 0;
   border: 0;
@@ -1437,6 +1439,34 @@ body.dark .marketing-page.fsos > .marketing-cta {
   .marketing-page.fsos > .feature-grid {
     grid-template-columns: 1fr;
   }
+
+  .marketing-page.fsos > .marketing-cta {
+    min-height: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .marketing-page.fsos > .marketing-cta::after {
+    display: none;
+  }
+
+  .marketing-page.fsos .marketing-cta-title {
+    width: 100%;
+    max-width: 760px;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    line-height: 0.98;
+  }
+
+  .marketing-page.fsos .marketing-cta-text {
+    width: 100%;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .marketing-page.fsos .marketing-cta .marketing-actions {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1474,5 +1504,447 @@ body.dark .marketing-page.fsos > .marketing-cta {
 
   .marketing-page.fsos > .marketing-cta {
     margin-top: 56px;
+  }
+}
+
+/* Parent page: the same full-width futuristic system with a warmer family signal. */
+.marketing-page.fparent {
+  --parent-ink: #172321;
+  --parent-muted: #687673;
+  --parent-paper: #f5f6f0;
+  --parent-line: rgba(23, 35, 33, 0.13);
+  --parent-coral: #f06b4e;
+  position: relative;
+  align-items: stretch;
+  gap: 0;
+  min-height: 100svh;
+  padding: 150px 0 96px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(23, 35, 33, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 35, 33, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 5%, rgba(126, 214, 160, 0.42), transparent 28%),
+    linear-gradient(180deg, #f8f8f1 0%, var(--parent-paper) 55%, #edf3ee 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.marketing-page.fparent::before {
+  content: "PARENT OPERATING SYSTEM / 02";
+  position: absolute;
+  top: 112px;
+  left: 7vw;
+  color: var(--parent-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.marketing-page.fparent .marketing-header {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(34px, 5vw, 74px);
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--parent-line);
+  border-radius: 8px;
+  background: rgba(250, 251, 247, 0.62);
+  box-shadow: 0 22px 60px rgba(23, 35, 33, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.marketing-page.fparent .marketing-header::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  right: -160px;
+  top: -200px;
+  border-radius: 50%;
+  border: 1px solid rgba(126, 214, 160, 0.34);
+  box-shadow: 0 0 0 44px rgba(126, 214, 160, 0.05), 0 0 0 88px rgba(126, 214, 160, 0.03);
+  pointer-events: none;
+}
+
+.marketing-page.fparent .marketing-badge {
+  margin-bottom: 22px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--parent-muted);
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+}
+
+.marketing-page.fparent .marketing-badge svg {
+  color: var(--parent-coral);
+}
+
+.marketing-page.fparent .marketing-title {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 22px;
+  color: var(--parent-ink);
+  font-size: clamp(3.2rem, 7vw, 6.9rem);
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+}
+
+.marketing-page.fparent .marketing-title span {
+  background: none;
+  color: var(--parent-coral);
+  -webkit-text-fill-color: initial;
+}
+
+.marketing-page.fparent .marketing-description {
+  width: min(100%, 860px);
+  max-width: none;
+  margin: 0 0 30px;
+  color: var(--parent-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.marketing-page.fparent .marketing-actions {
+  justify-content: center;
+  margin-bottom: 34px;
+}
+
+.marketing-page.fparent .marketing-btn {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.marketing-page.fparent .marketing-btn-primary {
+  background: var(--parent-coral);
+  box-shadow: 0 12px 26px rgba(240, 107, 78, 0.2);
+}
+
+.marketing-page.fparent .marketing-btn-secondary {
+  background: transparent;
+  border-color: var(--parent-line);
+  color: var(--parent-ink);
+}
+
+.marketing-page.fparent .marketing-trust-bar {
+  width: 100%;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid var(--parent-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.marketing-page.fparent .marketing-trust-item {
+  color: var(--parent-muted);
+  font: 10px "DM Mono", monospace;
+  text-transform: uppercase;
+}
+
+.marketing-page.fparent .marketing-trust-item svg {
+  color: #4d9a70;
+}
+
+.marketing-page.fparent .marketing-trust-divider {
+  height: 14px;
+  background: var(--parent-line);
+}
+
+.marketing-page.fparent > .feature-grid,
+.marketing-page.fparent > .marketing-highlight-section,
+.marketing-page.fparent > .marketing-cta {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.marketing-page.fparent > .feature-grid {
+  margin-top: 32px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.marketing-page.fparent .marketing-card {
+  min-height: 300px;
+  padding: 25px;
+  border: 1px solid var(--parent-line);
+  border-radius: 7px;
+  background: rgba(250, 251, 247, 0.72);
+  box-shadow: none;
+}
+
+.marketing-page.fparent .marketing-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--parent-coral);
+  box-shadow: 0 18px 40px rgba(23, 35, 33, 0.1);
+}
+
+.marketing-page.fparent .marketing-card-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 48px;
+  border-radius: 5px;
+}
+
+.marketing-page.fparent .marketing-card-title {
+  color: var(--parent-ink);
+  font-size: 22px;
+  letter-spacing: -0.045em;
+}
+
+.marketing-page.fparent .marketing-card-text,
+.marketing-page.fparent .marketing-intro-block p {
+  color: var(--parent-muted);
+  font-size: 13px;
+}
+
+.marketing-page.fparent .marketing-card-link {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.marketing-page.fparent .marketing-highlight-section {
+  align-items: stretch;
+  margin-top: 76px;
+  padding-top: 76px;
+  border-top: 1px solid var(--parent-line);
+  text-align: center;
+}
+
+.marketing-page.fparent .marketing-intro-block h2 {
+  width: 100%;
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--parent-ink);
+  font-size: clamp(2.4rem, 4.8vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.07em;
+}
+
+.marketing-page.fparent .marketing-intro-block p {
+  width: min(100%, 760px);
+  max-width: none;
+  margin: 0 auto 38px;
+  line-height: 1.7;
+}
+
+.marketing-page.fparent .highlight-grid {
+  gap: 12px;
+}
+
+.marketing-page.fparent .highlight-icon {
+  margin-bottom: 30px;
+  background: rgba(126, 214, 160, 0.14) !important;
+  color: #4d9a70 !important;
+}
+
+.marketing-page.fparent > .marketing-cta {
+  min-height: 390px;
+  justify-content: center;
+  margin-top: 76px;
+  padding: clamp(44px, 7vw, 88px) clamp(25px, 7vw, 90px);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(126, 214, 160, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 214, 160, 0.055) 1px, transparent 1px),
+    radial-gradient(circle at 82% 50%, rgba(126, 214, 160, 0.22), transparent 24%),
+    linear-gradient(135deg, #0b1d18 0%, #102a24 58%, #091511 100%);
+  background-size: 30px 30px, 30px 30px, auto, auto;
+  border: 1px solid rgba(126, 214, 160, 0.34);
+  text-align: left;
+  align-items: flex-start;
+  box-shadow: 0 28px 70px rgba(7, 27, 22, 0.24);
+}
+
+.marketing-page.fparent > .marketing-cta::after {
+  content: "NUVORA PORTAL  /  PARENT VIEW";
+  width: min(38vw, 470px);
+  height: 210px;
+  right: 7%;
+  top: 50%;
+  border: 1px solid rgba(126, 214, 160, 0.42);
+  border-radius: 8px;
+  background: rgba(5, 15, 12, 0.72);
+  box-shadow: 0 0 0 13px rgba(126, 214, 160, 0.12), 0 24px 50px rgba(0, 0, 0, 0.3);
+  color: rgba(237, 243, 239, 0.65);
+  padding: 18px;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+  transform: translateY(-50%);
+  filter: none;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.marketing-page.fparent > .marketing-cta > * {
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-page.fparent .marketing-cta-title {
+  width: min(100%, 760px);
+  max-width: 760px;
+  color: #edf3ef;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+}
+
+.marketing-page.fparent .marketing-cta-text {
+  width: min(100%, 680px);
+  max-width: 680px;
+  margin: 0 0 30px;
+  color: #a9b9b0;
+}
+
+.marketing-page.fparent .marketing-cta .marketing-actions {
+  justify-content: flex-start;
+}
+
+.marketing-page.fparent .marketing-cta .marketing-btn-secondary {
+  color: #edf3ef;
+  border-color: rgba(237, 243, 239, 0.2);
+}
+
+body.dark .marketing-page.fparent {
+  --parent-ink: #edf3ef;
+  --parent-muted: #9aa9a2;
+  --parent-line: rgba(234, 239, 235, 0.12);
+  --parent-coral: #ff9560;
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 5%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+}
+
+body.dark .marketing-page.fparent .marketing-header,
+body.dark .marketing-page.fparent .marketing-card {
+  background: rgba(17, 26, 24, 0.84);
+  border-color: var(--parent-line);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+@keyframes parent-page-enter {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes parent-signal {
+  0%, 100% { opacity: 0.25; transform: translateX(-10%); }
+  50% { opacity: 0.8; transform: translateX(10%); }
+}
+
+.marketing-page.fparent .marketing-header,
+.marketing-page.fparent > .feature-grid,
+.marketing-page.fparent > .marketing-highlight-section,
+.marketing-page.fparent > .marketing-cta {
+  animation: parent-page-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.marketing-page.fparent > .feature-grid { animation-delay: 120ms; }
+.marketing-page.fparent > .marketing-highlight-section { animation-delay: 220ms; }
+.marketing-page.fparent > .marketing-cta { animation-delay: 320ms; }
+
+.marketing-page.fparent .marketing-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--parent-coral), transparent);
+  animation: parent-signal 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.marketing-page.fparent > .marketing-cta::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: linear-gradient(180deg, transparent 65%, rgba(126, 214, 160, 0.08) 100%);
+  filter: none;
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .marketing-page.fparent > .feature-grid { grid-template-columns: 1fr; }
+  .marketing-page.fparent > .marketing-cta {
+    min-height: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .marketing-page.fparent > .marketing-cta::after {
+    display: none;
+  }
+
+  .marketing-page.fparent .marketing-cta-title {
+    width: 100%;
+    max-width: 760px;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    line-height: 0.98;
+  }
+
+  .marketing-page.fparent .marketing-cta-text {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .marketing-page.fparent .marketing-cta .marketing-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .marketing-page.fparent { padding: 125px 20px 60px; }
+  .marketing-page.fparent > .marketing-cta {
+    align-items: center;
+    text-align: center;
+  }
+
+  .marketing-page.fparent .marketing-cta-title,
+  .marketing-page.fparent .marketing-cta-text {
+    width: 100%;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .marketing-page.fparent .marketing-cta .marketing-actions {
+    justify-content: center;
+  }
+
+  .marketing-page.fparent > .marketing-cta::after {
+    width: min(72%, 470px);
+    right: 14%;
+    top: auto;
+    bottom: 28px;
+    transform: none;
+    opacity: 0.34;
+  }
+  .marketing-page.fparent .marketing-header { padding: 34px 20px; }
+  .marketing-page.fparent .marketing-title { font-size: clamp(3rem, 15vw, 4.5rem); }
+  .marketing-page.fparent .marketing-trust-bar { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .marketing-page.fparent .marketing-trust-divider { width: 30px; height: 1px; }
+  .marketing-page.fparent > .marketing-cta { min-height: 460px; margin-top: 56px; }
+  .marketing-page.fparent > .marketing-cta::after { width: 80%; height: 150px; right: 10%; top: auto; bottom: 24px; transform: none; }
+  .marketing-page.fparent .marketing-cta .marketing-actions { align-items: stretch; flex-direction: column; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-page.fparent .marketing-header,
+  .marketing-page.fparent > .feature-grid,
+  .marketing-page.fparent > .marketing-highlight-section,
+  .marketing-page.fparent > .marketing-cta,
+  .marketing-page.fparent .marketing-card::after {
+    animation: none;
   }
 }
