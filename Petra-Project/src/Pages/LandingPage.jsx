@@ -222,7 +222,7 @@ export default function LandingPage() {
               <small>{label}</small>
               <h3>{title}</h3>
               <p>{text}</p>
-              <NavLink to="/solutions">Discover module <ArrowRight size={15} /></NavLink>
+              <NavLink to="/solution">Explore solutions <ArrowRight size={15} /></NavLink>
             </article>
           ))}
         </div>
@@ -319,7 +319,7 @@ export default function LandingPage() {
           <div className="landing-eyebrow"><span /> Trust, engineered</div>
           <h2>Your school's data is <em>sacred.</em></h2>
           <p>We treat every record — from a child's report card to a parent's card token — with the seriousness it deserves. No shortcuts, no compromises.</p>
-          <NavLink to="/security" className="landing-button landing-button-quiet">Read our security whitepaper <ArrowRight size={15} /></NavLink>
+          <NavLink to="/contact" className="landing-button landing-button-quiet">Ask about security <ArrowRight size={15} /></NavLink>
         </div>
         <div className="landing-security-grid">
           {securityPoints.map(({ icon: Icon, title, text }) => (
