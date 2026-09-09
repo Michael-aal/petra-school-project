@@ -228,6 +228,7 @@ export default function Register({ rolePreset = "" }) {
 
   return (
     <AuthShell
+      variant={rolePreset === "principal" ? "admin-register" : rolePreset === "teacher" ? "staff-register" : ""}
       eyebrow="Create your account"
       subtitle={rolePreset === "principal" ? "Create your school administration account and start managing your institution." : rolePreset === "teacher" ? "Create your staff account and begin managing your school responsibilities." : "Set up your account to access the school dashboard, modules, and secure tools."}
       footnote="Already enrolled? Use the login link below to return to your account."

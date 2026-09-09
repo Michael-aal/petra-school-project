@@ -179,7 +179,7 @@ export default function StaffRegister() {
 
   if (invitationError) {
     return (
-      <AuthShell eyebrow="Invitation unavailable" title="This invitation cannot be used" subtitle="The invitation link is invalid, expired, or already used." footnote="Please contact your school administrator for a new invitation.">
+      <AuthShell variant="staff-register" eyebrow="Invitation unavailable" title="This invitation cannot be used" subtitle="The invitation link is invalid, expired, or already used." footnote="Please contact your school administrator for a new invitation.">
         <div className="auth-form">
           <div className="auth-alert">{invitationError}</div>
           <p className="auth-switch"><Link to="/signin">Go to Sign In</Link></p>
@@ -189,7 +189,7 @@ export default function StaffRegister() {
   }
 
   return (
-    <AuthShell eyebrow="Staff registration" title="Complete Your Staff Registration" subtitle="You've been invited by your school administrator. Enter your invitation code and create your password to activate your staff account." footnote="Your invitation will be marked as used after activation.">
+    <AuthShell variant="staff-register" eyebrow="Staff registration" title="Complete Your Staff Registration" subtitle="You've been invited by your school administrator. Enter your invitation code and create your password to activate your staff account." footnote="Your invitation will be marked as used after activation.">
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header">
           <h2>Staff Registration</h2>

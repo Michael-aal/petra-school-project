@@ -575,6 +575,83 @@ body .auth-page:has(.auth-shell--parent-register) .auth-eye-btn:hover {
   color: var(--auth-accent) !important;
 }
 
+/* Keep staff, administrator, and shared sign-in views focused on the form card. */
+body .auth-page:has(.auth-shell--staff-register),
+body .auth-page:has(.auth-shell--admin-register),
+body .auth-page:has(.auth-shell--signin) {
+  justify-content: center !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register)::before,
+body .auth-page:has(.auth-shell--admin-register)::before,
+body .auth-page:has(.auth-shell--signin)::before,
+body .auth-page:has(.auth-shell--staff-register) .auth-brand-header,
+body .auth-page:has(.auth-shell--admin-register) .auth-brand-header,
+body .auth-page:has(.auth-shell--signin) .auth-brand-header,
+body .auth-page:has(.auth-shell--staff-register) .auth-footnote,
+body .auth-page:has(.auth-shell--admin-register) .auth-footnote,
+body .auth-page:has(.auth-shell--signin) .auth-footnote,
+body .auth-page:has(.auth-shell--staff-register) .auth-copyright,
+body .auth-page:has(.auth-shell--admin-register) .auth-copyright,
+body .auth-page:has(.auth-shell--signin) .auth-copyright {
+  display: none !important;
+  content: none !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-brand-header::after,
+body .auth-page:has(.auth-shell--admin-register) .auth-brand-header::after,
+body .auth-page:has(.auth-shell--signin) .auth-brand-header::after {
+  display: none !important;
+  content: none !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-input-wrap input,
+body .auth-page:has(.auth-shell--admin-register) .auth-input-wrap input,
+body .auth-page:has(.auth-shell--signin) .auth-input-wrap input,
+body .auth-page:has(.auth-shell--staff-register) .auth-input-wrap select,
+body .auth-page:has(.auth-shell--admin-register) .auth-input-wrap select,
+body .auth-page:has(.auth-shell--signin) .auth-input-wrap select {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-eye-btn,
+body .auth-page:has(.auth-shell--admin-register) .auth-eye-btn,
+body .auth-page:has(.auth-shell--signin) .auth-eye-btn {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--auth-muted) !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-eye-btn:hover,
+body .auth-page:has(.auth-shell--admin-register) .auth-eye-btn:hover,
+body .auth-page:has(.auth-shell--signin) .auth-eye-btn:hover {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--auth-accent) !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-submit,
+body .auth-page:has(.auth-shell--admin-register) .auth-submit,
+body .auth-page:has(.auth-shell--signin) .auth-submit {
+  background: rgba(9, 20, 16, 0.72) !important;
+  border-color: rgba(234, 239, 235, 0.13) !important;
+  color: #edf3ef !important;
+  box-shadow: none !important;
+}
+
+body .auth-page:has(.auth-shell--staff-register) .auth-submit:hover:not(:disabled),
+body .auth-page:has(.auth-shell--admin-register) .auth-submit:hover:not(:disabled),
+body .auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
+  background: #ff9560 !important;
+  border-color: #ff9560 !important;
+  color: #071b16 !important;
+  box-shadow: none !important;
+}
+
 @media (max-width: 600px) {
   .auth-page:has(.auth-shell--parent-register) {
     padding: 24px 16px;
@@ -1051,5 +1128,203 @@ body.dark .auth-page:has(.registration-choice-grid) {
 
   .registration-entry-heading h1 {
     font-size: clamp(3rem, 15vw, 4.8rem);
+  }
+}
+
+/* Staff and administrator auth consoles. */
+.auth-page:has(.auth-shell--staff-register),
+.auth-page:has(.auth-shell--admin-register) {
+  --auth-ink: #edf3ef;
+  --auth-muted: #9aa9a2;
+  --auth-paper: #071b16;
+  --auth-surface: rgba(17, 26, 24, 0.86);
+  --auth-line: rgba(234, 239, 235, 0.13);
+  --auth-accent: #ff9560;
+  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  position: relative;
+  min-height: 100svh;
+  height: auto;
+  justify-content: flex-start;
+  padding: 118px max(20px, 7vw) 72px;
+  overflow-x: hidden;
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+.auth-page:has(.auth-shell--staff-register)::before,
+.auth-page:has(.auth-shell--admin-register)::before {
+  content: "SECURE ACCESS NETWORK / ONLINE";
+  position: absolute;
+  top: 82px;
+  left: max(20px, 7vw);
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-shell,
+.auth-page:has(.auth-shell--admin-register) .auth-shell {
+  width: 100%;
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-brand-header,
+.auth-page:has(.auth-shell--admin-register) .auth-brand-header {
+  position: relative;
+  min-height: 58px;
+  margin-bottom: 24px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--auth-line);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-brand-header::after,
+.auth-page:has(.auth-shell--admin-register) .auth-brand-header::after {
+  content: "ACCESS NODE / READY";
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-brand-mark,
+.auth-page:has(.auth-shell--admin-register) .auth-brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--auth-accent);
+  color: #071b16;
+  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-brand,
+.auth-page:has(.auth-shell--admin-register) .auth-brand {
+  color: var(--auth-ink);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-brand-sub,
+.auth-page:has(.auth-shell--admin-register) .auth-brand-sub {
+  color: var(--auth-muted);
+  font: 10px "DM Mono", monospace;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-form,
+.auth-page:has(.auth-shell--admin-register) .auth-form {
+  padding: clamp(30px, 5vw, 72px);
+  border: 1px solid rgba(255, 149, 96, 0.2);
+  border-radius: 8px;
+  background: rgba(17, 26, 24, 0.68);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-form-header h2,
+.auth-page:has(.auth-shell--admin-register) .auth-form-header h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-form-header p,
+.auth-page:has(.auth-shell--admin-register) .auth-form-header p,
+.auth-page:has(.auth-shell--staff-register) .auth-field > span,
+.auth-page:has(.auth-shell--admin-register) .auth-field > span {
+  color: var(--auth-muted);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-input-wrap,
+.auth-page:has(.auth-shell--admin-register) .auth-input-wrap {
+  min-height: 52px;
+  border-radius: 6px;
+  background: rgba(9, 20, 16, 0.72);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-input-wrap input,
+.auth-page:has(.auth-shell--admin-register) .auth-input-wrap input,
+.auth-page:has(.auth-shell--staff-register) .auth-input-wrap select,
+.auth-page:has(.auth-shell--admin-register) .auth-input-wrap select {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-eye-btn,
+.auth-page:has(.auth-shell--admin-register) .auth-eye-btn {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-submit,
+.auth-page:has(.auth-shell--admin-register) .auth-submit {
+  min-height: 52px;
+  border: 1px solid rgba(255, 149, 96, 0.65);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #ff9560, #e86b46);
+  color: #071b16;
+  box-shadow: none;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-submit:hover:not(:disabled),
+.auth-page:has(.auth-shell--admin-register) .auth-submit:hover:not(:disabled) {
+  background: #ff9560;
+  border-color: #ff9560;
+  color: #071b16;
+  box-shadow: none;
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-link,
+.auth-page:has(.auth-shell--admin-register) .auth-link,
+.auth-page:has(.auth-shell--staff-register) .auth-switch a,
+.auth-page:has(.auth-shell--admin-register) .auth-switch a {
+  color: var(--auth-accent);
+}
+
+.auth-page:has(.auth-shell--staff-register) .auth-footnote,
+.auth-page:has(.auth-shell--admin-register) .auth-footnote,
+.auth-page:has(.auth-shell--staff-register) .auth-copyright,
+.auth-page:has(.auth-shell--admin-register) .auth-copyright,
+.auth-page:has(.auth-shell--staff-register) .auth-switch,
+.auth-page:has(.auth-shell--admin-register) .auth-switch {
+  color: var(--auth-muted);
+}
+
+body.dark .auth-page:has(.auth-shell--staff-register),
+body.dark .auth-page:has(.auth-shell--admin-register) {
+  background:
+    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
+    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+body .auth-page:has(.auth-shell--signin)::before {
+  content: "SECURE ACCESS NETWORK / ONLINE";
+}
+
+@media (max-width: 600px) {
+  .auth-page:has(.auth-shell--staff-register),
+  .auth-page:has(.auth-shell--admin-register) {
+    padding: 108px 20px 48px;
+  }
+
+  .auth-page:has(.auth-shell--staff-register)::before,
+  .auth-page:has(.auth-shell--admin-register)::before {
+    left: 20px;
+  }
+
+  .auth-page:has(.auth-shell--staff-register) .auth-brand-header::after,
+  .auth-page:has(.auth-shell--admin-register) .auth-brand-header::after {
+    max-width: 132px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
