@@ -11,24 +11,24 @@ const schoolFeatures = [
     title: "Unified School Management",
     info: "Manage students, staff, attendance, and timetables from a single, intuitive dashboard. Say goodbye to scattered spreadsheets.",
     to: "School OS",
-    color: "#8B5CF6", // Purple
-    bgColor: "rgba(139, 92, 246, 0.1)",
+    color: "#ff9560",
+    bgColor: "rgba(255, 149, 96, 0.14)",
   },
   {
     logo: <Wallet size={24} />,
     title: "Smart Financial Control",
     info: "Eliminate revenue leakage, automate fee collection with Paystack, and provide complete financial transparency to parents.",
     to: "Finance",
-    color: "#10B981", // Emerald
-    bgColor: "rgba(16, 185, 129, 0.1)",
+    color: "#7ed6a0",
+    bgColor: "rgba(126, 214, 160, 0.14)",
   },
   {
     logo: <TestTube size={24} />,
     title: "Advanced Assessments",
     info: "Run CBT exams, generate automated report cards, and track student performance analytics with zero manual effort.",
     to: "Assessments",
-    color: "#06B6D4", // Cyan
-    bgColor: "rgba(6, 182, 212, 0.1)",
+    color: "#9ed8e3",
+    bgColor: "rgba(158, 216, 227, 0.14)",
   },
 ];
 

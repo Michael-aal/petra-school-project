@@ -3056,3 +3056,198 @@ body.dark .landing-faq-item {
     padding: 0 20px 18px 58px;
   }
 }
+
+@keyframes landing-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-preview-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes landing-signal-scan {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: translateX(-12%);
+  }
+  50% {
+    opacity: 0.78;
+    transform: translateX(12%);
+  }
+}
+
+@keyframes landing-line-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.landing-page .landing-hero-copy,
+.landing-page .landing-hero-art,
+.landing-page .landing-trust,
+.landing-page .landing-platform,
+.landing-page .landing-impact,
+.landing-page .landing-personas,
+.landing-page .landing-workflow,
+.landing-page .landing-testimonials,
+.landing-page .landing-security,
+.landing-page .landing-faq,
+.landing-page .landing-final {
+  animation: landing-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.landing-page .landing-hero-art {
+  animation-delay: 140ms;
+}
+
+.landing-page .landing-trust {
+  animation-delay: 220ms;
+}
+
+.landing-page .landing-platform {
+  animation-delay: 300ms;
+}
+
+.landing-page .landing-impact,
+.landing-page .landing-personas {
+  animation-delay: 380ms;
+}
+
+.landing-page .landing-workflow,
+.landing-page .landing-testimonials,
+.landing-page .landing-security {
+  animation-delay: 460ms;
+}
+
+.landing-page .landing-faq,
+.landing-page .landing-final {
+  animation-delay: 540ms;
+}
+
+.landing-page .landing-preview {
+  animation: landing-preview-float 6s ease-in-out 900ms infinite;
+}
+
+.landing-page .landing-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  z-index: 3;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--coral), transparent);
+  animation: landing-signal-scan 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-page .landing-module,
+.landing-page .landing-persona,
+.landing-page .landing-workflow-step,
+.landing-page .landing-testimonial,
+.landing-page .security-card,
+.landing-page .landing-impact-card,
+.landing-page .landing-faq-item {
+  position: relative;
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    background-color 260ms ease;
+}
+
+.landing-page .landing-module::after,
+.landing-page .landing-persona::after,
+.landing-page .landing-workflow-step::after,
+.landing-page .landing-testimonial::after,
+.landing-page .security-card::after,
+.landing-page .landing-impact-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 32%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--coral), transparent);
+  animation: landing-line-pulse 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-page .landing-module:hover,
+.landing-page .landing-persona:hover,
+.landing-page .landing-workflow-step:hover,
+.landing-page .landing-testimonial:hover,
+.landing-page .security-card:hover,
+.landing-page .landing-impact-card:hover,
+.landing-page .landing-faq-item:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--coral) 48%, var(--line));
+  box-shadow: 0 18px 38px rgba(23, 35, 33, 0.12);
+}
+
+.landing-page .landing-button,
+.landing-page .landing-trust span,
+.landing-page .landing-faq-trigger {
+  transition:
+    transform 220ms ease,
+    color 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.landing-page .landing-button-primary:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 16px 30px rgba(240, 107, 78, 0.3);
+}
+
+.landing-page .landing-final {
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.landing-page .landing-final:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(240, 107, 78, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page .landing-hero-copy,
+  .landing-page .landing-hero-art,
+  .landing-page .landing-trust,
+  .landing-page .landing-platform,
+  .landing-page .landing-impact,
+  .landing-page .landing-personas,
+  .landing-page .landing-workflow,
+  .landing-page .landing-testimonials,
+  .landing-page .landing-security,
+  .landing-page .landing-faq,
+  .landing-page .landing-final,
+  .landing-page .landing-preview,
+  .landing-page .landing-preview::after,
+  .landing-page .landing-module::after,
+  .landing-page .landing-persona::after,
+  .landing-page .landing-workflow-step::after,
+  .landing-page .landing-testimonial::after,
+  .landing-page .security-card::after,
+  .landing-page .landing-impact-card::after {
+    animation: none;
+  }
+}

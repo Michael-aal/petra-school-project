@@ -432,3 +432,186 @@ body.dark .footer-1-section-1 h2 .sch {
         flex-direction: column;
     }
 }
+
+/* Futuristic public footer system. */
+.footer {
+    --footer-ink: #edf3ef;
+    --footer-muted: #9aa9a2;
+    --footer-line: rgba(234, 239, 235, 0.13);
+    --footer-coral: #ff9560;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    width: 100%;
+    padding: 78px max(24px, 7vw) 24px;
+    background:
+        linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 86% 12%, rgba(126, 214, 160, 0.12), transparent 28%),
+        linear-gradient(180deg, #081a15 0%, #0b201b 100%);
+    background-size: 34px 34px, 34px 34px, auto, auto;
+    border-top: 1px solid rgba(255, 149, 96, 0.32);
+    color: var(--footer-ink);
+}
+
+.footer::before {
+    content: "NUVORA OS / SYSTEM ONLINE";
+    position: absolute;
+    top: 22px;
+    right: max(24px, 7vw);
+    color: var(--footer-muted);
+    font: 10px "DM Mono", monospace;
+    letter-spacing: 0.12em;
+    opacity: 0.85;
+}
+
+.footer::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--footer-coral), transparent);
+    animation: footer-signal 4s ease-in-out infinite;
+}
+
+body.dark .footer {
+    --footer-ink: #edf3ef;
+    --footer-muted: #9aa9a2;
+    --footer-line: rgba(234, 239, 235, 0.13);
+    --footer-coral: #ff9560;
+    background:
+        linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 86% 12%, rgba(126, 214, 160, 0.12), transparent 28%),
+        linear-gradient(180deg, #081a15 0%, #0b201b 100%);
+    background-size: 34px 34px, 34px 34px, auto, auto;
+    border-top-color: rgba(255, 149, 96, 0.32);
+}
+
+.footer-1-section,
+.footer-2-section,
+.footer-3-section {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: none;
+}
+
+.footer-1-section {
+    grid-template-columns: minmax(250px, 1.1fr) minmax(320px, 0.9fr);
+    gap: clamp(55px, 10vw, 160px);
+    padding-bottom: 58px;
+    border-bottom-color: var(--footer-line);
+}
+
+.footer-1-section-1 h2 {
+    color: var(--footer-ink);
+    letter-spacing: -0.05em;
+}
+
+.footer-1-section-1 h2 .sch {
+    background: var(--footer-coral);
+    color: #081a15;
+    box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+}
+
+.footer-1-section-1 p,
+.footer-2-section,
+.footer-3-section h2,
+.last-place,
+.type-info,
+.type-info a {
+    color: var(--footer-muted);
+}
+
+.footer-1-section-1 p {
+    max-width: 390px;
+    line-height: 1.8;
+}
+
+.type > h2 {
+    color: var(--footer-ink);
+    font: 500 10px "DM Mono", monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.type-info {
+    gap: 14px;
+}
+
+.type-info a {
+    display: inline-flex;
+    width: fit-content;
+    position: relative;
+    font-size: 0.78rem;
+    transition: color 220ms ease, transform 220ms ease;
+}
+
+.type-info a::before {
+    content: "";
+    width: 0;
+    height: 1px;
+    margin: auto 7px auto 0;
+    background: var(--footer-coral);
+    transition: width 220ms ease;
+}
+
+.type-info a:hover {
+    color: var(--footer-coral);
+    transform: translateX(3px);
+}
+
+.type-info a:hover::before {
+    width: 12px;
+}
+
+.footer-2-section {
+    padding: 24px 0;
+    border-bottom-color: var(--footer-line);
+}
+
+.footer-3-section {
+    padding-top: 22px;
+}
+
+@keyframes footer-signal {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: translateX(-8%);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translateX(8%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .footer::after {
+        animation: none;
+    }
+
+    .type-info a,
+    .type-info a::before {
+        transition: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer {
+        padding-top: 68px;
+    }
+
+    .footer::before {
+        left: 20px;
+        right: auto;
+    }
+
+    .footer-1-section {
+        grid-template-columns: 1fr;
+        gap: 42px;
+    }
+}
