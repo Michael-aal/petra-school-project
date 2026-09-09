@@ -818,10 +818,156 @@ body.dark .landing-page .landing-persona,
 body.dark .landing-page .landing-workflow-step,
 body.dark .landing-page .landing-testimonial,
 body.dark .landing-page .security-card,
-body.dark .landing-page .landing-impact-card {
+body.dark .landing-page .landing-impact-card,
+body.dark .landing-page .landing-faq-item {
   background: linear-gradient(180deg, rgba(17, 26, 24, 0.96) 0%, rgba(11, 18, 17, 0.96) 100%);
   border-color: var(--line);
   box-shadow: 0 18px 38px rgba(0, 0, 0, 0.24);
+}
+
+body.dark .landing-page .landing-preview-topbar,
+body.dark .landing-page .preview-sidebar,
+body.dark .landing-page .preview-heading > span,
+body.dark .landing-page .preview-stats > div,
+body.dark .landing-page .preview-chart,
+body.dark .landing-page .preview-feed,
+body.dark .landing-page .landing-trust span,
+body.dark .landing-page .landing-faq-item {
+  background: rgba(17, 25, 22, 0.96);
+  border-color: rgba(234, 239, 235, 0.12);
+}
+
+body.dark .landing-page .preview-top-actions > span {
+  border-color: rgba(234, 239, 235, 0.2);
+  background: transparent;
+}
+
+body.dark .landing-page .preview-top-actions b,
+body.dark .landing-page .preview-sidebar-mark,
+body.dark .landing-page .art-note-icon,
+body.dark .landing-page .art-avatar {
+  background: rgba(255, 149, 96, 0.14);
+  color: #ffb182;
+}
+
+body.dark .landing-page .landing-faq-trigger,
+body.dark .landing-page .landing-faq-answer p,
+body.dark .landing-page .landing-module small,
+body.dark .landing-page .landing-persona small,
+body.dark .landing-page .landing-impact-card .impact-label,
+body.dark .landing-page .landing-impact-card .impact-note,
+body.dark .landing-page .landing-module p,
+body.dark .landing-page .landing-persona p,
+body.dark .landing-page .landing-module h3,
+body.dark .landing-page .landing-persona h3,
+body.dark .landing-page .landing-workflow-step h3,
+body.dark .landing-page .landing-workflow-step p,
+body.dark .landing-page .landing-testimonial blockquote,
+body.dark .landing-page .landing-final h2,
+body.dark .landing-page .landing-hero h1,
+body.dark .landing-page .landing-section-intro h2,
+body.dark .landing-page .landing-hero-text,
+body.dark .landing-page .landing-proof,
+body.dark .landing-page .landing-proof span,
+body.dark .landing-page .landing-button-quiet,
+body.dark .landing-page .landing-button-quiet span,
+body.dark .landing-page .landing-trust p,
+body.dark .landing-page .landing-section-intro > p,
+body.dark .landing-page .landing-security-copy p,
+body.dark .landing-page .landing-security-copy h2,
+body.dark .landing-page .quote-person small,
+body.dark .landing-page .quote-person b,
+body.dark .landing-page .landing-impact-card .impact-value,
+body.dark .landing-page .preview-heading small,
+body.dark .landing-page .preview-stats small,
+body.dark .landing-page .preview-feed p,
+body.dark .landing-page .preview-feed strong,
+body.dark .landing-page .preview-heading h3,
+body.dark .landing-page .preview-stats strong {
+  color: var(--ink);
+}
+
+body.dark .landing-page .landing-module p,
+body.dark .landing-page .landing-persona p,
+body.dark .landing-page .landing-workflow-step p,
+body.dark .landing-page .landing-section-intro > p,
+body.dark .landing-page .landing-trust p,
+body.dark .landing-page .landing-hero-text,
+body.dark .landing-page .landing-faq-answer p,
+body.dark .landing-page .landing-security-copy p,
+body.dark .landing-page .quote-person small,
+body.dark .landing-page .landing-impact-card .impact-note,
+body.dark .landing-page .preview-heading small,
+body.dark .landing-page .preview-stats small,
+body.dark .landing-page .preview-feed p,
+body.dark .landing-page .chart-labels {
+  color: var(--muted);
+}
+
+body.dark .landing-page .landing-button-quiet {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+}
+
+body.dark .landing-page .landing-page .landing-faq-item.open {
+  border-color: rgba(255, 149, 96, 0.35);
+}
+
+body.dark .landing-page .landing-page .landing-faq-trigger::before {
+  border-color: rgba(255, 149, 96, 0.35);
+  color: #ffb182;
+}
+
+body.dark .landing-page .landing-impact {
+  background: linear-gradient(180deg, #101d1a 0%, #0c1715 100%);
+}
+
+body.dark .landing-page .landing-impact-card {
+  background: rgba(17, 25, 22, 0.96);
+}
+
+body.dark .landing-page .landing-workflow {
+  background: #0a110e;
+}
+
+body.dark .landing-page .landing-testimonial {
+  background: rgba(17, 25, 22, 0.96);
+}
+
+body.dark .landing-page .security-card {
+  background: rgba(17, 25, 22, 0.96);
+}
+
+body.dark .landing-page .landing-preview .preview-brand span {
+  background: var(--coral);
+}
+
+body.dark .landing-page .landing-preview .preview-line {
+  background:
+    linear-gradient(
+      160deg,
+      transparent 0 19%,
+      rgba(255, 149, 96, 0.8) 20% 21%,
+      transparent 22% 39%,
+      rgba(255, 149, 96, 0.8) 40% 41%,
+      transparent 42% 61%,
+      rgba(255, 149, 96, 0.8) 62% 63%,
+      transparent 64% 78%,
+      rgba(255, 149, 96, 0.8) 79% 80%,
+      transparent 81%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0 12%,
+      rgba(255, 255, 255, 0.08) 13% 13.5%,
+      transparent 14% 32%,
+      rgba(255, 255, 255, 0.08) 33% 33.5%,
+      transparent 34% 52%,
+      rgba(255, 255, 255, 0.08) 53% 53.5%,
+      transparent 54% 72%,
+      rgba(255, 255, 255, 0.08) 73% 73.5%,
+      transparent 74%
+    );
 }
 
 body.dark .landing-page .landing-module small,
@@ -851,7 +997,8 @@ body.dark .landing-page .landing-faq-answer p,
 body.dark .landing-page .landing-security-copy p,
 body.dark .landing-page .landing-security-copy h2,
 body.dark .landing-page .quote-person small,
-body.dark .landing-page .quote-person b {
+body.dark .landing-page .quote-person b,
+body.dark .landing-page .landing-impact-card .impact-value {
   color: var(--ink);
 }
 
@@ -863,7 +1010,8 @@ body.dark .landing-page .landing-trust p,
 body.dark .landing-page .landing-hero-text,
 body.dark .landing-page .landing-faq-answer p,
 body.dark .landing-page .landing-security-copy p,
-body.dark .landing-page .quote-person small {
+body.dark .landing-page .quote-person small,
+body.dark .landing-page .landing-impact-card .impact-note {
   color: var(--muted);
 }
 
@@ -871,6 +1019,47 @@ body.dark .landing-page .landing-button-quiet {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--line);
   color: var(--ink);
+}
+
+body.dark .landing-page .landing-module-coral,
+body.dark .landing-page .landing-module-mint,
+body.dark .landing-page .landing-module-blue,
+body.dark .landing-page .landing-persona-coral,
+body.dark .landing-page .landing-persona-mint,
+body.dark .landing-page .landing-persona-blue,
+body.dark .landing-page .landing-persona-paper {
+  background: linear-gradient(180deg, rgba(15, 25, 22, 0.96) 0%, rgba(10, 17, 15, 0.96) 100%);
+  border-color: var(--line);
+}
+
+body.dark .landing-page .module-icon,
+body.dark .landing-page .persona-icon,
+body.dark .landing-page .security-icon,
+body.dark .landing-page .workflow-step-icon {
+  background: rgba(255, 149, 96, 0.14);
+  color: #ffb182;
+  border: 1px solid rgba(255, 149, 96, 0.2);
+}
+
+body.dark .landing-page .landing-final .landing-eyebrow,
+body.dark .landing-page .landing-final .landing-eyebrow span {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+body.dark .landing-page .landing-final .landing-button-dark {
+  background: #f5efe9;
+  color: #0d1714;
+  border-color: transparent;
+}
+
+body.dark .landing-page .landing-proof svg {
+  color: #89d6a8;
+}
+
+body.dark .landing-page .landing-hero-copy .landing-proof i {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 body.dark .landing-page .landing-button-primary {
