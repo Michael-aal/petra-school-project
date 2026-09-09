@@ -342,7 +342,7 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
         <UserAvatar user={userInfo} size={32} className="sidebar-avatar" />
         <div className="sidebar-user">
           <h3>{getDisplayName(userInfo)}</h3>
-          <h4>Administrator</h4>
+          <h4>{userInfo?.role || "Team member"}</h4>
         </div>
       </div>
     </div>

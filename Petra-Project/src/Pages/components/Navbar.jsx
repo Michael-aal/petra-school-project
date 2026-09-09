@@ -3,13 +3,10 @@ import { NavLink } from "react-router-dom";
 import {
   Menu,
   X,
-  Sun,
-  Moon,
   Shield,
   ChevronDown,
 } from "lucide-react";
 
-import { applyTheme, getInitialTheme } from "../../utils/theme";
 import { solutionGroups } from "../solutions/solutionData";
 
 import "../../Styles/components/Navbar.css";
@@ -53,9 +50,6 @@ const companyInfo = [
 
 export default function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => {
-    return getInitialTheme() === "dark";
-  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
@@ -74,10 +68,6 @@ export default function Navbar() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    applyTheme(darkMode ? "dark" : "light");
-  }, [darkMode]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -214,14 +204,6 @@ export default function Navbar() {
 
         {/* RIGHT */}
         <div className="navbar-right">
-          <button
-            className="theme-btn"
-            onClick={() => setDarkMode((prev) => !prev)}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? <Moon size={18} /> : <Sun size={18} />}
-          </button>
-
           {!isMobile && (
             <NavLink to="/get-started" className="cta-btn">
               Get Started

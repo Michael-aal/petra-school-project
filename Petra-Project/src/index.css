@@ -769,3 +769,154 @@ body.dark .ctc-page {
 .dashboard-home-summary-action {
   padding: 10px;
 }
+
+:root,
+body,
+body.light {
+  color-scheme: light;
+  --app-bg: #f7f7f5;
+  --app-surface: #ffffff;
+  --app-surface-strong: #f0f1ee;
+  --app-text: #202321;
+  --app-text-muted: #69716b;
+  --app-border: #e2e5e1;
+  --app-accent: #e8752f;
+  --app-accent-2: #c85b1d;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --background: #f7f7f5;
+  --foreground: #202321;
+  --muted-foreground: #69716b;
+  --card: #ffffff;
+  --card-foreground: #202321;
+  --popover: #ffffff;
+  --popover-foreground: #202321;
+  --input: #d7dbd6;
+  --border: #e2e5e1;
+  --primary: #e8752f;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f1ee;
+  --secondary-foreground: #202321;
+  --muted: #f0f1ee;
+  --ring: #e8752f;
+  --dashboard-sidebar-bg: #ffffff;
+  --dashboard-sidebar-text: #202321;
+  --dashboard-sidebar-muted: #69716b;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.96);
+  --dashboard-topbar-text: #202321;
+  --dashboard-topbar-muted: #69716b;
+  --dashboard-card-bg: #ffffff;
+  --dashboard-card-text: #202321;
+  --dashboard-card-muted: #69716b;
+  --dashboard-panel-bg: #ffffff;
+  --dashboard-panel-text: #202321;
+  --dashboard-panel-muted: #69716b;
+  --dashboard-page-bg: #f7f7f5;
+  --dashboard-muted-surface: #f5f6f3;
+  --dashboard-accent-gradient: #e8752f;
+  --dashboard-accent-gradient-strong: #c85b1d;
+  --surface-muted: #f5f6f3;
+  --surface-muted-strong: #eceeeb;
+  --shadow-soft: 0 8px 24px rgba(32, 35, 33, 0.06);
+  --shadow-soft-dark: 0 8px 24px rgba(32, 35, 33, 0.06);
+  --surface-accent: #fff1e8;
+  --surface-success: #eaf7ef;
+  --surface-danger: #fff0ee;
+  --surface-warning: #fff7e6;
+  --button-hover: #fff1e8;
+  --color-brand-primary: #e8752f;
+  --color-brand-accent: #e8752f;
+  --color-background: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f0f1ee;
+  --color-text: #202321;
+  --color-text-secondary: #69716b;
+  --color-text-muted: #69716b;
+  --color-border: #e2e5e1;
+  --color-success: #27804b;
+  --color-warning: #a86800;
+  --color-danger: #c43d35;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+}
+
+body,
+body.light {
+  background: var(--app-bg);
+  color: var(--app-text);
+  overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea,
+a,
+.btn {
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+button:hover,
+a:hover {
+  transform: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(232, 117, 47, 0.24);
+  outline-offset: 2px;
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(232, 117, 47, 0.18);
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background: var(--app-accent-2);
+  border-color: var(--app-accent-2);
+}
+
+.card,
+.panel,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.settings-card,
+.wallet-panel,
+.payments-panel,
+.stat-card,
+.dashboard-page .table-container,
+.modal-content,
+.form-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+input,
+select,
+textarea,
+.form-input,
+.form-select {
+  min-height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px rgba(232, 117, 47, 0.14);
+}

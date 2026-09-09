@@ -21,6 +21,215 @@
   font-family: "Manrope", sans-serif;
 }
 
+.school-admin-dashboard {
+  gap: 24px;
+  padding: 24px clamp(18px, 3vw, 40px) 40px;
+  background: var(--app-bg);
+}
+
+.dashboard-landing-header {
+  padding: 0 0 20px;
+  border: 0;
+  border-bottom: 1px solid var(--app-border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dashboard-shell-header-copy h1 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.dashboard-shell-eyebrow,
+.dashboard-widget-kicker {
+  color: var(--app-accent);
+  letter-spacing: 0.1em;
+}
+
+.dashboard-shell-pill {
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
+  color: var(--app-text-muted);
+}
+
+.dashboard-shell-link {
+  border-radius: var(--radius-md);
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: #ffffff;
+}
+
+.dashboard-shell-link:hover {
+  background: var(--app-accent-2);
+  color: #ffffff;
+}
+
+.dashboard-landing-hero {
+  grid-template-columns: minmax(0, 0.85fr) minmax(420px, 1.15fr);
+  gap: clamp(24px, 4vw, 56px);
+  min-height: 0;
+  padding: 8px 0 0;
+}
+
+.dashboard-landing-copy {
+  padding: 0;
+}
+
+.dashboard-landing-copy h2 {
+  margin: 12px 0 14px;
+  max-width: 560px;
+  font-size: clamp(2rem, 4vw, 3.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.dashboard-landing-copy p {
+  max-width: 500px;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.landing-button {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+}
+
+.landing-button-primary {
+  background: var(--app-accent);
+  box-shadow: 0 5px 12px rgba(232, 117, 47, 0.16);
+}
+
+.landing-button-quiet {
+  background: var(--app-surface);
+  color: var(--app-text);
+  border-color: var(--app-border);
+}
+
+.dashboard-landing-preview {
+  width: 100%;
+  margin-left: 0;
+  border-color: var(--app-border);
+  border-radius: var(--radius-lg);
+  background: var(--app-surface);
+  box-shadow: var(--shadow-soft);
+  transform: none;
+}
+
+.landing-preview-topbar {
+  height: 48px;
+  padding: 0 16px;
+  border-bottom-color: var(--app-border);
+}
+
+.preview-brand span {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--app-accent);
+}
+
+.preview-sidebar {
+  background: #fafaf8;
+  border-right-color: var(--app-border);
+}
+
+.preview-sidebar-mark {
+  background: var(--app-accent);
+  border-radius: 6px;
+}
+
+.preview-stat,
+.preview-chart,
+.preview-feed {
+  border-color: var(--app-border);
+  border-radius: var(--radius-md);
+}
+
+.dashboard-landing-summary {
+  gap: 12px;
+}
+
+.dashboard-shell-stat,
+.dashboard-widget {
+  border-color: var(--app-border);
+  border-radius: var(--radius-lg);
+  background: var(--app-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.dashboard-shell-stat {
+  padding: 16px;
+}
+
+.dashboard-shell-stat-icon,
+.dashboard-quick-action-icon,
+.dashboard-ops-icon {
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
+
+.dashboard-shell-stat-trend {
+  border-radius: 999px;
+  background: var(--surface-success);
+  color: var(--color-success);
+}
+
+.dashboard-shell-stat-link,
+.dashboard-quick-action > svg {
+  color: var(--app-accent);
+}
+
+.dashboard-quick-action:hover {
+  border-color: #f2bd98;
+  background: var(--surface-accent);
+}
+
+@media (max-width: 960px) {
+  .dashboard-landing-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-landing-preview {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .school-admin-dashboard {
+    gap: 18px;
+    padding: 18px 14px 28px;
+  }
+
+  .dashboard-landing-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-shell-header-actions {
+    width: 100%;
+  }
+
+  .dashboard-shell-link {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .landing-preview-body {
+    grid-template-columns: 42px 1fr;
+  }
+
+  .preview-content {
+    padding: 16px 12px;
+  }
+
+  .preview-lower {
+    grid-template-columns: 1fr;
+  }
+}
+
 .school-admin-dashboard a {
   text-decoration: none;
 }

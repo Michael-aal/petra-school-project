@@ -1,0 +1,16 @@
+{
+  "name": "petra-school-project",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names backend,frontend \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix Petra-Project run dev",
+    "build": "npm --prefix Petra-Project run build",
+    "lint": "npm --prefix Petra-Project run lint",
+    "test": "npm --prefix backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

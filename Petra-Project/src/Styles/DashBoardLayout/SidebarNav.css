@@ -437,3 +437,119 @@
   letter-spacing: -0.01em;
 }
 
+.sidebar-container {
+  --sidebar-surface: #ffffff;
+  --sidebar-surface-strong: #f7f7f5;
+  --sidebar-surface-soft: #f5f6f3;
+  --sidebar-text: #202321;
+  --sidebar-text-muted: #69716b;
+  --sidebar-accent: #e8752f;
+  --sidebar-accent-soft: #fff1e8;
+  --sidebar-border: #e2e5e1;
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  width: var(--sidebar-width, 248px);
+  min-width: var(--sidebar-width, 248px);
+  padding: 16px 12px 12px;
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.sidebar-header {
+  min-height: 58px;
+  padding: 4px 8px 16px;
+  border-bottom-color: var(--sidebar-border);
+}
+
+.sidebar-contaner-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+  color: #ffffff;
+}
+
+.brand-title {
+  color: var(--sidebar-text);
+  font-size: 0.88rem;
+  letter-spacing: -0.02em;
+}
+
+.brand-sub,
+.sidebar-section-label,
+.sidebar-user h4 {
+  color: var(--sidebar-text-muted);
+}
+
+.sidebar-section-label {
+  padding: 16px 10px 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+.sidebar-assistant,
+.sidebar-link,
+.sidebar-group,
+.sidebar-child {
+  min-height: 38px;
+  border-radius: var(--radius-md);
+  color: var(--sidebar-text-muted);
+}
+
+.sidebar-assistant:hover,
+.sidebar-link:hover,
+.sidebar-group:hover,
+.sidebar-child:hover {
+  background: var(--sidebar-surface-soft);
+  color: var(--sidebar-text);
+}
+
+.sidebar-assistant.active,
+.sidebar-link.active,
+.sidebar-child.active,
+.sidebar-group.group-active {
+  background: var(--sidebar-accent-soft);
+  border-color: transparent;
+  color: var(--sidebar-text);
+}
+
+.sidebar-link.active::before,
+.sidebar-child.active::before,
+.sidebar-group.group-active::before {
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--sidebar-accent);
+}
+
+.sidebar-link.active .sidebar-icon,
+.sidebar-child.active .child-icon,
+.sidebar-assistant.active .sidebar-assistant-icon,
+.sidebar-group.group-active .sidebar-icon {
+  color: var(--sidebar-accent);
+}
+
+.sidebar-assistant-icon {
+  color: var(--sidebar-accent);
+}
+
+.sidebar-children {
+  border-left-color: var(--sidebar-border);
+}
+
+.sidebar-footer {
+  border-top-color: var(--sidebar-border);
+}
+
+.dashboard-shell {
+  --sidebar-width: 248px;
+  --sidebar-collapsed-width: 72px;
+  background: var(--app-bg);
+}
+
+.sidebar-backdrop {
+  background: rgba(32, 35, 33, 0.24);
+}
+

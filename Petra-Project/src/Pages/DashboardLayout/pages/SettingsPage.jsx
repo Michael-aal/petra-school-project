@@ -1,9 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Bell, Lock, Moon, Settings2, Shield, Sun, User2, X } from "lucide-react";
+import { AlertTriangle, Bell, Lock, Settings2, Shield, User2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../../context/UserContext";
 import { authApi, clearAuthToken } from "../../../services/authApi";
-import { applyTheme, getInitialTheme } from "../../../utils/theme";
 import { getDisplayName, normalizeUser } from "../../../utils/userProfile";
 import "./page-styles/SettingsPage.css";
 
@@ -31,7 +30,6 @@ export default function SettingsPage({ role: roleProp }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const resolvedRole = (roleProp || userInfo?.role || "parent").toLowerCase();
   const roleLabel = roleTitles[resolvedRole] || "User";
-  const [themeMode, setThemeMode] = useState(() => getInitialTheme());
   const [profileForm, setProfileForm] = useState({
     fullName: userInfo?.fullName || "",
     phoneNumber: userInfo?.phoneNumber || "",
@@ -53,10 +51,6 @@ export default function SettingsPage({ role: roleProp }) {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [deleteBusy, setDeleteBusy] = useState(false);
-
-  useEffect(() => {
-    applyTheme(themeMode);
-  }, [themeMode]);
 
   useEffect(() => {
     setProfileForm((current) => ({
@@ -307,31 +301,25 @@ export default function SettingsPage({ role: roleProp }) {
         <article className="settings-card">
           <div className="settings-card-head">
             <h2>
-              <Moon size={16} />
+              <Settings2 size={16} />
               <span>Appearance</span>
             </h2>
           </div>
 
           <div className="settings-theme-card">
             <div className="settings-theme-copy">
-              <strong>Theme mode</strong>
-              <span>Switch between light, dark, or the system default.</span>
+              <strong>Light theme</strong>
+              <span>Nuvora uses a clear, light workspace for consistent readability.</span>
             </div>
-            <label className="settings-select-wrap">
-              <select value={themeMode} onChange={(event) => setThemeMode(event.target.value)}>
-                <option value="light">Light Mode</option>
-                <option value="dark">Dark Mode</option>
-                <option value="system">System Default</option>
-              </select>
-            </label>
+            <span className="settings-status">Active</span>
           </div>
 
           <div className="settings-theme-card compact">
             <div className="settings-theme-copy">
-              <strong>Active theme</strong>
-              <span>{themeMode === "system" ? "Uses your device preference" : themeMode === "dark" ? "Dark mode enabled" : "Light mode enabled"}</span>
+              <strong>Interface preference</strong>
+              <span>Colors and contrast are optimized for daytime work.</span>
             </div>
-            {themeMode === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            <Settings2 size={16} aria-hidden="true" />
           </div>
         </article>
 

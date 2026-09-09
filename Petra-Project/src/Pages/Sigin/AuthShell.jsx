@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { Moon, Sun, CheckCircle2 } from "lucide-react";
-import { applyTheme, getInitialTheme } from "../../utils/theme";
+import { CheckCircle2 } from "lucide-react";
 
 const NuvoraLogo = ({ size = 18 }) => (
   <svg
@@ -25,14 +23,6 @@ const NuvoraLogo = ({ size = 18 }) => (
 );
 
 export default function AuthShell({ children, eyebrow, title, subtitle, footnote, variant = "" }) {
-  const [darkMode, setDarkMode] = useState(() => {
-    return getInitialTheme() === "dark";
-  });
-
-  useEffect(() => {
-    applyTheme(darkMode ? "dark" : "light");
-  }, [darkMode]);
-
   return (
     <main className="auth-page">
       <section className={`auth-shell ${variant ? `auth-shell--${variant}` : ""}`}>
@@ -46,14 +36,6 @@ export default function AuthShell({ children, eyebrow, title, subtitle, footnote
               <p className="auth-brand-sub">The school operating system</p>
             </div>
           </div>
-          <button
-            type="button"
-            className="auth-theme-btn"
-            onClick={() => setDarkMode((prev) => !prev)}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? <Sun size={17} /> : <Moon size={17} />}
-          </button>
         </header>
 
         <div className={`auth-card ${variant ? `auth-card--${variant}` : ""}`}>

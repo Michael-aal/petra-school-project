@@ -112,6 +112,15 @@ Use `npx prisma migrate deploy` in a deployment pipeline. Avoid `db:reset` again
 
 ### 4. Start both applications
 
+From the repository root, start the frontend and backend together:
+
+```bash
+npm install
+npm run dev
+```
+
+Alternatively, run each application in its own terminal:
+
 In terminal one:
 
 ```bash

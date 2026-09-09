@@ -400,3 +400,87 @@
     max-width: none;
   }
 }
+
+.top-navbar {
+  --topbar-height: 64px;
+  min-height: var(--topbar-height);
+  padding: 0 clamp(16px, 2.4vw, 32px);
+  background: var(--dashboard-topbar-bg);
+  color: var(--dashboard-topbar-text);
+  border-bottom: 1px solid var(--app-border);
+  box-shadow: 0 1px 0 rgba(32, 35, 33, 0.02);
+  backdrop-filter: none;
+}
+
+.menu-btn,
+.icon-btn,
+.ask-nuvora-btn {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  border-radius: var(--radius-md);
+  border-color: var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text-muted);
+}
+
+.menu-btn:hover,
+.icon-btn:hover,
+.ask-nuvora-btn:hover {
+  border-color: #f2bd98;
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
+
+.ask-nuvora-icon-wrap {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--app-accent);
+}
+
+.top-welcome {
+  color: var(--app-text);
+  font-size: 0.92rem;
+}
+
+.user-info {
+  border-color: var(--app-border);
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
+  color: var(--app-text);
+}
+
+.user-info:hover {
+  border-color: #f2bd98;
+  box-shadow: none;
+}
+
+.avatar {
+  background: var(--app-accent);
+}
+
+.notification-dropdown,
+.account-dropdown {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 28px rgba(32, 35, 33, 0.12);
+}
+
+.notification-action {
+  background: var(--app-accent);
+  border-radius: var(--radius-md);
+}
+
+.account-dropdown-actions button {
+  border-color: var(--app-border);
+  border-radius: var(--radius-md);
+  background: var(--app-surface);
+}
+
+.account-dropdown-actions button:hover {
+  background: var(--surface-accent);
+  color: var(--app-accent);
+}
