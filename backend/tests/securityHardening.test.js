@@ -3,6 +3,7 @@ import assert from "node:assert";
 import { paystackService } from "../services/paystackService.js";
 import { createRateLimiter } from "../middleware/rateLimiter.js";
 import { createHmac } from "crypto";
+import { originLock } from "../middleware/originLock.js";
 
 test("Security Hardening - Paystack verifySignature with timingSafeEqual", () => {
   process.env.PAYSTACK_SECRET_KEY = "test_secret_key";
@@ -46,4 +47,16 @@ test("Security Hardening - Rate Limiter Middleware blocks abusive requests", () 
   limiter(mockReq, mockRes, next);
   assert.strictEqual(blockedStatus, 429);
   assert.strictEqual(nextCalled, 3);
+});
+
+test("Security Hardening - Paystack webhooks bypass origin secret and reach signature validation", () => {
+  process.env.NODE_ENV = "production";
+  process.env.ORIGIN_SECRET = "private-edge-secret";
+  let nextCalled = false;
+  originLock(
+    { path: "/api/paystack/webhook", method: "POST", get: () => "" },
+    { status: () => ({ json: () => undefined }) },
+    () => { nextCalled = true; },
+  );
+  assert.strictEqual(nextCalled, true);
 });

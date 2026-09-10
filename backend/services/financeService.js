@@ -732,6 +732,21 @@ export const financeService = {
 
     if (payload?.event === "charge.success") {
       const verified = await paystackService.verifyTransaction(reference);
+      if (String(verified?.status || "").toLowerCase() !== "success") {
+        throw Object.assign(new Error("Paystack transaction was not successful"), { statusCode: 502 });
+      }
+
+      const payment = await prisma.payment.findUnique({ where: { reference }, select: { amount: true } });
+      if (!payment) {
+        throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
+      }
+
+      const providerAmount = Number(verified.amount);
+      const localAmountKobo = toDecimal(payment.amount).mul(100).toNumber();
+      if (!Number.isFinite(providerAmount) || providerAmount !== localAmountKobo) {
+        throw Object.assign(new Error("Paystack transaction amount does not match the payment record"), { statusCode: 409 });
+      }
+
       return financeService.processVerifiedPayment(reference, verified);
     }
 

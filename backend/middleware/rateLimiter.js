@@ -1,7 +1,15 @@
-/**
- * In-memory sliding window rate limiter middleware for Express
- * Prevents brute force and credential stuffing attacks on sensitive endpoints.
- */
+import IORedis from "ioredis";
+
+const isProduction = process.env.NODE_ENV === "production";
+const distributedRedis = isProduction
+  ? new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379", {
+      lazyConnect: true,
+      enableOfflineQueue: false,
+      maxRetriesPerRequest: 1,
+    })
+  : null;
+
+distributedRedis?.on("error", () => undefined);
 
 const hitStore = new Map();
 
@@ -24,10 +32,28 @@ export const createRateLimiter = ({
   message = "Too many requests, please try again later.",
   keyGenerator = (req) => `${req.ip || "unknown"}_${req.originalUrl}`,
 } = {}) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const key = keyGenerator(req);
     const now = Date.now();
     const windowStart = now - windowMs;
+
+    if (distributedRedis) {
+      try {
+        const redisKey = `petra:rate-limit:${key}`;
+        const count = await distributedRedis.incr(redisKey);
+        if (count === 1) await distributedRedis.pExpire(redisKey, windowMs);
+
+        if (count > max) {
+          const remainingMs = Math.max(0, await distributedRedis.pTtl(redisKey));
+          const retryAfterSeconds = Math.max(1, Math.ceil(remainingMs / 1000));
+          res.setHeader("Retry-After", retryAfterSeconds);
+          return res.status(429).json({ success: false, message, retryAfterSeconds });
+        }
+        return next();
+      } catch (error) {
+        return res.status(503).json({ success: false, message: "Request protection is temporarily unavailable." });
+      }
+    }
 
     const timestamps = hitStore.get(key) || [];
     const recentHits = timestamps.filter((time) => time > windowStart);

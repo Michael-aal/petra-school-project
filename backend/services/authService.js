@@ -312,6 +312,12 @@ export const authService = {
       throw error;
     }
 
+    if (user.accountStatus && user.accountStatus !== "active") {
+      const error = new Error("This account is not active");
+      error.statusCode = 401;
+      throw error;
+    }
+
     const isMatch = await comparePassword(normalizedPassword, user.password);
     if (!isMatch) {
       const error = new Error("Invalid email or password");
