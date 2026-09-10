@@ -12,6 +12,10 @@ const isLocalDevelopmentOrigin = (origin) => {
 export const originLock = (req, res, next) => {
   if (req.path === "/healthz" || req.path === "/readyz") return next();
 
+  // Paystack authenticates this endpoint with its signed raw request body.
+  // It cannot provide Petra's private origin secret.
+  if (req.path === "/api/paystack/webhook" && req.method === "POST") return next();
+
   if (isLocalDevelopmentOrigin(req.get("origin"))) return next();
 
   const configured = String(process.env.ORIGIN_SECRET || "");
