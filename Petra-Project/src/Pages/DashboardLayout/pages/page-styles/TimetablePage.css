@@ -1,2 +1,153 @@
-/* Styles for TimetablePage */
-.timetable-page{ padding:20px; }
+.timetable-page {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+.timetable-page .dashboard-home-header {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.timetable-page .dashboard-home-header h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.timetable-page .dashboard-home-header p {
+  margin: 8px 0 0;
+  color: var(--app-text-muted);
+}
+
+.timetable-page .timetable-form-panel,
+.timetable-page .timetable-list-panel {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.timetable-page .timetable-form {
+  display: grid;
+  gap: 14px;
+}
+
+.timetable-page .timetable-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.timetable-page input,
+.timetable-page select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--app-text);
+  padding: 10px 12px;
+  font: inherit;
+  box-shadow: none;
+}
+
+.timetable-page input:focus,
+.timetable-page select:focus {
+  border-color: var(--app-accent);
+  outline: none;
+  box-shadow: none;
+}
+
+.timetable-page .timetable-page-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #e8752f !important;
+  border-radius: 8px;
+  background: #e8752f !important;
+  color: #ffffff !important;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: none !important;
+}
+
+.timetable-page .timetable-page-action:hover {
+  background: #d95f1f !important;
+  border-color: #d95f1f !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.timetable-page .timetable-submit-btn {
+  justify-self: start;
+  min-width: 220px;
+}
+
+.timetable-page .timetable-list {
+  display: grid;
+  gap: 12px;
+}
+
+.timetable-page .timetable-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f8f8f6;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.timetable-page .timetable-item-main {
+  display: grid;
+  gap: 4px;
+}
+
+.timetable-page .timetable-item strong {
+  color: var(--app-text);
+  font-size: 1rem;
+}
+
+.timetable-page .timetable-item p,
+.timetable-page .timetable-empty-state {
+  margin: 0;
+  color: var(--app-text-muted);
+}
+
+.timetable-page .timetable-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+.timetable-page .timetable-delete-btn:hover {
+  background: #fff3ee;
+  border-color: rgba(232, 117, 47, 0.3);
+  color: #d95f1f;
+}
+
+@media (max-width: 640px) {
+  .timetable-page .timetable-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timetable-page .timetable-submit-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

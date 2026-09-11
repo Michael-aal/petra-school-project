@@ -19,19 +19,25 @@ export default function BusPage() {
       </header>
       <section className="bus-stat-grid">
         <article>
+          <div className="stat-copy">
+            <strong>0</strong>
+            <span>Active routes</span>
+          </div>
           <MapPinned size={19} />
-          <strong>0</strong>
-          <span>Active routes</span>
         </article>
         <article>
+          <div className="stat-copy">
+            <strong>0</strong>
+            <span>Assigned learners</span>
+          </div>
           <UsersRound size={19} />
-          <strong>0</strong>
-          <span>Assigned learners</span>
         </article>
         <article>
+          <div className="stat-copy">
+            <strong>0</strong>
+            <span>Vehicles in service</span>
+          </div>
           <Wrench size={19} />
-          <strong>0</strong>
-          <span>Vehicles in service</span>
         </article>
       </section>
       <section className="bus-empty-panel">

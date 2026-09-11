@@ -51,13 +51,13 @@ export default function AttendancePage() {
   const hasFilters = Boolean(appliedFilters.search || appliedFilters.className || appliedFilters.status || appliedFilters.date);
 
   return (
-    <div className="dashboard-home">
+    <div className="dashboard-home attendance-page">
       <section className="dashboard-home-header">
         <div>
           <h1>Attendance</h1>
           <p>View attendance history, apply filters, and review records across classes.</p>
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div className="attendance-header-actions">
           <button className="dashboard-home-summary-action tone-blue" type="button" onClick={() => load(pagination.page)}>
             <RefreshCcw size={14} />
             <span>Refresh</span>
@@ -107,11 +107,11 @@ export default function AttendancePage() {
 
       {error ? <div className="students-inline-alert">{error}</div> : null}
 
-      <section className="dashboard-home-panel" style={{ marginBottom: 18 }}>
-        <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", alignItems: "end" }}>
-          <label className="settings-field" style={{ marginBottom: 0 }}>
+      <section className="dashboard-home-panel attendance-filter-panel" style={{ marginBottom: 18 }}>
+        <div className="attendance-filter-grid">
+          <label className="settings-field attendance-filter-field" style={{ marginBottom: 0 }}>
             <span>Search</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="attendance-search-input-wrap">
               <Search size={16} />
               <input
                 placeholder="Search student or class"
@@ -124,12 +124,12 @@ export default function AttendancePage() {
             </div>
           </label>
 
-          <label className="settings-field" style={{ marginBottom: 0 }}>
+          <label className="settings-field attendance-filter-field" style={{ marginBottom: 0 }}>
             <span>Class</span>
             <input placeholder="Filter by class" value={className} onChange={(e) => setClassName(e.target.value)} />
           </label>
 
-          <label className="settings-field" style={{ marginBottom: 0 }}>
+          <label className="settings-field attendance-filter-field" style={{ marginBottom: 0 }}>
             <span>Status</span>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="">All statuses</option>
@@ -140,20 +140,20 @@ export default function AttendancePage() {
             </select>
           </label>
 
-          <label className="settings-field" style={{ marginBottom: 0 }}>
+          <label className="settings-field attendance-filter-field" style={{ marginBottom: 0 }}>
             <span>Date</span>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </label>
         </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
+        <div className="attendance-filter-actions">
           <button type="button" className="dashboard-home-summary-action tone-blue" disabled={loading} onClick={() => load(1)}>
             <Filter size={14} />
             <span>{loading ? "Applying..." : "Apply Filters"}</span>
           </button>
           <button
             type="button"
-            className="dashboard-home-summary-action"
+            className="dashboard-home-summary-action attendance-clear-button"
             onClick={() => {
               setSearch("");
               setClassName("");
@@ -167,7 +167,7 @@ export default function AttendancePage() {
             <span>Clear</span>
           </button>
         </div>
-        <p style={{ marginTop: 12, color: "var(--app-text-muted)" }}>
+        <p className="attendance-filter-summary" style={{ marginTop: 12, color: "var(--app-text-muted)" }}>
           {hasFilters
             ? `Showing ${pagination.total} record${pagination.total === 1 ? "" : "s"} for the selected filters.`
             : `Showing ${pagination.total} attendance record${pagination.total === 1 ? "" : "s"}.`}

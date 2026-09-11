@@ -47,74 +47,74 @@
 
 .stats-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
   margin-bottom: var(--space-5);
 }
 
 .stat-card {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 12px;
-  padding: var(--space-4);
-  box-shadow: var(--shadow-soft);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 118px;
+  background: #f7f7f7;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 18px 16px;
+  box-shadow: none;
+  transition: none;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--app-accent);
+  transform: none;
+  border-color: #d9d9d9;
+}
+
+.stat-card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
 }
 
 .stat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
   flex-shrink: 0;
-  background: var(--surface-muted);
+  background: var(--app-accent);
+  color: #fff;
+  border: none;
 }
 
-.stat-icon-blue {
-  background: rgba(232, 117, 47, 0.12);
-  color: #d86724;
-}
-
-.stat-icon-green {
-  background: rgba(232, 117, 47, 0.08);
-  color: #c75d23;
-}
-
-.stat-icon-yellow {
-  background: rgba(232, 117, 47, 0.08);
-  color: #b14d1b;
-}
-
+.stat-icon-blue,
+.stat-icon-green,
+.stat-icon-yellow,
 .stat-icon-red {
-  background: rgba(232, 117, 47, 0.08);
-  color: #cf6a35;
+  background: var(--app-accent);
+  color: #fff;
 }
 
 .stat-number {
   display: block;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--app-text);
-  line-height: 1.1;
+  font-size: 2rem;
+  font-weight: 400;
+  color: #111111;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .stat-label {
   display: block;
-  font-size: 0.8rem;
-  color: var(--app-text-muted);
-  font-weight: 500;
+  font-size: 0.82rem;
+  color: #222222;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 .btn-primary {

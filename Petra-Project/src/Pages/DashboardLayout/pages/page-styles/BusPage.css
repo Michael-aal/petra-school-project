@@ -2,6 +2,7 @@
   display: grid;
   gap: 18px;
 }
+
 .bus-hero {
   display: flex;
   align-items: flex-start;
@@ -9,98 +10,133 @@
   gap: 18px;
   padding: 26px;
   border: 1px solid var(--app-border);
-  border-radius: 18px;
-  background: var(--dashboard-panel-bg);
+  border-radius: 10px;
+  background: var(--app-surface);
+  box-shadow: none;
 }
+
 .bus-hero h1 {
   margin: 8px 0 6px;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   letter-spacing: -0.05em;
+  color: var(--app-text);
 }
+
 .bus-hero p:not(.dashboard-page-label) {
   margin: 0;
   color: var(--app-text-muted);
   max-width: 650px;
 }
+
 .bus-primary-action,
 .bus-secondary-action {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   min-height: 42px;
   padding: 0 15px;
-  border-radius: 10px;
-  font-weight: 800;
+  border-radius: 8px;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: none !important;
 }
+
 .bus-primary-action {
-  border: 0;
-  background: var(--dashboard-accent-gradient);
-  color: #fff;
+  border: 1px solid #e8752f !important;
+  background: #e8752f !important;
+  color: #ffffff !important;
 }
+
 .bus-secondary-action {
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text);
+  border: 1px solid #e8752f !important;
+  background: #e8752f !important;
+  color: #ffffff !important;
 }
+
 .bus-stat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
+
 .bus-stat-grid article {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 12px;
+  display: flex;
   align-items: center;
-  padding: 18px;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 120px;
+  padding: 20px 18px;
   border: 1px solid var(--app-border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--app-surface);
+  box-shadow: none;
 }
+
+.bus-stat-grid .stat-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 6px;
+}
+
 .bus-stat-grid svg {
-  grid-row: span 2;
   color: var(--app-accent);
+  flex-shrink: 0;
 }
+
 .bus-stat-grid strong {
-  font-size: 1.4rem;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--app-text);
+  font-weight: 700;
 }
+
 .bus-stat-grid span {
   color: var(--app-text-muted);
   font-size: 0.82rem;
 }
+
 .bus-empty-panel {
   display: grid;
   justify-items: center;
   gap: 10px;
   padding: 58px 24px;
   border: 1px dashed var(--app-border);
-  border-radius: 18px;
+  border-radius: 10px;
   background: var(--app-surface);
   text-align: center;
+  box-shadow: none;
 }
+
 .bus-empty-icon {
   display: grid;
   place-items: center;
   width: 52px;
   height: 52px;
-  border-radius: 15px;
-  background: var(--surface-accent);
+  border-radius: 12px;
+  background: rgba(232, 117, 47, 0.12);
   color: var(--app-accent);
 }
+
 .bus-empty-panel h2 {
   margin: 4px 0 0;
+  color: var(--app-text);
 }
+
 .bus-empty-panel p {
   max-width: 480px;
   margin: 0 0 8px;
   color: var(--app-text-muted);
   line-height: 1.6;
 }
+
 @media (max-width: 720px) {
   .bus-hero {
     flex-direction: column;
   }
+
   .bus-stat-grid {
     grid-template-columns: 1fr;
   }

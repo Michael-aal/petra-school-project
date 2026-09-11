@@ -64,13 +64,13 @@ export default function TimetablePage() {
   };
 
   return (
-    <div className="dashboard-home">
+    <div className="timetable-page dashboard-home">
       <section className="dashboard-home-header">
         <div>
           <h1>Timetable</h1>
           <p>Create and manage class timetables.</p>
         </div>
-        <button className="dashboard-home-summary-action tone-blue" type="button" onClick={load}>
+        <button className="timetable-page-action timetable-refresh-btn" type="button" onClick={load}>
           <RefreshCcw size={14} />
           <span>Refresh</span>
         </button>
@@ -78,9 +78,9 @@ export default function TimetablePage() {
 
       {error ? <div className="students-inline-alert">{error}</div> : null}
 
-      <section className="dashboard-home-panel" style={{ marginBottom: 18 }}>
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+      <section className="dashboard-home-panel timetable-form-panel">
+        <form onSubmit={handleSubmit} className="timetable-form">
+          <div className="timetable-form-grid">
             <input placeholder="Class name" value={form.className} onChange={(e) => setForm({ ...form, className: e.target.value })} />
             <input placeholder="Subject name" value={form.subjectName} onChange={(e) => setForm({ ...form, subjectName: e.target.value })} />
             <select value={form.dayOfWeek} onChange={(e) => setForm({ ...form, dayOfWeek: e.target.value })}>
@@ -90,32 +90,32 @@ export default function TimetablePage() {
             <input type="time" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} />
             <input placeholder="Room (optional)" value={form.room} onChange={(e) => setForm({ ...form, room: e.target.value })} />
           </div>
-          <button disabled={saving} className="dashboard-home-summary-action tone-blue" type="submit">
+          <button disabled={saving} className="timetable-page-action timetable-submit-btn" type="submit">
             <Save size={14} />
             <span>{saving ? "Saving..." : "Save Timetable Entry"}</span>
           </button>
         </form>
       </section>
 
-      <section className="dashboard-home-panel">
+      <section className="dashboard-home-panel timetable-list-panel">
         {loading ? (
-          <p>Loading timetable...</p>
+          <p className="timetable-empty-state">Loading timetable...</p>
         ) : timetable.length ? (
-          <div className="parent-list">
+          <div className="timetable-list">
             {timetable.map((entry) => (
-              <div key={entry.id} className="parent-list-item">
-                <div>
+              <div key={entry.id} className="timetable-item">
+                <div className="timetable-item-main">
                   <strong>{entry.className} - {entry.subjectName}</strong>
                   <p>{entry.dayOfWeek} · {entry.startTime} to {entry.endTime}{entry.room ? ` · ${entry.room}` : ""}</p>
                 </div>
-                <button type="button" onClick={() => remove(entry.id)}>
+                <button type="button" className="timetable-delete-btn" onClick={() => remove(entry.id)}>
                   <Trash2 size={14} />
                 </button>
               </div>
             ))}
           </div>
         ) : (
-          <p>No timetable entries yet.</p>
+          <p className="timetable-empty-state">No timetable entries yet.</p>
         )}
       </section>
     </div>
