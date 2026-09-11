@@ -76,7 +76,7 @@ export default function DailyReportsPage() {
   }, [cashflow.recentTransactions, cashflow.recentExpenses, selectedDate]);
 
   return (
-    <div className="dashboard-page overview-page">
+    <div className="dashboard-page overview-page daily-report-page">
       <DashboardHeader
         eyebrow="Overview"
         title="Daily school report"
@@ -97,12 +97,12 @@ export default function DailyReportsPage() {
         </label>
       </section>
 
-      <section className="overview-card-grid">
-        <StatCard label="Attendance" value={attendancePagination.total || 0} icon={CalendarDays} tone="blue" description="Attendance entries recorded" />
-        <StatCard label="Payments" value={`₦${reportSummary.paymentTotal.toLocaleString()}`} icon={DollarSign} tone="teal" description={`${reportSummary.paymentCount} payment${reportSummary.paymentCount === 1 ? "" : "s"}`} />
-        <StatCard label="Expenses" value={`₦${reportSummary.expenseTotal.toLocaleString()}`} icon={Clock3} tone="rose" description={`${reportSummary.expenseCount} expense${reportSummary.expenseCount === 1 ? "" : "s"}`} />
-        <StatCard label="Pending applicants" value={applicantCounts.pending} icon={FileText} tone="blue" description="Applications waiting for review" />
-      </section>
+    <section className="overview-card-grid">
+  <StatCard label="Attendance" value={attendancePagination.total || 0} icon={CalendarDays} tone="neutral" description="Attendance entries recorded" />
+  <StatCard label="Payments" value={`₦${reportSummary.paymentTotal.toLocaleString()}`} icon={DollarSign} tone="neutral" description={`${reportSummary.paymentCount} payment${reportSummary.paymentCount === 1 ? "" : "s"}`} />
+  <StatCard label="Expenses" value={`₦${reportSummary.expenseTotal.toLocaleString()}`} icon={Clock3} tone="neutral" description={`${reportSummary.expenseCount} expense${reportSummary.expenseCount === 1 ? "" : "s"}`} />
+  <StatCard label="Pending applicants" value={applicantCounts.pending} icon={FileText} tone="neutral" description="Applications waiting for review" />
+</section>
 
       <section className="overview-section overview-flex-grid">
         <DashboardWidget title="Report attendance" subtitle={`Latest records for ${new Date(selectedDate).toLocaleDateString()}`}>
