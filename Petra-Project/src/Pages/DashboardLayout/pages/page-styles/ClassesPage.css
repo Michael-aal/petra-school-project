@@ -140,3 +140,151 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep class setup simple and consistent with the other setup pages. */
+.classes-page {
+  max-width: 1320px;
+  min-height: 100%;
+  padding: 24px clamp(16px, 2.5vw, 32px) 40px;
+  background: #f4f5f4;
+}
+
+.classes-page .dashboard-home-header,
+.classes-page .dashboard-home-summary-card,
+.classes-page .classes-form-card,
+.classes-page .classes-list-card {
+  border: 1px solid #dfe3df;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.classes-page .dashboard-home-header {
+  margin-bottom: 18px;
+  padding: 20px 22px;
+}
+
+.classes-page .dashboard-home-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 680px;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.classes-page .dashboard-home-summary-card {
+  padding: 18px;
+}
+
+.classes-page .classes-layout {
+  padding: 0;
+  gap: 16px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.classes-page .classes-form-card,
+.classes-page .classes-list-card {
+  padding: 18px;
+}
+
+.classes-page .dashboard-home-summary-top {
+  align-items: center;
+}
+
+.classes-page .dashboard-home-summary-top > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.classes-page .dashboard-home-summary-top span {
+  color: #69716b;
+  font-size: 0.82rem;
+}
+
+.classes-page .dashboard-home-summary-top strong {
+  color: #202321;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.classes-page .dashboard-home-summary-action {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #cfd6d1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #202321;
+  box-shadow: none;
+  transform: none;
+}
+
+.classes-page .dashboard-home-summary-action:hover {
+  background: #f4f5f4;
+  border-color: #aeb8b1;
+  box-shadow: none;
+  transform: none;
+}
+
+.classes-page .dashboard-home-summary-action svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.classes-page .classes-form input,
+.classes-page .classes-form select,
+.classes-page .classes-mini-btn,
+.classes-page .classes-seed,
+.classes-page .classes-item {
+  border-radius: 6px;
+}
+
+.classes-page .classes-form input,
+.classes-page .classes-form select {
+  min-height: 40px;
+  background: #ffffff;
+}
+
+.classes-page .classes-form input:focus,
+.classes-page .classes-form select:focus {
+  border-color: #aeb8b1;
+  outline: none;
+  box-shadow: none;
+}
+
+.classes-page .classes-seed {
+  background: #f4f5f4;
+}
+
+.classes-page .classes-item:hover {
+  transform: none;
+  border-color: #c8cfca;
+}
+
+.classes-page .classes-mini-btn {
+  min-height: 34px;
+  background: #ffffff;
+}
+
+.classes-page .classes-form-actions .dashboard-home-summary-action {
+  background: #e8752f;
+  border-color: #e8752f;
+  color: #ffffff;
+}
+
+.classes-page .classes-form-actions .dashboard-home-summary-action:hover {
+  background: #cf5f22;
+  border-color: #cf5f22;
+  color: #ffffff;
+}
+
+.classes-page .classes-mini-btn:hover {
+  background: #f4f5f4;
+}
+
+@media (max-width: 640px) {
+  .classes-page {
+    padding: 16px;
+  }
+}
