@@ -152,3 +152,183 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep subject setup simple and consistent with the Classes page. */
+.subjects-page {
+  max-width: 1320px;
+  min-height: 100%;
+  padding: 24px clamp(16px, 2.5vw, 32px) 40px;
+  background: #f4f5f4;
+}
+
+.subjects-page .dashboard-home-header,
+.subjects-page .dashboard-home-summary-card,
+.subjects-page .subjects-form-card,
+.subjects-page .subjects-list-card {
+  border: 1px solid #dfe3df;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: none !important;
+}
+
+.subjects-page .dashboard-home-header {
+  margin-bottom: 18px;
+  padding: 20px 22px;
+}
+
+.subjects-page .dashboard-home-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 680px;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.subjects-page .dashboard-home-summary-card {
+  min-height: 112px;
+  padding: 18px;
+}
+
+.subjects-page .dashboard-home-summary-top {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.subjects-page .dashboard-home-summary-top > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subjects-page .dashboard-home-summary-top span {
+  color: #69716b;
+  font-size: 0.82rem;
+}
+
+.subjects-page .dashboard-home-summary-top strong {
+  color: #202321;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.subjects-page .dashboard-home-summary-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 6px;
+}
+
+.subjects-page .subjects-layout {
+  padding: 0;
+  gap: 16px;
+  border: 0;
+  background: transparent;
+  box-shadow: none !important;
+}
+
+.subjects-page .subjects-form-card,
+.subjects-page .subjects-list-card {
+  padding: 18px;
+}
+
+.subjects-page .dashboard-home-summary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #cfd6d1;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #202321;
+  box-shadow: none !important;
+  transform: none;
+}
+
+.subjects-page .dashboard-home-summary-action:hover {
+  background: #f4f5f4;
+  border-color: #aeb8b1;
+  box-shadow: none;
+  transform: none;
+}
+
+.subjects-page .dashboard-home-summary-action span {
+  line-height: 1;
+}
+
+.subjects-page .dashboard-home-summary-action svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.subjects-page .subjects-form input,
+.subjects-page .subjects-form select,
+.subjects-page .subjects-item-actions select,
+.subjects-page .subjects-mini-btn,
+.subjects-page .subjects-seed,
+.subjects-page .subjects-item {
+  border-radius: 4px;
+  box-shadow: none !important;
+}
+
+.subjects-page .subjects-form input,
+.subjects-page .subjects-form select,
+.subjects-page .subjects-item-actions select {
+  min-height: 40px;
+  background: #ffffff;
+  border-color: #dfe3df;
+}
+
+.subjects-page .subjects-form input:focus,
+.subjects-page .subjects-form select:focus,
+.subjects-page .subjects-item-actions select:focus {
+  border-color: #aeb8b1;
+  outline: none;
+  box-shadow: none;
+}
+
+.subjects-page .subjects-seed {
+  background: #f4f5f4;
+}
+
+.subjects-page .subjects-item:hover {
+  transform: none;
+  border-color: #c8cfca;
+}
+
+.subjects-page .subjects-mini-btn {
+  min-height: 34px;
+  background: #ffffff;
+}
+
+.subjects-page .subjects-mini-btn:hover {
+  background: #f4f5f4;
+}
+
+.subjects-page .subjects-form-actions .dashboard-home-summary-action {
+  background: #e8752f;
+  border-color: #e8752f;
+  color: #ffffff;
+}
+
+.subjects-page .subjects-form-actions .dashboard-home-summary-action:hover {
+  background: #cf5f22;
+  border-color: #cf5f22;
+  color: #ffffff;
+}
+
+.subjects-page .subjects-alert,
+.subjects-page .module-empty {
+  box-shadow: none !important;
+}
+
+@media (max-width: 640px) {
+  .subjects-page {
+    padding: 16px;
+  }
+}

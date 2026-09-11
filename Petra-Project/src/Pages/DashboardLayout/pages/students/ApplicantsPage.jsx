@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, UserPlus, Users, Clock3, CheckCircle2 } from "lucide-react";
+import { Search, UserPlus, Users, Clock3, CheckCircle2, X } from "lucide-react";
 import { admissionApi } from "../../../../services/admissionApi";
 import "../page-styles/ApplicantsPage.css";
 
@@ -9,23 +9,59 @@ export default function ApplicantsPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [savingId, setSavingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    applicantName: "",
+    guardianName: "",
+    parentEmail: "",
+    intendedClass: "",
+    applicantGender: "",
+  });
+
+  const loadApplicants = async () => {
+    try {
+      const response = await admissionApi.list({ limit: 200 });
+      setApplicants(response.admissions || []);
+    } catch (err) {
+      setError(err.message || "Unable to load applicants.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      try {
-        const response = await admissionApi.list({ limit: 200 });
-        if (mounted) setApplicants(response.admissions || []);
-      } catch (err) {
-        if (mounted) setError(err.message || "Unable to load applicants.");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
+    if (mounted) {
+      loadApplicants();
+    }
     return () => {
       mounted = false;
     };
   }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      await admissionApi.submit(form);
+      setForm({
+        applicantName: "",
+        guardianName: "",
+        parentEmail: "",
+        intendedClass: "",
+        applicantGender: "",
+      });
+      setShowForm(false);
+      setLoading(true);
+      await loadApplicants();
+    } catch (err) {
+      setError(err.message || "Unable to create applicant.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const updateApplicant = async (applicant, action) => {
     setSavingId(applicant.id);
@@ -85,7 +121,7 @@ export default function ApplicantsPage() {
             step.
           </p>
         </div>
-        <button type="button" className="applicants-primary-action">
+        <button type="button" className="applicants-primary-action" onClick={() => setShowForm(true)}>
           <UserPlus size={17} /> New applicant
         </button>
       </header>
@@ -113,6 +149,49 @@ export default function ApplicantsPage() {
           </div>
         </article>
       </section>
+
+      {showForm ? (
+        <div className="applicants-modal-overlay" onClick={() => setShowForm(false)}>
+          <section className="applicants-modal" onClick={(event) => event.stopPropagation()}>
+            <header className="applicants-modal-header">
+              <h2>New applicant</h2>
+              <button type="button" className="applicants-modal-close" onClick={() => setShowForm(false)} aria-label="Close form">
+                <X size={18} />
+              </button>
+            </header>
+            <form className="applicants-form" onSubmit={handleSubmit}>
+              <label>
+                <span>Applicant name</span>
+                <input required value={form.applicantName} onChange={(event) => setForm({ ...form, applicantName: event.target.value })} placeholder="Enter full name" />
+              </label>
+              <label>
+                <span>Guardian name</span>
+                <input value={form.guardianName} onChange={(event) => setForm({ ...form, guardianName: event.target.value })} placeholder="Optional" />
+              </label>
+              <label>
+                <span>Parent email</span>
+                <input type="email" value={form.parentEmail} onChange={(event) => setForm({ ...form, parentEmail: event.target.value })} placeholder="Optional" />
+              </label>
+              <label>
+                <span>Intended class</span>
+                <input value={form.intendedClass} onChange={(event) => setForm({ ...form, intendedClass: event.target.value })} placeholder="e.g. Basic 1" />
+              </label>
+              <label>
+                <span>Gender</span>
+                <select value={form.applicantGender} onChange={(event) => setForm({ ...form, applicantGender: event.target.value })}>
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </label>
+              <footer className="applicants-form-actions">
+                <button type="button" className="applicants-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+                <button type="submit" className="applicants-submit" disabled={saving}>{saving ? "Saving..." : "Create applicant"}</button>
+              </footer>
+            </form>
+          </section>
+        </div>
+      ) : null}
 
       <section className="applicants-panel">
         <div className="applicants-toolbar">

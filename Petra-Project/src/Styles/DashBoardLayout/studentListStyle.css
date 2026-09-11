@@ -291,6 +291,312 @@ tr:hover td { background: var(--dashboard-muted-surface); }
 }
 .action-btn:hover { background: var(--dashboard-muted-surface); color: var(--app-text); }
 
+/* Student list workspace: simple surfaces and the shared orange action theme. */
+.students-page {
+  background: #f4f5f4;
+  padding: 24px clamp(16px, 2.5vw, 32px) 40px;
+}
+
+.students-page .generic-list-page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+}
+
+.students-page .page-header {
+  margin-bottom: 18px;
+  padding: 20px 22px;
+  border: 1px solid #dfe3df;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.students-page .title-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: #fff1e8;
+  color: #e8752f;
+}
+
+.students-page .stats-bar {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.students-page .stat-card {
+  justify-content: space-between;
+  min-height: 112px;
+  padding: 18px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #dfe3df;
+  box-shadow: none;
+}
+
+.students-page .stat-icon {
+  order: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  background: #e8752f !important;
+  color: #ffffff !important;
+}
+
+.students-page .stat-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  fill: none;
+}
+
+.students-page .stat-number,
+.students-page .stat-label {
+  line-height: 1.2;
+}
+
+.students-page .stat-number {
+  margin-bottom: 5px;
+  color: #202321;
+}
+
+.students-page .stat-label {
+  color: #69716b;
+}
+
+.students-page .page-controls {
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.students-page .search-wrapper {
+  max-width: none;
+}
+
+.students-page .search-input,
+.students-page .btn-primary,
+.students-page .btn-secondary {
+  min-height: 42px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.students-page .search-input {
+  background: #ffffff;
+  border-color: #dfe3df;
+}
+
+.students-page .search-input:focus {
+  border-color: #aeb8b1;
+  outline: none;
+  box-shadow: none;
+}
+
+.students-page .toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.students-page .btn-primary,
+.students-page .toolbar-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid #e8752f;
+  background: #e8752f;
+  color: #ffffff;
+}
+
+.students-page .btn-primary:hover {
+  background: #e8752f !important;
+  border-color: #e8752f !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.students-page .btn-primary:hover svg,
+.students-page .btn-primary:hover span {
+  color: #ffffff !important;
+}
+
+.students-page .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid #cfd6d1;
+  background: #ffffff;
+  color: #202321;
+}
+
+.students-page .btn-secondary:hover {
+  background: #f4f5f4;
+  color: #202321;
+}
+
+.students-page .table-container {
+  overflow-x: auto;
+  border-radius: 4px;
+  border-color: #dfe3df;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.students-page th {
+  background: #f4f5f4;
+  color: #69716b;
+}
+
+.students-page tr:hover td {
+  background: #fafbfa;
+}
+
+.students-page .modal-overlay {
+  background: rgba(32, 35, 33, 0.28);
+  backdrop-filter: none;
+  padding: 16px;
+}
+
+.students-page .modal-content {
+  max-width: 640px;
+  max-height: min(88vh, 720px);
+  border: 1px solid #dfe3df;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 16px 36px rgba(32, 35, 33, 0.16);
+}
+
+.students-page .modal-header {
+  margin: 0;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5e8e5;
+}
+
+.students-page .modal-header h2 {
+  color: #202321;
+  font-size: 1.15rem;
+}
+
+.students-page .modal-close {
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #cfd6d1;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #202321;
+}
+
+.students-page .modal-close:hover {
+  background: #f4f5f4;
+  color: #202321;
+}
+
+.students-page .modal-body {
+  padding: 20px;
+}
+
+.students-page .form-grid {
+  gap: 16px;
+}
+
+.students-page .form-group {
+  gap: 6px;
+}
+
+.students-page .form-label {
+  color: #202321;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.students-page .form-input,
+.students-page .form-select {
+  min-height: 42px;
+  border: 1px solid #dfe3df;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #202321;
+  box-shadow: none;
+}
+
+.students-page .form-input:focus,
+.students-page .form-select:focus {
+  border-color: #aeb8b1;
+  outline: none;
+  box-shadow: none;
+}
+
+.students-page .modal-footer {
+  gap: 8px;
+  margin-top: 0;
+  padding: 16px 20px;
+  border-top: 1px solid #e5e8e5;
+}
+
+.students-page .modal-footer .btn-primary,
+.students-page .modal-footer .btn-ghost {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 4px;
+}
+
+.students-page .modal-footer .btn-primary {
+  border: 1px solid #e8752f;
+  background: #e8752f;
+  color: #ffffff;
+}
+
+.students-page .modal-footer .btn-primary:hover {
+  background: #e8752f;
+  border-color: #e8752f;
+  opacity: 1;
+}
+
+.students-page .modal-footer .btn-ghost {
+  border: 1px solid #cfd6d1;
+  background: #ffffff;
+  color: #202321;
+}
+
+.students-page .modal-footer .btn-ghost:hover {
+  background: #f4f5f4;
+  color: #202321;
+}
+
+@media (max-width: 900px) {
+  .students-page .stats-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .students-page {
+    padding: 16px;
+  }
+
+  .students-page .stats-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .students-page .toolbar-actions {
+    width: 100%;
+  }
+
+  .students-page .toolbar-actions button {
+    flex: 1;
+  }
+}
+
 /* =========================================
    6. MODALS & FORMS
    ========================================= */
