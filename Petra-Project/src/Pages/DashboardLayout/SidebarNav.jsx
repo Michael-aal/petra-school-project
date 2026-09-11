@@ -30,7 +30,8 @@ import {
   X,
   LogOut,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Rocket
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/SidebarNav.css";
 import { UserContext } from "../../context/UserContext";
@@ -41,7 +42,7 @@ import UserAvatar from "../../components/UserAvatar";
 
 const navGroups = [
   { label: "Ask Nuvora", icon: Sparkles, href: "/dashboard/ask-nuvora" },
-  { label: "Get Started", icon: LayoutDashboard, href: "/dashboard/get-started" },
+  { label: "Get Started", icon: Rocket, href: "/dashboard/get-started" },
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   {
     label: "Overview",
@@ -224,6 +225,8 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
         return (
           <button
             key={item.label}
+            data-tooltip={item.label}
+            aria-label={item.label}
             onClick={() => {
               if (onNavigate) onNavigate();
               handleLogout();
@@ -241,6 +244,8 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
           <NavLink
             key={item.label}
             to={item.href}
+            data-tooltip={item.label}
+            aria-label={item.label}
             onClick={onNavigate}
             className={`sidebar-group ${isActive(item.href) ? "group-active" : ""}`}
           >
@@ -254,6 +259,8 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
         <NavLink
           key={item.label}
           to={item.href}
+          data-tooltip={item.label}
+          aria-label={item.label}
           onClick={onNavigate}
           className={`sidebar-link ${isActive(item.href) ? "active" : ""}`}
         >
@@ -270,8 +277,10 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
       <div key={item.label} className="sidebar-group-wrap">
         <button
           type="button"
+          data-tooltip={item.label}
+          aria-label={item.label}
           onClick={() => toggleGroup(item.label)}
-          className={`sidebar-group ${groupActive ? "group-active" : ""}`}
+          className={`sidebar-group has-children ${groupActive ? "group-active" : ""}`}
         >
           <item.icon className="sidebar-icon" />
           <span className="sidebar-title sidebar-label">{item.label}</span>
@@ -284,12 +293,14 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
           ) : null}
         </button>
 
-        {isOpen ? (
+        {isOpen || collapsed ? (
           <div className="sidebar-children">
             {item.children.map((child) => (
               <NavLink
                 key={child.href}
                 to={child.href}
+                data-tooltip={child.label}
+                aria-label={child.label}
                 onClick={onNavigate}
                 className={`sidebar-child ${isActive(child.href) ? "active" : ""}`}
               >
@@ -322,13 +333,15 @@ export function SidebarNav({ onNavigate, collapsed = false, onClose }) {
         <div className="sidebar-section-label">AI</div>
         <NavLink
           to="/dashboard/ask-nuvora"
+          data-tooltip="Ask Nuvora"
+          aria-label="Ask Nuvora"
           onClick={onNavigate}
           className={`sidebar-assistant ${isActive("/dashboard/ask-nuvora") ? "active" : ""}`}
         >
           <span className="sidebar-assistant-icon">
             <Sparkles size={16} />
           </span>
-          <span>Ask Nuvora</span>
+          <span className="sidebar-label">Ask Nuvora</span>
         </NavLink>
 
         <div className="sidebar-section-label">Workspace</div>

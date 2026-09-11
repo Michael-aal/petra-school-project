@@ -61,12 +61,17 @@
 }
 
 .daily-report-page .dashboard-stat-card,
-.daily-report-page .dashboard-widget {
+.daily-report-page .dashboard-widget,
+.term-summary-page .dashboard-stat-card,
+.term-summary-page .dashboard-widget {
   box-shadow: none;
 }
 
-.daily-report-page .dashboard-stat-card {
+.daily-report-page .dashboard-stat-card,
+.term-summary-page .dashboard-stat-card {
   min-height: 118px;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
 .daily-report-page .dashboard-stat-card::before {
@@ -78,6 +83,23 @@
 }
 
 .daily-report-page .dashboard-widget {
+  padding: 18px;
+}
+
+.term-summary-page .dashboard-shell-header {
+  margin-bottom: 18px;
+  box-shadow: none;
+}
+
+.term-summary-page .dashboard-stat-card::before {
+  display: none;
+}
+
+.term-summary-page .dashboard-stat-card:hover {
+  transform: none;
+}
+
+.term-summary-page .dashboard-widget {
   padding: 18px;
 }
 
@@ -150,6 +172,10 @@
   }
 
   .daily-report-page .dashboard-shell-header {
+    margin-bottom: 14px;
+  }
+
+  .term-summary-page .dashboard-shell-header {
     margin-bottom: 14px;
   }
 }

@@ -15,7 +15,7 @@
 .profile-page-hero-icon {
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
   color: var(--app-accent);
@@ -47,8 +47,8 @@
 .profile-card {
   background: var(--app-surface);
   border: 1px solid var(--app-border);
-  border-radius: 14px;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 .profile-card-main {
@@ -58,6 +58,7 @@
 .profile-card-side {
   padding: 18px;
   min-height: 354px;
+  text-align: center;
 }
 
 .profile-card-title {
@@ -115,17 +116,17 @@
   height: 28px;
   padding: 0 12px;
   border: 0;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
+  border-radius: 6px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface) !important;
+  color: var(--app-text);
   font-size: 0.86rem;
   font-weight: 700;
-  box-shadow: 0 12px 20px color-mix(in srgb, var(--app-accent) 20%, transparent);
+  box-shadow: none;
 }
 
 .profile-save-button:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
+  background: var(--app-panel) !important;
 }
 
 .profile-logo-box {
@@ -133,6 +134,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
   gap: 14px;
   padding-top: 28px;
 }
@@ -140,7 +142,8 @@
 .profile-logo-mark {
   width: 96px;
   height: 96px;
-  border-radius: 14px;
+  margin-inline: auto;
+  border-radius: 8px;
   display: grid;
   place-items: center;
   background: color-mix(in srgb, var(--app-accent) 12%, transparent);
@@ -154,8 +157,11 @@
 }
 
 .profile-logo-avatar {
-  width: 100%;
-  height: 100%;
+  width: 96px !important;
+  height: 96px !important;
+  min-width: 96px !important;
+  border-radius: 8px !important;
+  display: block;
 }
 
 .profile-logo-box p {
@@ -166,10 +172,10 @@
 
 .profile-upload-button {
   width: 100%;
-  border: 0;
-  height: 28px;
-  border-radius: 4px;
-  background: var(--app-panel);
+  border: 1px solid var(--app-border);
+  height: 40px;
+  border-radius: 6px;
+  background: var(--app-surface);
   color: var(--app-text);
   font-size: 0.86rem;
   font-weight: 700;
@@ -180,7 +186,7 @@
 }
 
 .profile-upload-button:hover {
-  filter: brightness(1.05);
+  background: var(--app-panel);
 }
 
 .profile-hidden-input {

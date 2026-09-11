@@ -47,7 +47,7 @@ export default function TermSummaryPage() {
   }, []);
 
   return (
-    <div className="dashboard-page overview-page">
+    <div className="dashboard-page overview-page term-summary-page">
       <DashboardHeader
         eyebrow="Overview"
         title="Term summary"

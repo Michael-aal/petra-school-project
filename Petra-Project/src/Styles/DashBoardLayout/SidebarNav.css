@@ -227,6 +227,10 @@
   border-color: transparent;
 }
 
+.sidebar-group-wrap {
+  position: relative;
+}
+
 .arrow-icon {
   width: 14px;
   height: 14px;
@@ -298,6 +302,7 @@
   min-width: 76px;
   padding-left: 8px;
   padding-right: 8px;
+  overflow: visible;
 }
 
 .sidebar-container.collapsed .sidebar-label,
@@ -331,6 +336,59 @@
 .sidebar-container.collapsed .sidebar-children,
 .sidebar-container.collapsed .sidebar-footer {
   display: none;
+}
+
+.sidebar-container.collapsed .sidebar-nav {
+  overflow: visible;
+}
+
+.sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-children,
+.sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-children {
+  position: absolute;
+  top: 0;
+  left: calc(100% - 8px);
+  z-index: 50;
+  display: flex;
+  min-width: 210px;
+  margin: 0;
+  padding: 6px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 8px;
+  background: var(--sidebar-surface-strong);
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.28);
+}
+
+.sidebar-container.collapsed .sidebar-link[data-tooltip]:hover::after,
+.sidebar-container.collapsed .sidebar-assistant[data-tooltip]:hover::after,
+.sidebar-container.collapsed .sidebar-group:not(.has-children)[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 50%;
+  left: calc(100% - 8px);
+  z-index: 60;
+  transform: translateY(-50%);
+  padding: 8px 10px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 6px;
+  background: var(--sidebar-surface-strong);
+  color: var(--sidebar-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.24);
+  pointer-events: none;
+}
+
+.sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-child,
+.sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-child {
+  justify-content: flex-start;
+  padding: 8px 10px;
+}
+
+.sidebar-container.collapsed .sidebar-group-wrap:hover .child-label,
+.sidebar-container.collapsed .sidebar-group-wrap:focus-within .child-label {
+  display: block;
 }
 
 .dashboard-shell {
