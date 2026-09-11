@@ -33,6 +33,9 @@ export const getPaymentReceipt = async (req, res, next) => {
       `Payment Reference: ${receiptData.payment.reference}\n` +
       `Amount: NGN ${receiptData.payment.amount.toFixed(2)}\n` +
       `Status: ${receiptData.payment.status}\n` +
+      (receiptData.payment.paymentLines?.length
+        ? `Items: ${receiptData.payment.paymentLines.map((line) => `${line.feeName} x ${line.quantity} = NGN ${line.lineTotal.toFixed(2)}`).join("; ")}\n`
+        : "") +
       `Issued At: ${new Date(receiptData.receipt.issuedAt).toLocaleString()}\n` +
       `Invoice Number: ${receiptData.invoice?.invoiceNumber || "N/A"}\n` +
       `Notes: ${receiptData.payment.note || "None"}\n`;
@@ -109,6 +112,29 @@ export const getCashflow = async (req, res, next) => {
 export const getParentFees = async (req, res, next) => {
   try {
     return res.json({ success: true, ...(await financeService.getParentFees(req.user, req.query)) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPublicStudentLookup = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    return res.json({ success: true, ...(await financeService.getPublicStudentLookup(req.query)) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createPublicPayment = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    return res.status(201).json({
+      success: true,
+      ...(await financeService.createPublicPayment(req.body)),
+    });
   } catch (error) {
     next(error);
   }

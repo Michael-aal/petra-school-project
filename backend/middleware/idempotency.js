@@ -9,7 +9,17 @@ export const paymentIdempotency = async (req, res, next) => {
     return res.status(400).json({ success: false, message: "X-Idempotency-Key is required and must be at most 200 characters." });
   }
 
-  const schoolId = Number(req.schoolId ?? req.user?.schoolId);
+  let schoolId = Number(req.schoolId ?? req.user?.schoolId);
+  if ((!Number.isInteger(schoolId) || schoolId <= 0) && req.body?.studentCode) {
+    const code = String(req.body.studentCode).trim();
+    const admission = await prisma.admission.findFirst({ where: { admissionCode: code }, select: { schoolId: true } });
+    if (admission?.schoolId) {
+      schoolId = Number(admission.schoolId);
+    } else {
+      const student = await prisma.student.findFirst({ where: { admissionNumber: code }, select: { schoolId: true } });
+      schoolId = Number(student?.schoolId);
+    }
+  }
   if (!Number.isInteger(schoolId) || schoolId <= 0) {
     return res.status(403).json({ success: false, message: "School context missing." });
   }

@@ -1,22 +1,39 @@
 const isLocalDevelopmentOrigin = (origin) => {
-  if (process.env.NODE_ENV === "production" || !origin) return false;
-
   try {
     const { hostname } = new URL(origin);
-    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1" || hostname.endsWith(".localhost");
+    return ["localhost", "127.0.0.1", "::1"].includes(hostname) || hostname.endsWith(".localhost");
   } catch {
     return false;
   }
 };
 
+const isDevelopmentLocalAuthRoute = (req, origin) => {
+  if (process.env.NODE_ENV !== "development") return false;
+  if (!isLocalDevelopmentOrigin(origin)) return false;
+
+  const allowedPaths = new Set([
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api/auth/parent/register",
+    "/api/auth/me",
+    "/api/auth/logout",
+  ]);
+
+  return allowedPaths.has(req.path);
+};
+
 export const originLock = (req, res, next) => {
+  console.log("[originLock DEBUG]", {
+    origin: req.get("origin"),
+    nodeEnv: process.env.NODE_ENV,
+    path: req.path,
+    hasOriginSecret: Boolean(req.get("x-origin-secret")),
+  });
+
   if (req.path === "/healthz" || req.path === "/readyz") return next();
 
-  // Paystack authenticates this endpoint with its signed raw request body.
-  // It cannot provide Petra's private origin secret.
-  if (req.path === "/api/paystack/webhook" && req.method === "POST") return next();
-
-  if (isLocalDevelopmentOrigin(req.get("origin"))) return next();
+  const origin = String(req.get("origin") || "");
+  if (isDevelopmentLocalAuthRoute(req, origin)) return next();
 
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");

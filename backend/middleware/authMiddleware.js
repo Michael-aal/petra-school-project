@@ -50,7 +50,7 @@ const resolveTokenClaims = (decoded = {}) => {
   return { userId, email };
 };
 
-const parseSchoolHeader = (value) => {
+export const parseSchoolHeader = (value) => {
   if (!value) return null;
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0) return null;
@@ -59,17 +59,20 @@ const parseSchoolHeader = (value) => {
 
 const resolveUserSchoolId = (user) => {
   if (!user) return null;
-  return (
-    user.schoolId ||
-    user.principalProfile?.schoolId ||
-    user.adminProfile?.schoolId ||
-    user.teacherProfile?.schoolId ||
-    user.staffProfile?.schoolId ||
-    user.parentProfile?.schoolId ||
-    user.guardianProfile?.schoolId ||
-    user.studentProfile?.schoolId ||
-    null
-  );
+
+  const fallbackSchoolId =
+    user.schoolId ??
+    user.selectedSchoolId ??
+    user.principalProfile?.schoolId ??
+    user.adminProfile?.schoolId ??
+    user.teacherProfile?.schoolId ??
+    user.staffProfile?.schoolId ??
+    user.parentProfile?.schoolId ??
+    user.guardianProfile?.schoolId ??
+    user.studentProfile?.schoolId ??
+    null;
+
+  return fallbackSchoolId ? Number(fallbackSchoolId) : null;
 };
 
 const requireRole = (allowedRoles = []) => (req, res, next) => {
@@ -90,16 +93,7 @@ const requireRole = (allowedRoles = []) => (req, res, next) => {
   return next();
 };
 
-export const protect = async (req, res, next) => {
-  const token = extractToken(req);
-
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "Not authorized, token missing",
-    });
-  }
-
+const populateAuthContext = async (req, res, token) => {
   try {
     const decoded = jwt.verify(token, getJwtPublicKey(), { algorithms: ["RS256"] });
     const { userId: resolvedUserId, email: resolvedEmail } = resolveTokenClaims(decoded);
@@ -172,13 +166,46 @@ export const protect = async (req, res, next) => {
       }
     }
 
-    return runWithSchoolContext(req.schoolId, next);
+    return true;
   } catch (error) {
     return res.status(401).json({
       success: false,
       message: "Not authorized, token failed",
     });
   }
+};
+
+export const protect = async (req, res, next) => {
+  const token = extractToken(req);
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, token missing",
+    });
+  }
+
+  const populated = await populateAuthContext(req, res, token);
+  if (populated !== true) {
+    return populated;
+  }
+
+  return runWithSchoolContext(req.schoolId, next);
+};
+
+export const protectOptional = async (req, res, next) => {
+  const token = extractToken(req);
+
+  if (!token) {
+    return next();
+  }
+
+  const populated = await populateAuthContext(req, res, token);
+  if (populated !== true) {
+    return populated;
+  }
+
+  return runWithSchoolContext(req.schoolId, next);
 };
 
 

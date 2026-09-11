@@ -6,6 +6,14 @@ const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prism
 const normalizeUserId = (value) => String(value || "").trim();
 const normalizeStudentId = (value) => String(value || "").trim();
 
+export const buildStudentCodeQueries = (studentCode, schoolId = null) => {
+  const normalizedCode = String(studentCode || "").trim();
+  return {
+    admissionWhere: { admissionCode: normalizedCode, ...(schoolId ? { schoolId } : {}) },
+    studentWhere: { admissionNumber: normalizedCode, ...(schoolId ? { schoolId } : {}) },
+  };
+};
+
 const childInclude = {
   user: {
     select: { id: true, fullName: true, email: true, profileImage: true },
@@ -130,6 +138,38 @@ export const parentAccessService = {
     }
 
     return toSummary(student);
+  },
+
+  resolveStudentByCode: async (userId, studentCode, schoolId = null) => {
+    const normalizedCode = String(studentCode || "").trim();
+    if (!normalizedCode) {
+      const error = new Error("Student Code is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const queries = buildStudentCodeQueries(normalizedCode, schoolId);
+    const admission = await prisma.admission.findFirst({
+      where: queries.admissionWhere,
+      select: { studentId: true },
+    });
+
+    if (admission?.studentId) {
+      return parentAccessService.assertStudentAccess(userId, admission.studentId, schoolId);
+    }
+
+    const student = await prisma.student.findFirst({
+      where: queries.studentWhere,
+      select: { id: true },
+    });
+
+    if (!student) {
+      const error = new Error("Student Code not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return parentAccessService.assertStudentAccess(userId, student.id, schoolId);
   },
 
   getStudentHub: async (userId, studentId, schoolId = null) => {

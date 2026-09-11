@@ -4,6 +4,7 @@ import {
   createRemoteExamForAssessment,
   getLaunchLinkForAssessment,
   syncResultsForAssessment,
+  quizlabWebhookHandler,
 } from "../controllers/classMarkerController.js";
 import { launchForCandidate } from "../controllers/classMarkerController.js";
 
@@ -11,6 +12,7 @@ const router = Router();
 
 const teacherOrAdmin = requireRole(["teacher", "principal"]);
 
+router.post("/webhook", quizlabWebhookHandler);
 router.post("/exams", protect, schoolGuard, teacherOrAdmin, createRemoteExamForAssessment);
 router.get("/exams/:assessmentId/launch", protect, schoolGuard, teacherOrAdmin, getLaunchLinkForAssessment);
 // Public student launch: validate admission/application code and return ClassMarker launch URL

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { prisma } from "../config/db.js";
+import { getSchoolId } from "../utils/authorization.js";
 
 const makeApplicationCode = (schoolId) => {
   const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, "");
@@ -13,30 +14,31 @@ const parseDate = (value) => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
-const resolveSchoolId = async (preferredSchoolId) => {
-  if (preferredSchoolId) {
-    const parsed = Number.parseInt(String(preferredSchoolId), 10);
-    if (!Number.isNaN(parsed)) {
-      const school = await prisma.school.findUnique({
-        where: { id: parsed },
-        select: { id: true },
-      });
-      if (school) return school.id;
-    }
+export const resolveSchoolId = async (preferredSchoolId, user = null) => {
+  const authenticatedSchoolId = getSchoolId(user);
+  if (authenticatedSchoolId) {
+    return authenticatedSchoolId;
   }
 
-  const defaultSchool = await prisma.school.findFirst({
-    where: { isActive: true },
-    select: { id: true },
-  });
-
-  if (!defaultSchool) {
-    const error = new Error("No active school available for application submissions");
+  const parsedSchoolId = Number.parseInt(String(preferredSchoolId ?? ""), 10);
+  if (!Number.isInteger(parsedSchoolId) || parsedSchoolId <= 0) {
+    const error = new Error("A valid school context is required for admission submission");
     error.statusCode = 400;
     throw error;
   }
 
-  return defaultSchool.id;
+  const school = await prisma.school.findUnique({
+    where: { id: parsedSchoolId },
+    select: { id: true },
+  });
+
+  if (!school) {
+    const error = new Error("The requested school could not be found");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return school.id;
 };
 
 const safeAdmission = (admission) => {
@@ -424,7 +426,7 @@ export const admissionService = {
     return { success: true, created };
   },
 create: async (payload, user = null) => {
-  const schoolId = await resolveSchoolId(payload.schoolId);
+  const schoolId = await resolveSchoolId(payload.schoolId, user);
 
   // Accept the current frontend field names
   // and map them to the existing Prisma/database field names.

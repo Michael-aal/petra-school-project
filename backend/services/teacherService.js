@@ -457,9 +457,38 @@ export const teacherService = {
   },
 
   createResult: async (user, payload) => {
+    let teacher = await prisma.teacher.findUnique({
+      where: { userId: user.id },
+      select: { id: true },
+    });
+
+    if (!teacher && payload.assessmentId) {
+      const assessment = await prisma.assessment.findUnique({
+        where: { id: payload.assessmentId },
+        select: { teacherId: true, schoolId: true },
+      });
+
+      const schoolId = Number(user.schoolId);
+      if (assessment && Number.isInteger(schoolId) && assessment.schoolId === schoolId) {
+        teacher = await prisma.teacher.findFirst({
+          where: {
+            id: assessment.teacherId,
+            schoolId,
+          },
+          select: { id: true },
+        });
+      }
+    }
+
+    if (!teacher) {
+      const error = new Error("Teacher profile not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
     const result = await prisma.$transaction((tx) => tx.result.create({
       data: {
-        teacherId: user.id,
+        teacherId: teacher.id,
         studentId: payload.studentId,
         assessmentId: payload.assessmentId || null,
         subject: payload.subject,
@@ -467,6 +496,7 @@ export const teacherService = {
         score: Number(payload.score),
         maxScore: Number(payload.maxScore || 100),
         published: Boolean(payload.published),
+        schoolId: Number(user.schoolId),
       },
     }));
     return result;

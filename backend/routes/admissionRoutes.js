@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validationResult } from "express-validator";
-import { protect, requirePrincipal } from "../middleware/authMiddleware.js";
+import { protect, protectOptional, requirePrincipal } from "../middleware/authMiddleware.js";
 import {
   createAdmission,
   listAdmissions,
@@ -22,7 +22,7 @@ const validate = (req, res, next) => {
   return next();
 };
 
-router.post("/", createAdmissionValidator, validate, createAdmission);
+router.post("/", createAdmissionValidator, validate, protectOptional, createAdmission);
 router.get("/", protect, requirePrincipal, listAdmissions);
 router.get("/:id", protect, requirePrincipal, getAdmissionById);
 router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);

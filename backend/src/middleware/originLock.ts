@@ -11,12 +11,45 @@ const requiredSecret = (): Buffer => {
 
 const originSecret = requiredSecret();
 
+const isLocalDevelopmentOrigin = (origin: string): boolean => {
+  try {
+    const { hostname } = new URL(origin);
+    return ["localhost", "127.0.0.1", "::1"].includes(hostname) || hostname.endsWith(".localhost");
+  } catch {
+    return false;
+  }
+};
+
+const isDevelopmentLocalAuthRoute = (request: Request, origin: string): boolean => {
+  if (process.env.NODE_ENV !== "development") {
+    return false;
+  }
+
+  if (!isLocalDevelopmentOrigin(origin)) {
+    return false;
+  }
+
+  return [
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api/auth/parent/register",
+    "/api/auth/me",
+    "/api/auth/logout",
+  ].includes(request.path);
+};
+
 export const enforceOriginLock = (
   request: Request,
   response: Response,
   next: NextFunction,
 ): void => {
   if (request.path === "/healthz" || request.path === "/readyz") {
+    next();
+    return;
+  }
+
+  const origin = String(request.get("origin") || "");
+  if (isDevelopmentLocalAuthRoute(request, origin)) {
     next();
     return;
   }

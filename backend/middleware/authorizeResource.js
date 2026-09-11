@@ -11,6 +11,7 @@ const readStudentId = (req, source) => {
 export const authorizeStudentResource = ({ source = "body", allowMissing = false } = {}) => async (req, res, next) => {
   const studentId = String(readStudentId(req, source) || "").trim();
   if (!studentId) {
+    if (source === "body" && req.body?.paymentType === "application_fee" && req.body?.studentCode) return next();
     if (allowMissing) return next();
     return res.status(400).json({ success: false, message: "Student ID is required" });
   }

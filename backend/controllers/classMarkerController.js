@@ -1,7 +1,7 @@
 import { prisma } from "../config/db.js";
 // import { classMarkerService } from "../services/classMarkerService.js";
 import { quizlabService } from "../services/quizlabService.js";
-import { sendAdmissionEmail, sendAdmissionFailureEmail } from "../services/emailService.js";
+import { sendAdmissionEmail, sendAdmissionFailureEmail, buildAdmissionPaymentUrl } from "../services/emailService.js";
 import crypto from "crypto";
 
 const teacherOrAdminRole = ["teacher", "principal"];
@@ -304,6 +304,50 @@ const buildQuizlabLaunchUrl = (value) => {
   }
 
   return null;
+};
+
+export const buildQuizlabAssessmentPayload = ({
+  quizId,
+  candidateEmail,
+  applicantName,
+  externalId,
+}) => ({
+  quiz_id: Number(quizId) || quizId,
+  candidate_email: candidateEmail,
+  candidate_name: applicantName || null,
+  external_id: externalId,
+});
+
+const resolveQuizlabPublishedTestId = async (assessment) => {
+  const configuredId = assessment?.quizlabQuizId;
+
+  if (configuredId) {
+    try {
+      const remote = await quizlabService.getQuiz(configuredId);
+      if (remote?.title && String(remote.title).trim().toLowerCase() === "test") {
+        return String(configuredId);
+      }
+    } catch {
+      // fall through to live published quiz lookup below
+    }
+  }
+
+  try {
+    const published = await quizlabService.listQuizzes({ status: "published" });
+    const items = Array.isArray(published) ? published : (published?.quizzes || published?.items || []);
+    const match = items.find((item) => {
+      const title = String(item?.title || "").trim().toLowerCase();
+      return title === "test";
+    });
+
+    if (match?.id) {
+      return String(match.id);
+    }
+  } catch {
+    // no published match found; use any configured quiz id if present
+  }
+
+  return configuredId ? String(configuredId) : null;
 };
 
 const makeStepError = (
@@ -733,14 +777,25 @@ const resolveQuizlabAttemptNumber = async (
 };
 
 const ensureAssessmentQuiz = async (assessment) => {
-  if (assessment?.quizlabQuizId) {
+  const preferredQuizId = await resolveQuizlabPublishedTestId(assessment);
+
+  if (preferredQuizId) {
     try {
-      const remote = await quizlabService.getQuiz(
-        assessment.quizlabQuizId
-      );
+      const remote = await quizlabService.getQuiz(preferredQuizId);
+
+      if (String(assessment?.quizlabQuizId || "") !== String(preferredQuizId)) {
+        await prisma.assessment.update({
+          where: {
+            id: assessment.id,
+          },
+          data: {
+            quizlabQuizId: String(preferredQuizId),
+          },
+        });
+      }
 
       return {
-        quizId: String(assessment.quizlabQuizId),
+        quizId: String(preferredQuizId),
         remote,
         created: false,
       };
@@ -752,7 +807,7 @@ const ensureAssessmentQuiz = async (assessment) => {
         }`,
         502,
         {
-          quizId: assessment.quizlabQuizId,
+          quizId: preferredQuizId,
           assessmentId: assessment.id,
         }
       );
@@ -1199,11 +1254,14 @@ export const startAssessmentForApplicant = async (
   res,
   next
 ) => {
+  let quizId = null;
+  let applicantId = null;
+  let assessmentId = null;
+
   try {
-    const {
-      applicantId,
-      assessmentId,
-    } = req.body || {};
+    const payload = req.body || {};
+    applicantId = payload.applicantId;
+    assessmentId = payload.assessmentId;
 
     if (!applicantId || !assessmentId) {
       throw makeStepError(
@@ -1213,12 +1271,11 @@ export const startAssessmentForApplicant = async (
       );
     }
 
-    let assessment =
-      await prisma.assessment.findUnique({
-        where: {
-          id: assessmentId,
-        },
-      });
+    const assessment = await prisma.assessment.findUnique({
+      where: {
+        id: assessmentId,
+      },
+    });
 
     if (!assessment) {
       throw makeStepError(
@@ -1228,54 +1285,25 @@ export const startAssessmentForApplicant = async (
       );
     }
 
-    let quizId;
+    const resolved = await ensureAssessmentQuiz(assessment);
+    quizId = resolved.quizId;
+    console.log("[QuizLab Debug] resolved assessment quiz", {
+      assessmentId,
+      quizlabQuizId: quizId,
+      source: resolved.created ? "created_for_assessment" : "assessment",
+    });
 
-    try {
-      const resolved = await ensureAssessmentQuiz(assessment);
-      quizId = resolved.quizId;
-      console.log("[QuizLab Debug] resolved assessment quiz", {
-        assessmentId,
-        quizlabQuizId: quizId,
-        source: resolved.created ? "created_for_assessment" : "assessment",
-      });
-    } catch (e) {
-      if (e?.step) {
-        throw e;
-      }
-
-      throw makeStepError(
-        "assessment_mapping",
-        `No QuizLab quiz is configured for this assessment: ${
-          e.message || e
-        }`,
-        404
-      );
-    }
-
-    /**
-     * Find applicant/admission.
-     */
-    const admission =
-      await prisma.admission.findFirst({
-        where: {
-          schoolId: assessment.schoolId,
-
-          OR: [
-            {
-              applicantId,
-            },
-            {
-              applicationCode: applicantId,
-            },
-            {
-              admissionCode: applicantId,
-            },
-            {
-              examReference: applicantId,
-            },
-          ],
-        },
-      });
+    const admission = await prisma.admission.findFirst({
+      where: {
+        schoolId: assessment.schoolId,
+        OR: [
+          { applicantId },
+          { applicationCode: applicantId },
+          { admissionCode: applicantId },
+          { examReference: applicantId },
+        ],
+      },
+    });
 
     if (!admission) {
       throw makeStepError(
@@ -1299,211 +1327,35 @@ export const startAssessmentForApplicant = async (
       );
     }
 
+    const externalId = pickFirstString(
+      admission.applicationCode,
+      admission.admissionCode,
+      admission.examReference,
+      admission.applicantId,
+      `${assessment.id}:${applicantId}`
+    ) || `${assessment.id}:${applicantId}`;
+
     try {
-      let inv = null;
+      const atsAssessment = await quizlabService.createAssessment(
+        buildQuizlabAssessmentPayload({
+          quizId,
+          candidateEmail: invitationEmail,
+          applicantName: admission.applicantName || null,
+          externalId,
+        })
+      );
 
-      /**
-       * First try to find an existing invitation.
-       */
-      try {
-        const list = await quizlabService.listInvitations(quizId);
+      safeLogQuizlab("createAssessment response", atsAssessment);
 
-        safeLogQuizlab(
-          "listInvitations response",
-          list
-        );
-
-        const items =
-          Array.isArray(list)
-            ? list
-            : list?.invitations || [];
-
-        inv =
-          items.find(
-            (item) => getQuizlabCandidateEmail(item) === invitationEmail
-          ) || null;
-      } catch (e) {
-        throw makeStepError(
-          "quizlab_list_invitations",
-          `QuizLab invitation lookup failed: ${
-            e.message || e
-          }`,
-          502,
-          {
-            quizId,
-          }
-        );
-      }
-
-      /**
-       * Create invitation if none exists.
-       */
-      if (!inv) {
-        try {
-          inv =
-            await quizlabService.createInvitation(
-              quizId,
-              {
-                email: invitationEmail,
-                full_name: admission.applicantName || null,
-              }
-            );
-
-          safeLogQuizlab(
-            "createInvitation response",
-            inv
-          );
-        } catch (e) {
-          throw makeStepError(
-            "quizlab_create_invitation",
-            `QuizLab candidate access creation failed: ${
-              e.message || e
-            }`,
-            502,
-            {
-              quizId,
-            }
-          );
-        }
-      }
-
-      console.log("[QuizLab Debug] applicant invitation resolved", {
-        assessmentId,
-        quizlabQuizId: quizId,
-        applicantId,
-        invitationId:
-          inv?.id ||
-          inv?.invitationId ||
-          inv?.candidateId ||
-          null,
-      });
-
-      /**
-       * Fetch QuizLab quiz.
-       */
-      let quiz;
-
-      try {
-        quiz =
-          await quizlabService.getQuiz(
-            quizId
-          );
-
-        safeLogQuizlab(
-          "getQuiz response",
-          quiz
-        );
-      } catch (e) {
-        throw makeStepError(
-          "quizlab_get_quiz",
-          `QuizLab quiz lookup failed: ${
-            e.message || e
-          }`,
-          502,
-          {
-            quizId,
-          }
-        );
-      }
-
-      const inviteLaunch =
-        buildQuizlabLaunchUrl(inv);
-
-      const quizLaunch =
-        buildQuizlabLaunchUrl(quiz);
-
-      let atsAssessment = null;
-
-      /**
-       * Fallback to QuizLab assessment creation
-       * if neither invitation nor quiz has a URL.
-       */
-      if (!inviteLaunch && !quizLaunch) {
-        try {
-          atsAssessment =
-            await quizlabService.createAssessment({
-              quiz_id: Number.isNaN(
-                Number(quizId)
-              )
-                ? quizId
-                : Number(quizId),
-
-              candidate_email:
-                admission.parentEmail ||
-                admission.fatherEmail ||
-                admission.motherEmail ||
-                null,
-
-              candidate_name:
-                admission.applicantName ||
-                null,
-
-              external_id: applicantId,
-            });
-
-          safeLogQuizlab(
-            "createAssessment response",
-            atsAssessment
-          );
-        } catch (e) {
-          console.log(
-            "[QuizLab Debug] createAssessment fallback failed",
-            {
-              message: e?.message,
-              status: e?.status,
-
-              responseKeys:
-                e?.response &&
-                typeof e.response === "object"
-                  ? Object.keys(
-                      e.response
-                    ).slice(0, 20)
-                  : undefined,
-            }
-          );
-        }
-      }
-
-      const atsLaunch =
-        buildQuizlabLaunchUrl(
-          atsAssessment
-        );
-
-      const resolvedLaunch =
-        inviteLaunch ||
-        quizLaunch ||
-        atsLaunch;
-
-      const resolvedLaunchUrl =
-        resolvedLaunch?.url || null;
+      const atsLaunch = buildQuizlabLaunchUrl(atsAssessment);
+      const resolvedLaunchUrl = atsLaunch?.url || null;
 
       if (!resolvedLaunchUrl) {
-        const inviteHint =
-          quizlabResponseHint(inv);
-
-        const quizHint =
-          quizlabResponseHint(quiz);
-
-        const atsHint =
-          quizlabResponseHint(
-            atsAssessment
-          );
-
         throw makeStepError(
           "quizlab_launch_url",
-          `QuizLab did not return a launch URL. invitation ${inviteHint}; quiz ${quizHint}; ats ${atsHint}`,
+          "QuizLab did not return a launch URL from the ATS assessment response",
           502,
-          {
-            inviteHint,
-            quizHint,
-            atsHint,
-          }
-        );
-      }
-
-      if (resolvedLaunch?.path) {
-        console.log(
-          `[QuizLab Debug] launch url resolved from ${resolvedLaunch.path}`
+          { externalId }
         );
       }
 
@@ -1512,42 +1364,75 @@ export const startAssessmentForApplicant = async (
         quizUrl: resolvedLaunchUrl,
         url: resolvedLaunchUrl,
       });
-    } catch (err) {
-      console.error(
-        "[QuizLab Debug] startAssessmentForApplicant failed",
-        {
-          message: err?.message,
-          quizId,
-          applicantId,
-          assessmentId,
-          step: err?.step,
+    } catch (atsError) {
+      console.log("[QuizLab Debug] ATS assessment creation failed; falling back to legacy invitation path", {
+        message: atsError?.message,
+        status: atsError?.status,
+        externalId,
+      });
+
+      try {
+        let inv = null;
+        const list = await quizlabService.listInvitations(quizId);
+        const items = Array.isArray(list) ? list : list?.invitations || [];
+        inv = items.find((item) => getQuizlabCandidateEmail(item) === invitationEmail) || null;
+
+        if (!inv) {
+          inv = await quizlabService.createInvitation(quizId, {
+            email: invitationEmail,
+            full_name: admission.applicantName || null,
+          });
         }
-      );
 
-      if (err?.step) {
-        return res.status(
-          err.statusCode || 500
-        ).json({
-          success: false,
-          message: err.message,
-          step: err.step,
+        const inviteLaunch = buildQuizlabLaunchUrl(inv);
+        const quiz = await quizlabService.getQuiz(quizId);
+        const quizLaunch = buildQuizlabLaunchUrl(quiz);
+        const resolvedLaunch = inviteLaunch || quizLaunch;
+
+        if (!resolvedLaunch?.url) {
+          throw makeStepError(
+            "quizlab_launch_url",
+            "QuizLab did not return a launch URL from the legacy invitation flow",
+            502,
+            { externalId }
+          );
+        }
+
+        return res.status(200).json({
+          success: true,
+          quizUrl: resolvedLaunch.url,
+          url: resolvedLaunch.url,
         });
+      } catch (legacyError) {
+        throw makeStepError(
+          "quizlab_launch_url",
+          `QuizLab candidate access creation failed: ${legacyError?.message || legacyError}`,
+          502,
+          {
+            externalId,
+            atsError: atsError?.message || atsError,
+          }
+        );
       }
-
-      return next(err);
     }
-  } catch (error) {
-    if (error?.step) {
-      return res.status(
-        error.statusCode || 500
-      ).json({
+  } catch (err) {
+    console.error("[QuizLab Debug] startAssessmentForApplicant failed", {
+      message: err?.message,
+      quizId,
+      applicantId,
+      assessmentId,
+      step: err?.step,
+    });
+
+    if (err?.step) {
+      return res.status(err.statusCode || 500).json({
         success: false,
-        message: error.message,
-        step: error.step,
+        message: err.message,
+        step: err.step,
       });
     }
 
-    next(error);
+    return next(err);
   }
 };
 
@@ -1568,6 +1453,42 @@ export const startAssessmentForApplicant = async (
  *       ↓
  * Admission update
  */
+export const quizlabWebhookHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const payload = req.body || {};
+    const assessmentId =
+      payload?.assessmentId ||
+      payload?.assessment_id ||
+      payload?.assessment?.id ||
+      payload?.quiz?.assessmentId ||
+      payload?.quiz_id ||
+      null;
+
+    if (!assessmentId) {
+      return res.status(400).json({
+        success: false,
+        message: "assessmentId required in QuizLab webhook payload",
+      });
+    }
+
+    return await syncResultsForAssessment(
+      {
+        params: { assessmentId: String(assessmentId) },
+        body: payload,
+        user: req.user || null,
+      },
+      res,
+      next
+    );
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const syncResultsForAssessment = async (
   req,
   res,
@@ -2540,7 +2461,7 @@ export const syncResultsForAssessment = async (
                 },
               });
 
-              if (fresh) emails.push({ admission: fresh, admissionCode });
+              if (fresh) emails.push({ admission: fresh, admissionCode, score, percentage });
             }
 
             return {
@@ -2590,6 +2511,9 @@ export const syncResultsForAssessment = async (
 
         passed:
           result.passed,
+
+        score,
+        percentage,
       });
     }
 
@@ -2667,7 +2591,9 @@ export const syncResultsForAssessment = async (
           admission: item.admission,
           studentName: item.admission.applicantName || "",
           admissionCode: item.admissionCode,
-          paymentUrl: `${base.replace(/\/$/, "")}/payment`,
+          paymentUrl: buildAdmissionPaymentUrl(base),
+          score: item.score,
+          percentage: item.percentage,
           dedupeKey,
         });
       } catch (emailError) {
@@ -2691,6 +2617,8 @@ export const syncResultsForAssessment = async (
           school,
           admission,
           studentName: admission.applicantName || "Applicant",
+          score: failed.score ?? admission.examScore,
+          percentage: failed.percentage,
           dedupeKey,
         });
       } catch (emailError) {
@@ -2722,4 +2650,5 @@ export default {
   launchForCandidate,
   startAssessmentForApplicant,
   syncResultsForAssessment,
+  quizlabWebhookHandler,
 };

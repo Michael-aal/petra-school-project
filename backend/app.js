@@ -30,9 +30,11 @@ import { checkQueueHealth } from "./jobs/queue.js";
 
 const app = express();
 app.set("trust proxy", 1);
-const configuredOrigins = [
+const allowedOrigins = [
   process.env.CORS_ORIGIN,
   process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
 ].filter(Boolean).map((origin) => origin.trim().replace(/\/+$/, ""));
 
 const isLocalDevOrigin = (origin) => {
@@ -53,19 +55,11 @@ const isCodespacesOrigin = (origin) => {
   }
 };
 
-const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = configuredOrigins.filter((origin) =>
-  !isProduction || (!isLocalDevOrigin(origin) && !isCodespacesOrigin(origin)),
-);
-
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const normalizedOrigin = origin.trim().replace(/\/+$/, "");
-    if (
-      allowedOrigins.includes(normalizedOrigin) ||
-      (!isProduction && (isLocalDevOrigin(normalizedOrigin) || isCodespacesOrigin(normalizedOrigin)))
-    ) {
+    if (allowedOrigins.includes(normalizedOrigin) || isLocalDevOrigin(normalizedOrigin) || isCodespacesOrigin(normalizedOrigin)) {
       return callback(null, true);
     }
     return callback(new Error(`CORS blocked for origin: ${origin}`));
@@ -141,3 +135,15 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
+const isAllowedDevelopmentOrigin = (origin) => {
+  if (process.env.NODE_ENV === "production" || !origin) return false;
+
+  const configuredOrigins = [
+    process.env.CLIENT_URL,
+    process.env.CORS_ORIGIN,
+  ]
+    .filter(Boolean)
+    .map((value) => value.trim().replace(/\/+$/, ""));
+
+  return configuredOrigins.includes(origin.trim().replace(/\/+$/, ""));
+};
