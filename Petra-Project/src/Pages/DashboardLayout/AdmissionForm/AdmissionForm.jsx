@@ -4,6 +4,7 @@ import {
   CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { admissionApi } from "./../../../services/admissionApi";
+import { financeApi } from "../../../services/financeApi";
 import { useToasts } from "../../../context/ToastContext";
 import "./AdmissionForm.css";
 
@@ -22,14 +23,36 @@ export default function AdmissionForm() {
   const [copiedCode, setCopiedCode] = useState("");
   const { success: showSuccess, error: showError } = useToasts();
 
-  useEffect(() => {
-    const paid = localStorage.getItem("petra_application_fee_paid") === "true";
-    if (!paid) {
-      showError("Application fee required", "Please complete the application fee payment before accessing the form.");
-      window.location.href = "/payment";
+useEffect(() => {
+  let active = true;
+
+  const verifyApplicationPayment = async () => {
+    try {
+      const response = await financeApi.parentFees();
+      const paid = response?.applicationPayment?.status === "Successful";
+
+      if (active && !paid && !import.meta.env.DEV) {
+        showError(
+          "Application fee required",
+          "Please complete the application fee payment before accessing the form."
+        );
+        window.location.href = "/payment";
+      }
+    } catch (error) {
+      console.error("Unable to verify application payment:", error);
     }
-  }, [showError]);
-  
+  };
+
+  verifyApplicationPayment();
+
+  return () => {
+    active = false;
+  };
+}, []);
+
+
+
+
   // Single state object for the entire massive form
   const [formData, setFormData] = useState({
     // Step 1: Student Info
