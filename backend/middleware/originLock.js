@@ -7,19 +7,9 @@ const isLocalDevelopmentOrigin = (origin) => {
   }
 };
 
-const isDevelopmentLocalAuthRoute = (req, origin) => {
-  if (process.env.NODE_ENV !== "development") return false;
-  if (!isLocalDevelopmentOrigin(origin)) return false;
-
-  const allowedPaths = new Set([
-    "/api/auth/login",
-    "/api/auth/register",
-    "/api/auth/parent/register",
-    "/api/auth/me",
-    "/api/auth/logout",
-  ]);
-
-  return allowedPaths.has(req.path);
+const isDevelopmentLocalOrigin = (origin) => {
+  return process.env.NODE_ENV === "development" &&
+    isLocalDevelopmentOrigin(origin);
 };
 
 export const originLock = (req, res, next) => {
@@ -33,7 +23,7 @@ export const originLock = (req, res, next) => {
   if (req.path === "/healthz" || req.path === "/readyz") return next();
 
   const origin = String(req.get("origin") || "");
-  if (isDevelopmentLocalAuthRoute(req, origin)) return next();
+if (isDevelopmentLocalOrigin(origin)) return next();
 
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");
