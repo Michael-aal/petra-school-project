@@ -1,4 +1,187 @@
 @import "./InvoicesPage.css";
 
 /* Styles for CashflowPage */
-.cashflow-page{ padding:20px; }
+.finance-module-page {
+  display: grid;
+  gap: 18px;
+  padding: 20px 18px 24px;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+.module-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 24px;
+  border: 1px solid #dfe3df;
+  border-radius: 12px;
+  background: #f5f4f2;
+  box-shadow: none;
+}
+
+.module-header h1 {
+  margin: 8px 0;
+  font-size: clamp(2rem, 2.5vw, 2.6rem);
+  color: #111111;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.dashboard-page-label {
+  margin: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e8752f;
+}
+
+.dashboard-page-copy {
+  margin: 0;
+  color: #4b5563;
+}
+
+.module-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #e8752f;
+  border-radius: 10px;
+  background: #e8752f;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.module-button:hover:not(:disabled) {
+  background: #d96a1d;
+  border-color: #d96a1d;
+}
+
+.module-alert {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #dfe3df;
+  background: #f8f8f6;
+  color: #111111;
+}
+
+.module-alert-error {
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+  background: #fff1f2;
+}
+
+.module-empty {
+  padding: 18px 16px;
+  border: 1px solid #dfe3df;
+  border-radius: 10px;
+  background: #f8f8f6;
+  color: #4b5563;
+}
+
+.finance-cashflow-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.finance-cashflow-summary article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 116px;
+  padding: 18px 16px;
+  border: 1px solid #dfe3df;
+  border-radius: 10px;
+  background: #f3f5f3;
+}
+
+.finance-cashflow-summary span {
+  display: block;
+  color: #111111;
+  font-size: 0.82rem;
+}
+
+.finance-cashflow-summary strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #111111;
+}
+
+.finance-cashflow-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.finance-cashflow-panel {
+  padding: 18px 16px;
+  border: 1px solid #dfe3df;
+  border-radius: 12px;
+  background: #f5f4f2;
+}
+
+.finance-cashflow-panel h3 {
+  margin: 0 0 12px;
+  color: #111111;
+}
+
+.finance-cashflow-list {
+  display: grid;
+  gap: 10px;
+}
+
+.finance-cashflow-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dfe3df;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.finance-cashflow-item strong {
+  display: block;
+  color: #111111;
+}
+
+.finance-cashflow-item p {
+  margin: 4px 0 0;
+  color: #4b5563;
+  font-size: 0.8rem;
+}
+
+.finance-cashflow-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #111111;
+  font-weight: 600;
+}
+
+.finance-cashflow-amount-negative {
+  color: #d14b4b;
+}
+
+@media (max-width: 760px) {
+  .module-header {
+    flex-direction: column;
+  }
+
+  .finance-cashflow-summary,
+  .finance-cashflow-grid {
+    grid-template-columns: 1fr;
+  }
+}
