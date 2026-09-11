@@ -199,13 +199,25 @@
 }
 
 .dashboard-shell-link {
-  color: var(--app-accent);
-  border-color: color-mix(in srgb, var(--app-accent) 20%, var(--app-border));
-  background: color-mix(in srgb, var(--app-accent) 10%, var(--app-surface));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e8752f;
+  border-radius: 6px;
+  background: #e8752f;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.dashboard-shell-link:hover {
-  transform: translateY(-1px);
+.dashboard-shell-link:hover,
+.dashboard-shell-link:focus-visible {
+  background: #d96a1d;
+  border-color: #d96a1d;
+  color: #ffffff;
+  transform: none;
+  outline: none;
 }
 
 .dashboard-stat-card {
@@ -216,33 +228,22 @@
   gap: 10px;
   min-height: 124px;
   padding: 16px;
-  border: 1px solid var(--app-border);
-  border-radius: 12px;
-  background: var(--dashboard-card-bg);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--app-text) 5%, transparent);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
+  border: 1px solid #dfe3df;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: none;
+  transition: border-color 0.18s ease, background 0.18s ease;
   overflow: hidden;
 }
 
 .dashboard-stat-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--app-accent) 74%, transparent),
-    color-mix(in srgb, var(--app-accent) 28%, transparent)
-  );
+  display: none;
 }
 
 .dashboard-stat-card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--app-accent) 22%, var(--app-border));
-  box-shadow: 0 14px 24px color-mix(in srgb, var(--app-accent) 12%, transparent);
+  transform: none;
+  border-color: #dfe3df;
+  box-shadow: none;
 }
 
 .dashboard-stat-card-top {
@@ -319,10 +320,24 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #e8752f;
+  border-radius: 6px;
+  background: #e8752f;
+  color: #ffffff;
   font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--app-accent);
+  font-weight: 600;
   text-decoration: none;
+}
+
+.dashboard-stat-card-footer a:hover,
+.dashboard-stat-card-footer button:hover,
+.dashboard-stat-card-footer a:focus-visible,
+.dashboard-stat-card-footer button:focus-visible {
+  background: #d96a1d;
+  border-color: #d96a1d;
+  color: #ffffff;
+  outline: none;
 }
 
 .dashboard-stat-card.tone-teal .dashboard-stat-card-icon {

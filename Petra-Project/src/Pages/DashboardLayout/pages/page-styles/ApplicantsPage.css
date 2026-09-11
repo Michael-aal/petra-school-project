@@ -25,14 +25,16 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 42px;
-  padding: 0 15px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--dashboard-accent-gradient);
-  color: #fff;
-  font-weight: 800;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #e8752f;
+  border-radius: 6px;
+  background: #e8752f;
+  color: #ffffff;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .applicants-stats {
   display: grid;
@@ -351,6 +353,7 @@
   cursor: pointer;
   font: inherit;
   font-weight: 600;
+  box-shadow: none;
 }
 
 .applicants-cancel {
@@ -366,11 +369,18 @@
   border-color: #e8752f;
   background: #e8752f;
   color: #ffffff;
+  box-shadow: none;
 }
 
-.applicants-submit:hover:not(:disabled) {
-  border-color: #e8752f;
-  background: #e8752f;
+.applicants-submit:hover:not(:disabled),
+.applicants-submit:focus-visible:not(:disabled),
+.applicants-primary-action:hover,
+.applicants-primary-action:focus-visible {
+  border-color: #d96a1d;
+  background: #d96a1d;
+  color: #ffffff;
+  box-shadow: none;
+  outline: none;
 }
 
 .applicants-submit:disabled {
@@ -423,8 +433,8 @@
 
 .applicants-primary-action:hover,
 .applicants-primary-action:focus-visible {
-  background: #e8752f;
-  border-color: #e8752f;
+  background: #d96a1d;
+  border-color: #d96a1d;
   color: #ffffff;
   box-shadow: none;
   outline: none;

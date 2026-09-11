@@ -72,10 +72,49 @@
   min-height: 118px;
   border-radius: 8px;
   background: #ffffff;
+  border-color: #dfe3df;
+  color: #202321;
 }
 
-.daily-report-page .dashboard-stat-card::before {
+.daily-report-page .dashboard-stat-card::before,
+.term-summary-page .dashboard-stat-card::before {
   display: none;
+}
+
+.daily-report-page .dashboard-stat-card .dashboard-stat-card-content strong,
+.term-summary-page .dashboard-stat-card .dashboard-stat-card-content strong,
+.daily-report-page .dashboard-stat-card .dashboard-stat-card-content span,
+.term-summary-page .dashboard-stat-card .dashboard-stat-card-content span,
+.daily-report-page .dashboard-stat-card .dashboard-stat-card-content p,
+.term-summary-page .dashboard-stat-card .dashboard-stat-card-content p {
+  color: #202321;
+}
+
+.daily-report-page .dashboard-shell-link,
+.term-summary-page .dashboard-shell-link,
+.daily-report-page .dashboard-stat-card-footer a,
+.daily-report-page .dashboard-stat-card-footer button,
+.term-summary-page .dashboard-stat-card-footer a,
+.term-summary-page .dashboard-stat-card-footer button {
+  border-color: #e8752f;
+  background: #e8752f;
+  color: #ffffff;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+.daily-report-page .dashboard-shell-link:hover,
+.term-summary-page .dashboard-shell-link:hover,
+.daily-report-page .dashboard-shell-link:focus-visible,
+.term-summary-page .dashboard-shell-link:focus-visible,
+.daily-report-page .dashboard-stat-card-footer a:hover,
+.daily-report-page .dashboard-stat-card-footer button:hover,
+.term-summary-page .dashboard-stat-card-footer a:hover,
+.term-summary-page .dashboard-stat-card-footer button:hover {
+  background: #d96a1d;
+  border-color: #d96a1d;
+  color: #ffffff;
+  outline: none;
 }
 
 .daily-report-page .dashboard-stat-card:hover {
