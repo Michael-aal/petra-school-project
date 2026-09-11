@@ -83,23 +83,23 @@
 }
 
 .stat-icon-blue {
-  background: var(--surface-accent);
-  color: var(--app-accent);
+  background: rgba(232, 117, 47, 0.12);
+  color: #d86724;
 }
 
 .stat-icon-green {
-  background: var(--surface-success);
-  color: var(--success);
+  background: rgba(232, 117, 47, 0.08);
+  color: #c75d23;
 }
 
 .stat-icon-yellow {
-  background: var(--surface-warning);
-  color: var(--warning);
+  background: rgba(232, 117, 47, 0.08);
+  color: #b14d1b;
 }
 
 .stat-icon-red {
-  background: var(--surface-danger);
-  color: var(--danger);
+  background: rgba(232, 117, 47, 0.08);
+  color: #cf6a35;
 }
 
 .stat-number {

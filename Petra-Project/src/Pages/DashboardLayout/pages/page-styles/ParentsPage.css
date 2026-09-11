@@ -18,9 +18,41 @@
   border-bottom: 1px solid var(--app-border);
 }
 
+.parents-page .btn-primary,
+.generic-list-page .btn-primary {
+  background: var(--app-accent) !important;
+  border: 1px solid var(--app-accent) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+
+.parents-page .btn-primary:hover,
+.generic-list-page .btn-primary:hover {
+  background: var(--app-accent-2) !important;
+  border-color: var(--app-accent-2) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
 .parents-page .title-icon-box {
-  background: var(--surface-accent);
-  color: var(--app-accent);
+  background: rgba(232, 117, 47, 0.12);
+  color: #d86724;
+}
+
+.parents-page .stat-icon-blue {
+  background: rgba(232, 117, 47, 0.12);
+  color: #d86724;
+}
+
+.parents-page .stat-icon-green {
+  background: rgba(232, 117, 47, 0.1);
+  color: #be5a20;
+}
+
+.parents-page .stat-icon-yellow {
+  background: rgba(232, 117, 47, 0.08);
+  color: #b14d1b;
 }
 
 .parent-email {

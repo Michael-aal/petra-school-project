@@ -52,8 +52,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--surface-success);
-  color: var(--success);
+  background: rgba(232, 117, 47, 0.12);
+  color: #d86724;
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -64,15 +64,15 @@
 .live-dot {
   width: 8px;
   height: 8px;
-  background: var(--success);
+  background: #e8752f;
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 var(--success); }
-  70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(232, 117, 47, 0.55); }
+  70% { box-shadow: 0 0 0 10px rgba(232, 117, 47, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 117, 47, 0); }
 }
 
 .gate-search {
@@ -120,25 +120,26 @@
   gap: 16px;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 20px;
+  box-shadow: none;
 }
 
 .gate-stat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   flex-shrink: 0;
-  background: var(--surface-muted);
-  color: var(--app-text);
+  background: rgba(232, 117, 47, 0.1);
+  color: #d86724;
 }
 
-.entry-icon { background: var(--surface-success); color: var(--success); }
-.exit-icon { background: var(--surface-warning); color: var(--warning); }
-.campus-icon { background: var(--surface-accent); color: var(--app-accent); }
+.entry-icon { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
+.exit-icon { background: rgba(232, 117, 47, 0.12); color: #d86724; }
+.campus-icon { background: rgba(232, 117, 47, 0.12); color: #d86724; }
 
 .gate-stat-value {
   display: block;
@@ -201,8 +202,9 @@
 .gate-feed-panel {
   background: var(--app-surface);
   border: 1px solid var(--app-border);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 24px;
+  box-shadow: none;
 }
 
 .gate-feed-list {
@@ -219,18 +221,19 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: var(--surface-muted);
-  border-radius: 10px;
+  background: #f7f7f5;
+  border-radius: 8px;
   border-left: 4px solid transparent;
+  box-shadow: none;
   transition: transform 0.2s, background 0.2s;
 }
 
 .gate-event-item:hover {
-  background: var(--surface-muted-strong);
+  background: #f1f3f0;
 }
 
-.event-entry { border-left-color: var(--success); }
-.event-exit { border-left-color: var(--warning); }
+.event-entry { border-left-color: #0f9a6f; }
+.event-exit { border-left-color: #d86724; }
 
 .event-direction-icon {
   display: flex;
@@ -238,14 +241,14 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 10px;
   flex-shrink: 0;
-  background: var(--surface-muted);
-  color: var(--app-text);
+  background: rgba(232, 117, 47, 0.1);
+  color: #d86724;
 }
 
-.icon-entry { background: var(--surface-success); color: var(--success); }
-.icon-exit { background: var(--surface-warning); color: var(--warning); }
+.icon-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
+.icon-exit { background: rgba(232, 117, 47, 0.12); color: #d86724; }
 
 .event-details {
   flex: 1;
@@ -293,8 +296,8 @@
   letter-spacing: 0.05em;
 }
 
-.badge-entry { background: var(--surface-success); color: var(--success); }
-.badge-exit { background: var(--surface-warning); color: var(--warning); }
+.badge-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
+.badge-exit { background: rgba(232, 117, 47, 0.12); color: #d86724; }
 
 .empty-feed {
   display: flex;
@@ -311,20 +314,22 @@
    5. MANUAL OVERRIDE PANEL
    ========================================= */
 .gate-manual-panel {
-  background: var(--app-surface);
+  background: #ffffff;
   border: 1px solid var(--app-border);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 24px;
   height: fit-content;
   position: sticky;
   top: 32px;
+  box-shadow: none;
 }
 
 .manual-description {
   font-size: 0.875rem;
-  color: var(--app-text-muted);
+  color: #5d625f;
   margin: 0 0 24px 0;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .manual-log-form {
@@ -339,27 +344,40 @@
   gap: 8px;
 }
 
-.form-group label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--app-text);
+.gate-manual-panel .form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6f7570;
+  letter-spacing: 0.01em;
 }
 
-.form-group input,
-.form-group select {
-  background: var(--app-card);
-  border: 1px solid var(--app-border);
-  color: var(--app-text);
+.gate-manual-panel .form-group input,
+.gate-manual-panel .form-group select {
+  background: #ffffff;
+  border: 1px solid #dfe3df;
+  color: #1f2321;
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 0.875rem;
   outline: none;
   transition: border-color 0.2s;
+  box-shadow: none;
+  font-weight: 500;
+  opacity: 1;
+  -webkit-text-fill-color: #1f2321;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.gate-manual-panel .form-group input::placeholder {
+  color: #9aa09c;
+  opacity: 1;
+}
+
+.gate-manual-panel .form-group input:focus,
+.gate-manual-panel .form-group select:focus {
   border-color: var(--app-accent);
+  box-shadow: none;
+  color: #1f2321;
+  -webkit-text-fill-color: #1f2321;
 }
 
 .form-row {
@@ -367,35 +385,43 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-input{
-  border: 1px solid black;
-}
-.manual-submit-btn {
+.gate-manual-panel .manual-submit-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
+  background: #e8752f !important;
+  color: #ffffff !important;
+  border: 1px solid #e8752f !important;
+  border-radius: 8px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
   margin-top: 8px;
+  box-shadow: none;
+  font-weight: 600;
 }
 
-.manual-submit-btn:hover {
-  opacity: 0.9;
+.gate-manual-panel .manual-submit-btn:hover {
+  background: #d95f1f !important;
+  border-color: #d95f1f !important;
+  color: #ffffff !important;
+  opacity: 1;
+  box-shadow: none;
+  transform: none;
 }
 
-.security-notice {
+.gate-manual-panel .security-notice {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 24px;
   padding: 12px;
-  background: var(--surface-warning);
-  border: 1px solid color-mix(in srgb, var(--warning) 20%, transparent);
+  background: rgba(232, 117, 47, 0.08);
+  border: 1px solid rgba(232, 117, 47, 0.18);
   border-radius: 8px;
   font-size: 0.8rem;
-  color: var(--warning);
+  color: #3b2d26;
+  box-shadow: none;
+  font-weight: 700;
 }
