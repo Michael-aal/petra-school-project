@@ -1,0 +1,5 @@
+@import "./InvoicesPage.css";
+
+/* Styles for ExtraFeesPage */
+.extrafees-page{ padding:18px; }
+.fee-quantity-status{ color:#64748b; font-size:13px; margin:8px 0 0; }

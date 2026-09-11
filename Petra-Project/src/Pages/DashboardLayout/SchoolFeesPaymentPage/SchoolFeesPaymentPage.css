@@ -1,0 +1,372 @@
+/* =========================================
+   1. PAGE LAYOUT & SECURITY BAR
+   ========================================= */
+.fees-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 48px 16px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.fees-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.fees-security-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 0.75rem;
+  color: oklch(0.6 0.02 250);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fees-security-bar svg {
+  color: oklch(0.7 0.18 140);
+}
+
+/* =========================================
+   2. BASE CARD STYLES
+   ========================================= */
+.fees-card {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 40px oklch(0 0 0 / 20%);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fees-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid oklch(1 0 0 / 10%);
+}
+
+.fees-logo {
+  width: 48px;
+  height: 48px;
+  padding: 10px;
+  background-color: oklch(0.62 0.2 264 / 15%);
+  color: oklch(0.62 0.2 264);
+  border-radius: 12px;
+}
+
+.fees-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.fees-header p {
+  font-size: 0.85rem;
+  color: oklch(0.6 0.02 250);
+  margin: 0;
+}
+
+/* =========================================
+   3. SUMMARY & IDLE STATE
+   ========================================= */
+.fees-summary {
+  background-color: oklch(0.22 0.03 260);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 0.9rem;
+}
+
+.summary-row span {
+  color: oklch(0.6 0.02 250);
+}
+
+.summary-row strong {
+  color: oklch(0.93 0.01 240);
+  font-weight: 600;
+}
+
+.summary-row.total {
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 2px solid oklch(1 0 0 / 10%);
+  font-size: 1.1rem;
+}
+
+.summary-row.total strong {
+  color: oklch(0.62 0.2 264);
+  font-size: 1.25rem;
+}
+
+.summary-divider {
+  height: 1px;
+  background-color: oklch(1 0 0 / 5%);
+  margin: 8px 0;
+}
+
+.mono {
+  font-family: monospace;
+  background-color: oklch(0.12 0.02 260);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.fees-methods {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+}
+
+.method-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.method-icon {
+  width: 32px;
+  height: 24px;
+  background-color: oklch(1 0 0);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.fees-pay-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: linear-gradient(90deg, oklch(0.62 0.2 264), oklch(0.55 0.2 264));
+  color: oklch(0.98 0 0);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px oklch(0.62 0.2 264 / 30%);
+  margin-bottom: 16px;
+}
+
+.fees-pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px oklch(0.62 0.2 264 / 40%);
+}
+
+.fees-disclaimer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: oklch(0.5 0.02 250);
+  margin: 0;
+}
+
+/* =========================================
+   4. PROCESSING STATE
+   ========================================= */
+.processing-card {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.processing-spinner {
+  color: oklch(0.62 0.2 264);
+  margin-bottom: 24px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.processing-card h2 {
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+}
+
+.processing-card p {
+  color: oklch(0.6 0.02 250);
+  margin: 0 0 16px 0;
+}
+
+.processing-ref {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background-color: oklch(0.25 0.04 260);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* =========================================
+   5. SUCCESS STATE
+   ========================================= */
+.success-card {
+  text-align: center;
+  border-color: oklch(0.7 0.18 140 / 30%);
+}
+
+.success-icon-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: oklch(0.7 0.18 140 / 15%);
+  color: oklch(0.7 0.18 140);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px auto;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.success-card h2 {
+  color: oklch(0.7 0.18 140);
+  font-size: 1.75rem;
+  margin: 0 0 8px 0;
+}
+
+.success-msg {
+  color: oklch(0.75 0.02 250);
+  margin: 0 0 32px 0;
+}
+
+.success-details {
+  background-color: oklch(0.22 0.03 260);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.9rem;
+}
+
+.detail-item span { color: oklch(0.6 0.02 250); }
+.detail-item strong { color: oklch(0.93 0.01 240); }
+
+.fees-portal-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background-color: oklch(0.7 0.18 140);
+  color: oklch(0.12 0.02 260);
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fees-portal-btn:hover {
+  background-color: oklch(0.75 0.18 140);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   6. FAILED STATE
+   ========================================= */
+.failed-card {
+  text-align: center;
+  border-color: oklch(0.65 0.22 27 / 30%);
+}
+
+.failed-icon-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: oklch(0.65 0.22 27 / 15%);
+  color: oklch(0.65 0.22 27);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px auto;
+}
+
+.failed-card h2 {
+  color: oklch(0.65 0.22 27);
+  font-size: 1.75rem;
+  margin: 0 0 8px 0;
+}
+
+.failed-msg {
+  color: oklch(0.75 0.02 250);
+  margin: 0 0 32px 0;
+}
+
+.failed-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fees-retry-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: oklch(0.65 0.22 27);
+  color: oklch(0.98 0 0);
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fees-support-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.75 0.02 250);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

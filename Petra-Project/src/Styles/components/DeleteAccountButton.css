@@ -1,0 +1,147 @@
+.delete-account-button-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delete-account-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 10px 22px color-mix(in srgb, #ef4444 24%, transparent);
+}
+
+.delete-account-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.delete-account-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, #ef4444 40%, white);
+  outline-offset: 3px;
+}
+
+.delete-account-status {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.85rem;
+}
+
+.delete-account-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: color-mix(in srgb, #0f172a 50%, transparent);
+}
+
+.delete-account-modal {
+  width: min(100%, 480px);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: var(--app-surface);
+  box-shadow: 0 22px 48px color-mix(in srgb, var(--app-accent) 16%, transparent);
+  padding: 20px;
+}
+
+.delete-account-modal-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.delete-account-modal-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, #ef4444 12%, transparent);
+  color: #ef4444;
+}
+
+.delete-account-modal-header h3 {
+  margin: 0 0 6px;
+  color: var(--app-text);
+  font-size: 1rem;
+}
+
+.delete-account-modal-header p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.delete-account-modal-close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--app-text-muted);
+  cursor: pointer;
+}
+
+.delete-account-modal-close:hover {
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text);
+}
+
+.delete-account-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.delete-account-modal-cancel,
+.delete-account-modal-confirm {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-account-modal-cancel {
+  background: var(--dashboard-muted-surface);
+  color: var(--app-text);
+}
+
+.delete-account-modal-confirm {
+  background: #ef4444;
+  color: #fff;
+}
+
+.delete-account-modal-confirm:hover {
+  background: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .delete-account-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .delete-account-modal-cancel,
+  .delete-account-modal-confirm {
+    width: 100%;
+  }
+}

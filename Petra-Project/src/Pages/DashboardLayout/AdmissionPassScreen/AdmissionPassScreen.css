@@ -1,0 +1,342 @@
+/* =========================================
+   1. PAGE LAYOUT & BACKGROUND GLOWS
+   ========================================= */
+.pass-screen-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 48px 16px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pass-bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glow-1 {
+  width: 500px;
+  height: 500px;
+  background-color: oklch(0.7 0.18 140);
+  top: -100px;
+  left: -100px;
+  animation: float 8s ease-in-out infinite;
+}
+
+.glow-2 {
+  width: 400px;
+  height: 400px;
+  background-color: oklch(0.62 0.2 264);
+  bottom: -100px;
+  right: -100px;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -30px); }
+}
+
+.pass-container {
+  width: 100%;
+  max-width: 700px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* =========================================
+   2. CELEBRATION HERO
+   ========================================= */
+.pass-hero {
+  text-align: center;
+  position: relative;
+  padding: 20px 0;
+}
+
+.pass-checkmark-ring {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: oklch(0.7 0.18 140 / 15%);
+  border: 2px solid oklch(0.7 0.18 140);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px auto;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.pass-checkmark-inner {
+  color: oklch(0.7 0.18 140);
+  display: flex;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pass-sparkles {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 100px;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  color: oklch(0.85 0.18 90);
+  animation: twinkle 2s infinite;
+}
+
+.s1 { top: 10px; left: 20px; animation-delay: 0s; }
+.s2 { top: 40px; right: 30px; animation-delay: 0.5s; }
+.s3 { bottom: 10px; left: 60px; animation-delay: 1s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+.pass-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  background: linear-gradient(90deg, oklch(0.7 0.18 140), oklch(0.85 0.18 90));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pass-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  color: oklch(0.75 0.02 250);
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pass-subtitle strong {
+  color: oklch(0.93 0.01 240);
+}
+
+/* =========================================
+   3. STUDENT CODE CARD
+   ========================================= */
+.pass-code-card {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px oklch(0 0 0 / 20%);
+}
+
+.code-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background-color: oklch(0.22 0.03 260);
+  border-bottom: 1px solid oklch(1 0 0 / 10%);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: oklch(0.85 0.05 264);
+}
+
+.code-card-body {
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.code-label {
+  display: block;
+  font-size: 0.85rem;
+  color: oklch(0.6 0.02 250);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-value-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background-color: oklch(0.12 0.02 260);
+  border: 2px dashed oklch(0.62 0.2 264 / 40%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.code-value {
+  font-family: monospace;
+  font-size: 2rem;
+  font-weight: 800;
+  color: oklch(0.93 0.01 240);
+  letter-spacing: 0.05em;
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-btn:hover {
+  background-color: oklch(0.68 0.2 264);
+  transform: translateY(-1px);
+}
+
+.code-disclaimer {
+  font-size: 0.8rem;
+  color: oklch(0.6 0.02 250);
+  margin: 0;
+}
+
+/* =========================================
+   4. NEXT STEPS & PAYMENT
+   ========================================= */
+.pass-next-steps {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.pass-next-steps h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.pass-next-steps > p {
+  font-size: 0.95rem;
+  color: oklch(0.75 0.02 250);
+  margin: 0 0 24px 0;
+}
+
+.pass-fee-summary {
+  background-color: oklch(0.22 0.03 260);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  color: oklch(0.75 0.02 250);
+  border-bottom: 1px solid oklch(1 0 0 / 5%);
+}
+
+.fee-row:last-child {
+  border-bottom: none;
+}
+
+.fee-row.total {
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 2px solid oklch(1 0 0 / 10%);
+  font-size: 1.1rem;
+}
+
+.fee-row.total span, 
+.fee-row.total strong {
+  color: oklch(0.93 0.01 240);
+  font-weight: 700;
+}
+
+.pass-pay-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(90deg, oklch(0.62 0.2 264), oklch(0.55 0.2 264));
+  color: oklch(0.98 0 0);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px oklch(0.62 0.2 264 / 30%);
+  margin-bottom: 16px;
+}
+
+.pass-pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px oklch(0.62 0.2 264 / 40%);
+  filter: brightness(1.1);
+}
+
+.pass-receipt-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.75 0.02 250);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pass-receipt-btn:hover {
+  background-color: oklch(0.25 0.04 260);
+  color: oklch(0.93 0.01 240);
+  border-color: oklch(0.62 0.2 264);
+}
+
+/* =========================================
+   5. RESPONSIVE
+   ========================================= */
+@media (max-width: 600px) {
+  .pass-title {
+    font-size: 2rem;
+  }
+  .code-value {
+    font-size: 1.4rem;
+  }
+  .code-value-wrapper {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

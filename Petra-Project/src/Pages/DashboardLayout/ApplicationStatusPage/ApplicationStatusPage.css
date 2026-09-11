@@ -1,0 +1,327 @@
+/* =========================================
+   1. PAGE LAYOUT & PREVIEW BAR
+   ========================================= */
+.app-status-page {
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.93 0.01 240);
+  padding: 32px 16px;
+  min-height: 100vh;
+}
+
+.preview-bar {
+  max-width: 1100px;
+  margin: 0 auto 24px auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: oklch(0.25 0.04 260);
+  border: 1px dashed oklch(0.62 0.2 264);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: oklch(0.85 0.05 264);
+}
+
+.preview-bar select {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.93 0.01 240);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.status-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   2. STATUS HERO CARD
+   ========================================= */
+.status-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background-color: oklch(0.18 0.03 260);
+  transition: all 0.3s ease;
+}
+
+.status-hero-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-hero-content {
+  flex: 1;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.status-hero-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.status-hero-content p {
+  font-size: 0.95rem;
+  margin: 0;
+  color: oklch(0.75 0.02 250);
+  line-height: 1.5;
+}
+
+.status-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Dynamic Colors for Hero */
+.status-pending .status-hero-icon { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
+.status-pending .status-badge { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
+.status-pending .status-action-btn { background-color: oklch(0.72 0.18 60); color: oklch(0.12 0.02 260); }
+
+.status-passed .status-hero-icon { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.status-passed .status-badge { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
+.status-passed .status-action-btn { background-color: oklch(0.7 0.18 140); color: oklch(0.12 0.02 260); }
+
+.status-failed .status-hero-icon { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.status-failed .status-badge { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
+.status-failed .status-action-btn { background-color: oklch(0.65 0.22 27); color: oklch(0.98 0 0); }
+
+.status-completed .status-hero-icon { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.status-completed .status-badge { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
+.status-completed .status-action-btn { background-color: oklch(0.62 0.2 264); color: oklch(0.98 0 0); }
+
+.status-action-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px oklch(0 0 0 / 20%);
+}
+
+/* =========================================
+   3. GRID & CARDS
+   ========================================= */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.status-card {
+  background-color: oklch(0.18 0.03 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  color: oklch(0.93 0.01 240);
+  padding-bottom: 16px;
+  border-bottom: 1px solid oklch(1 0 0 / 10%);
+}
+
+/* =========================================
+   4. TIMELINE
+   ========================================= */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.timeline-step:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-node {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: oklch(0.25 0.04 260);
+  color: oklch(0.6 0.02 250);
+  border: 2px solid oklch(0.35 0.04 260);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.timeline-step.completed .timeline-node {
+  background-color: oklch(0.7 0.18 140);
+  color: oklch(0.12 0.02 260);
+  border-color: oklch(0.7 0.18 140);
+}
+
+.timeline-step.current .timeline-node {
+  background-color: oklch(0.62 0.2 264);
+  color: oklch(0.98 0 0);
+  border-color: oklch(0.62 0.2 264);
+  box-shadow: 0 0 12px oklch(0.62 0.2 264 / 40%);
+}
+
+.timeline-content h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 4px 0 4px 0;
+  color: oklch(0.93 0.01 240);
+}
+
+.timeline-step:not(.completed):not(.current) .timeline-content h4 {
+  color: oklch(0.6 0.02 250);
+}
+
+.timeline-content p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: oklch(0.6 0.02 250);
+}
+
+.timeline-line {
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background-color: oklch(0.35 0.04 260);
+  z-index: 1;
+}
+
+.timeline-step.completed .timeline-line {
+  background-color: oklch(0.7 0.18 140);
+}
+
+/* =========================================
+   5. SUMMARY & RECEIPT
+   ========================================= */
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid oklch(1 0 0 / 5%);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: oklch(0.6 0.02 250);
+}
+
+.summary-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: oklch(0.93 0.01 240);
+}
+
+.summary-value.mono {
+  font-family: monospace;
+  background-color: oklch(0.25 0.04 260);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.download-receipt-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: oklch(0.25 0.04 260);
+  border: 1px solid oklch(1 0 0 / 10%);
+  color: oklch(0.93 0.01 240);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.download-receipt-btn:hover {
+  background-color: oklch(0.3 0.04 260);
+  border-color: oklch(0.62 0.2 264);
+}
+
+/* =========================================
+   6. RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 900px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .status-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .status-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .summary-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

@@ -1,0 +1,103 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: petra
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d petra"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/petra?connection_limit=15&pool_timeout=30
+      JWT_PRIVATE_KEY: ${{ secrets.PETRA_CI_JWT_PRIVATE_KEY }}
+      JWT_PUBLIC_KEY: ${{ secrets.PETRA_CI_JWT_PUBLIC_KEY }}
+      JWT_KEY_ID: ci
+      CORS_ORIGIN: http://localhost:5173
+      ORIGIN_SECRET: ci-origin-secret
+      REDIS_URL: redis://localhost:6379
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify PostgreSQL readiness
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: |
+          for attempt in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres -d petra && exit 0
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time."
+          exit 1
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: npx prisma generate
+      - name: Run TypeScript compiler check
+        run: npx tsc --noEmit
+      - name: Validate Prisma schema
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: npx prisma validate
+      - name: Run database migrations
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: npx prisma migrate deploy
+      - name: Run database seed
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: node prisma/seed.js
+      - name: Execute test suite
+        run: npm test
+      - name: Run security test suite
+        run: npm run test:security
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Petra-Project
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Petra-Project/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint frontend
+        run: npm run lint
+      - name: Build frontend
+        env:
+          VITE_API_URL: http://localhost:5000
+        run: npm run build

@@ -1,0 +1,91 @@
+/* Admin assignment controls feed the relational teacher workspace. */
+.teacher-assignment-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.teacher-assignment-controls select,
+.teacher-assignment-controls button {
+  min-height: 34px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: var(--app-surface-strong);
+  color: var(--app-text);
+  padding: 0 8px;
+  font-size: 0.76rem;
+}
+
+.teacher-assignment-controls button {
+  background: var(--surface-accent);
+  color: var(--app-accent);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .teacher-assignment-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+.teachers-page {
+  padding: 20px 18px 24px;
+}
+
+.admins-actions-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.admins-toolbar {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.admin-row strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.admin-row p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.84rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+}
+
+.search-box input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--app-text);
+  outline: none;
+}

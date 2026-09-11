@@ -1,0 +1,899 @@
+/* =========================================
+   FOR STUDENTS (NUVORA) - PREMIUM UPGRADE
+   ========================================= */
+
+.fsu-section {
+  padding: 6rem 1.5rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5rem;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* --- HERO SECTION --- */
+.fsu-hero {
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fsu-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.1);
+  padding: 8px 18px;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.fsu-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.15;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+}
+
+.fsu-title span {
+  background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fsu-text {
+  color: #475569;
+  line-height: 1.7;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  max-width: 650px;
+  margin: 0 0 2rem 0;
+}
+
+/* --- BUTTONS --- */
+.fsu-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.fsu-btnPrimary, .fsu-btnSecondary {
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fsu-btnPrimary {
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.fsu-btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+.fsu-btnSecondary {
+  background: #F1F5F9;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+}
+
+.fsu-btnSecondary:hover {
+  background: #E2E8F0;
+  transform: translateY(-2px);
+}
+
+/* --- NEW: TRUST BAR --- */
+.fsu-trust-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: rgba(241, 245, 249, 0.6);
+  border: 1px solid #E2E8F0;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+
+.fsu-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.fsu-trust-item svg {
+  color: #8B5CF6;
+}
+
+.fsu-trust-divider {
+  width: 1px;
+  height: 20px;
+  background: #CBD5E1;
+}
+
+/* --- FEATURES GRID --- */
+.fsu-grid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+/* --- FEATURE CARDS --- */
+.fsu-card {
+  position: relative;
+  background: #FFFFFF;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.fsu-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  border-color: var(--card-accent, #8B5CF6);
+}
+
+.fsu-card-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.fsu-card:hover .fsu-card-glow {
+  opacity: 1;
+}
+
+.fsu-card-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.fsu-card-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.fsu-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+}
+
+.fsu-card-text {
+  color: #475569;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.65;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.fsu-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: gap 0.2s;
+  margin-top: auto;
+}
+
+.fsu-card-link:hover {
+  gap: 12px;
+}
+
+/* --- FOOTER CTA --- */
+.fsu-footer {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.fsu-footer-card {
+  background: linear-gradient(135deg, #0F172A, #1E293B);
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Decorative gradient blobs for footer */
+.fsu-footer-card::before, .fsu-footer-card::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.fsu-footer-card::before {
+  width: 300px; height: 300px;
+  background: #8B5CF6;
+  top: -100px; left: -100px;
+}
+.fsu-footer-card::after {
+  width: 250px; height: 250px;
+  background: #3B82F6;
+  bottom: -100px; right: -100px;
+}
+
+.fsu-footer-card h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.fsu-footer-card p {
+  color: #94A3B8;
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+
+.fsu-footer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: #FFFFFF;
+  color: #0F172A;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.fsu-footer-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+}
+
+/* =========================================
+   DARK MODE OVERRIDES (Matches Dashboard)
+   ========================================= */
+body.dark .fsu-title,
+body.dark .fsu-card-title,
+body.dark .fsu-footer-card h2 {
+  color: #F8FAFC;
+}
+
+body.dark .fsu-text,
+body.dark .fsu-card-text,
+body.dark .fsu-footer-card p {
+  color: #94A3B8;
+}
+
+body.dark .fsu-trust-bar {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .fsu-trust-item { color: #CBD5E1; }
+body.dark .fsu-trust-divider { background: rgba(255,255,255,0.1); }
+
+body.dark .fsu-card {
+  background: #1E293B;
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .fsu-card:hover {
+  border-color: var(--card-accent, #8B5CF6);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+body.dark .fsu-btnSecondary {
+  background: #334155;
+  color: #F8FAFC;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark .fsu-btnSecondary:hover {
+  background: #475569;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 900px) {
+  .fsu-grid {
+    grid-template-columns: 1fr; /* Stacks to 1 column on smaller tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .fsu-section {
+    padding: 4rem 1.25rem;
+    gap: 3.5rem;
+  }
+
+  .fsu-trust-bar {
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+
+  .fsu-trust-divider {
+    width: 40px;
+    height: 1px;
+  }
+
+  .fsu-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .fsu-btnPrimary, .fsu-btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .fsu-card {
+    padding: 1.5rem;
+  }
+
+  .fsu-footer-card {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* =========================================
+   FOR SCHOOLS (NUVORA) - PREMIUM UPGRADE
+   ========================================= */
+
+.marketing-page.fsos {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6rem 1.5rem;
+  background: transparent;
+  gap: 5rem;
+}
+
+/* --- HERO SECTION --- */
+.marketing-header {
+  text-align: center;
+  max-width: 850px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marketing-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #3B82F6;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 8px 18px;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.marketing-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.15;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+}
+
+.marketing-title span {
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.marketing-description {
+  color: #475569;
+  line-height: 1.7;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  max-width: 650px;
+  margin: 0 0 2rem 0;
+}
+
+/* --- BUTTONS --- */
+.marketing-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.marketing-btn {
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marketing-btn-primary {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: white;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.marketing-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.marketing-btn-secondary {
+  background: #F1F5F9;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+}
+
+.marketing-btn-secondary:hover {
+  background: #E2E8F0;
+  transform: translateY(-2px);
+}
+
+/* --- TRUST BAR --- */
+.marketing-trust-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: rgba(241, 245, 249, 0.6);
+  border: 1px solid #E2E8F0;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+
+.marketing-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.marketing-trust-item svg { color: #3B82F6; }
+.marketing-trust-divider { width: 1px; height: 20px; background: #CBD5E1; }
+
+/* --- FEATURES GRID --- */
+.marketing-section {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* --- CARDS --- */
+.marketing-card {
+  position: relative;
+  background: #FFFFFF;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.marketing-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+  border-color: var(--card-accent, #3B82F6);
+}
+
+.feature-top-circle {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.marketing-card:hover .feature-top-circle {
+  opacity: 1;
+}
+
+.marketing-card-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-card-text {
+  color: #475569;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.65;
+  font-size: 0.95rem;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: gap 0.2s;
+  margin-top: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-card-link:hover { gap: 12px; }
+
+/* --- BENEFITS SECTION --- */
+.marketing-highlight-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.marketing-intro-block h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 1rem 0;
+}
+
+.marketing-intro-block p {
+  color: #475569;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+.highlight-grid {
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+}
+
+.highlight-card {
+  text-align: left;
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
+.highlight-icon {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #3B82F6 !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+/* --- FOOTER CTA --- */
+.marketing-cta {
+  background: linear-gradient(135deg, #0F172A, #1E293B);
+  border-radius: 24px;
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marketing-cta::before, .marketing-cta::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.marketing-cta::before {
+  width: 300px; height: 300px;
+  background: #3B82F6;
+  top: -100px; left: -100px;
+}
+.marketing-cta::after {
+  width: 250px; height: 250px;
+  background: #06B6D4;
+  bottom: -100px; right: -100px;
+}
+
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-cta-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-cta-text {
+  color: #94A3B8;
+  font-size: 1.1rem;
+  max-width: 550px;
+  margin: 0 auto 2.5rem auto;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-btn {
+  position: relative;
+  z-index: 2;
+  padding: 16px 32px;
+  font-size: 1rem;
+}
+
+/* =========================================
+   DARK MODE OVERRIDES
+   ========================================= */
+body.dark .marketing-title,
+body.dark .marketing-card-title,
+body.dark .marketing-intro-block h2,
+body.dark .marketing-cta-title {
+  color: #F8FAFC;
+}
+
+body.dark .marketing-description,
+body.dark .marketing-card-text,
+body.dark .marketing-intro-block p,
+body.dark .marketing-cta-text {
+  color: #94A3B8;
+}
+
+body.dark .marketing-trust-bar {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255,255,255,0.08);
+}
+body.dark .marketing-trust-item { color: #CBD5E1; }
+body.dark .marketing-trust-divider { background: rgba(255,255,255,0.1); }
+
+body.dark .marketing-card {
+  background: #1E293B;
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .marketing-card:hover {
+  border-color: var(--card-accent, #3B82F6);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+body.dark .marketing-btn-secondary {
+  background: #334155;
+  color: #F8FAFC;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark .marketing-btn-secondary:hover {
+  background: #475569;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1024px) {
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .marketing-page.fsos {
+    padding: 4rem 1.25rem;
+    gap: 3.5rem;
+  }
+
+  .marketing-trust-bar {
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+
+  .marketing-trust-divider {
+    width: 40px;
+    height: 1px;
+  }
+
+  .marketing-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .marketing-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .highlight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .marketing-cta {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* =========================================
+   FOR PARENTS (NUVORA) - SPECIFIC OVERRIDES
+   ========================================= */
+
+.marketing-page.fparent {
+  /* Inherits all the great layout from .marketing-page.fsos */
+}
+
+/* 1. Unique Brand Colors for Parents (Emerald/Green Theme) */
+.fparent .marketing-badge {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.fparent .marketing-title span {
+  background: linear-gradient(135deg, #10B981, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fparent .marketing-btn-primary {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.fparent .marketing-btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.fparent .marketing-trust-item svg {
+  color: #10B981;
+}
+
+/* 2. Highlight Icons Specific to Parents */
+.fparent .highlight-icon {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10B981 !important;
+}
+
+/* 3. Unique Footer CTA for Parents (Deep Emerald Gradient) */
+.fparent-cta {
+  background: linear-gradient(135deg, #064E3B, #065F46);
+}
+
+.fparent-cta::before {
+  background: #10B981;
+}
+
+.fparent-cta::after {
+  background: #06B6D4;
+}
+
+/* 4. Dark Mode Overrides for Parents Page */
+body.dark .fparent .marketing-card {
+  background: #1E293B;
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .fparent .marketing-card:hover {
+  border-color: var(--card-accent, #10B981);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}

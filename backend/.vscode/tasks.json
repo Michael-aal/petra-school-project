@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "prisma-status",
+			"type": "shell",
+			"command": "npx prisma migrate status --schema=prisma/schema.prisma",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
