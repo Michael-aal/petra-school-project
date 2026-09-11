@@ -242,8 +242,8 @@ button:not(.btn-primary):not(.btn-ghost):not(.sidebar-group):not(.sidebar-link):
 .form-card {
   background: var(--app-surface);
   border: 1px solid var(--app-border);
-  border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  border-radius: 10px;
+  box-shadow: none;
 }
 
 body.dark .card,
@@ -257,7 +257,7 @@ body.dark .stat-card,
 body.dark .dashboard-page .table-container,
 body.dark .modal-content,
 body.dark .form-card {
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  box-shadow: none;
 }
 
 .form-input,

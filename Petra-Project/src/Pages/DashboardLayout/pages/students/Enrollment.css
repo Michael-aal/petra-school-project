@@ -29,14 +29,21 @@
 }
 
 .create-btn {
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
-  border: none;
-  padding: 12px 20px;
-  border-radius: 28px;
+  background: linear-gradient(90deg, #e8752f 0%, #f29962 100%) !important;
+  color: #fffcfc !important;
+  border: 1px solid #e8752f !important;
+  padding: 10px 18px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 12px 24px color-mix(in srgb, var(--app-accent) 20%, transparent);
+  box-shadow: none;
+}
+
+.create-btn:hover,
+.create-btn:focus-visible {
+  background: linear-gradient(90deg, #ef8a47 0%, #e8752f 100%) !important;
+  color: #000000 !important;
+  outline: none;
 }
 
 .enrollment-tabs {
@@ -59,7 +66,7 @@
 .tab.active {
   background: var(--app-card);
   color: var(--app-text);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+  box-shadow: none;
   border: 1px solid var(--app-border);
 }
 
@@ -70,16 +77,30 @@
   margin-bottom: 28px;
 }
 
+.cards-row > article,
+.cards-row .stat-card,
+.cards-row .stat-card:nth-child(1),
+.cards-row .stat-card:nth-child(2),
+.cards-row .stat-card:nth-child(3),
+.cards-row .stat-card:last-child {
+  border: 1px solid var(--app-border) !important;
+  border-color: var(--app-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: var(--app-surface) !important;
+}
+
 .stat-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  min-height: 170px;
   background: var(--app-surface);
   padding: 22px 20px;
-  border-radius: 20px;
+  border-radius: 8px;
   border: 1px solid var(--app-border);
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+  box-shadow: none;
 }
 
 .stat-left {
@@ -115,18 +136,18 @@
 }
 
 .stat-icon.blue {
-  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
-  color: var(--app-accent);
+  background: rgba(232, 117, 47, 0.18);
+  color: #e8752f;
 }
 
 .stat-icon.green {
-  background: color-mix(in srgb, #14b8a6 16%, transparent);
-  color: #14b8a6;
+  background: rgba(71, 168, 149, 0.18);
+  color: #47a895;
 }
 
 .stat-icon.red {
-  background: color-mix(in srgb, #ef4444 16%, transparent);
-  color: #ef4444;
+  background: rgba(236, 111, 94, 0.18);
+  color: #e66a5d;
 }
 
 .large-panel {
@@ -135,7 +156,7 @@
   padding: 30px;
   border: 1px solid var(--app-border);
   min-height: 400px;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+  box-shadow: none;
 }
 
 /* Enrollment form styles */

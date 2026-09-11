@@ -89,9 +89,9 @@
 .dashboard-home-summary-card,
 .dashboard-home-panel {
   border: 1px solid var(--app-border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--dashboard-card-bg);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--app-text) 5%, transparent);
+  box-shadow: none;
 }
 
 .dashboard-home-summary-card {
