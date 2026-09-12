@@ -1,6 +1,7 @@
 const isLocalDevelopmentOrigin = (origin) => {
   try {
-    const { hostname } = new URL(origin);
+    const normalized = String(origin || "").trim().replace(/\/+$/, "");
+    const { hostname } = new URL(normalized);
     return ["localhost", "127.0.0.1", "::1"].includes(hostname) || hostname.endsWith(".localhost");
   } catch {
     return false;
@@ -8,22 +9,14 @@ const isLocalDevelopmentOrigin = (origin) => {
 };
 
 const isDevelopmentLocalOrigin = (origin) => {
-  return process.env.NODE_ENV === "development" &&
-    isLocalDevelopmentOrigin(origin);
+  return isLocalDevelopmentOrigin(origin) && process.env.NODE_ENV !== "production";
 };
 
 export const originLock = (req, res, next) => {
-  console.log("[originLock DEBUG]", {
-    origin: req.get("origin"),
-    nodeEnv: process.env.NODE_ENV,
-    path: req.path,
-    hasOriginSecret: Boolean(req.get("x-origin-secret")),
-  });
-
   if (req.path === "/healthz" || req.path === "/readyz") return next();
 
-  const origin = String(req.get("origin") || "");
-if (isDevelopmentLocalOrigin(origin)) return next();
+  const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
+  if (isDevelopmentLocalOrigin(origin)) return next();
 
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");
