@@ -348,3 +348,85 @@
   background-color: oklch(0.75 0.18 140);
   box-shadow: 0 4px 12px oklch(0.7 0.18 140 / 30%);
 }
+
+/* Theme-aligned overrides.  These are scoped so the shared dashboard controls
+   retain their existing treatment. */
+.admission-page {
+  min-height: 100%;
+  padding: 32px 20px 56px;
+  background: radial-gradient(circle at 100% 0, color-mix(in srgb, var(--app-accent) 12%, transparent), transparent 30rem), var(--app-bg);
+}
+
+.admission-container { max-width: 980px; margin: 0 auto; }
+
+.admission-header {
+  margin-bottom: 26px;
+  padding: 28px 30px;
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  text-align: left;
+  background: linear-gradient(125deg, var(--app-surface), color-mix(in srgb, var(--app-accent) 9%, var(--app-surface)));
+  box-shadow: var(--shadow-soft);
+}
+
+.admission-header h1 { font-size: clamp(1.55rem, 3vw, 2rem); letter-spacing: -0.035em; }
+.admission-header p { max-width: 560px; line-height: 1.6; }
+
+.admission-page .stepper { margin-bottom: 26px; }
+.admission-page .step { gap: 9px; }
+.admission-page .step-circle { background: var(--app-surface); color: var(--app-text-muted); border-color: var(--app-border); }
+.admission-page .step.active .step-circle { background: var(--app-accent); color: var(--primary-foreground); border-color: var(--app-accent); box-shadow: 0 8px 18px color-mix(in srgb, var(--app-accent) 30%, transparent); }
+.admission-page .step.completed .step-circle { background: var(--surface-success); color: #27854c; border-color: var(--success); }
+.admission-page .step-title { color: var(--app-text-muted); font-weight: 650; }
+.admission-page .step.active .step-title { color: var(--app-text); }
+.admission-page .step-line { background: var(--app-border); }
+.admission-page .step.completed .step-line { background: var(--success); }
+
+.admission-page .form-card {
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: 18px;
+  background: var(--app-surface);
+  box-shadow: var(--shadow-soft);
+  animation: admission-card-in 220ms cubic-bezier(.2, .75, .25, 1) both;
+  transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+/* The previous generic fade fought the global theme transitions and could leave
+   a newly mounted step translucent. This animation always retains its final state. */
+@keyframes admission-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admission-page .card-title { color: var(--app-text); border-color: var(--app-border); letter-spacing: -.02em; }
+.admission-page .form-group label { color: var(--app-text); font-weight: 700; }
+.admission-page .form-group small { color: var(--app-text-muted); }
+.admission-page .form-group input,
+.admission-page .form-group select,
+.admission-page .form-group textarea { background: var(--app-surface-strong); border-color: var(--app-border); color: var(--app-text); border-radius: 10px; }
+.admission-page .form-group input::placeholder,
+.admission-page .form-group textarea::placeholder { color: var(--app-text-muted); opacity: .75; }
+.admission-page .form-group input:focus,
+.admission-page .form-group select:focus,
+.admission-page .form-group textarea:focus { border-color: var(--app-accent); background: var(--app-surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 18%, transparent); }
+.admission-page .highlight-field,
+.admission-page .highlight-checkbox { background: var(--surface-accent); border-color: color-mix(in srgb, var(--app-accent) 52%, var(--app-border)); }
+.admission-page .parent-col { background: var(--app-surface-strong); border-color: var(--app-border); }
+.admission-page .parent-title { color: var(--app-text); text-align: left; border-color: var(--app-border); }
+.admission-page .checkbox-group input[type="checkbox"] { accent-color: var(--app-accent); }
+.admission-page .checkbox-group label,
+.admission-page .highlight-checkbox label { color: var(--app-text-muted); }
+.admission-page .highlight-checkbox label { color: var(--app-text); }
+.admission-page .btn-primary { background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2)); }
+.admission-page .btn-secondary { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border); }
+.admission-page .btn-secondary:hover { border-color: var(--app-accent); color: var(--app-accent-2); }
+.admission-page .btn-submit { background: linear-gradient(135deg, #3fa764, #27854c); border-color: #3fa764; }
+
+@media (max-width: 700px) {
+  .admission-page { padding: 20px 14px 40px; }
+  .admission-header { padding: 22px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admission-page .form-card { animation: none; }
+}
