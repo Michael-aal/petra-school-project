@@ -1,5 +1,5 @@
-import TeacherSectionPage from "./TeacherSectionPage";
+import TeacherWorkspacePage from "./TeacherWorkspacePage";
 
 export default function StaffDashboard() {
-  return <TeacherSectionPage route="dashboard" />;
+  return <TeacherWorkspacePage activeView="dashboard" />;
 }

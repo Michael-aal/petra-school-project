@@ -3,11 +3,6 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const dotenv = require("dotenv");
 
-// This utility is intentionally separate from Prisma migration history.
-// It reconciles a database that is partially ahead of its migration history
-// with the current Prisma schema, while preserving legacy columns that Prisma
-// no longer maps.
-
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const backendDir = path.resolve(__dirname, "..");
@@ -17,14 +12,21 @@ const outputPath = path.join(
   "migration-repair.sql"
 );
 
+const LEGACY_COLUMNS = new Set([
+  "Admin.name",
+  "Teacher.name",
+  "InstallmentPlan.endDate",
+  "InstallmentPlan.startDate",
+  "StudentMedicalInfo.insuranceNumber",
+  "StudentMedicalInfo.insuranceProvider",
+  "Payment.paymentMethodId",
+]);
+
 function runPrismaDiff() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not loaded. Check backend/.env.");
   }
 
-  // Prisma 7 removed --from-url. The database connection now comes from the
-  // datasource in prisma.config.ts via --from-config-datasource.
-  // Windows needs the command shell when launching npx.cmd from Node.
   const command = process.platform === "win32" ? "npx.cmd" : "npx";
 
   const result = spawnSync(
@@ -47,9 +49,7 @@ function runPrismaDiff() {
     }
   );
 
-  if (result.error) {
-    throw result.error;
-  }
+  if (result.error) throw result.error;
 
   if (result.status !== 0) {
     throw new Error(
@@ -60,55 +60,118 @@ function runPrismaDiff() {
   return result.stdout;
 }
 
-function preserveLegacyColumns(sql) {
-  // These columns are present in older DB versions but are intentionally no
-  // longer represented by the current Prisma models. Keeping them is safer
-  // than silently deleting historical data during recovery.
-  //
-  // Prisma may combine multiple DROP COLUMN clauses into one ALTER TABLE, so
-  // remove only the individual legacy clauses rather than relying on a whole
-  // statement matching exactly.
-  const legacyColumns = [
-    ["Admin", "name"],
-    ["Teacher", "name"],
-    ["InstallmentPlan", "endDate"],
-    ["InstallmentPlan", "startDate"],
-    ["StudentMedicalInfo", "insuranceNumber"],
-    ["StudentMedicalInfo", "insuranceProvider"],
-    // Payment.paymentMethodId already exists in the live database and was
-    // introduced by the earlier payment-method migration. The current Prisma
-    // model no longer maps it, but removing it would discard existing schema
-    // and could break payment compatibility. Preserve it as a legacy column.
-    ["Payment", "paymentMethodId"],
-  ];
+function splitAlterActions(actionsSql) {
+  const actions = [];
+  let start = 0;
+  let depth = 0;
+  let quote = null;
+  let lineComment = false;
+  let blockComment = false;
 
-  let safeSql = sql;
+  for (let i = 0; i < actionsSql.length; i += 1) {
+    const ch = actionsSql[i];
+    const next = actionsSql[i + 1];
 
-  for (const [table, column] of legacyColumns) {
-    const pattern = new RegExp(
-      `DROP COLUMN\\s+"${column}"(?:,\\s*|\\s*(?=;))`,
-      "g"
-    );
-    safeSql = safeSql.replace(
-      pattern,
-      `/* Preserved legacy column ${table}.${column}; Prisma no longer maps it. */ `
-    );
+    if (lineComment) {
+      if (ch === "\n") lineComment = false;
+      continue;
+    }
+
+    if (blockComment) {
+      if (ch === "*" && next === "/") {
+        blockComment = false;
+        i += 1;
+      }
+      continue;
+    }
+
+    if (quote) {
+      if (ch === quote) {
+        if (quote === '"' && next === '"') i += 1;
+        else quote = null;
+      }
+      continue;
+    }
+
+    if (ch === "-" && next === "-") {
+      lineComment = true;
+      i += 1;
+      continue;
+    }
+
+    if (ch === "/" && next === "*") {
+      blockComment = true;
+      i += 1;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === "(") depth += 1;
+    else if (ch === ")") depth = Math.max(0, depth - 1);
+    else if (ch === "," && depth === 0) {
+      const action = actionsSql.slice(start, i).trim();
+      if (action) actions.push(action);
+      start = i + 1;
+    }
   }
 
-  // If a table change contained only legacy DROP COLUMN clauses, preserving
-  // those columns leaves an empty ALTER TABLE statement. Remove only those
-  // exact empty statements; never use a cross-statement wildcard here because
-  // that can accidentally delete real ALTER TABLE operations such as Admin's
-  // new columns.
+  const last = actionsSql.slice(start).trim();
+  if (last) actions.push(last);
+  return actions;
+}
+
+function isLegacyDrop(table, action) {
+  const match = action.match(/^DROP\s+COLUMN\s+"([^"]+)"$/i);
+  return Boolean(match && LEGACY_COLUMNS.has(`${table}.${match[1]}`));
+}
+
+function preserveLegacyColumns(sql) {
+  const alterTablePattern = /ALTER TABLE\s+"([^"]+)"\s+([\s\S]*?);/gi;
+
+  const safeSql = sql.replace(
+    alterTablePattern,
+    (full, table, actionsSql) => {
+      const actions = splitAlterActions(actionsSql);
+      const keptActions = actions.filter(
+        (action) => !isLegacyDrop(table, action)
+      );
+
+      if (keptActions.length === 0) return "";
+
+      return `ALTER TABLE "${table}" ${keptActions.join(",\n")};`;
+    }
+  );
+
+  return safeSql;
+}
+
+function cleanAndValidate(sql) {
+  let safeSql = sql;
+
   safeSql = safeSql.replace(
-    /ALTER TABLE\s+"[^"]+"\s+(?:(?:\/\* Preserved legacy column [^*]*\*\/\s*)+);/g,
+    /^\s*ALTER TABLE\s+"[^"]+"\s*;\s*$/gim,
     ""
   );
 
-  // Remove a dangling comma left before a statement terminator.
-  safeSql = safeSql.replace(/,\s*;/g, ";");
+  safeSql = safeSql.replace(/\n{3,}/g, "\n\n").trim();
 
-  return safeSql;
+  if (/ALTER TABLE\s+"[^"]+"\s*;/i.test(safeSql)) {
+    throw new Error(
+      "Generated repair SQL still contains an empty ALTER TABLE statement. Refusing to write unsafe SQL."
+    );
+  }
+
+  if (/,\s*;/m.test(safeSql)) {
+    throw new Error(
+      "Generated repair SQL contains a dangling comma before a statement terminator. Refusing to write unsafe SQL."
+    );
+  }
+
+  return `${safeSql}\n`;
 }
 
 function main() {
@@ -120,7 +183,7 @@ function main() {
   }
 
   const diff = runPrismaDiff();
-  const safeSql = preserveLegacyColumns(diff);
+  const safeSql = cleanAndValidate(preserveLegacyColumns(diff));
 
   fs.writeFileSync(outputPath, safeSql, "utf8");
 
