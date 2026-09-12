@@ -8,8 +8,7 @@ import {
   Shield, 
   CircleCheck, 
   Users, 
-  Lock,
-  Quote
+  Lock
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
@@ -39,7 +38,7 @@ const schoolBenefits = [
   {
     icon: TrendingUp,
     title: "Revenue Assurance",
-    info: "Capture 100% of fee payments and simplify end-of-term reconciliation with automated tracking and receipts.",
+    info: "Simplify fee payment tracking and end-of-term reconciliation with automated tracking and receipts.",
   },
   {
     icon: Shield,
@@ -49,12 +48,12 @@ const schoolBenefits = [
   {
     icon: CircleCheck,
     title: "Dedicated Onboarding",
-    info: "We guide your team step-by-step. Our specialists ensure smooth setup and staff training in under 48 hours.",
+    info: "We guide your team step-by-step. Our specialists ensure smooth setup and staff training for your institution.",
   },
   {
     icon: Building2,
     title: "Infinite Scalability",
-    info: "Whether you have 50 or 5,000 learners, our platform handles your growth effortlessly with 99.9% uptime.",
+    info: "Whether you have 50 or 5,000 learners, our cloud-native platform handles your growth reliably.",
   },
 ];
 
@@ -90,17 +89,17 @@ export default function ForSchool() {
         <div className="marketing-trust-bar">
           <div className="marketing-trust-item">
             <Users size={15} />
-            <span>Trusted by 50+ Schools</span>
+            <span>Role-Based Access Control</span>
           </div>
           <div className="marketing-trust-divider" />
           <div className="marketing-trust-item">
             <Lock size={15} />
-            <span>SOC-2 Compliant Security</span>
+            <span>Encrypted Data Security</span>
           </div>
           <div className="marketing-trust-divider" />
           <div className="marketing-trust-item">
             <CircleCheck size={15} />
-            <span>Setup in Under 48 Hours</span>
+            <span>Fast & Intuitive Setup</span>
           </div>
         </div>
       </section>
@@ -147,20 +146,6 @@ export default function ForSchool() {
               <p className="marketing-card-text">{info}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* TESTIMONIAL / TRUST BLOCK */}
-      <section className="marketing-section school-testimonial-section">
-        <div className="school-quote-card">
-          <Quote size={28} className="quote-icon" />
-          <p className="quote-text">
-            "Switching to Nuvora was the best administrative decision we made this year. Fee reconciliation is automated, parent complaints drop to zero, and teachers save hours every week."
-          </p>
-          <div className="quote-author">
-            <strong>Rev. Father Thomas Vance</strong>
-            <span>Administrator, Gracefield International Academy</span>
-          </div>
         </div>
       </section>
 

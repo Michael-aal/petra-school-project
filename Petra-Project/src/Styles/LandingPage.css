@@ -338,100 +338,60 @@
   line-height: 1.6;
 }
 
-/* Testimonials & Trust */
-.landing-testimonial-section {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 32px;
-  align-items: center;
+/* Product Reassurance & Privacy */
+.landing-reassurance-section {
+  padding: 48px 0;
 }
 
-.testimonial-card {
+.reassurance-card {
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 32px;
+  padding: 36px 32px;
+  text-align: center;
   box-shadow: none;
 }
 
-.quote-icon {
+.reassurance-icon {
   color: #ff6600;
-  opacity: 0.8;
   margin-bottom: 16px;
 }
 
-.testimonial-quote {
-  margin: 0 0 24px;
-  font-size: 1.1rem;
-  line-height: 1.65;
+.reassurance-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+  font-weight: 800;
   color: #111827;
-  font-weight: 500;
-  font-style: italic;
 }
 
-.testimonial-author {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.reassurance-card p {
+  margin: 0 auto 24px;
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.author-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 102, 0, 0.1);
-  color: #ff6600;
+.reassurance-points {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.point-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.9rem;
-}
-
-.testimonial-author strong {
-  display: block;
-  font-size: 0.95rem;
+  font-weight: 700;
   color: #111827;
 }
 
-.testimonial-author span {
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.trust-metrics {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.metric-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.metric-number {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #111827;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.metric-label {
-  margin-top: 6px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.metric-divider {
-  height: 1px;
-  background: var(--line);
+.point-item svg {
+  color: #ff6600;
 }
 
 /* Final CTA */
