@@ -238,6 +238,7 @@ export const authService = {
           const school = await tx.school.create({
             data: {
               name: schoolName,
+              address: "Not provided",
               state: state || null,
               city: city || null,
               email: normalizedEmail,
@@ -308,12 +309,6 @@ export const authService = {
     const user = await userModel.findByEmail(normalizedEmail);
     if (!user) {
       const error = new Error("Invalid email or password");
-      error.statusCode = 401;
-      throw error;
-    }
-
-    if (user.accountStatus && user.accountStatus !== "active") {
-      const error = new Error("This account is not active");
       error.statusCode = 401;
       throw error;
     }

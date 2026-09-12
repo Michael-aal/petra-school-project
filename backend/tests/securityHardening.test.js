@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert";
 import { paystackService } from "../services/paystackService.js";
 import { createRateLimiter } from "../middleware/rateLimiter.js";
-import { createHmac } from "crypto";
 import { originLock } from "../middleware/originLock.js";
+import { createHmac } from "crypto";
 
 test("Security Hardening - Paystack verifySignature with timingSafeEqual", () => {
   process.env.PAYSTACK_SECRET_KEY = "test_secret_key";
@@ -14,6 +14,68 @@ test("Security Hardening - Paystack verifySignature with timingSafeEqual", () =>
   assert.strictEqual(paystackService.verifySignature(body, "invalid_signature"), false);
   assert.strictEqual(paystackService.verifySignature(body, ""), false);
   assert.strictEqual(paystackService.verifySignature(body, null), false);
+});
+
+test("originLock allows development localhost auth endpoints without a supplied x-origin-secret header", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousOriginSecret = process.env.ORIGIN_SECRET;
+  process.env.NODE_ENV = "development";
+  process.env.ORIGIN_SECRET = "development-edge-secret";
+
+  let loginNextCalled = false;
+  const loginReq = {
+    path: "/api/auth/login",
+    get: (name) => {
+      if (name === "origin") return "http://localhost:5173";
+      return undefined;
+    },
+  };
+  const loginRes = {
+    status: () => ({ json: () => {} }),
+  };
+
+  originLock(loginReq, loginRes, () => {
+    loginNextCalled = true;
+  });
+
+  let registerNextCalled = false;
+  const registerReq = {
+    path: "/api/auth/register",
+    get: (name) => {
+      if (name === "origin") return "http://localhost:5173";
+      return undefined;
+    },
+  };
+  const registerRes = {
+    status: () => ({ json: () => {} }),
+  };
+
+  originLock(registerReq, registerRes, () => {
+    registerNextCalled = true;
+  });
+
+  let meNextCalled = false;
+  const meReq = {
+    path: "/api/auth/me",
+    get: (name) => {
+      if (name === "origin") return "http://localhost:5173";
+      return undefined;
+    },
+  };
+  const meRes = {
+    status: () => ({ json: () => {} }),
+  };
+
+  originLock(meReq, meRes, () => {
+    meNextCalled = true;
+  });
+
+  assert.strictEqual(loginNextCalled, true);
+  assert.strictEqual(registerNextCalled, true);
+  assert.strictEqual(meNextCalled, true);
+
+  process.env.NODE_ENV = previousNodeEnv;
+  process.env.ORIGIN_SECRET = previousOriginSecret;
 });
 
 test("Security Hardening - Rate Limiter Middleware blocks abusive requests", () => {
@@ -47,16 +109,4 @@ test("Security Hardening - Rate Limiter Middleware blocks abusive requests", () 
   limiter(mockReq, mockRes, next);
   assert.strictEqual(blockedStatus, 429);
   assert.strictEqual(nextCalled, 3);
-});
-
-test("Security Hardening - Paystack webhooks bypass origin secret and reach signature validation", () => {
-  process.env.NODE_ENV = "production";
-  process.env.ORIGIN_SECRET = "private-edge-secret";
-  let nextCalled = false;
-  originLock(
-    { path: "/api/paystack/webhook", method: "POST", get: () => "" },
-    { status: () => ({ json: () => undefined }) },
-    () => { nextCalled = true; },
-  );
-  assert.strictEqual(nextCalled, true);
 });

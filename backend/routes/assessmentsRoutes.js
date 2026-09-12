@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { startAssessmentForApplicant } from "../controllers/classMarkerController.js";
+import { ensureAdmissionAssessment } from "../middleware/ensureAdmissionAssessment.js";
 
 const router = Router();
 
-// Public endpoint for applicant to start an assessment using their applicantId
-router.post('/start', startAssessmentForApplicant);
+// Public endpoint for applicants to start an admission assessment.
+// Repair the Assessment <-> Admission mapping first for legacy admissions.
+router.post('/start', ensureAdmissionAssessment, startAssessmentForApplicant);
 
 export default router;

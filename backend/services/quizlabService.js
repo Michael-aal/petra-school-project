@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 
 const QUIZLAB_MCP_URL = process.env.QUIZLAB_MCP_URL || 'https://quizlab.in/mcp';
 const API_KEY = process.env.QUIZLAB_API_KEY || '';
-const ATS_API_KEY = process.env.ATS_API_KEY || '';
+const ATS_API_KEY = process.env.QUIZLAB_ATS_API_KEY || process.env.ATS_API_KEY || '';
 
 let mcpSessionId = null;
 let mcpSessionExpiresAt = 0;

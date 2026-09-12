@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "start-backend",
+			"type": "shell",
+			"command": "cd backend && node server.js",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "start-backend-safe",
+			"type": "shell",
+			"command": "cd backend; node server.js",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "start-backend-safe",
+			"type": "shell",
+			"command": "cd backend; node server.js",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

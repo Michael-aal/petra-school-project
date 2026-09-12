@@ -98,15 +98,21 @@ export const loginValidator = validateWithZod(
     password: z.string().min(1, "Password is required"),
   }),
 );
+
+// Staff invitations generate the registration code first. The teacher supplies
+// their real email during activation, so email must NOT be required here.
+// Keep this schema aligned with the fields accepted by teacherInvitationService.create().
 export const staffInvitationValidator = validateWithZod(
   z.object({
     staffName: namePartSchema,
-    email: emailSchema,
     role: z.string().trim().min(1, "Staff role is required"),
-    department: z.string().trim().min(1, "Department is required"),
-    employmentStatus: z.enum(["active", "inactive"]).optional(),
+    department: z.string().trim().max(120, "Department is too long").optional().or(z.literal("")),
+    assignedClass: z.string().trim().max(120, "Assigned class is too long").optional().or(z.literal("")),
+    assignedSubjects: z.array(z.string().trim().min(1)).optional().default([]),
+    employmentStatus: z.enum(["active", "inactive"]).optional().default("active"),
   }),
 );
+
 export const staffActivationValidator = validateWithZod(
   z.object({
     email: emailSchema,

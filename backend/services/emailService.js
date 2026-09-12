@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { prisma } from "../config/db.js";
 
 const transportConfigAvailable = Boolean(process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS);
+const resendConfigAvailable = Boolean(process.env.RESEND_API_KEY && process.env.FROM_EMAIL);
+const emailProviderAvailable = transportConfigAvailable || resendConfigAvailable;
 
 let transporter = null;
 if (transportConfigAvailable) {
@@ -16,7 +19,29 @@ if (transportConfigAvailable) {
   });
 }
 
+const resend = resendConfigAvailable ? new Resend(process.env.RESEND_API_KEY) : null;
+
+const sendEmailProvider = async ({ from, to, subject, html, text }) => {
+  if (resend) {
+    const { data, error } = await resend.emails.send({ from, to, subject, html, text });
+    if (error) throw new Error(error.message || "Resend email delivery failed");
+    return data;
+  }
+
+  if (!transporter) {
+    throw new Error("No email provider is configured");
+  }
+
+  return transporter.sendMail({ from, to, subject, html, text });
+};
+
 const safeHtml = (s) => String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export const buildAdmissionPaymentUrl = (base = "") => {
+  const normalizedBase = String(base || process.env.CLIENT_URL || "").replace(/\/$/, "");
+  if (!normalizedBase) return "/payment";
+  return `${normalizedBase}/payment`;
+};
 
 const getAdmissionRecipients = (admission) =>
   [...new Set([
@@ -25,48 +50,62 @@ const getAdmissionRecipients = (admission) =>
     admission?.motherEmail,
   ].filter(Boolean).map((value) => String(value).trim().toLowerCase()))];
 
+const getEmailRecipients = (admission) => {
+  const parentRecipients = getAdmissionRecipients(admission);
+  const testEmail = String(process.env.TEST_EMAIL || "").trim().toLowerCase();
+
+  if (["development", "test"].includes(process.env.NODE_ENV) && testEmail) {
+    return [testEmail];
+  }
+
+  return parentRecipients;
+};
+
+export const buildAdmissionEmailPayload = ({ school, studentName, admissionCode, paymentUrl, score, percentage }) => {
+  const subject = `${school?.name || "School"}: Congratulations - ${studentName} has passed`;
+  const scoreLine = `Score: ${score ?? "N/A"}`;
+  const percentageLine = `Percentage: ${percentage ?? "N/A"}%`;
+  const logo = school?.logo ? `<img src="${safeHtml(school.logo)}" alt="${safeHtml(school.name)}" style="max-height:56px;display:block;margin-bottom:16px"/>` : "";
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5">${logo}<p>Dear Parent/Guardian,</p><p>Your child/student has passed the admission examination.</p><p>Student: <strong>${safeHtml(studentName)}</strong></p><p>Result: <strong>PASSED</strong><br/>${safeHtml(scoreLine)}<br/>${safeHtml(percentageLine)}</p><p>Student Code: <strong>${safeHtml(admissionCode)}</strong></p><p>School-fee payment: <a href="${safeHtml(paymentUrl)}">Complete school-fee payment</a></p><p>Please use the payment link above and your Student Code to complete the next admission/enrollment step.</p><p>Kind regards,<br/>${safeHtml(school?.name || "Your School")}</p></div>`;
+  const text = `Dear Parent/Guardian,\n\nYour child/student has passed the admission examination.\n\nStudent: ${studentName}\nResult: PASSED\n${scoreLine}\n${percentageLine}\nStudent Code: ${admissionCode}\nSchool-fee payment: ${paymentUrl}\n\nPlease use the payment link above and your Student Code to complete the next admission/enrollment step.\n\nKind regards,\n${school?.name || "Your School"}`;
+  return { subject, html, text };
+};
+
+export const buildAdmissionFailureEmailPayload = ({ school, studentName, score, percentage }) => {
+  const subject = `${school?.name || "School"}: Admission result for ${studentName}`;
+  const scoreLine = `Score: ${score ?? "N/A"}`;
+  const percentageLine = `Percentage: ${percentage ?? "N/A"}%`;
+  const logo = school?.logo ? `<img src="${safeHtml(school.logo)}" alt="${safeHtml(school.name)}" style="max-height:56px;display:block;margin-bottom:16px"/>` : "";
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5">${logo}<p>Dear Parent/Guardian,</p><p>The admission examination result has been recorded.</p><p>Student: <strong>${safeHtml(studentName)}</strong></p><p>Result: <strong>FAILED</strong><br/>${safeHtml(scoreLine)}<br/>${safeHtml(percentageLine)}</p><p>Kind regards,<br/>${safeHtml(school?.name || "Your School")}</p></div>`;
+  const text = `Dear Parent/Guardian,\n\nThe admission examination result has been recorded.\n\nStudent: ${studentName}\nResult: FAILED\n${scoreLine}\n${percentageLine}\n\nKind regards,\n${school?.name || "Your School"}`;
+  return { subject, html, text };
+};
+
 export const sendAdmissionEmail = async ({
   school,
   admission,
   studentName,
   admissionCode,
   paymentUrl,
+  score,
+  percentage,
   fromEmail,
   dedupeKey,
 }) => {
-  const recipients = getAdmissionRecipients(admission);
+  const recipients = getEmailRecipients(admission);
 
   if (!recipients.length) {
     return { success: false, reason: "no_recipient" };
   }
 
-  const subject = `${school?.name || "School"}: Congratulations - ${studentName} has passed`;
-  const html = `
-    <div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5">
-      ${school?.logo ? `<img src="${safeHtml(school.logo)}" alt="${safeHtml(school.name)}" style="max-height:56px;display:block;margin-bottom:16px"/>` : ""}
-      <p>Dear Parent/Guardian,</p>
-      <p>Congratulations! <strong>${safeHtml(studentName)}</strong> has successfully passed the entrance examination for <strong>${safeHtml(school?.name || "your school")}</strong>.</p>
-      <p style="margin:20px 0 8px;font-size:12px;letter-spacing:0.08em;color:#667085;text-transform:uppercase">Student Code</p>
-      <div style="padding:16px 18px;border:1px solid #d0d5dd;border-radius:12px;background:#f8fafc;display:inline-block">
-        <div style="font-size:12px;color:#667085;margin-bottom:4px">Use this code for the next step</div>
-        <div style="font-size:28px;font-weight:800;letter-spacing:0.08em;color:#102a43">${safeHtml(admissionCode)}</div>
-      </div>
-      <p style="margin:16px 0 8px">
-        <a href="${safeHtml(paymentUrl)}" style="display:inline-block;padding:12px 18px;background:#0b66c3;color:#fff;border-radius:8px;text-decoration:none;font-weight:700">Proceed to School Fees Payment</a>
-      </p>
-      <p>Please use the payment link above to complete the next admission/enrollment step.</p>
-      <p>Kind regards,<br/>${safeHtml(school?.name || "Your School")}</p>
-    </div>
-  `;
-  const text = `Dear Parent/Guardian,\n\nCongratulations! ${studentName} has successfully passed the entrance examination for ${school?.name || "your school"}.\n\nStudent Code: ${admissionCode}\nPayment link: ${paymentUrl}\n\nPlease use the payment link above to complete the next admission/enrollment step.\n\nKind regards,\n${school?.name || "Your School"}`;
-
+  const { subject, html, text } = buildAdmissionEmailPayload({ school, studentName, admissionCode, paymentUrl, score, percentage });
   const sendTo = recipients.join(", ");
   const logData = {
     schoolId: school?.id || 1,
     recipient: sendTo,
     subject,
     body: text,
-    status: transportConfigAvailable ? "pending" : "skipped",
+    status: emailProviderAvailable ? "pending" : "skipped",
     dedupeKey: dedupeKey || null,
     attempts: 1,
     lastAttemptAt: new Date(),
@@ -88,7 +127,7 @@ export const sendAdmissionEmail = async ({
           recipient: sendTo,
           subject,
           body: text,
-          status: transportConfigAvailable ? "pending" : "skipped",
+          status: emailProviderAvailable ? "pending" : "skipped",
           attempts: { increment: 1 },
           lastAttemptAt: new Date(),
           errorMessage: null,
@@ -115,12 +154,12 @@ export const sendAdmissionEmail = async ({
         orderBy: { createdAt: "desc" },
       });
 
-  if (!transportConfigAvailable) {
-    return { success: false, reason: "no_smtp", log };
+  if (!emailProviderAvailable) {
+    return { success: false, reason: "no_email_provider", log };
   }
 
   try {
-    const info = await transporter.sendMail({
+    const info = await sendEmailProvider({
       from: fromEmail || process.env.FROM_EMAIL || `no-reply@${(school?.website || "example.com").replace(/^https?:\/\//, "")}`,
       to: sendTo,
       subject,
@@ -148,34 +187,25 @@ export const sendAdmissionFailureEmail = async ({
   school,
   admission,
   studentName,
+  score,
+  percentage,
   fromEmail,
   dedupeKey,
 }) => {
-  const recipients = getAdmissionRecipients(admission);
+  const recipients = getEmailRecipients(admission);
 
   if (!recipients.length) {
     return { success: false, reason: "no_recipient" };
   }
 
-  const subject = `${school?.name || "School"}: Admission result for ${studentName}`;
-  const html = `
-    <div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5">
-      ${school?.logo ? `<img src="${safeHtml(school.logo)}" alt="${safeHtml(school.name)}" style="max-height:56px;display:block;margin-bottom:16px"/>` : ""}
-      <p>Dear Parent/Guardian,</p>
-      <p>Thank you for your interest in admission at <strong>${safeHtml(school?.name || "your school")}</strong>.</p>
-      <p>We are writing to inform you that <strong>${safeHtml(studentName)}</strong> did not meet the required cutoff for this intake. We appreciate your time and encourage you to apply again in the next admission cycle.</p>
-      <p>Kind regards,<br/>${safeHtml(school?.name || "Your School")}</p>
-    </div>
-  `;
-  const text = `Dear Parent/Guardian,\n\nThank you for your interest in admission at ${school?.name || "your school"}.\n\nWe are writing to inform you that ${studentName} did not meet the required cutoff for this intake. We appreciate your time and encourage you to apply again in the next admission cycle.\n\nKind regards,\n${school?.name || "Your School"}`;
-
+  const { subject, html, text } = buildAdmissionFailureEmailPayload({ school, studentName, score, percentage });
   const sendTo = recipients.join(", ");
   const logData = {
     schoolId: school?.id || 1,
     recipient: sendTo,
     subject,
     body: text,
-    status: transportConfigAvailable ? "pending" : "skipped",
+    status: emailProviderAvailable ? "pending" : "skipped",
     dedupeKey: dedupeKey || null,
     attempts: 1,
     lastAttemptAt: new Date(),
@@ -193,7 +223,7 @@ export const sendAdmissionFailureEmail = async ({
           recipient: sendTo,
           subject,
           body: text,
-          status: transportConfigAvailable ? "pending" : "skipped",
+          status: emailProviderAvailable ? "pending" : "skipped",
           attempts: { increment: 1 },
           lastAttemptAt: new Date(),
           errorMessage: null,
@@ -220,12 +250,12 @@ export const sendAdmissionFailureEmail = async ({
         orderBy: { createdAt: "desc" },
       });
 
-  if (!transportConfigAvailable) {
-    return { success: false, reason: "no_smtp", log };
+  if (!emailProviderAvailable) {
+    return { success: false, reason: "no_email_provider", log };
   }
 
   try {
-    const info = await transporter.sendMail({
+    const info = await sendEmailProvider({
       from: fromEmail || process.env.FROM_EMAIL || `no-reply@${(school?.website || "example.com").replace(/^https?:\/\//, "")}`,
       to: sendTo,
       subject,
@@ -249,4 +279,4 @@ export const sendAdmissionFailureEmail = async ({
   }
 };
 
-export default { sendAdmissionEmail, sendAdmissionFailureEmail };
+export default { buildAdmissionEmailPayload, buildAdmissionFailureEmailPayload, sendAdmissionEmail, sendAdmissionFailureEmail };

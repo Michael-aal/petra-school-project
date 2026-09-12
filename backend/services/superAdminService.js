@@ -154,7 +154,7 @@ export const superAdminService = {
     const school = await prisma.school.create({
       data: {
         name: payload.name,
-        address: payload.address || null,
+        address: payload.address || "Not provided",
         email: payload.email || null,
         phone: payload.phone || null,
         website: payload.website || null,

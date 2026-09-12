@@ -259,7 +259,7 @@ model School {
   parents                 Parent[]
   payments                Payment[]
   paymentIdempotencies    PaymentIdempotency[]
-  paymentMethods          PaymentMethod[]
+  
   principals              Principal[]
   receipts                Receipt[]
   staffInvitations        StaffInvitation[]
@@ -1126,6 +1126,7 @@ model FeeStructure {
   session       String?
   term          String?
   amount        Decimal      @db.Decimal(12, 2)
+  quantityRequired Boolean    @default(false)
   dueDate       DateTime?
   isActive      Boolean      @default(true)
   createdAt     DateTime     @default(now())
@@ -1133,6 +1134,7 @@ model FeeStructure {
   feeCategory   FeeCategory? @relation(fields: [feeCategoryId], references: [id])
   school        School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   studentFees   StudentFee[]
+  paymentLines  PaymentLine[]
 
   @@index([schoolId, className])
 }
@@ -1196,18 +1198,7 @@ model InvoiceItem {
   invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
-model PaymentMethod {
-  id        String    @id @default(cuid())
-  schoolId  Int
-  name      String
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  payments  Payment[]
-  school    School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
-  @@unique([schoolId, name])
-}
 
 model Payment {
   id              String         @id @default(cuid())
@@ -1225,18 +1216,35 @@ model Payment {
   createdById     String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  paymentMethodId String?
+  
   invoice         Invoice?       @relation(fields: [invoiceId], references: [id])
-  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
   school          School         @relation(fields: [schoolId], references: [id], onDelete: Restrict)
   student         Student        @relation(fields: [studentId], references: [id], onDelete: Restrict)
   academicYear    AcademicYear   @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
   term            Term           @relation(fields: [termId], references: [id], onDelete: Restrict)
   receipt         Receipt?
+  paymentLines    PaymentLine[]
 
   @@index([schoolId, status])
   @@index([schoolId, paidAt])
   @@index([studentId, academicYearId, termId])
+}
+
+model PaymentLine {
+  id             String        @id @default(cuid())
+  paymentId      String
+  feeStructureId String?
+  quantity       Int           @default(1)
+  unitAmount     Decimal       @db.Decimal(12, 2)
+  lineTotal      Decimal       @db.Decimal(12, 2)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  payment        Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  feeStructure   FeeStructure? @relation(fields: [feeStructureId], references: [id], onDelete: SetNull)
+
+  @@index([paymentId])
+  @@index([feeStructureId])
 }
 
 model Receipt {

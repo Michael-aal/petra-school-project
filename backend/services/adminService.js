@@ -746,6 +746,7 @@ export const adminService = {
         resultState: "completed",
         examId: result.examId,
         assessmentId: result.exam?.assessmentId || legacyResult?.assessmentId || null,
+        assessmentDate: result.exam?.examDate || legacyResult?.assessment?.date || null,
         studentId: result.studentId,
         studentName: getStudentName(result.student),
         examTitle: result.exam?.title || "Untitled Exam",

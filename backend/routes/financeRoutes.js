@@ -1,11 +1,17 @@
 import { Router } from "express";
 import { protect, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
-import { assignFeeStructure, createFeeStructure, createPayment, deleteFeeStructure, deletePayment, getAdminWallet, getCashflow, getFeeStructures, getInvoices, getInstallmentPlans, getParentFees, getPayment, getPaymentReceipt, listPayments, updateFeeStructure, updatePayment } from "../controllers/financeController.js";
-import { idValidator, listPaymentsValidator, paymentValidator } from "../validators/financeValidator.js";
+import { assignFeeStructure, createFeeStructure, createPayment, createPublicPayment, createSchoolPayment, deleteFeeStructure, deletePayment, getAdminWallet, getCashflow, getFeeStructures, getInvoices, getInstallmentPlans, getParentFees, getPublicStudentLookup, getSchoolStudentLookup, getPayment, getPaymentReceipt, listPayments, updateFeeStructure, updatePayment } from "../controllers/financeController.js";
+import { idValidator, listPaymentsValidator, paymentValidator, publicPaymentValidator, publicStudentLookupValidator } from "../validators/financeValidator.js";
 import { authorizeStudentResource } from "../middleware/authorizeResource.js";
 import { paymentIdempotency } from "../middleware/idempotency.js";
 
 const router = Router();
+
+router.get("/public/lookup", publicStudentLookupValidator, getPublicStudentLookup);
+router.post("/public/payments", publicPaymentValidator, paymentIdempotency, createPublicPayment);
+
+router.get("/payments/lookup", protect, schoolGuard, publicStudentLookupValidator, getSchoolStudentLookup);
+router.post("/payments/checkout", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentIdempotency, paymentValidator, authorizeStudentResource(), createSchoolPayment);
 
 router.get("/payments", protect, schoolGuard, requirePrincipal, listPaymentsValidator, listPayments);
 router.get("/payments/:id", protect, schoolGuard, requirePrincipal, idValidator, getPayment);

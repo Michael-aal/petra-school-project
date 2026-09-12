@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { financeService } from "../services/financeService.js";
+import { prisma } from "../config/db.js";
 
 const validate = (req, res) => {
   const errors = validationResult(req);
@@ -33,6 +34,9 @@ export const getPaymentReceipt = async (req, res, next) => {
       `Payment Reference: ${receiptData.payment.reference}\n` +
       `Amount: NGN ${receiptData.payment.amount.toFixed(2)}\n` +
       `Status: ${receiptData.payment.status}\n` +
+      (receiptData.payment.paymentLines?.length
+        ? `Items: ${receiptData.payment.paymentLines.map((line) => `${line.feeName} x ${line.quantity} = NGN ${line.lineTotal.toFixed(2)}`).join("; ")}\n`
+        : "") +
       `Issued At: ${new Date(receiptData.receipt.issuedAt).toLocaleString()}\n` +
       `Invoice Number: ${receiptData.invoice?.invoiceNumber || "N/A"}\n` +
       `Notes: ${receiptData.payment.note || "None"}\n`;
@@ -109,6 +113,108 @@ export const getCashflow = async (req, res, next) => {
 export const getParentFees = async (req, res, next) => {
   try {
     return res.json({ success: true, ...(await financeService.getParentFees(req.user, req.query)) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPublicStudentLookup = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    return res.json({ success: true, ...(await financeService.getPublicStudentLookup(req.query)) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createPublicPayment = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    return res.status(201).json({
+      success: true,
+      ...(await financeService.createPublicPayment(req.body)),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSchoolStudentLookup = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+
+    const schoolId = Number(req.user?.schoolId);
+    if (!Number.isInteger(schoolId) || schoolId <= 0) {
+      return res.status(403).json({ success: false, message: "School context missing" });
+    }
+
+    const code = String(req.query.studentCode || "").trim();
+    const admission = await prisma.admission.findFirst({
+      where: {
+        schoolId,
+        admissionCode: { equals: code, mode: "insensitive" },
+      },
+      select: { studentId: true },
+    });
+
+    const student = admission?.studentId
+      ? await prisma.student.findFirst({
+          where: { id: admission.studentId, schoolId },
+          select: { id: true, name: true, className: true, admissionNumber: true },
+        })
+      : await prisma.student.findFirst({
+          where: { schoolId, admissionNumber: { equals: code, mode: "insensitive" } },
+          select: { id: true, name: true, className: true, admissionNumber: true },
+        });
+
+    if (!student) {
+      return res.status(404).json({ success: false, message: "Student Code not found in the selected school" });
+    }
+
+    const feeStructures = await prisma.feeStructure.findMany({
+      where: { schoolId, isActive: true, feeCategory: { isActive: true } },
+      include: { feeCategory: true },
+      orderBy: [{ feeCategory: { name: "asc" } }, { updatedAt: "desc" }],
+    });
+
+    return res.json({
+      success: true,
+      student: {
+        id: student.id,
+        name: student.name || "Student",
+        className: student.className || "Not assigned",
+        studentCode: student.admissionNumber || code,
+      },
+      feeStructures: feeStructures.map((fee) => ({
+        id: fee.id,
+        name: fee.feeCategory?.name || "School fee",
+        category: fee.feeCategory?.name || "School fee",
+        amount: fee.amount,
+        quantityRequired: Boolean(fee.quantityRequired),
+        className: fee.className || null,
+        session: fee.session || null,
+        term: fee.term || null,
+      })),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createSchoolPayment = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    return res.status(201).json({
+      success: true,
+      ...(await financeService.createPayment(req.user, {
+        ...req.body,
+        paymentType: req.body.paymentType || "school_fee",
+      })),
+    });
   } catch (error) {
     next(error);
   }

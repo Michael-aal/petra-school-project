@@ -4,6 +4,7 @@ import { financeApi } from "../../../../services/financeApi";
 import "../page-styles/ExtraFeesPage.css";
 
 const emptyForm = {
+  name: "",
   feeCategoryId: "",
   className: "",
   session: "",
@@ -46,10 +47,14 @@ export default function ExtraFeesPage() {
     try {
       const payload = {
         ...form,
+        name: String(form.name || "").trim(),
         amount: Number(form.amount),
         dueDate: form.dueDate || null,
         isActive: Boolean(form.isActive),
       };
+      if (!payload.name && !payload.feeCategoryId) {
+        throw new Error("Fee name or category is required");
+      }
       if (editingId) await financeApi.updateFee(editingId, payload);
       else await financeApi.createFee(payload);
       setForm(emptyForm);
@@ -65,6 +70,7 @@ export default function ExtraFeesPage() {
   const editFee = (fee) => {
     setEditingId(fee.id);
     setForm({
+      name: fee.feeCategory?.name || fee.name || "",
       feeCategoryId: fee.feeCategoryId || "",
       className: fee.className || "",
       session: fee.session || "",
@@ -85,7 +91,7 @@ export default function ExtraFeesPage() {
   };
 
   const removeFee = async (fee) => {
-    if (!window.confirm(`Delete ${fee.className || "this fee"}?`)) return;
+    if (!window.confirm(`Delete ${fee.className || fee.feeCategory?.name || "this fee"}?`)) return;
     try {
       await financeApi.deleteFee(fee.id);
       await load();
@@ -126,6 +132,7 @@ export default function ExtraFeesPage() {
         <article className="module-card">
           <div className="module-card-title"><Plus size={18} /><strong>{editingId ? "Edit fee structure" : "Create fee structure"}</strong></div>
           <form className="fees-form" onSubmit={submit}>
+            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Fee name or category" required={!form.feeCategoryId} />
             <input value={form.className} onChange={(e) => setForm({ ...form, className: e.target.value })} placeholder="Class name or scope" />
             <input value={form.session} onChange={(e) => setForm({ ...form, session: e.target.value })} placeholder="Session" />
             <input value={form.term} onChange={(e) => setForm({ ...form, term: e.target.value })} placeholder="Term" />
@@ -144,7 +151,7 @@ export default function ExtraFeesPage() {
           <form className="fees-form" onSubmit={assignFee}>
             <select value={assignment.feeStructureId} onChange={(e) => setAssignment({ ...assignment, feeStructureId: e.target.value })}>
               <option value="">Select fee structure</option>
-              {fees.map((fee) => <option key={fee.id} value={fee.id}>{fee.className || fee.feeCategory?.name || "Fee"}</option>)}
+              {fees.map((fee) => <option key={fee.id} value={fee.id}>{fee.feeCategory?.name || fee.className || "Fee"}</option>)}
             </select>
             <input value={assignment.level} onChange={(e) => setAssignment({ ...assignment, level: e.target.value })} placeholder="Level: Nursery, Primary, JSS, SSS" />
             <input value={assignment.className} onChange={(e) => setAssignment({ ...assignment, className: e.target.value })} placeholder="Class name" />

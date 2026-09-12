@@ -1,5 +1,22 @@
 import { admissionService } from "../services/admissionService.js";
 
+const getAdmissionSchoolId = (req) => {
+  const candidates = [
+    req.schoolId,
+    req.user?.schoolId,
+    req.user?.selectedSchoolId,
+    req.body?.schoolId,
+    req.get("x-school-id"),
+  ];
+
+  for (const value of candidates) {
+    const parsed = Number.parseInt(String(value ?? ""), 10);
+    if (Number.isInteger(parsed) && parsed > 0) return parsed;
+  }
+
+  return null;
+};
+
 export const listAdmissions = async (req, res, next) => {
   try {
     const result = await admissionService.list({
@@ -44,8 +61,13 @@ export const rejectAdmission = async (req, res, next) => {
 
 export const createAdmission = async (req, res, next) => {
   try {
-    const created = await admissionService.create(req.body, req.user);
-    // Return the safe admission shape (read via getById) so callers get canonical fields like admissionCode
+    const schoolId = getAdmissionSchoolId(req);
+    const created = await admissionService.create(
+      { ...req.body, schoolId: schoolId ?? req.body?.schoolId },
+      req.user,
+    );
+
+    // Return the safe admission shape so callers get canonical fields like admissionCode.
     const admission = await admissionService.getById(created.id);
     return res.status(201).json({
       success: true,

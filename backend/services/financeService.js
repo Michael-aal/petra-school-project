@@ -44,10 +44,192 @@ const makeReceiptNumber = () => `RCP-${Date.now()}-${crypto.randomBytes(3).toStr
 const makeInvoiceNumber = () => `INV-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prisma.Decimal(String(value ?? 0));
 
+const resolveApplicationFeeStructure = async (schoolId) => prisma.feeStructure.findFirst({
+  where: {
+    schoolId,
+    isActive: true,
+    feeCategory: {
+      name: { equals: "APPLICATION FEE", mode: "insensitive" },
+      isActive: true,
+    },
+  },
+  include: { feeCategory: true },
+  orderBy: { updatedAt: "desc" },
+});
+
+const publicStudentInclude = {
+  school: { select: { id: true, name: true, email: true, isActive: true } },
+};
+
+const resolvePublicStudentByCode = async (studentCode) => {
+  const normalizedCode = String(studentCode || "").trim();
+
+  if (!normalizedCode) {
+    const error = new Error("Student Code is required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const admission = await prisma.admission.findFirst({
+    where: {
+      admissionCode: {
+        equals: normalizedCode,
+        mode: "insensitive",
+      },
+    },
+    select: {
+      studentId: true,
+      schoolId: true,
+    },
+  });
+
+  const student = admission?.studentId
+    ? await prisma.student.findFirst({
+        where: {
+          id: admission.studentId,
+          schoolId: admission.schoolId,
+        },
+        include: publicStudentInclude,
+      })
+    : await prisma.student.findFirst({
+        where: {
+          admissionNumber: {
+            equals: normalizedCode,
+            mode: "insensitive",
+          },
+        },
+        include: publicStudentInclude,
+      });
+
+  if (!student || !student.school?.isActive) {
+    const error = new Error("Student Code not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return student;
+};
+
+const mapPublicFee = (fee) => ({
+  id: fee.id,
+  name: fee.feeCategory?.name || "School fee",
+  category: fee.feeCategory?.name || "School fee",
+  amount: fee.amount,
+  quantityRequired: Boolean(fee.quantityRequired),
+  className: fee.className || null,
+  session: fee.session || null,
+  term: fee.term || null,
+});
+
+const listPublicFees = (schoolId) => prisma.feeStructure.findMany({
+  where: { schoolId, isActive: true, feeCategory: { isActive: true } },
+  include: { feeCategory: true },
+  orderBy: [{ feeCategory: { name: "asc" } }, { updatedAt: "desc" }],
+});
+
+const resolvePublicFee = async (schoolId, feeStructureId) => {
+  const fee = await prisma.feeStructure.findFirst({
+    where: { id: String(feeStructureId || "").trim(), schoolId, isActive: true, feeCategory: { isActive: true } },
+    include: { feeCategory: true },
+  });
+  if (!fee) {
+    const error = new Error("Payment item not found or inactive");
+    error.statusCode = 404;
+    throw error;
+  }
+  return fee;
+};
+
+export const calculateConfiguredFeeLines = ({ feeStructures, requestedItems }) => {
+  const feeById = new Map(feeStructures.map((fee) => [fee.id, fee]));
+  const seen = new Set();
+
+  return requestedItems.map((item) => {
+    const fee = feeById.get(String(item.feeStructureId || "").trim());
+    if (!fee) {
+      const error = new Error("Payment item not found or inactive");
+      error.statusCode = 404;
+      throw error;
+    }
+    if (seen.has(fee.id)) {
+      const error = new Error("Payment items must be unique");
+      error.statusCode = 400;
+      throw error;
+    }
+    seen.add(fee.id);
+
+    const requestedQuantity = Number(item.quantity);
+    if (!Number.isInteger(requestedQuantity) || requestedQuantity < 1) {
+      const error = new Error("Quantity must be at least 1");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const quantity = fee.quantityRequired ? requestedQuantity : 1;
+    const unitAmount = toDecimal(fee.amount);
+    return {
+      fee,
+      quantity,
+      unitAmount,
+      lineTotal: unitAmount.times(quantity),
+    };
+  });
+};
+
+const resolvePublicFeeLines = async (schoolId, requestedItems) => {
+  if (!Array.isArray(requestedItems) || requestedItems.length === 0) {
+    const error = new Error("At least one payment item is required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const ids = requestedItems.map((item) => String(item.feeStructureId || "").trim());
+  const feeStructures = await prisma.feeStructure.findMany({
+    where: {
+      schoolId,
+      id: { in: ids },
+      isActive: true,
+      feeCategory: { isActive: true },
+    },
+    include: { feeCategory: true },
+  });
+  return calculateConfiguredFeeLines({ feeStructures, requestedItems });
+};
+
+const resolveFeeCategoryId = async (schoolId, payload) => {
+  if (payload.feeCategoryId) {
+    const category = await prisma.feeCategory.findFirst({ where: { id: payload.feeCategoryId, schoolId } });
+    if (!category) {
+      const error = new Error("Fee category not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return category.id;
+  }
+
+  const requestedName = String(payload.name || "").trim();
+  const name = requestedName.toLowerCase() === "application fee" ? "APPLICATION FEE" : requestedName;
+  if (!name) return null;
+
+  const category = await prisma.feeCategory.upsert({
+    where: { schoolId_name: { schoolId, name } },
+    update: { isActive: true },
+    create: { schoolId, name },
+  });
+  return category.id;
+};
+
+export const resolveApplicationPaymentAmount = ({ applicationFee, requestedAmount }) =>
+  applicationFee ? toDecimal(applicationFee.amount) : toDecimal(requestedAmount);
+
+export const resolveConfiguredPaymentAmount = ({ feeStructure, requestedAmount }) =>
+  feeStructure ? toDecimal(feeStructure.amount) : toDecimal(requestedAmount);
+
 const paymentInclude = {
   student: true,
   invoice: { include: { items: true } },
   receipt: true,
+  paymentLines: { include: { feeStructure: { include: { feeCategory: true } } } },
 };
 
 const safeDate = (value) => {
@@ -110,9 +292,83 @@ const mapPayment = (payment) => ({
   ...payment,
   status: normalizeStatus(payment.status),
   receiptNumber: payment.receipt?.receiptNumber || null,
+  paymentLines: payment.paymentLines?.map((line) => ({
+    ...line,
+    feeName: line.feeStructure?.feeCategory?.name || "School fee",
+  })) || [],
 });
 
+export const syncAdmissionVerificationMetadata = async (paymentReference, verificationData = {}) => {
+  const payment = await prisma.payment.findUnique({
+    where: { reference: paymentReference },
+    select: { id: true, schoolId: true, studentId: true, reference: true },
+  });
+
+  if (!payment) {
+    return { updated: false, reason: "payment_not_found" };
+  }
+
+  const verifiedAt = verificationData?.paid_at ? new Date(verificationData.paid_at) : new Date();
+
+  const admission = await prisma.admission.findFirst({
+    where: {
+      schoolId: payment.schoolId,
+      studentId: payment.studentId,
+      OR: [
+        { status: "admission_offered" },
+        { status: "passed" },
+        { status: "enrolled" },
+        { status: "paid" },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!admission) {
+    return { updated: false, reason: "admission_not_found" };
+  }
+
+  await prisma.admission.update({
+    where: { id: admission.id },
+    data: {
+      paymentReference,
+      verifiedAt,
+    },
+  });
+
+  return { updated: true, schoolId: payment.schoolId, studentId: payment.studentId, admissionId: admission.id };
+};
+
 export const financeService = {
+  getPublicStudentLookup: async (query = {}) => {
+    const student = await resolvePublicStudentByCode(query.studentCode);
+    const fees = await listPublicFees(student.schoolId);
+    return {
+      student: {
+        name: student.name || "Student",
+        className: student.className || "Not assigned",
+        studentCode: student.admissionNumber || query.studentCode,
+      },
+      feeStructures: fees.map(mapPublicFee),
+    };
+  },
+
+  createPublicPayment: async (payload) => {
+    const student = await resolvePublicStudentByCode(payload.studentCode);
+    const fees = await resolvePublicFeeLines(student.schoolId, payload.feeItems);
+    const isApplicationFee = fees.length === 1 && String(fees[0].fee.feeCategory?.name || "").trim().toLowerCase() === "application fee";
+    return financeService.createPayment(
+      { id: null, email: student.parentEmail, schoolId: student.schoolId },
+      {
+        studentCode: payload.studentCode,
+        studentId: student.id,
+        feeItems: payload.feeItems,
+        callbackUrl: payload.callbackUrl,
+        paymentType: isApplicationFee ? "application_fee" : "school_fee",
+      },
+    );
+  },
+
   listFeeStructures: async (user, query = {}) =>
     (() => {
       const currentPage = Math.max(1, toNumber(query.page, 1));
@@ -146,6 +402,7 @@ export const financeService = {
       error.statusCode = 400;
       throw error;
     }
+    const feeCategoryId = await resolveFeeCategoryId(schoolId, payload);
     if (amount.lte(0)) {
       const error = new Error("Amount must be a positive number");
       error.statusCode = 400;
@@ -154,13 +411,14 @@ export const financeService = {
     const feeStructure = await prisma.feeStructure.create({
       data: {
         schoolId,
-        feeCategoryId: payload.feeCategoryId || null,
+        feeCategoryId,
         className: payload.className || null,
         session: payload.session || null,
         term: payload.term || null,
         amount,
         dueDate: payload.dueDate ? new Date(payload.dueDate) : null,
         isActive: payload.isActive !== undefined ? Boolean(payload.isActive) : true,
+        quantityRequired: payload.quantityRequired !== undefined ? Boolean(payload.quantityRequired) : false,
       },
       include: { feeCategory: true },
     });
@@ -176,16 +434,25 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
+    const feeCategoryId = payload.name !== undefined || payload.feeCategoryId !== undefined
+      ? await resolveFeeCategoryId(schoolId, payload)
+      : undefined;
+    if (payload.amount !== undefined && toDecimal(payload.amount).lte(0)) {
+      const error = new Error("Amount must be a positive number");
+      error.statusCode = 400;
+      throw error;
+    }
     const updated = await prisma.feeStructure.update({
       where: { id },
       data: {
-        feeCategoryId: payload.feeCategoryId !== undefined ? payload.feeCategoryId || null : undefined,
+        feeCategoryId,
         className: payload.className !== undefined ? payload.className || null : undefined,
         session: payload.session !== undefined ? payload.session || null : undefined,
         term: payload.term !== undefined ? payload.term || null : undefined,
         amount: payload.amount !== undefined ? toDecimal(payload.amount) : undefined,
         dueDate: payload.dueDate !== undefined ? (payload.dueDate ? new Date(payload.dueDate) : null) : undefined,
         isActive: payload.isActive !== undefined ? Boolean(payload.isActive) : undefined,
+        quantityRequired: payload.quantityRequired !== undefined ? Boolean(payload.quantityRequired) : undefined,
       },
       include: { feeCategory: true },
     });
@@ -337,13 +604,22 @@ export const financeService = {
 
   createPayment: async (user, payload) => {
     const schoolId = getSchoolId(user);
-    const context = await resolveAcademicContext(schoolId, payload);
-    const student = await prisma.student.findFirst({ where: { id: payload.studentId, schoolId } });
+    const isPublicPayment = !user.id && payload.studentCode;
+    const isApplicationPayment = payload.paymentType === "application_fee";
+    const resolvedStudent = isPublicPayment
+      ? await resolvePublicStudentByCode(payload.studentCode)
+      : isApplicationPayment
+      ? await parentAccessService.resolveStudentByCode(user.id, payload.studentCode, schoolId)
+      : null;
+    const student = resolvedStudent
+      ? await prisma.student.findFirst({ where: { id: resolvedStudent.id, schoolId }, include: { school: { select: { email: true } } } })
+      : await prisma.student.findFirst({ where: { id: payload.studentId, schoolId }, include: { school: { select: { email: true } } } });
     if (!student) {
       const error = new Error("Student not found");
       error.statusCode = 404;
       throw error;
     }
+    const context = await resolveAcademicContext(schoolId, payload);
 
     const invoiceIds = Array.isArray(payload.invoiceIds)
       ? payload.invoiceIds.filter(Boolean)
@@ -365,8 +641,32 @@ export const financeService = {
 
     const invoiceDue = invoices.reduce((sum, invoice) => sum.plus(toDecimal(invoice.outstandingBalance || invoice.totalAmount)), new Prisma.Decimal(0));
     const feeDue = fees.reduce((sum, fee) => sum.plus(toDecimal(fee.outstandingBalance || fee.amount)), new Prisma.Decimal(0));
-    const requestedAmount = payload.amount !== undefined && payload.amount !== null ? toDecimal(payload.amount) : invoiceDue.plus(feeDue);
-    const amount = toDecimal(requestedAmount);
+    const selectedFee = payload.feeStructureId
+      ? await resolvePublicFee(schoolId, payload.feeStructureId)
+      : null;
+    const configuredFeeLines = payload.feeItems
+      ? await resolvePublicFeeLines(schoolId, payload.feeItems)
+      : selectedFee
+      ? calculateConfiguredFeeLines({ feeStructures: [selectedFee], requestedItems: [{ feeStructureId: selectedFee.id, quantity: 1 }] })
+      : [];
+    const applicationFee = isApplicationPayment
+      ? selectedFee || await resolveApplicationFeeStructure(schoolId)
+      : null;
+    const configuredFee = selectedFee || applicationFee;
+    if (isApplicationPayment && !applicationFee) {
+      const error = new Error("Application fee is not configured for this school");
+      error.statusCode = 400;
+      throw error;
+    }
+    const requestedAmount = payload.amount !== undefined && payload.amount !== null
+      ? payload.amount
+      : invoiceDue.plus(feeDue);
+    const configuredLinesTotal = configuredFeeLines.reduce((sum, line) => sum.plus(line.lineTotal), new Prisma.Decimal(0));
+    const amount = configuredFeeLines.length
+      ? configuredLinesTotal
+      : configuredFee
+      ? resolveConfiguredPaymentAmount({ feeStructure: configuredFee, requestedAmount })
+      : resolveApplicationPaymentAmount({ applicationFee, requestedAmount });
 
     if (amount.lte(0)) {
       const error = new Error("Amount must be a positive number");
@@ -386,8 +686,16 @@ export const financeService = {
         amount,
         paidAt: new Date(),
         reference: payload.reference || `PAY-${crypto.randomBytes(4).toString("hex").toUpperCase()}`,
-        note: payload.note || null,
-        createdById: user.id,
+        note: payload.note || (configuredFee ? configuredFee.feeCategory?.name : null),
+        createdById: user.id || null,
+        paymentLines: configuredFeeLines.length
+          ? { create: configuredFeeLines.map((line) => ({
+            feeStructureId: line.fee.id,
+            quantity: line.quantity,
+            unitAmount: line.unitAmount,
+            lineTotal: line.lineTotal,
+          })) }
+          : undefined,
       },
       include: paymentInclude,
     }));
@@ -399,12 +707,24 @@ export const financeService = {
       studentFeeIds,
       schoolId,
       totalDue: invoiceDue.plus(feeDue).toFixed(2),
+      ...(applicationFee ? { applicationFeeId: applicationFee.id } : {}),
+      ...(configuredFee ? { feeStructureId: configuredFee.id, feeName: configuredFee.feeCategory?.name || "School fee" } : {}),
+      ...(configuredFeeLines.length ? {
+        feeItems: configuredFeeLines.map((line) => ({
+          feeStructureId: line.fee.id,
+          feeName: line.fee.feeCategory?.name || "School fee",
+          quantity: line.quantity,
+          unitAmount: line.unitAmount.toFixed(2),
+          lineTotal: line.lineTotal.toFixed(2),
+        })),
+      } : {}),
+      ...(isApplicationPayment ? { paymentType: "application_fee", studentCode: payload.studentCode } : {}),
     };
 
     const session = await paystackService.initializePayment({
       amount,
-      email: student.parentEmail || user.email,
-      userId: user.id,
+      email: student.parentEmail || user.email || student.school.email,
+      userId: user.id || null,
       reference: payment.reference,
       metadata,
       callbackUrl: payload.callbackUrl,
@@ -544,13 +864,34 @@ export const financeService = {
 
   getParentFees: async (user, query = {}) => {
     const schoolId = getSchoolId(user);
-    const context = await resolveAcademicContext(schoolId, query);
+    const studentCode = String(query.studentCode || "").trim();
+    const applicationFee = await resolveApplicationFeeStructure(schoolId);
     const children = await parentAccessService.listChildren(user.id, schoolId);
     const requestedStudentId = String(query.studentId || "").trim();
-    const selectedChild = requestedStudentId ? await parentAccessService.assertStudentAccess(user.id, requestedStudentId, schoolId) : children[0] || null;
+    const selectedChild = studentCode
+      ? await parentAccessService.resolveStudentByCode(user.id, studentCode, schoolId)
+      : requestedStudentId
+      ? await parentAccessService.assertStudentAccess(user.id, requestedStudentId, schoolId)
+      : children[0] || null;
     if (!selectedChild) {
-      return { student: null, fees: [], payments: [], summary: { totalDue: 0, totalPaid: 0, outstandingFees: 0 } };
+      return { student: null, children, fees: [], payments: [], feeStructures: [], applicationFee, applicationPayment: null, summary: { totalDue: 0, totalPaid: 0, outstandingFees: 0 } };
     }
+
+    if (studentCode) {
+      return {
+        student: selectedChild,
+        children: [selectedChild],
+        fees: [],
+        invoices: [],
+        payments: [],
+        feeStructures: [],
+        applicationFee,
+        applicationPayment: null,
+        summary: { totalDue: 0, totalPaid: 0, outstandingFees: 0 },
+      };
+    }
+
+    const context = await resolveAcademicContext(schoolId, query);
 
     const [fees, invoices, payments, structures] = await Promise.all([
       prisma.studentFee.findMany({ where: { schoolId, ...context, studentId: selectedChild.id }, include: { feeStructure: { include: { feeCategory: true } } }, orderBy: { createdAt: "desc" } }),
@@ -568,7 +909,18 @@ export const financeService = {
     const summary = normalizeRole(user.role) === "parent"
       ? { totalDue, totalPaid, outstandingFees: totalDue.gt(totalPaid) ? totalDue.minus(totalPaid) : new Prisma.Decimal(0) }
       : await calculateTotals(schoolId, context);
-    return { student: selectedChild, children, fees, invoices, payments: mappedPayments, feeStructures: structures, summary };
+    const applicationPayment = mappedPayments.find((payment) => payment.note === "Admission application fee") || null;
+    return {
+      student: selectedChild,
+      children,
+      fees,
+      invoices,
+      payments: mappedPayments,
+      feeStructures: structures,
+      applicationFee,
+      applicationPayment,
+      summary,
+    };
   },
 
   getAdminWallet: async (user) => {
@@ -687,6 +1039,8 @@ export const financeService = {
 
     if (updated.alreadyProcessed) return mapPayment(updated.payment);
 
+    await syncAdmissionVerificationMetadata(reference, verificationData);
+
     const student = await prisma.student.findUnique({ where: { id: existing.studentId } });
     await notifyUser({ schoolId, userId: student?.parentId || existing.createdById, title: "Payment successful", body: `Payment ${reference} has been verified.` });
     await notifyUser({ schoolId, userId: existing.createdById, title: "Receipt available", body: `Receipt for ${reference} is now available.` });
@@ -732,21 +1086,6 @@ export const financeService = {
 
     if (payload?.event === "charge.success") {
       const verified = await paystackService.verifyTransaction(reference);
-      if (String(verified?.status || "").toLowerCase() !== "success") {
-        throw Object.assign(new Error("Paystack transaction was not successful"), { statusCode: 502 });
-      }
-
-      const payment = await prisma.payment.findUnique({ where: { reference }, select: { amount: true } });
-      if (!payment) {
-        throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
-      }
-
-      const providerAmount = Number(verified.amount);
-      const localAmountKobo = toDecimal(payment.amount).mul(100).toNumber();
-      if (!Number.isFinite(providerAmount) || providerAmount !== localAmountKobo) {
-        throw Object.assign(new Error("Paystack transaction amount does not match the payment record"), { statusCode: 409 });
-      }
-
       return financeService.processVerifiedPayment(reference, verified);
     }
 
@@ -757,3 +1096,4 @@ export const financeService = {
     return payload;
   },
 };
+

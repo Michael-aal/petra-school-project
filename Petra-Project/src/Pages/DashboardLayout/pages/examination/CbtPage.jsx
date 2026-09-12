@@ -1,52 +1,96 @@
-
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { request } from "../../../../services/apiClient";
+import "../page-styles/CbtPage.css";
 
 function CbtPage() {
     const [searchParams] = useSearchParams();
-    const [quizUrl, setQuizUrl] = useState("");
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const applicantId = searchParams.get("applicantId") || "";
     const assessmentId = searchParams.get("assessmentId") || "";
 
-    useEffect(() => {
-        if (!applicantId || !assessmentId) {
-            setError("This assessment link is missing its application details.");
+    const startExam = async () => {
+        if (!assessmentId) {
+            setError("This assessment link is missing its exam reference.");
             return;
         }
 
-        let active = true;
-        request("/api/assessments/start", {
-            method: "POST",
-            body: JSON.stringify({ applicantId, assessmentId }),
-        })
-            .then((response) => {
-                if (active) setQuizUrl(response.quizUrl || response.url || "");
-            })
-            .catch((requestError) => {
-                if (active) setError(requestError.data?.message || requestError.message || "Unable to start the assessment.");
+        // The exam reference is also accepted by the backend applicant lookup.
+        // This keeps the Start Exam button usable even if the applicantId was
+        // lost while navigating to the CBT page.
+        const startApplicantId = applicantId || assessmentId;
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const response = await request("/api/assessments/start", {
+                method: "POST",
+                body: JSON.stringify({
+                    applicantId: startApplicantId,
+                    assessmentId,
+                }),
             });
 
-        return () => {
-            active = false;
-        };
-    }, [applicantId, assessmentId]);
+            const payload = response?.data || response || {};
+            const quizUrl =
+                payload.quizUrl ||
+                payload.url ||
+                payload.launchUrl ||
+                payload.launch_url ||
+                payload.data?.quizUrl ||
+                payload.data?.url ||
+                payload.data?.launchUrl ||
+                payload.data?.launch_url ||
+                "";
 
-    if (error) return <div className="dashboard-page">{error}</div>;
-    if (!quizUrl) return <div className="dashboard-page">Preparing your assessment...</div>;
+            if (!quizUrl || !/^https?:\/\//i.test(quizUrl)) {
+                setError("No valid QuizLab assessment URL was returned by the backend.");
+                return;
+            }
+
+            window.location.assign(quizUrl);
+        } catch (requestError) {
+            setError(requestError.data?.message || requestError.message || "Unable to start the assessment.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <iframe
-            src={quizUrl}
-            title="Entrance assessment"
-            width="100%"
-            height="100%"
-            style={{ border: "none", minHeight: "100vh" }}
-        />
-    );
+        <div className="dashboard-page cbt-page simple">
+            <div className="cbt-page-shell">
+                <section className="cbt-card">
+                    <div className="cbt-card-header">
+                        <span className="cbt-logo">PETRA SCHOOL</span>
+                        <span className="cbt-kicker">Entrance Examination</span>
+                    </div>
 
+                    <div className="cbt-card-body">
+                        <div className="cbt-check-icon" aria-hidden="true">✓</div>
+                        <h1>Application submitted successfully.</h1>
+                        <p className="cbt-subtitle">Your examination is ready.</p>
+
+                        <div className="cbt-instructions">
+                            <p>Please read the following instructions carefully:</p>
+                            <ol>
+                                <li>Click START EXAM to launch your assessment.</li>
+                                <li>Complete the exam in one session.</li>
+                                <li>Do not share your test link or personal details.</li>
+                            </ol>
+                        </div>
+
+                        {error ? <div className="cbt-error">{error}</div> : null}
+
+                        <button className="cbt-primary-btn" type="button" onClick={startExam} disabled={loading || !assessmentId}>
+                            {loading ? "Preparing..." : "START EXAM"}
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    );
 }
 
 export default CbtPage;
