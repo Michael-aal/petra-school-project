@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { request } from "../../../../services/apiClient";
@@ -26,9 +25,20 @@ function CbtPage() {
                 body: JSON.stringify({ applicantId, assessmentId }),
             });
 
-            const quizUrl = response.quizUrl || response.url || "";
-            if (!quizUrl) {
-                setError("No assessment URL was returned by the backend.");
+            const payload = response?.data || response || {};
+            const quizUrl =
+                payload.quizUrl ||
+                payload.url ||
+                payload.launchUrl ||
+                payload.launch_url ||
+                payload.data?.quizUrl ||
+                payload.data?.url ||
+                payload.data?.launchUrl ||
+                payload.data?.launch_url ||
+                "";
+
+            if (!quizUrl || !/^https?:\/\//i.test(quizUrl)) {
+                setError("No valid QuizLab assessment URL was returned by the backend.");
                 return;
             }
 
