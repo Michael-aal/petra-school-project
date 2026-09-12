@@ -3,6 +3,7 @@ import { env } from "./utils/env.js";
 import app from "./app.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import { closeQueues } from "./jobs/queue.js";
+import { closeRateLimiter } from "./middleware/distributedRateLimiter.js";
 
 let server;
 let isShuttingDown = false;
@@ -31,6 +32,7 @@ const shutdown = async (signal) => {
       });
     }
     await closeQueues();
+    await closeRateLimiter();
     await disconnectDB();
     clearTimeout(forceExit);
     process.exit(0);

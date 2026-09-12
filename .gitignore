@@ -2,4 +2,11 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+# Runtime exports, backups, and one-off diagnostics can contain student PII or credentials.
+/backend/backups/
+/backend/tmp/
+/current-applicants.txt
+/current-payments.txt
+/recovered-applicants.txt
+
 /generated/prisma

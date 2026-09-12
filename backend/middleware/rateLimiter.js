@@ -65,3 +65,10 @@ export const apiRateLimiter = createRateLimiter({
   max: 100,
   message: "Rate limit exceeded. Please slow down your requests.",
 });
+
+export const publicWorkflowRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyGenerator: (req) => `${req.ip || "unknown"}:${req.baseUrl}${req.path}`,
+  message: "Too many public workflow requests. Please try again later.",
+});

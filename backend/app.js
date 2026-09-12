@@ -24,7 +24,8 @@ import classmarkerRoutes from "./routes/classmarkerRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import assessmentsRoutes from "./routes/assessmentsRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-import { originLock } from "./middleware/originLock.js";
+import { apiRateLimiter } from "./middleware/rateLimiter.js";
+import { distributedApiRateLimiter } from "./middleware/distributedRateLimiter.js";
 import { prisma } from "./config/db.js";
 import { checkQueueHealth } from "./jobs/queue.js";
 
@@ -46,20 +47,12 @@ const isLocalDevOrigin = (origin) => {
   }
 };
 
-const isCodespacesOrigin = (origin) => {
-  try {
-    const url = new URL(origin);
-    return url.protocol === "https:" && /^[a-z0-9-]+-\d+\.app\.github\.dev$/i.test(url.hostname);
-  } catch {
-    return false;
-  }
-};
-
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const normalizedOrigin = origin.trim().replace(/\/+$/, "");
-    if (allowedOrigins.includes(normalizedOrigin) || isLocalDevOrigin(normalizedOrigin) || isCodespacesOrigin(normalizedOrigin)) {
+    const allowDevelopmentOrigin = process.env.NODE_ENV !== "production" && isLocalDevOrigin(normalizedOrigin);
+    if (allowedOrigins.includes(normalizedOrigin) || allowDevelopmentOrigin) {
       return callback(null, true);
     }
     return callback(new Error(`CORS blocked for origin: ${origin}`));
@@ -89,7 +82,7 @@ app.use(requestId);
 app.use(express.json({
   limit: "1mb",
   verify: (req, _res, buf) => {
-    if (req.originalUrl === "/api/paystack/webhook") req.rawBody = buf;
+    if (["/api/paystack/webhook", "/api/classmarker/webhook"].includes(req.originalUrl)) req.rawBody = buf;
   },
 }));
 app.use(express.urlencoded({ extended: true }));
@@ -111,7 +104,10 @@ app.get("/health", async (_req, res) => {
     return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
   }
 });
-app.use(originLock);
+// CORS is an explicit browser policy, not an authentication boundary.  Requiring
+// a secret header from browsers both leaks that secret and blocks payment providers.
+// Protected routes authenticate with JWTs; webhooks authenticate their signatures.
+app.use("/api", process.env.NODE_ENV === "production" ? distributedApiRateLimiter() : apiRateLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/academic", academicRoutes);

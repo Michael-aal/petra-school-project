@@ -6,6 +6,32 @@ import crypto from "crypto";
 
 const teacherOrAdminRole = ["teacher", "principal"];
 
+const verifyQuizlabWebhook = (req) => {
+  const secret = process.env.QUIZLAB_WEBHOOK_SECRET;
+  if (!secret) {
+    const error = new Error("QuizLab webhook secret is not configured");
+    error.statusCode = 503;
+    throw error;
+  }
+
+  const supplied = String(req.get("x-quizlab-signature") || req.get("x-webhook-signature") || "");
+  const rawBody = req.rawBody;
+  if (!supplied || !rawBody) {
+    const error = new Error("Invalid QuizLab webhook signature");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  const expectedBuffer = Buffer.from(expected, "utf8");
+  const suppliedBuffer = Buffer.from(supplied, "utf8");
+  if (expectedBuffer.length !== suppliedBuffer.length || !crypto.timingSafeEqual(expectedBuffer, suppliedBuffer)) {
+    const error = new Error("Invalid QuizLab webhook signature");
+    error.statusCode = 401;
+    throw error;
+  }
+};
+
 const normalizeRemoteId = (remote) =>
   String(
     remote?.id ??
@@ -1459,6 +1485,7 @@ export const quizlabWebhookHandler = async (
   next
 ) => {
   try {
+    verifyQuizlabWebhook(req);
     const payload = req.body || {};
     const assessmentId =
       payload?.assessmentId ||

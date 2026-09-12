@@ -3,6 +3,29 @@ import { createHmac, timingSafeEqual, randomBytes } from "crypto";
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE = "https://api.paystack.co";
 
+const resolveCallbackUrl = (callbackUrl) => {
+  if (!callbackUrl) return process.env.PAYSTACK_CALLBACK_URL || undefined;
+
+  let supplied;
+  try {
+    supplied = new URL(callbackUrl);
+  } catch {
+    const error = new Error("Payment callback URL is invalid");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const allowedOrigins = [process.env.CLIENT_URL, process.env.CORS_ORIGIN]
+    .filter(Boolean)
+    .map((value) => new URL(value).origin);
+  if (!allowedOrigins.includes(supplied.origin)) {
+    const error = new Error("Payment callback URL is not allowed");
+    error.statusCode = 400;
+    throw error;
+  }
+  return supplied.toString();
+};
+
 const buildReference = () => `petra_ref_${Date.now()}_${randomBytes(4).toString("hex")}`;
 
 const getPaystackHeaders = () => {
@@ -35,7 +58,7 @@ export const paystackService = {
         amount: Math.round(parsedAmount * 100),
         reference: reference || buildReference(),
         metadata: { userId, ...metadata },
-        callback_url: callbackUrl || process.env.PAYSTACK_CALLBACK_URL || undefined,
+        callback_url: resolveCallbackUrl(callbackUrl),
       }),
     });
 
