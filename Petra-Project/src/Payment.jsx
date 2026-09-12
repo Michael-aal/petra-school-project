@@ -48,7 +48,7 @@ function Payment() {
 
     setVerifyingStudent(true);
     try {
-      const response = await financeApi.publicStudentLookup(code);
+      const response = await financeApi.schoolStudentLookup(code);
       const student = response?.student;
       const fees = Array.isArray(response?.feeStructures) ? response.feeStructures : [];
 
@@ -94,8 +94,10 @@ function Payment() {
 
     setProcessingPayment(true);
     try {
-      const response = await financeApi.createPublicPayment({
-        studentCode: verifiedStudent.studentCode || studentVerificationCode.trim(),
+      const response = await financeApi.createSchoolPayment({
+        studentId: verifiedStudent.id,
+        amount: totalAmount,
+        paymentType: "school_fee",
         feeItems: selectedFeeItems,
       });
 
