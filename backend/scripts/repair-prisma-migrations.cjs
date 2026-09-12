@@ -95,9 +95,18 @@ function preserveLegacyColumns(sql) {
     );
   }
 
-  // Clean up ALTER TABLE statements left with a dangling comma after a
-  // preserved legacy DROP COLUMN clause.
-  safeSql = safeSql.replace(/,\\s*;/g, ";");
+  // If a table change contained only legacy DROP COLUMN clauses, preserving
+  // those columns leaves an empty ALTER TABLE statement. Remove only those
+  // exact empty statements; never use a cross-statement wildcard here because
+  // that can accidentally delete real ALTER TABLE operations such as Admin's
+  // new columns.
+  safeSql = safeSql.replace(
+    /ALTER TABLE\s+"[^"]+"\s+(?:(?:\/\* Preserved legacy column [^*]*\*\/\s*)+);/g,
+    ""
+  );
+
+  // Remove a dangling comma left before a statement terminator.
+  safeSql = safeSql.replace(/,\s*;/g, ";");
 
   return safeSql;
 }
