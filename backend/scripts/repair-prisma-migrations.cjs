@@ -75,6 +75,11 @@ function preserveLegacyColumns(sql) {
     ["InstallmentPlan", "startDate"],
     ["StudentMedicalInfo", "insuranceNumber"],
     ["StudentMedicalInfo", "insuranceProvider"],
+    // Payment.paymentMethodId already exists in the live database and was
+    // introduced by the earlier payment-method migration. The current Prisma
+    // model no longer maps it, but removing it would discard existing schema
+    // and could break payment compatibility. Preserve it as a legacy column.
+    ["Payment", "paymentMethodId"],
   ];
 
   let safeSql = sql;
