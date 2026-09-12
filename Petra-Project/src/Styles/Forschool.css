@@ -1058,20 +1058,40 @@ body.dark .fparent .marketing-card:hover {
   text-align: center;
 }
 
+.marketing-page.fsos .section-intro .landing-kicker {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+
+.marketing-page.fsos .section-intro .landing-kicker::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 2px;
+  background: #ff6600;
+  border-radius: 999px;
+}
+
 .marketing-page.fsos .section-intro h2 {
-  margin: 6px 0 0;
-  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 3.8vw, 2.8rem);
   letter-spacing: -0.04em;
   font-weight: 800;
   color: #111827;
+  line-height: 1.15;
 }
 
 .marketing-page.fsos .section-subtext {
-  margin: 8px auto 0;
-  max-width: 600px;
+  margin: 10px auto 0;
+  max-width: 560px;
   color: var(--school-muted);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .marketing-page.fsos .feature-grid {
@@ -1080,11 +1100,44 @@ body.dark .fparent .marketing-card:hover {
   gap: 20px;
 }
 
+
 .marketing-page.fsos .highlight-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
+
+/* Highlight section: subtle tinted band using box-shadow bleed trick */
+.marketing-page.fsos .marketing-highlight-section {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 48px 40px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Highlight cards: crisper, tighter */
+.marketing-page.fsos .highlight-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: none;
+}
+
+.marketing-page.fsos .highlight-card .marketing-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.marketing-page.fsos .highlight-card .marketing-card-text {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 
 .marketing-page.fsos .marketing-card {
   min-height: auto;
