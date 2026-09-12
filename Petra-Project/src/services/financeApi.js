@@ -9,6 +9,8 @@ export const financeApi = {
   createPayment: (payload) => request("/api/finance/payments", { method: "POST", body: JSON.stringify(payload) }),
   createPublicPayment: (payload) => request("/api/finance/public/payments", { method: "POST", body: JSON.stringify(payload) }),
   publicStudentLookup: (studentCode) => request(`/api/finance/public/lookup?studentCode=${encodeURIComponent(studentCode)}`),
+  schoolStudentLookup: (studentCode) => request(`/api/finance/payments/lookup?studentCode=${encodeURIComponent(studentCode)}`),
+  createSchoolPayment: (payload) => request("/api/finance/payments/checkout", { method: "POST", body: JSON.stringify(payload) }),
   updatePayment: (id, payload) => request(`/api/finance/payments/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   deletePayment: (id) => request(`/api/finance/payments/${id}`, { method: "DELETE" }),
   invoices: () => request("/api/finance/invoices"),
