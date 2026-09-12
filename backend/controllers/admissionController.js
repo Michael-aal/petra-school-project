@@ -1,4 +1,5 @@
 import { admissionService } from "../services/admissionService.js";
+import { prepareAdmissionForFeePayment } from "../services/admissionEnrollmentService.js";
 
 const getAdmissionSchoolId = (req) => {
   const candidates = [
@@ -81,8 +82,16 @@ export const createAdmission = async (req, res, next) => {
 
 export const enrollAdmission = async (req, res, next) => {
   try {
-    const admission = await admissionService.enroll(req.params.id, req.user.id, req.body || {}, req.schoolId);
-    return res.status(200).json({ success: true, message: "Applicant enrolled successfully", admission });
+    const admission = await prepareAdmissionForFeePayment(
+      req.params.id,
+      req.body || {},
+      req.schoolId,
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Applicant prepared for school-fee payment",
+      admission,
+    });
   } catch (error) {
     return next(error);
   }
