@@ -11,7 +11,6 @@ const dotenv = require("dotenv");
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const backendDir = path.resolve(__dirname, "..");
-const prismaCli = process.platform === "win32" ? "npx.cmd" : "npx";
 const outputPath = path.join(
   backendDir,
   "prisma",
@@ -23,8 +22,13 @@ function runPrismaDiff() {
     throw new Error("DATABASE_URL is not loaded. Check backend/.env.");
   }
 
+  // Windows can return EINVAL when spawnSync launches npx.cmd directly with
+  // shell:false. Use the Windows command shell so the same utility works from
+  // cmd.exe, PowerShell, and VS Code terminals.
+  const command = process.platform === "win32" ? "npx.cmd" : "npx";
+
   const result = spawnSync(
-    prismaCli,
+    command,
     [
       "prisma",
       "migrate",
@@ -38,12 +42,16 @@ function runPrismaDiff() {
     {
       cwd: backendDir,
       encoding: "utf8",
-      shell: false,
+      shell: process.platform === "win32",
       maxBuffer: 20 * 1024 * 1024,
+      windowsHide: true,
     }
   );
 
-  if (result.error) throw result.error;
+  if (result.error) {
+    throw result.error;
+  }
+
   if (result.status !== 0) {
     throw new Error(
       `Prisma migrate diff failed (exit ${result.status}).\n${result.stderr || result.stdout}`
@@ -57,19 +65,35 @@ function preserveLegacyColumns(sql) {
   // These columns are present in older DB versions but are intentionally no
   // longer represented by the current Prisma models. Keeping them is safer
   // than silently deleting historical data during recovery.
-  const legacyDrops = [
-    /ALTER TABLE "Admin" DROP COLUMN "name";\s*/g,
-    /ALTER TABLE "Teacher" DROP COLUMN "name";\s*/g,
-    /ALTER TABLE "InstallmentPlan" DROP COLUMN "endDate";\s*/g,
-    /ALTER TABLE "InstallmentPlan" DROP COLUMN "startDate";\s*/g,
-    /ALTER TABLE "StudentMedicalInfo" DROP COLUMN "insuranceNumber";\s*/g,
-    /ALTER TABLE "StudentMedicalInfo" DROP COLUMN "insuranceProvider";\s*/g,
+  //
+  // Prisma may combine multiple DROP COLUMN clauses into one ALTER TABLE, so
+  // remove only the individual legacy clauses rather than relying on a whole
+  // statement matching exactly.
+  const legacyColumns = [
+    ["Admin", "name"],
+    ["Teacher", "name"],
+    ["InstallmentPlan", "endDate"],
+    ["InstallmentPlan", "startDate"],
+    ["StudentMedicalInfo", "insuranceNumber"],
+    ["StudentMedicalInfo", "insuranceProvider"],
   ];
 
   let safeSql = sql;
-  for (const pattern of legacyDrops) {
-    safeSql = safeSql.replace(pattern, "-- Preserved legacy column during migration repair.\n");
+
+  for (const [table, column] of legacyColumns) {
+    const pattern = new RegExp(
+      `DROP COLUMN\\s+"${column}"(?:,\\s*|\\s*(?=;))`,
+      "g"
+    );
+    safeSql = safeSql.replace(
+      pattern,
+      `/* Preserved legacy column ${table}.${column}; Prisma no longer maps it. */ `
+    );
   }
+
+  // Clean up ALTER TABLE statements left with a dangling comma after a
+  // preserved legacy DROP COLUMN clause.
+  safeSql = safeSql.replace(/,\\s*;/g, ";");
 
   return safeSql;
 }
