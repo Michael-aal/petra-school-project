@@ -55,57 +55,123 @@ function runPrismaDiff() {
   return result.stdout;
 }
 
+function splitAlterActions(actionsSql) {
+  const actions = [];
+  let start = 0;
+  let depth = 0;
+  let quote = null;
+  let lineComment = false;
+  let blockComment = false;
+
+  for (let i = 0; i < actionsSql.length; i += 1) {
+    const ch = actionsSql[i];
+    const next = actionsSql[i + 1];
+
+    if (lineComment) {
+      if (ch === "\n") lineComment = false;
+      continue;
+    }
+
+    if (blockComment) {
+      if (ch === "*" && next === "/") {
+        blockComment = false;
+        i += 1;
+      }
+      continue;
+    }
+
+    if (quote) {
+      if (ch === quote) {
+        if (quote === '"' && next === '"') {
+          i += 1;
+        } else {
+          quote = null;
+        }
+      }
+      continue;
+    }
+
+    if (ch === "-" && next === "-") {
+      lineComment = true;
+      i += 1;
+      continue;
+    }
+
+    if (ch === "/" && next === "*") {
+      blockComment = true;
+      i += 1;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === "(") depth += 1;
+    else if (ch === ")") depth = Math.max(0, depth - 1);
+    else if (ch === "," && depth === 0) {
+      actions.push(actionsSql.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+
+  const last = actionsSql.slice(start).trim();
+  if (last) actions.push(last);
+  return actions;
+}
+
 function preserveLegacyColumns(sql) {
   // These columns are present in older DB versions but are intentionally no
   // longer represented by the current Prisma models. Keeping them is safer
   // than silently deleting historical data during recovery.
-  const legacyColumns = [
-    ["Admin", "name"],
-    ["Teacher", "name"],
-    ["InstallmentPlan", "endDate"],
-    ["InstallmentPlan", "startDate"],
-    ["StudentMedicalInfo", "insuranceNumber"],
-    ["StudentMedicalInfo", "insuranceProvider"],
-    ["Payment", "paymentMethodId"],
-  ];
+  const legacyColumns = new Set([
+    "Admin.name",
+    "Teacher.name",
+    "InstallmentPlan.endDate",
+    "InstallmentPlan.startDate",
+    "StudentMedicalInfo.insuranceNumber",
+    "StudentMedicalInfo.insuranceProvider",
+    "Payment.paymentMethodId",
+  ]);
 
-  let safeSql = sql;
+  // Prisma can emit multiple ALTER TABLE actions in one statement. Instead of
+  // regex-deleting fragments (which can leave `ALTER TABLE "X";` or a broken
+  // comma list), process each ALTER TABLE statement as a list of top-level
+  // actions and remove only the exact legacy DROP COLUMN action.
+  const alterTablePattern = /ALTER TABLE\s+"([^"]+)"\s+([\s\S]*?);/gi;
 
-  // Remove only the individual legacy DROP COLUMN clauses. Prisma can put
-  // several ALTER TABLE actions into one statement, so deleting a whole
-  // ALTER TABLE block here can accidentally remove real schema changes.
-  for (const [table, column] of legacyColumns) {
-    const pattern = new RegExp(
-      `DROP COLUMN\\s+"${column}"(?:\\s*,\\s*|\\s*(?=;))`,
-      "g"
-    );
-    safeSql = safeSql.replace(pattern, "");
-  }
+  let safeSql = sql.replace(alterTablePattern, (full, table, actionsSql) => {
+    const actions = splitAlterActions(actionsSql);
+    const keptActions = actions.filter((action) => {
+      const match = action.match(/^DROP\s+COLUMN\s+"([^"]+)"$/i);
+      if (!match) return true;
+      return !legacyColumns.has(`${table}.${match[1]}`);
+    });
 
-  // A DROP COLUMN may have been the only action in an ALTER TABLE statement.
-  // In that case Prisma's generated SQL becomes `ALTER TABLE "X";`, which is
-  // invalid PostgreSQL. Remove empty ALTER TABLE statements before execution.
-  // The expression deliberately allows whitespace and comments, but requires
-  // the statement to contain no actual ALTER TABLE action.
-  safeSql = safeSql.replace(
-    /ALTER TABLE\\s+"[^"]+"\\s*(?:(?:\/\\*[\\s\\S]*?\\*\/|--[^\\r\\n]*(?:\\r?\\n|$))\\s*)*;/g,
-    ""
-  );
+    if (keptActions.length === 0) {
+      return "";
+    }
 
-  // Remove any dangling comma before a statement terminator left by clause
-  // removal. This is intentionally narrow and cannot consume real actions.
-  safeSql = safeSql.replace(/,\\s*;/g, ";");
+    return `ALTER TABLE "${table}" ${keptActions.join(",\n")};`;
+  });
 
-  // Final defensive check: this exact form can never be valid PostgreSQL and
-  // should never reach apply-prisma-repair.cjs.
-  const emptyAlter = /ALTER TABLE\\s+"[^"]+"\\s*(?:\/\\*[\\s\\S]*?\\*\/\\s*)*;/i;
+  // A final defensive check: this exact form can never be valid PostgreSQL.
+  const emptyAlter = /ALTER TABLE\s+"[^"]+"\s*;/i;
   if (emptyAlter.test(safeSql)) {
     throw new Error(
       "Generated repair SQL still contains an empty ALTER TABLE statement. Refusing to write unsafe SQL."
     );
   }
 
-  return safeSql.trim() + "\\n";
+  // Also reject a dangling comma immediately before a statement terminator.
+  if (/,\s*;/m.test(safeSql)) {
+    throw new Error(
+      "Generated repair SQL contains a dangling comma before a statement terminator. Refusing to write unsafe SQL."
+    );
+  }
+
+  return safeSql.trim() + "\n";
 }
 
 function main() {
