@@ -9,6 +9,7 @@ import {
   listTeachers,
   listUsers,
   listResults,
+  syncAdminResults,
 } from "../controllers/adminController.js";
 import {
   adminAttendanceListValidator,
@@ -59,6 +60,7 @@ router.get(
   adminAttendanceListValidator,
   listAuditLogs,
 );
+router.post("/results/sync", protect, requirePrincipal, syncAdminResults);
 router.get("/results", protect, requirePrincipal, listResults);
 // Relational school connections used by the admin, staff, and parent dashboards.
 router.get(
