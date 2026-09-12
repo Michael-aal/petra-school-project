@@ -1,340 +1,190 @@
-/* =========================
-   BASE LAYOUT
-========================= */
-
-.ctc-page {
-  min-height: 100vh;
-  padding: 6rem 1.5rem;
-  background: #f9fafb;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
-  font-family: sans-serif;
+.contact-page {
+  background: transparent;
 }
 
-body.dark .ctc-page {
-  background: #000000;
-  color: #f5f5f7;
+.contact-section {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
 }
 
-body.dark .ctc-header h2 {
-  color: #6d5bff;
-}
-
-body.dark .ctc-header h3,
-body.dark .ctc-info h2,
-body.dark .ctc-formBox h2,
-body.dark .ctc-infoCard h3,
-body.dark .ctc-field label {
-  color: #f5f5f7;
-}
-
-body.dark .ctc-header p,
-body.dark .ctc-infoCard p,
-body.dark .ctc-infoCard span,
-body.dark .ctc-formBox p,
-body.dark .ctc-supportBox p {
-  color: var(--app-text-muted);
-}
-
-body.dark .ctc-info,
-body.dark .ctc-formBox,
-body.dark .ctc-supportBox,
-body.dark .ctc-infoCard,
-body.dark .ctc-field input,
-body.dark .ctc-field textarea,
-body.dark .ctc-field select {
-  background: linear-gradient(135deg, rgba(17, 17, 24, 0.98), rgba(10, 12, 20, 0.98));
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #f5f5f7;
-}
-
-body.dark .ctc-infoCard:hover {
-  background: #161616;
-}
-
-body.dark .ctc-field input:focus,
-body.dark .ctc-field textarea:focus,
-body.dark .ctc-field select:focus {
-  border-color: #6d5bff;
-  box-shadow: 0 0 0 3px rgba(109, 91, 255, 0.18);
-}
-
-body.dark .ctc-btn {
-  background: linear-gradient(135deg, #5b5bff, #6d5bff);
-  color: #ffffff;
-}
-
-/* HEADER */
-
-.ctc-header {
-  text-align: center;
-  max-width: 700px;
-}
-
-.ctc-header h2 {
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  color: #6366f1;
-  font-weight: 700;
-}
-
-.ctc-header h3 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0.5rem 0;
-  color: #111827;
-  line-height: 1.2;
-}
-
-.ctc-header p {
-  color: #6b7280;
-  line-height: 1.6;
-  font-size: 1rem;
-}
-
-/* =========================
-   MAIN LAYOUT (2 COLUMN)
-========================= */
-
-.ctc-layout {
-  width: 100%;
-  max-width: 1200px;
+.contact-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 24px;
+  width: 100%;
 }
 
-/* =========================
-   LEFT SIDE (INFO)
-========================= */
-
-.ctc-info {
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
+.contact-card {
+  background: #ffffff;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
 }
 
-.ctc-info h2 {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-  color: #111827;
+.contact-details h3,
+.contact-form-card h3 {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+  letter-spacing: -0.04em;
 }
 
-/* INFO CARD */
-.ctc-infoCard {
+.contact-row {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+  gap: 14px;
+  padding: 14px 12px;
+  border-radius: 14px;
+  transition: background 0.2s ease;
 }
 
-.ctc-infoCard:hover {
-  background: #f3f4f6;
-  transform: translateY(-2px);
+.contact-row + .contact-row {
+  margin-top: 10px;
 }
 
-.ctc-icon {
-  width: 44px;
-  height: 44px;
-  display: flex;
+.contact-row:hover {
+  background: #f8fafc;
+}
+
+.contact-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #eef2ff;
-  border-radius: 10px;
-  color: #6366f1;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
   flex-shrink: 0;
 }
 
-.ctc-infoCard h3 {
+.contact-copy {
+  flex: 1;
+}
+
+.contact-copy h4 {
+  margin: 0 0 4px;
   font-size: 1rem;
-  margin: 0;
   color: #111827;
 }
 
-.ctc-infoCard p {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin: 2px 0;
-}
-
-.ctc-infoCard span {
-  font-size: 0.85rem;
-  color: #374151;
-}
-
-/* SUPPORT BOX */
-.ctc-supportBox {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  border-radius: 12px;
-  background: #111827;
-  color: white;
-}
-
-.ctc-supportBox h3 {
+.contact-copy p,
+.contact-copy span {
   margin: 0;
-  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #475569;
+  font-size: 0.9rem;
 }
 
-.ctc-supportBox p {
-  font-size: 0.9rem;
-  color: #d1d5db;
-  margin: 0.5rem 0 1rem;
+.support-box {
+  margin-top: 24px;
+  padding: 20px 18px;
+  background: #111827;
+  border-radius: 14px;
+  color: #ffffff;
+}
+
+.support-box h4 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.support-box p {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.7;
 }
 
 .ctc-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #60a5fa;
+  color: #93c5fd;
   font-weight: 600;
   text-decoration: none;
-  transition: 0.3s ease;
 }
 
 .ctc-link:hover {
   gap: 12px;
-  color: #93c5fd;
 }
 
-/* =========================
-   FORM BOX (RIGHT SIDE)
-========================= */
-
-.ctc-formBox {
-  background: white;
-  padding: 2rem;
-  height: fit-content;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+.contact-form-card > p {
+  margin: 0 0 18px;
+  color: #475569;
 }
 
-.ctc-formBox h2 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-}
-
-.ctc-formBox p {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-}
-
-/* ROW (Full Name + Email) */
-.ctc-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-/* FIELD */
-.ctc-field {
+.contact-form {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 1rem;
+  gap: 16px;
 }
 
-.ctc-field label {
-  font-size: 0.85rem;
-  font-weight: 600;
+.contact-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-field label {
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #374151;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-/* INPUTS */
-.ctc-field input,
-.ctc-field textarea,
-.ctc-field select {
+.contact-field input,
+.contact-field textarea,
+.contact-field select {
   width: 100%;
+  border: 1px solid #dfe7ee;
+  background: #ffffff;
+  border-radius: 12px;
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+  font: inherit;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus,
+.contact-field select:focus {
   outline: none;
-  font-size: 0.95rem;
-  transition: all 0.25s ease;
-  background: white;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
 }
 
-/* FOCUS EFFECT */
-.ctc-field input:focus,
-.ctc-field textarea:focus,
-.ctc-field select:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-  transform: translateY(-1px);
-}
-
-/* TEXTAREA */
-.ctc-field textarea {
-  min-height: 140px;
+.contact-field textarea {
+  min-height: 150px;
   resize: vertical;
 }
 
-/* =========================
-   BUTTON
-========================= */
-
-.ctc-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background: #4543B5;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+.contact-submit {
+  width: fit-content;
+  margin-top: 4px;
 }
 
-.ctc-btn:hover {
-  background: #4f46e5;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-/* TABLET / DESKTOP */
-@media (min-width: 1000px) {
-  .ctc-layout {
-    grid-template-columns: 1fr 1.2fr;
-    gap: 3rem;
-  }
-
-  .ctc-header h3 {
-    font-size: 3rem;
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media(min-width: 768px){
-      .ctc-row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* LARGE DESKTOP */
-@media (min-width: 1024px) {
-  .ctc-page {
-    padding: 6rem 2rem;
+@media (max-width: 640px) {
+  .contact-field-row {
+    grid-template-columns: 1fr;
   }
 
-  .ctc-formBox,
-  .ctc-info {
-    padding: 2.5rem;
+  .contact-card {
+    padding: 22px 18px;
+  }
+
+  .contact-submit {
+    width: 100%;
   }
 }
