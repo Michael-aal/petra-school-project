@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, LoaderCircle, Mail, Lock, Code2, UserRound, Briefcase, ImagePlus } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthShell from "./AuthShell";
-import { authApi, writeAuthToken } from "../../services/authApi";
+import { authApi, writeAuthToken, readAuthToken } from "../../services/authApi";
 import { getDashboardPathForRole, normalizeRole } from "../../utils/roleAccess";
-import { readAuthToken } from "../../services/authApi";
 import "../../Styles/Sigin/auth.css";
 
 const initialForm = { invitationCode: "", fullName: "", email: "", department: "", position: "", password: "", confirmPassword: "", profilePicture: "" };
@@ -59,9 +58,9 @@ export default function StaffRegister() {
           ...current,
           invitationCode: code,
           fullName: response?.invitation?.staffName || "",
-          email: response?.invitation?.email || "",
+          email: "",
           department: response?.invitation?.department || "",
-          position: response?.invitation?.role || "",
+          position: response?.invitation?.role || "Teacher",
         }));
         setErrors((e) => {
           const next = { ...e };
@@ -77,7 +76,6 @@ export default function StaffRegister() {
       }
     };
 
-    // If token present in query param, validate it and populate fields
     if (token) loadInvitation(token);
     else setCheckingSession(false);
   }, [token]);
@@ -94,9 +92,9 @@ export default function StaffRegister() {
       setForm((current) => ({
         ...current,
         fullName: response?.invitation?.staffName || "",
-        email: response?.invitation?.email || "",
+        email: "",
         department: response?.invitation?.department || "",
-        position: response?.invitation?.role || "",
+        position: response?.invitation?.role || "Teacher",
         invitationCode: code.trim(),
       }));
       setErrors((e) => {
@@ -126,6 +124,7 @@ export default function StaffRegister() {
     const next = {};
     const code = form.invitationCode?.trim();
     if (!code && !token) next.token = "Invitation code is required.";
+    if (!form.email?.trim()) next.email = "Email is required.";
     if (!form.password) next.password = "Password is required.";
     if (form.password && form.password.length < 8) next.password = "Password must be at least 8 characters.";
     if (form.password !== form.confirmPassword) next.confirmPassword = "Passwords do not match.";
@@ -138,9 +137,10 @@ export default function StaffRegister() {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
     setLoading(true);
+    setServerError("");
     try {
       const payload = {
-        email: form.email,
+        email: form.email.trim().toLowerCase(),
         password: form.password,
         code: token || form.invitationCode,
         fullName: form.fullName,
@@ -148,7 +148,6 @@ export default function StaffRegister() {
         position: form.position,
       };
 
-      // If user uploaded a file, convert to base64 string
       if (form.profilePicture && form.profilePicture instanceof File) {
         const toBase64 = (file) => new Promise((res, rej) => {
           const reader = new FileReader();
@@ -167,7 +166,7 @@ export default function StaffRegister() {
 
       const response = await authApi.staffActivate(payload);
       writeAuthToken(response?.token);
-      navigate("/signin", { replace: true });
+      navigate(getDashboardPathForRole(normalizeRole(response?.user?.role || "teacher")), { replace: true });
     } catch (error) {
       setServerError(error.data?.message || error.message || "Activation failed");
     } finally {
@@ -179,7 +178,7 @@ export default function StaffRegister() {
 
   if (invitationError) {
     return (
-      <AuthShell variant="staff-register" eyebrow="Invitation unavailable" title="This invitation cannot be used" subtitle="The invitation link is invalid, expired, or already used." footnote="Please contact your school administrator for a new invitation.">
+      <AuthShell variant="staff-register" eyebrow="Invitation unavailable" title="This invitation cannot be used" subtitle="The invitation code is invalid, expired, or already used." footnote="Please contact your school administrator for a new registration code.">
         <div className="auth-form">
           <div className="auth-alert">{invitationError}</div>
           <p className="auth-switch"><Link to="/signin">Go to Sign In</Link></p>
@@ -189,29 +188,20 @@ export default function StaffRegister() {
   }
 
   return (
-    <AuthShell variant="staff-register" eyebrow="Staff registration" title="Complete Your Staff Registration" subtitle="You've been invited by your school administrator. Enter your invitation code and create your password to activate your staff account." footnote="Your invitation will be marked as used after activation.">
+    <AuthShell variant="staff-register" eyebrow="Teacher registration" title="Complete Your Teacher Registration" subtitle="Enter the registration code given to you by your school administrator, then create your own account credentials." footnote="The registration code determines which school your teacher account belongs to.">
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header">
-          <h2>Staff Registration</h2>
-          <p>Complete the details below to activate your staff account.</p>
+          <h2>Teacher Registration</h2>
+          <p>Use your school registration code to join the correct school.</p>
         </div>
 
         {serverError ? <div className="auth-alert">{serverError}</div> : null}
 
         <label className="auth-field">
-          <span>Invitation Code</span>
+          <span>Teacher Registration Code</span>
           <div className="auth-input-wrap">
             <Code2 size={18} />
-            <input
-              name="invitationCode"
-              type="text"
-              placeholder="Enter invitation code"
-              value={form.invitationCode}
-              onChange={handleChange}
-              onBlur={(e) => validateInvitationCode(e.target.value)}
-              disabled={invitationLoading}
-              autoComplete="one-time-code"
-            />
+            <input name="invitationCode" type="text" placeholder="Enter teacher code" value={form.invitationCode} onChange={handleChange} onBlur={(e) => validateInvitationCode(e.target.value)} disabled={invitationLoading} autoComplete="one-time-code" />
           </div>
           {errors.token ? <small>{errors.token}</small> : null}
         </label>
@@ -220,49 +210,35 @@ export default function StaffRegister() {
           <span>Full Name</span>
           <div className="auth-input-wrap">
             <UserRound size={18} />
-            <input name="fullName" type="text" value={form.fullName} onChange={handleChange} readOnly disabled autoComplete="name" />
+            <input name="fullName" type="text" value={form.fullName} readOnly disabled autoComplete="name" />
           </div>
         </label>
 
         <label className="auth-field">
-          <span>Email Address</span>
+          <span>Your Email Address</span>
           <div className="auth-input-wrap">
             <Mail size={18} />
-            <input name="email" type="email" autoComplete="email" value={form.email} onChange={handleChange} readOnly disabled />
+            <input name="email" type="email" placeholder="Enter your email address" autoComplete="email" value={form.email} onChange={handleChange} />
           </div>
+          {errors.email ? <small>{errors.email}</small> : null}
         </label>
 
         <label className="auth-field">
           <span>Department</span>
-          <div className="auth-input-wrap">
-            <Briefcase size={18} />
-            <input name="department" type="text" value={form.department} onChange={handleChange} readOnly disabled />
-          </div>
+          <div className="auth-input-wrap"><Briefcase size={18} /><input name="department" type="text" value={form.department} readOnly disabled /></div>
         </label>
 
         <label className="auth-field">
           <span>Position</span>
-          <div className="auth-input-wrap">
-            <Briefcase size={18} />
-            <input name="position" type="text" value={form.position} onChange={handleChange} readOnly disabled />
-          </div>
+          <div className="auth-input-wrap"><Briefcase size={18} /><input name="position" type="text" value={form.position} readOnly disabled /></div>
         </label>
 
         <label className="auth-field">
           <span>Password</span>
           <div className="auth-input-wrap">
             <Lock size={18} />
-            <input
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              autoComplete="new-password"
-              value={form.password}
-              onChange={handleChange}
-            />
-            <button type="button" className="auth-eye-btn" onClick={() => setShowPassword((c) => !c)} aria-label={showPassword ? "Hide password" : "Show password"}>
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+            <input name="password" type={showPassword ? "text" : "password"} placeholder="Create your password" autoComplete="new-password" value={form.password} onChange={handleChange} />
+            <button type="button" className="auth-eye-btn" onClick={() => setShowPassword((c) => !c)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
           </div>
           {errors.password ? <small>{errors.password}</small> : null}
         </label>
@@ -271,40 +247,23 @@ export default function StaffRegister() {
           <span>Confirm Password</span>
           <div className="auth-input-wrap">
             <Lock size={18} />
-            <input
-              name="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm your password"
-              autoComplete="new-password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-            />
-            <button type="button" className="auth-eye-btn" onClick={() => setShowConfirmPassword((c) => !c)} aria-label={showConfirmPassword ? "Hide password" : "Show password"}>
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+            <input name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your password" autoComplete="new-password" value={form.confirmPassword} onChange={handleChange} />
+            <button type="button" className="auth-eye-btn" onClick={() => setShowConfirmPassword((c) => !c)} aria-label={showConfirmPassword ? "Hide password" : "Show password"}>{showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
           </div>
           {errors.confirmPassword ? <small>{errors.confirmPassword}</small> : null}
         </label>
 
         <div className="auth-field">
           <span>Password Strength</span>
-          <div className="auth-input-wrap" style={{ justifyContent: "space-between", padding: "0 14px" }}>
-            <span>{passwordLabel}</span>
-            <span style={{ color: "var(--primary)", fontWeight: 700 }}>{passwordScore}/5</span>
-          </div>
+          <div className="auth-input-wrap" style={{ justifyContent: "space-between", padding: "0 14px" }}><span>{passwordLabel}</span><span style={{ color: "var(--primary)", fontWeight: 700 }}>{passwordScore}/5</span></div>
         </div>
 
         <label className="auth-field">
           <span>Profile Picture (optional)</span>
-          <div className="auth-input-wrap">
-            <ImagePlus size={18} />
-            <input name="profilePicture" type="file" accept="image/*" onChange={handleFileChange} />
-          </div>
+          <div className="auth-input-wrap"><ImagePlus size={18} /><input name="profilePicture" type="file" accept="image/*" onChange={handleFileChange} /></div>
         </label>
 
-        <button type="submit" className="auth-submit" disabled={loading}>
-          {loading ? <><LoaderCircle className="auth-spin" size={18} />Activating...</> : "Activate Staff Account"}
-        </button>
+        <button type="submit" className="auth-submit" disabled={loading}>{loading ? <><LoaderCircle className="auth-spin" size={18} />Creating Account...</> : "Create Teacher Account"}</button>
         <p className="auth-switch">Already have an account? <Link to="/signin">Sign In</Link></p>
       </form>
     </AuthShell>
