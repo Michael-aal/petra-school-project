@@ -1,68 +1,70 @@
 import { 
-  Users, CreditCard, PiggyBank, GraduationCap, 
-  Heart, Clock, CircleCheck, ArrowRight, Shield, Bell 
+  Users, 
+  CreditCard, 
+  PiggyBank, 
+  GraduationCap, 
+  Heart, 
+  Clock, 
+  CircleCheck, 
+  ArrowRight, 
+  Shield, 
+  Bell 
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
 
 const parentFeatures = [
   {
-    logo: <CreditCard size={24} />,
+    icon: CreditCard,
     title: "Seamless Fee Payments",
-    info: "Pay tuition, buy uniforms, and settle bills in seconds. Get instant digital receipts and track your complete spending history.",
+    info: "Pay tuition and settle school bills in seconds. Receive digital receipts instantly and track your complete payment history.",
     to: "Nuvora Pay",
-    color: "#ff9560",
-    bgColor: "rgba(255, 149, 96, 0.14)",
   },
   {
-    logo: <PiggyBank size={24} />,
-    title: "Flexible Payment Plans",
-    info: "Can't pay all at once? Split tuition into convenient, interest-free monthly installments with Nuvora Flexpay.",
+    icon: PiggyBank,
+    title: "Flexible Payment Options",
+    info: "Split tuition into manageable, installment arrangements with transparent payment schedules.",
     to: "Flexpay",
-    color: "#7ed6a0",
-    bgColor: "rgba(126, 214, 160, 0.14)",
   },
   {
-    logo: <GraduationCap size={24} />,
+    icon: GraduationCap,
     title: "Academic Insights",
-    info: "Access real-time homework tracking, attendance records, and progress reports to keep your child ahead of the curve.",
+    info: "Access real-time homework tracking, attendance logs, and progress reports to stay updated on your child's learning.",
     to: "Learning Hub",
-    color: "#9ed8e3",
-    bgColor: "rgba(158, 216, 227, 0.14)",
   },
 ];
 
 const parentHighlights = [
   { 
-    logo: <Heart size={20} />, 
+    icon: Heart, 
     title: "Total Peace of Mind", 
     info: "Know exactly when fees are paid, attendance is logged, and important school updates are delivered." 
   },
   { 
-    logo: <Clock size={20} />, 
+    icon: Clock, 
     title: "Reclaim Your Time", 
-    info: "Manage your child’s entire school life from one beautiful dashboard instead of juggling multiple apps." 
+    info: "Manage your child’s entire school life from one clean portal instead of juggling multiple channels." 
   },
   { 
-    logo: <Bell size={20} />, 
-    title: "Real-Time Alerts", 
-    info: "Receive instant push notifications whenever your child’s school activity or status changes." 
+    icon: Bell, 
+    title: "Instant School Notices", 
+    info: "Receive timely announcements whenever your child’s school posts new notices or events." 
   },
   { 
-    logo: <Users size={20} />, 
+    icon: Users, 
     title: "Multi-Child Support", 
-    info: "Keep siblings in different classes or even different schools perfectly organized under one parent account." 
+    info: "Keep siblings in different classes or schools organized under a single parent login." 
   },
 ];
 
 export default function ForParents() {
   return (
-    <section className="marketing-page fparent">
+    <main className="marketing-page fparent">
       
       {/* HERO SECTION */}
-      <div className="marketing-header">
+      <section className="marketing-header">
         <span className="marketing-badge">
-          <Users size={16} /> FOR PARENTS & GUARDIANS
+          <Users size={15} /> FOR PARENTS & GUARDIANS
         </span>
         
         <h1 className="marketing-title">
@@ -77,67 +79,73 @@ export default function ForParents() {
         
         <div className="marketing-actions">
           <NavLink to="/register/parent" className="marketing-btn marketing-btn-primary">
-            Create Parent Account <ArrowRight size={18} />
+            Create Parent Account <ArrowRight size={16} />
           </NavLink>
           <NavLink to="/solution" className="marketing-btn marketing-btn-secondary">
-            See How It Works
+            Explore Solutions
           </NavLink>
         </div>
 
-        {/* Trust Indicators */}
+        {/* Feature Assurances */}
         <div className="marketing-trust-bar">
           <div className="marketing-trust-item">
-            <Users size={16} />
-            <span>50,000+ Active Parents</span>
+            <CreditCard size={15} />
+            <span>Instant Digital Receipts</span>
           </div>
           <div className="marketing-trust-divider" />
           <div className="marketing-trust-item">
-            <Shield size={16} />
-            <span>100% Secure Transactions</span>
+            <Shield size={15} />
+            <span>Encrypted Payment Processing</span>
           </div>
           <div className="marketing-trust-divider" />
           <div className="marketing-trust-item">
-            <CircleCheck size={16} />
-            <span>Real-Time School Updates</span>
+            <CircleCheck size={15} />
+            <span>Direct School Connectivity</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* FEATURES GRID */}
-      <div className="marketing-section feature-grid">
-        {parentFeatures.map((item, index) => (
-          <article className="marketing-card" key={index} style={{ '--card-accent': item.color }}>
-            <span className="feature-top-circle" style={{ background: item.bgColor }} />
-            
-            <div className="marketing-card-icon" style={{ backgroundColor: item.bgColor, color: item.color }}>
-              {item.logo}
-            </div>
-            
-            <h3 className="marketing-card-title">{item.title}</h3>
-            <p className="marketing-card-text">{item.info}</p>
-            
-            <NavLink to="/solution" className="marketing-card-link" style={{ color: item.color }}>
-              Explore {item.to} <ArrowRight size={16} />
-            </NavLink>
-          </article>
-        ))}
-      </div>
+      {/* CORE FEATURES */}
+      <section className="marketing-section">
+        <div className="section-intro">
+          <p className="landing-kicker">Parent Solutions</p>
+          <h2>Designed for clarity and convenience.</h2>
+        </div>
+
+        <div className="feature-grid">
+          {parentFeatures.map(({ icon: Icon, title, info, to }) => (
+            <article className="marketing-card" key={title}>
+              <div className="marketing-card-icon">
+                <Icon size={22} />
+              </div>
+              
+              <h3 className="marketing-card-title">{title}</h3>
+              <p className="marketing-card-text">{info}</p>
+              
+              <NavLink to="/solution" className="marketing-card-link">
+                Explore {to} <ArrowRight size={14} />
+              </NavLink>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* HIGHLIGHTS SECTION */}
       <section className="marketing-section marketing-highlight-section">
-        <div className="marketing-intro-block">
+        <div className="section-intro">
+          <p className="landing-kicker">Modern Parenting</p>
           <h2>Built for Modern Parenting</h2>
-          <p>We handle the administrative logistics so you can focus on what matters most: raising the next generation of leaders.</p>
+          <p className="section-subtext">We streamline school communication and payments so you can focus on supporting your child.</p>
         </div>
         
         <div className="feature-grid highlight-grid">
-          {parentHighlights.map((item, index) => (
-            <div className="marketing-card highlight-card" key={index}>
+          {parentHighlights.map(({ icon: Icon, title, info }) => (
+            <div className="marketing-card highlight-card" key={title}>
               <div className="marketing-card-icon highlight-icon">
-                {item.logo}
+                <Icon size={20} />
               </div>
-              <h3 className="marketing-card-title">{item.title}</h3>
-              <p className="marketing-card-text">{item.info}</p>
+              <h3 className="marketing-card-title">{title}</h3>
+              <p className="marketing-card-text">{info}</p>
             </div>
           ))}
         </div>
@@ -146,20 +154,20 @@ export default function ForParents() {
       {/* FOOTER CTA */}
       <section className="marketing-section marketing-cta fparent-cta">
         <div className="cta-badge">
-          <Users size={18} />
+          <Users size={16} />
           <span>Stay connected to school</span>
         </div>
         <h2 className="marketing-cta-title">Your Child's School, In One Clear View</h2>
         <p className="marketing-cta-text">
-          Create your parent account to simplify school payments, monitor academic progress, and stay connected with teachers from the web.
+          Create your parent account to simplify school payments, monitor academic progress, and stay connected with teachers.
         </p>
         <div className="marketing-actions">
           <NavLink to="/register/parent" className="marketing-btn marketing-btn-primary cta-btn">
-            Create Parent Account <ArrowRight size={18} />
+            Create Parent Account <ArrowRight size={16} />
           </NavLink>
         </div>
       </section>
 
-    </section>
+    </main>
   );
 }

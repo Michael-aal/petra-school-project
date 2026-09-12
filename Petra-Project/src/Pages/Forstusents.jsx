@@ -1,123 +1,175 @@
-import {
-  GraduationCap,
-  ArrowRight,
-  BrainCircuit,
-  Sparkles,
-  Target,
-  CalendarClock,
-  Trophy,
-  Gamepad2,
-  CheckCircle2,
-  Zap
+import { 
+  GraduationCap, 
+  BrainCircuit, 
+  Target, 
+  CalendarClock, 
+  Award, 
+  Clock, 
+  CircleCheck, 
+  ArrowRight, 
+  Shield, 
+  BookOpen 
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
 
 const studentFeatures = [
   {
-    logo: <BrainCircuit size={24} />,
-    title: "Meet Your 24/7 AI Tutor",
-    text: "Stuck on a calculus problem at 11 PM? Snap a photo or ask a question. Nuvora’s AI breaks down complex concepts into simple, easy-to-understand steps instantly.",
-    color: "#ff9560",
-    bgColor: "rgba(255, 149, 96, 0.14)",
-    badgeIcon: <Sparkles size={18} />,
+    icon: BrainCircuit,
+    title: "AI Study Assistant",
+    info: "Get instant, step-by-step explanations for complex problems in math, science, and humanities whenever you get stuck.",
+    to: "AI Tutor",
   },
   {
-    logo: <Target size={24} />,
-    title: "Crush WAEC, JAMB & Post-UTME",
-    text: "Practice with thousands of past questions. Get real-time performance analytics to identify your weak spots and track your improvement before the big day.",
-    color: "#ff9560",
-    bgColor: "rgba(255, 149, 96, 0.14)",
-    badgeIcon: <Zap size={18} />,
+    icon: Target,
+    title: "Exam Practice & Prep",
+    info: "Practice with curated past questions and track your performance to pinpoint weak areas before test day.",
+    to: "Exams",
   },
   {
-    logo: <CalendarClock size={24} />,
-    title: "Master Your Academic Life",
-    text: "Never miss a deadline again. Sync your class timetable, track assignments, and view your results in one beautiful, distraction-free dashboard.",
-    color: "#ff9560",
-    bgColor: "rgba(255, 149, 96, 0.14)",
-    badgeIcon: <CheckCircle2 size={18} />,
+    icon: CalendarClock,
+    title: "Timetable & Schedule",
+    info: "Organize your class schedule, homework deadlines, and term results in one clear, distraction-free dashboard.",
+    to: "Dashboard",
   },
-  {
-    logo: <Trophy size={24} />,
-    title: "Make Learning Addictive",
-    text: "Earn XP, unlock achievement badges, and challenge your classmates to the top of the leaderboard. Learning has never been this fun.",
-    color: "#ff9560",
-    bgColor: "rgba(255, 149, 96, 0.14)",
-    badgeIcon: <Gamepad2 size={18} />,
+];
+
+const studentHighlights = [
+  { 
+    icon: Award, 
+    title: "Track Your Progress", 
+    info: "Set learning goals and monitor your term-by-term academic growth to stay motivated throughout the year." 
+  },
+  { 
+    icon: Clock, 
+    title: "Stay Organized", 
+    info: "Manage class schedules, assignments, and deadlines from one clean workspace without the clutter." 
+  },
+  { 
+    icon: BookOpen, 
+    title: "Learn at Your Pace", 
+    info: "Access study materials, past questions, and AI explanations whenever you need them, on any device." 
+  },
+  { 
+    icon: GraduationCap, 
+    title: "School-Synced Content", 
+    info: "Your timetable, notices, and academic records are automatically synced with your school portal." 
   },
 ];
 
 export default function ForStudents() {
   return (
-    <section className="fsu-section">
+    <main className="marketing-page fparent">
       
       {/* HERO SECTION */}
-      <div className="fsu-hero">
-        <div className="fsu-badge">
-          <GraduationCap size={16} /> FOR STUDENTS
-        </div>
-
-        <h1 className="fsu-title">
-          Experience the Future of <br /> Learning with <span>Nuvora</span>
+      <section className="marketing-header">
+        <span className="marketing-badge">
+          <GraduationCap size={15} /> FOR STUDENTS
+        </span>
+        
+        <h1 className="marketing-title">
+          Study Smarter and Ace Your <br />
+          <span>Exams with Nuvora</span>
         </h1>
-
-        <p className="fsu-text">
-          Stop struggling with tough subjects. Nuvora combines AI-powered tutoring, 
-          smart scheduling, and gamified learning to help you ace your exams and 
-          actually enjoy studying.
+        
+        <p className="marketing-description">
+          Staying on top of schoolwork shouldn't be overwhelming. 
+          Nuvora gives students AI-powered study help, exam practice, and smart scheduling in one place.
         </p>
-
-        <div className="fsu-actions">
-          <NavLink to="/register/student" className="fsu-btnPrimary">
-            Start Learning for Free <ArrowRight size={18} />
+        
+        <div className="marketing-actions">
+          <NavLink to="/register/student" className="marketing-btn marketing-btn-primary">
+            Start Learning for Free <ArrowRight size={16} />
           </NavLink>
-          <NavLink to="/solution" className="fsu-btnSecondary">
-            See How It Works
+          <NavLink to="/solution" className="marketing-btn marketing-btn-secondary">
+            Explore Solutions
           </NavLink>
         </div>
 
-      </div>
-
-      {/* FEATURES GRID */}
-      <div className="fsu-grid">
-        {studentFeatures.map((item, index) => (
-          <div className="fsu-card" key={index} style={{ '--card-accent': item.color }}>
-            
-            {/* Subtle background glow */}
-            <div className="fsu-card-glow" style={{ background: item.bgColor }} />
-
-            {/* Top Right Badge */}
-            <div className="fsu-card-badge" style={{ background: item.bgColor, color: item.color }}>
-              {item.badgeIcon}
-            </div>
-
-            {/* Icon */}
-            <div className="fsu-card-icon" style={{ background: item.bgColor, color: item.color }}>
-              {item.logo}
-            </div>
-
-            <h3 className="fsu-card-title">{item.title}</h3>
-            <p className="fsu-card-text">{item.text}</p>
-
-            <NavLink to="/register/student" className="fsu-card-link" style={{ color: item.color }}>
-              Get Started <ArrowRight size={16} />
-            </NavLink>
+        {/* Feature Assurances */}
+        <div className="marketing-trust-bar">
+          <div className="marketing-trust-item">
+            <BrainCircuit size={15} />
+            <span>AI-Powered Explanations</span>
           </div>
-        ))}
-      </div>
+          <div className="marketing-trust-divider" />
+          <div className="marketing-trust-item">
+            <Shield size={15} />
+            <span>Safe & Ad-Free Environment</span>
+          </div>
+          <div className="marketing-trust-divider" />
+          <div className="marketing-trust-item">
+            <CircleCheck size={15} />
+            <span>Synced with School Portal</span>
+          </div>
+        </div>
+      </section>
+
+      {/* CORE FEATURES */}
+      <section className="marketing-section">
+        <div className="section-intro">
+          <p className="landing-kicker">Student Tools</p>
+          <h2>Designed for focus and effective learning.</h2>
+        </div>
+
+        <div className="feature-grid">
+          {studentFeatures.map(({ icon: Icon, title, info, to }) => (
+            <article className="marketing-card" key={title}>
+              <div className="marketing-card-icon">
+                <Icon size={22} />
+              </div>
+              
+              <h3 className="marketing-card-title">{title}</h3>
+              <p className="marketing-card-text">{info}</p>
+              
+              <NavLink to="/solution" className="marketing-card-link">
+                Explore {to} <ArrowRight size={14} />
+              </NavLink>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* HIGHLIGHTS SECTION */}
+      <section className="marketing-section marketing-highlight-section">
+        <div className="section-intro">
+          <p className="landing-kicker">Smart Studying</p>
+          <h2>Built for the Modern Student</h2>
+          <p className="section-subtext">We bring together the tools you need so you can focus on learning and performing your best.</p>
+        </div>
+        
+        <div className="feature-grid highlight-grid">
+          {studentHighlights.map(({ icon: Icon, title, info }) => (
+            <div className="marketing-card highlight-card" key={title}>
+              <div className="marketing-card-icon highlight-icon">
+                <Icon size={20} />
+              </div>
+              <h3 className="marketing-card-title">{title}</h3>
+              <p className="marketing-card-text">{info}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* FOOTER CTA */}
-      <div className="fsu-footer">
-        <div className="fsu-footer-card">
-          <h2>Ready to upgrade your grades?</h2>
-          <p>Join thousands of students already learning smarter, not harder, with Nuvora.</p>
-          <NavLink to="/register/student" className="fsu-footer-btn">
-            Join the Nuvora Waitlist <ArrowRight size={18} />
+      <section className="marketing-section marketing-cta fparent-cta">
+        <div className="cta-badge">
+          <GraduationCap size={16} />
+          <span>Built for student success</span>
+        </div>
+        <h2 className="marketing-cta-title">Your Academics, In One Clear View</h2>
+        <p className="marketing-cta-text">
+          Create your student account to access AI study help, track exam preparation, and stay organized throughout the academic year.
+        </p>
+        <div className="marketing-actions">
+          <NavLink to="/register/student" className="marketing-btn marketing-btn-primary cta-btn">
+            Create Free Student Account <ArrowRight size={16} />
           </NavLink>
         </div>
-      </div>
+      </section>
 
-    </section>
+    </main>
   );
 }
+
+

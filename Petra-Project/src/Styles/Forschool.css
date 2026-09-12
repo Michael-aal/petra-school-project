@@ -1,222 +1,200 @@
 /* =========================================
-   FOR STUDENTS (NUVORA) - PREMIUM UPGRADE
+   FOR STUDENTS (NUVORA) - CLEAN MINIMAL DESIGN
    ========================================= */
 
 .fsu-section {
-  padding: 6rem 1.5rem;
-  background: transparent;
+  padding: 64px 0 64px;
+  background: #f5f5f4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5rem;
-  overflow-x: hidden;
+  gap: 40px;
   width: 100%;
+  min-height: 100vh;
 }
 
 /* --- HERO SECTION --- */
 .fsu-hero {
   text-align: center;
-  max-width: 800px;
-  width: 100%;
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: none;
 }
 
 .fsu-badge {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #8B5CF6;
-  background: rgba(139, 92, 246, 0.1);
-  padding: 8px 18px;
+  color: #ff6600;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  padding: 6px 14px;
   border-radius: 999px;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.02em;
+  margin-bottom: 22px;
+  letter-spacing: 0.04em;
 }
 
 .fsu-title {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
   font-weight: 800;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.15;
-  color: #0F172A;
-  letter-spacing: -0.02em;
+  margin: 0 0 22px;
+  line-height: 1.04;
+  color: #111827;
+  letter-spacing: -0.05em;
 }
 
 .fsu-title span {
-  background: linear-gradient(135deg, #8B5CF6, #3B82F6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: none;
+  color: #ff6600;
+  -webkit-text-fill-color: initial;
 }
 
 .fsu-text {
-  color: #475569;
-  line-height: 1.7;
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  max-width: 650px;
-  margin: 0 0 2rem 0;
+  color: #4b5563;
+  line-height: 1.65;
+  font-size: 1.05rem;
+  max-width: 720px;
+  margin: 0 auto 30px;
 }
 
 /* --- BUTTONS --- */
 .fsu-actions {
   display: flex;
-  gap: 1rem;
+  gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 2.5rem;
 }
 
 .fsu-btnPrimary, .fsu-btnSecondary {
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.fsu-btnPrimary svg, .fsu-btnSecondary svg {
+  transition: transform 0.2s ease;
+}
+
+.fsu-btnPrimary:hover svg, .fsu-btnSecondary:hover svg {
+  transform: translateX(4px);
 }
 
 .fsu-btnPrimary {
-  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
-  color: white;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  background: #ff6600 !important;
+  background-color: #ff6600 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .fsu-btnPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  background: #e65c00 !important;
+  background-color: #e65c00 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .fsu-btnSecondary {
-  background: #F1F5F9;
-  color: #0F172A;
-  border: 1px solid #E2E8F0;
+  background: transparent !important;
+  border: 1.5px solid #ff6600 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
 }
 
 .fsu-btnSecondary:hover {
-  background: #E2E8F0;
-  transform: translateY(-2px);
+  background: rgba(255, 102, 0, 0.08) !important;
+  border-color: #e65c00 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
-/* --- NEW: TRUST BAR --- */
-.fsu-trust-bar {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 2rem;
-  background: rgba(241, 245, 249, 0.6);
-  border: 1px solid #E2E8F0;
-  border-radius: 999px;
-  backdrop-filter: blur(8px);
+/* --- FEATURES GRID CONTAINER --- */
+.fsu-features-container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
 }
 
-.fsu-trust-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #475569;
+.fsu-section-header {
+  text-align: center;
+  margin-bottom: 36px;
 }
 
-.fsu-trust-item svg {
-  color: #8B5CF6;
+.fsu-section-header h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: #111827;
 }
 
-.fsu-trust-divider {
-  width: 1px;
-  height: 20px;
-  background: #CBD5E1;
-}
-
-/* --- FEATURES GRID --- */
 .fsu-grid {
   width: 100%;
-  max-width: 1200px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 20px;
 }
 
-/* --- FEATURE CARDS --- */
 .fsu-card {
   position: relative;
-  background: #FFFFFF;
-  padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid #E2E8F0;
+  background: #ffffff;
+  padding: 28px 24px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
 }
 
-.fsu-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-  border-color: var(--card-accent, #8B5CF6);
+.fsu-card-glow, .fsu-card-badge {
+  display: none;
 }
 
-.fsu-card-glow {
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.6;
-  transition: opacity 0.3s;
-}
-
-.fsu-card:hover .fsu-card-glow {
-  opacity: 1;
-}
-
-.fsu-card-badge {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 36px;
-  height: 36px;
+.fsu-card-icon {
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-}
-
-.fsu-card-icon {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-  margin-bottom: 1.5rem;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 20px;
+  background: rgba(255, 102, 0, 0.08);
+  color: #ff6600;
 }
 
 .fsu-card-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #0F172A;
-  margin: 0 0 0.75rem 0;
-  line-height: 1.3;
+  color: #111827;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
 }
 
 .fsu-card-text {
-  color: #475569;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.65;
-  font-size: 0.95rem;
+  color: #4b5563;
+  margin: 0 0 16px;
+  line-height: 1.6;
+  font-size: 0.92rem;
   flex: 1;
 }
 
@@ -224,91 +202,92 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.85rem;
   text-decoration: none;
-  transition: gap 0.2s;
+  color: #ff6600;
   margin-top: auto;
 }
 
-.fsu-card-link:hover {
-  gap: 12px;
+/* --- REASSURANCE --- */
+.fsu-reassurance-section {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.fsu-reassurance-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: none;
+}
+
+.fsu-reassurance-card .reassurance-icon {
+  color: #ff6600;
+  margin-bottom: 16px;
+}
+
+.fsu-reassurance-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: #111827;
+}
+
+.fsu-reassurance-card p {
+  margin: 0 auto 24px;
+  max-width: 640px;
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.fsu-reassurance-points {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
 /* --- FOOTER CTA --- */
 .fsu-footer {
-  width: 100%;
-  max-width: 1200px;
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
 }
 
 .fsu-footer-card {
-  background: linear-gradient(135deg, #0F172A, #1E293B);
-  border-radius: 24px;
-  padding: 4rem 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 48px 32px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
 }
 
-/* Decorative gradient blobs for footer */
 .fsu-footer-card::before, .fsu-footer-card::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
-  pointer-events: none;
-}
-.fsu-footer-card::before {
-  width: 300px; height: 300px;
-  background: #8B5CF6;
-  top: -100px; left: -100px;
-}
-.fsu-footer-card::after {
-  width: 250px; height: 250px;
-  background: #3B82F6;
-  bottom: -100px; right: -100px;
+  display: none;
 }
 
 .fsu-footer-card h2 {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #FFFFFF;
-  margin: 0 0 1rem 0;
-  position: relative;
-  z-index: 2;
+  color: #111827;
+  margin: 0 0 12px;
+  letter-spacing: -0.04em;
 }
 
 .fsu-footer-card p {
-  color: #94A3B8;
-  font-size: 1.1rem;
-  max-width: 500px;
-  margin: 0 auto 2rem auto;
-  line-height: 1.6;
-  position: relative;
-  z-index: 2;
-}
-
-.fsu-footer-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 32px;
-  background: #FFFFFF;
-  color: #0F172A;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 700;
+  color: #4b5563;
   font-size: 1rem;
-  transition: all 0.3s;
-  position: relative;
-  z-index: 2;
-}
-
-.fsu-footer-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+  max-width: 540px;
+  margin: 0 auto 28px;
+  line-height: 1.6;
 }
 
 /* =========================================
@@ -1537,77 +1516,60 @@ body.dark .marketing-page.fsos > .marketing-cta {
   }
 }
 
-/* Parent page: the same full-width futuristic system with a warmer family signal. */
+/* Parent page visual system: modern, clean, UI design matching landing page language */
 .marketing-page.fparent {
-  --parent-ink: #172321;
-  --parent-muted: #687673;
-  --parent-paper: #f5f6f0;
-  --parent-line: rgba(23, 35, 33, 0.13);
-  --parent-coral: #f06b4e;
+  --parent-ink: #111827;
+  --parent-muted: #4b5563;
+  --parent-paper: #ffffff;
+  --parent-line: #e5e7eb;
+  --parent-coral: #ff6600;
   position: relative;
   align-items: stretch;
-  gap: 0;
-  min-height: 100svh;
-  padding: 150px 0 96px;
-  overflow: hidden;
-  background:
-    linear-gradient(rgba(23, 35, 33, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(23, 35, 33, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 5%, rgba(126, 214, 160, 0.42), transparent 28%),
-    linear-gradient(180deg, #f8f8f1 0%, var(--parent-paper) 55%, #edf3ee 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
+  gap: 32px;
+  min-height: 100vh;
+  padding: 64px 0 64px;
+  background: #f5f5f4;
 }
 
 .marketing-page.fparent::before {
-  content: "PARENT OPERATING SYSTEM / 02";
-  position: absolute;
-  top: 112px;
-  left: 7vw;
-  color: var(--parent-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
+  display: none;
 }
 
 .marketing-page.fparent .marketing-header {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: clamp(34px, 5vw, 74px);
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px);
   align-items: center;
   text-align: center;
   border: 1px solid var(--parent-line);
-  border-radius: 8px;
-  background: rgba(250, 251, 247, 0.62);
-  box-shadow: 0 22px 60px rgba(23, 35, 33, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
 
 .marketing-page.fparent .marketing-header::after {
-  content: "";
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  right: -160px;
-  top: -200px;
-  border-radius: 50%;
-  border: 1px solid rgba(126, 214, 160, 0.34);
-  box-shadow: 0 0 0 44px rgba(126, 214, 160, 0.05), 0 0 0 88px rgba(126, 214, 160, 0.03);
-  pointer-events: none;
+  display: none;
 }
 
 .marketing-page.fparent .marketing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 22px;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--parent-muted);
-  font: 11px "DM Mono", monospace;
-  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .marketing-page.fparent .marketing-badge svg {
-  color: var(--parent-coral);
+  color: #ff6600;
 }
 
 .marketing-page.fparent .marketing-title {
@@ -1615,54 +1577,89 @@ body.dark .marketing-page.fsos > .marketing-cta {
   max-width: none;
   margin: 0 0 22px;
   color: var(--parent-ink);
-  font-size: clamp(3.2rem, 7vw, 6.9rem);
-  line-height: 0.94;
-  letter-spacing: -0.075em;
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 .marketing-page.fparent .marketing-title span {
   background: none;
-  color: var(--parent-coral);
+  color: #ff6600;
   -webkit-text-fill-color: initial;
 }
 
 .marketing-page.fparent .marketing-description {
-  width: min(100%, 860px);
+  width: min(100%, 720px);
   max-width: none;
-  margin: 0 0 30px;
+  margin: 0 auto 30px;
   color: var(--parent-muted);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 1.65;
 }
 
 .marketing-page.fparent .marketing-actions {
   justify-content: center;
   margin-bottom: 34px;
+  gap: 12px;
 }
 
 .marketing-page.fparent .marketing-btn {
   min-height: 46px;
-  padding: 0 18px;
-  border-radius: 5px;
-  font-size: 12px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
-.marketing-page.fparent .marketing-btn-primary {
-  background: var(--parent-coral);
-  box-shadow: 0 12px 26px rgba(240, 107, 78, 0.2);
+.marketing-page.fparent .marketing-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.marketing-page.fparent .marketing-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.marketing-page.fparent .marketing-btn-primary,
+.marketing-page.fparent .cta-btn {
+  background: #ff6600 !important;
+  background-color: #ff6600 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.marketing-page.fparent .marketing-btn-primary:hover,
+.marketing-page.fparent .cta-btn:hover {
+  background: #e65c00 !important;
+  background-color: #e65c00 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .marketing-page.fparent .marketing-btn-secondary {
-  background: transparent;
-  border-color: var(--parent-line);
-  color: var(--parent-ink);
+  background: transparent !important;
+  border: 1.5px solid #ff6600 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
+}
+
+.marketing-page.fparent .marketing-btn-secondary:hover {
+  background: rgba(255, 102, 0, 0.08) !important;
+  border-color: #e65c00 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .marketing-page.fparent .marketing-trust-bar {
   width: 100%;
   justify-content: center;
-  gap: 18px;
-  padding: 16px 0 0;
+  gap: 20px;
+  padding: 20px 0 0;
   border: 0;
   border-top: 1px solid var(--parent-line);
   border-radius: 0;
@@ -1671,146 +1668,116 @@ body.dark .marketing-page.fsos > .marketing-cta {
 }
 
 .marketing-page.fparent .marketing-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--parent-muted);
-  font: 10px "DM Mono", monospace;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .marketing-page.fparent .marketing-trust-item svg {
-  color: #4d9a70;
+  color: #ff6600;
 }
 
 .marketing-page.fparent .marketing-trust-divider {
-  height: 14px;
+  height: 16px;
+  width: 1px;
   background: var(--parent-line);
 }
 
-.marketing-page.fparent > .feature-grid,
-.marketing-page.fparent > .marketing-highlight-section,
-.marketing-page.fparent > .marketing-cta {
-  width: 100%;
-  max-width: none;
-  margin-left: 0;
-  margin-right: 0;
+.marketing-page.fparent > .marketing-section {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0;
 }
 
-.marketing-page.fparent > .feature-grid {
-  margin-top: 32px;
+.marketing-page.fparent .feature-grid {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.marketing-page.fparent .marketing-card {
-  min-height: 300px;
-  padding: 25px;
-  border: 1px solid var(--parent-line);
-  border-radius: 7px;
-  background: rgba(250, 251, 247, 0.72);
-  box-shadow: none;
-}
-
-.marketing-page.fparent .marketing-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--parent-coral);
-  box-shadow: 0 18px 40px rgba(23, 35, 33, 0.1);
-}
-
-.marketing-page.fparent .marketing-card-icon {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 48px;
-  border-radius: 5px;
-}
-
-.marketing-page.fparent .marketing-card-title {
-  color: var(--parent-ink);
-  font-size: 22px;
-  letter-spacing: -0.045em;
-}
-
-.marketing-page.fparent .marketing-card-text,
-.marketing-page.fparent .marketing-intro-block p {
-  color: var(--parent-muted);
-  font-size: 13px;
-}
-
-.marketing-page.fparent .marketing-card-link {
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.marketing-page.fparent .marketing-highlight-section {
-  align-items: stretch;
-  margin-top: 76px;
-  padding-top: 76px;
-  border-top: 1px solid var(--parent-line);
-  text-align: center;
-}
-
-.marketing-page.fparent .marketing-intro-block h2 {
-  width: 100%;
-  max-width: none;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--parent-ink);
-  font-size: clamp(2.4rem, 4.8vw, 4.5rem);
-  line-height: 1;
-  letter-spacing: -0.07em;
-}
-
-.marketing-page.fparent .marketing-intro-block p {
-  width: min(100%, 760px);
-  max-width: none;
-  margin: 0 auto 38px;
-  line-height: 1.7;
+  gap: 20px;
 }
 
 .marketing-page.fparent .highlight-grid {
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
 
-.marketing-page.fparent .highlight-icon {
-  margin-bottom: 30px;
-  background: rgba(126, 214, 160, 0.14) !important;
-  color: #4d9a70 !important;
+.marketing-page.fparent .marketing-card {
+  min-height: auto;
+  padding: 28px 24px;
+  border: 1px solid var(--parent-line);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
 }
 
-.marketing-page.fparent > .marketing-cta {
-  min-height: 390px;
+.marketing-page.fparent .marketing-card:hover {
+  transform: none;
+  border-color: #d1d5db;
+  box-shadow: none;
+}
+
+.marketing-page.fparent .marketing-card-icon {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 76px;
-  padding: clamp(44px, 7vw, 88px) clamp(25px, 7vw, 90px);
-  border-radius: 8px;
-  background:
-    linear-gradient(rgba(126, 214, 160, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(126, 214, 160, 0.055) 1px, transparent 1px),
-    radial-gradient(circle at 82% 50%, rgba(126, 214, 160, 0.22), transparent 24%),
-    linear-gradient(135deg, #0b1d18 0%, #102a24 58%, #091511 100%);
-  background-size: 30px 30px, 30px 30px, auto, auto;
-  border: 1px solid rgba(126, 214, 160, 0.34);
-  text-align: left;
-  align-items: flex-start;
-  box-shadow: 0 28px 70px rgba(7, 27, 22, 0.24);
+  width: 42px;
+  height: 42px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: rgba(255, 102, 0, 0.08);
+  color: #ff6600;
 }
 
+.marketing-page.fparent .marketing-card-title {
+  color: #111827;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.marketing-page.fparent .marketing-card-text {
+  color: var(--parent-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  flex-grow: 1;
+}
+
+.marketing-page.fparent .marketing-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff6600;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+/* Modern clean CTA block for parents */
+.marketing-page.fparent > .marketing-cta {
+  min-height: auto;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: none;
+  padding: 48px 32px;
+  width: min(1100px, calc(100% - 32px));
+  margin: 32px auto 0;
+}
+
+.marketing-page.fparent > .marketing-cta::before,
 .marketing-page.fparent > .marketing-cta::after {
-  content: "NUVORA PORTAL  /  PARENT VIEW";
-  width: min(38vw, 470px);
-  height: 210px;
-  right: 7%;
-  top: 50%;
-  border: 1px solid rgba(126, 214, 160, 0.42);
-  border-radius: 8px;
-  background: rgba(5, 15, 12, 0.72);
-  box-shadow: 0 0 0 13px rgba(126, 214, 160, 0.12), 0 24px 50px rgba(0, 0, 0, 0.3);
-  color: rgba(237, 243, 239, 0.65);
-  padding: 18px;
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.1em;
-  transform: translateY(-50%);
-  filter: none;
-  opacity: 1;
-  pointer-events: none;
+  display: none;
 }
 
 .marketing-page.fparent > .marketing-cta > * {
@@ -1819,19 +1786,20 @@ body.dark .marketing-page.fsos > .marketing-cta {
 }
 
 .marketing-page.fparent .marketing-cta-title {
-  width: min(100%, 760px);
-  max-width: 760px;
-  color: #edf3ef;
-  font-size: clamp(2.5rem, 5vw, 5rem);
-  line-height: 0.96;
-  letter-spacing: -0.07em;
+  max-width: 600px;
+  margin: 12px auto 16px;
+  color: #111827;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+  font-weight: 700;
 }
 
 .marketing-page.fparent .marketing-cta-text {
-  width: min(100%, 680px);
-  max-width: 680px;
-  margin: 0 0 30px;
-  color: #a9b9b0;
+  max-width: 540px;
+  margin: 0 auto 28px;
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .marketing-page.fparent .marketing-cta .marketing-actions {

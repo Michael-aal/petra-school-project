@@ -392,6 +392,22 @@
 
 .point-item svg {
   color: #ff6600;
+  width: 18px;
+  height: 18px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.metric-label {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.metric-divider {
+  height: 1px;
+  background: var(--line);
 }
 
 /* Final CTA */
