@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import { authApi, readAuthToken } from "../services/authApi";
+import { authApi } from "../services/authApi";
 import { normalizeUser } from "../utils/userProfile";
 
 export const UserContext = createContext();
@@ -17,31 +17,14 @@ export function UserProvider({ children }) {
   };
 
   useEffect(() => {
-    /*
-     * Do not call /api/auth/me when there is no token.
-     *
-     * This is important because UserProvider is loaded globally,
-     * including on the Sign In page.
-     */
-    const token = readAuthToken();
-
-    if (!token) {
-      clearSession();
-      setAuthReady(true);
-      return;
-    }
-
-    /*
-     * A token exists, so it is safe to verify the session.
-     */
+    // The HttpOnly cookie is not script-readable, so validate it server-side.
     authApi
       .me()
       .then((response) => {
         setAuthError(null);
         setUserInfo(normalizeUser(response.user || {}));
       })
-      .catch((error) => {
-        setAuthError(error);
+      .catch(() => {
         clearSession();
       })
       .finally(() => {

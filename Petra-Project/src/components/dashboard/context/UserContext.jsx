@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import { authApi, readAuthToken } from "../../../services/authApi";
+import { authApi } from "../../../services/authApi";
 import { normalizeUser } from "../../../utils/userProfile";
 
 export const UserContext = createContext();
@@ -23,14 +23,6 @@ export function UserProvider({ children }) {
      * This is important because UserProvider is loaded globally,
      * including on the Sign In page.
      */
-    const token = readAuthToken();
-
-    if (!token) {
-      clearSession();
-      setAuthReady(true);
-      return;
-    }
-
     /*
      * A token exists, so it is safe to verify the session.
      */
@@ -40,8 +32,7 @@ export function UserProvider({ children }) {
         setAuthError(null);
         setUserInfo(normalizeUser(response.user || {}));
       })
-      .catch((error) => {
-        setAuthError(error);
+      .catch(() => {
         clearSession();
       })
       .finally(() => {

@@ -6,7 +6,13 @@ const authCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 8 * 60 * 60 * 1000,
+};
+
+const sendAuthenticated = (res, status, message, result) => {
+  const { token, ...data } = result || {};
+  if (token) res.cookie("petra_token", token, authCookieOptions);
+  return res.status(status).json({ success: true, message, ...data });
 };
 
 const handleValidation = (req, res) => {
@@ -25,7 +31,7 @@ export const registerUser = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.register(req.body);
-    return res.status(201).json({ success: true, message: "User registered successfully", ...result });
+    return sendAuthenticated(res, 201, "User registered successfully", result);
   } catch (error) {
     next(error);
   }
@@ -102,7 +108,7 @@ export const activateStaff = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await teacherInvitationService.activate(req.body);
-    return res.status(200).json({ success: true, message: "Teacher account activated", ...result });
+    return sendAuthenticated(res, 200, "Teacher account activated", result);
   } catch (error) {
     next(error);
   }
@@ -113,7 +119,7 @@ export const registerParent = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.registerParent(req.body);
-    return res.status(201).json({ success: true, message: "Parent registered successfully", ...result });
+    return sendAuthenticated(res, 201, "Parent registered successfully", result);
   } catch (error) {
     next(error);
   }
@@ -135,7 +141,7 @@ export const loginUser = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.login(req.body);
-    return res.status(200).json({ success: true, message: "Login successful", ...result });
+    return sendAuthenticated(res, 200, "Login successful", result);
   } catch (error) {
     next(error);
   }

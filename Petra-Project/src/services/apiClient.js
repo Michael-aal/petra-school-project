@@ -1,16 +1,10 @@
 import { API_BASE_URL, clearAuthToken, readAuthToken } from "./authApi";
 
 export const request = async (path, options = {}) => {
-  const token = readAuthToken();
-
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   // Send the currently selected school to the backend
   const selectedSchoolId = localStorage.getItem("petra_selected_school_id");

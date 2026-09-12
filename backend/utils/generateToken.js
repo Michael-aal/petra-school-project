@@ -12,6 +12,6 @@ export const generateToken = (payload = {}) => {
   return jwt.sign(normalizedPayload, getJwtPrivateKey(), {
     algorithm: "RS256",
     keyid: process.env.JWT_KEY_ID || "petra-2026",
-    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+    expiresIn: process.env.JWT_EXPIRES_IN || "8h",
   });
 };

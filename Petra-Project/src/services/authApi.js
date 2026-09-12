@@ -25,27 +25,22 @@ const resolveApiBaseUrl = () => {
 export const API_BASE_URL = resolveApiBaseUrl();
 export const AUTH_TOKEN_KEY = "petra_auth_token";
 
-export const readAuthToken = () => window.sessionStorage.getItem(AUTH_TOKEN_KEY);
-export const writeAuthToken = (token) => {
-  if (token) {
-    window.sessionStorage.setItem(AUTH_TOKEN_KEY, token);
-  }
+// Authentication lives in the HttpOnly petra_token cookie. Keep these exports
+// during the transition so callers cannot reintroduce script-readable tokens.
+export const readAuthToken = () => null;
+export const writeAuthToken = () => {
+  window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
 };
 export const clearAuthToken = () => {
   window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
 };
 
 async function request(path, options = {}) {
-  const authHeader = readAuthToken();
   const requestUrl = `${API_BASE_URL}${path}`;
   const mergedHeaders = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
-
-  if (authHeader) {
-    mergedHeaders.Authorization = `Bearer ${authHeader}`;
-  }
 
   const response = await fetch(requestUrl, {
     ...options,
@@ -75,7 +70,7 @@ const authRequest = (path, payload) =>
   });
 
 const persistToken = (response) => {
-  writeAuthToken(response?.token);
+  writeAuthToken();
   return response;
 };
 

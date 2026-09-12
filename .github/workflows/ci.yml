@@ -33,7 +33,6 @@ jobs:
       JWT_PUBLIC_KEY: ${{ secrets.PETRA_CI_JWT_PUBLIC_KEY }}
       JWT_KEY_ID: ci
       CORS_ORIGIN: http://localhost:5173
-      ORIGIN_SECRET: ci-origin-secret
       REDIS_URL: redis://localhost:6379
     steps:
       - name: Checkout repository

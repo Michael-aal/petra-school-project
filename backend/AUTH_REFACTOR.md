@@ -2,21 +2,20 @@ Summary of authentication/session refactor
 
 Goals
 - Prevent cross-tab and cross-user data leakage.
-- Use per-tab session storage for access tokens to allow multiple simultaneous sessions.
+- Use an HttpOnly authentication cookie so access tokens are not readable by scripts.
 - Ensure server enforces identity and RBAC from the token on each request.
 
 Key changes made
-- Removed server-side setting of `petra_token` cookie in `backend/controllers/authController.js` (cookies are shared across tabs and prevented concurrent isolated sessions).
-- `authMiddleware` continues to accept `Authorization: Bearer <token>` and falls back to cookie when present; prefer using the Authorization header from the frontend.
-- Frontend `authApi` stores tokens in `sessionStorage` (per-tab) and no longer relies on cookies.
+- The server sets `petra_token` as an HttpOnly, SameSite=Lax cookie after login or registration.
+- Browser clients authenticate with that cookie and do not send bearer tokens from JavaScript.
 - User profile is fetched from `/api/auth/me` on app mount via `UserContext` rather than being persisted in `localStorage`.
 - Replaced uses of `localStorage` for `petra_user_info` in nested/demo app copies with `sessionStorage` to avoid cross-tab sharing of profile data.
 
 Frontend storage policy
-- Only store `petra_auth_token` in `sessionStorage`.
+- Do not store `petra_auth_token` in browser storage.
 - Never store user profile, role, permissions, or dashboard data in `localStorage` or `sessionStorage`.
-- On login: persist token to `sessionStorage`, then call `/api/auth/me` to load profile into in-memory React state.
-- On logout: clear token from `sessionStorage`, clear in-memory state, and redirect to `/signin`.
+- On login: the server sets the cookie, then call `/api/auth/me` to load profile into in-memory React state.
+- On logout: clear the cookie server-side, clear in-memory state, and redirect to `/signin`.
 
 Testing multi-session behavior
 1. Open Browser A tab — sign in as Principal.
@@ -25,8 +24,8 @@ Testing multi-session behavior
 4. Refresh each tab — each should revalidate the token and reload only its own profile via `/api/auth/me`.
 
 Notes & next steps
-- Consider implementing rotating refresh tokens with secure storage server-side if long-lived sessions are required.
-- Optionally add `jti` token identifiers and server-side session revocation list for logout invalidation.
+- Implement rotating refresh tokens with secure server-side storage if long-lived sessions are required.
+- Add `jti` token identifiers and server-side session revocation for immediate logout invalidation.
 - Audit any remaining copies or older builds (dist) that may still reference cookies/localStorage and update them.
 
 If you want, I can now:
