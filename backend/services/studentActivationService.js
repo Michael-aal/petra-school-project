@@ -8,8 +8,27 @@ import { prisma } from "../config/db.js";
  * already-enrolled student is left intact rather than duplicated.
  */
 export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, studentId, paymentReference }) => {
-  if (!schoolId || !studentId) {
-    return { activated: false, reason: "missing_school_or_student" };
+  if (!schoolId || !studentId || !paymentReference) {
+    return { activated: false, reason: "missing_payment_context" };
+  }
+
+  const payment = await prisma.payment.findFirst({
+    where: {
+      reference: String(paymentReference),
+      schoolId: Number(schoolId),
+      studentId: String(studentId),
+      status: "Successful",
+    },
+    select: { id: true, note: true, reference: true },
+  });
+
+  if (!payment) {
+    return { activated: false, reason: "successful_payment_not_found" };
+  }
+
+  // Never promote an applicant from the application-fee payment itself.
+  if (String(payment.note || "").toLowerCase().includes("application")) {
+    return { activated: false, reason: "application_fee_only" };
   }
 
   const admission = await prisma.admission.findFirst({
@@ -102,7 +121,7 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
       data: {
         status: "enrolled",
         admissionDate: admission.admissionDate || new Date(),
-        ...(paymentReference ? { paymentReference } : {}),
+        paymentReference,
         verifiedAt: new Date(),
         studentId: student.id,
       },
