@@ -900,77 +900,59 @@ body.dark .fparent .marketing-card:hover {
 
 /* School page visual system: the same calm, technical workspace language as the landing page. */
 .marketing-page.fsos {
-  --school-ink: #172321;
-  --school-muted: #687673;
-  --school-paper: #f5f6f0;
-  --school-line: rgba(23, 35, 33, 0.13);
-  --school-coral: #f06b4e;
+  --school-ink: #111827;
+  --school-muted: #4b5563;
+  --school-paper: #ffffff;
+  --school-line: #e5e7eb;
+  --school-coral: #ff6600;
   --school-mint: #cce8d4;
   position: relative;
   align-items: stretch;
-  gap: 0;
-  min-height: 100svh;
-  padding: 150px 0 96px;
-  overflow: hidden;
-  background:
-    linear-gradient(rgba(23, 35, 33, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(23, 35, 33, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 5%, rgba(204, 232, 212, 0.52), transparent 28%),
-    linear-gradient(180deg, #f8f8f1 0%, var(--school-paper) 55%, #edf3ee 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
+  gap: 32px;
+  min-height: 100vh;
+  padding: 64px 0 64px;
+  background: #f5f5f4;
 }
 
 .marketing-page.fsos::before {
-  content: "SCHOOL OPERATING SYSTEM / 01";
-  position: absolute;
-  top: 112px;
-  left: 7vw;
-  color: var(--school-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
-  opacity: 0.8;
+  display: none;
 }
 
 .marketing-page.fsos .marketing-header {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: clamp(34px, 5vw, 74px);
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px);
   align-items: center;
   text-align: center;
   border: 1px solid var(--school-line);
-  border-radius: 8px;
-  background: rgba(250, 251, 247, 0.62);
-  box-shadow: 0 22px 60px rgba(23, 35, 33, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
 
 .marketing-page.fsos .marketing-header::after {
-  content: "";
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  right: -160px;
-  top: -200px;
-  border-radius: 50%;
-  border: 1px solid rgba(240, 107, 78, 0.2);
-  box-shadow: 0 0 0 44px rgba(240, 107, 78, 0.035), 0 0 0 88px rgba(240, 107, 78, 0.025);
-  pointer-events: none;
+  display: none;
 }
 
 .marketing-page.fsos .marketing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 22px;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--school-muted);
-  font: 11px "DM Mono", monospace;
-  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .marketing-page.fsos .marketing-badge svg {
-  color: var(--school-coral);
+  color: #ff6600;
 }
 
 .marketing-page.fsos .marketing-title {
@@ -978,24 +960,25 @@ body.dark .fparent .marketing-card:hover {
   max-width: none;
   margin: 0 0 22px;
   color: var(--school-ink);
-  font-size: clamp(3.2rem, 7vw, 6.9rem);
-  line-height: 0.94;
-  letter-spacing: -0.075em;
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 .marketing-page.fsos .marketing-title span {
   background: none;
-  color: var(--school-coral);
+  color: #ff6600;
   -webkit-text-fill-color: initial;
 }
 
 .marketing-page.fsos .marketing-description {
-  width: min(100%, 860px);
+  width: min(100%, 720px);
   max-width: none;
-  margin: 0 0 30px;
+  margin: 0 auto 30px;
   color: var(--school-muted);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 1.65;
 }
 
 .marketing-page.fsos .marketing-actions {
@@ -1006,19 +989,52 @@ body.dark .fparent .marketing-card:hover {
 .marketing-page.fsos .marketing-btn {
   min-height: 46px;
   padding: 0 18px;
-  border-radius: 5px;
-  font-size: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
-.marketing-page.fsos .marketing-btn-primary {
-  background: var(--school-coral);
-  box-shadow: 0 12px 26px rgba(240, 107, 78, 0.2);
+.marketing-page.fsos .marketing-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.marketing-page.fsos .marketing-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.marketing-page.fsos .marketing-btn-primary,
+.marketing-page.fsos .cta-btn {
+  background: #ff6600 !important;
+  background-color: #ff6600 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.marketing-page.fsos .marketing-btn-primary:hover,
+.marketing-page.fsos .cta-btn:hover {
+  background: #e65c00 !important;
+  background-color: #e65c00 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .marketing-page.fsos .marketing-btn-secondary {
-  background: transparent;
-  border-color: var(--school-line);
-  color: var(--school-ink);
+  background: transparent !important;
+  border: 1.5px solid #ff6600 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
+}
+
+.marketing-page.fsos .marketing-btn-secondary:hover {
+  background: rgba(255, 102, 0, 0.08) !important;
+  border-color: #e65c00 !important;
+  color: #ff6600 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
 .marketing-page.fsos .marketing-trust-bar {
@@ -1034,130 +1050,156 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .marketing-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--school-muted);
-  font: 10px "DM Mono", monospace;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .marketing-page.fsos .marketing-trust-item svg {
-  color: #4d9a70;
+  color: #ff6600;
 }
 
 .marketing-page.fsos .marketing-trust-divider {
-  height: 14px;
+  height: 16px;
+  width: 1px;
   background: var(--school-line);
 }
 
-.marketing-page.fsos > .feature-grid,
-.marketing-page.fsos > .marketing-highlight-section,
-.marketing-page.fsos > .marketing-cta {
-  width: 100%;
-  max-width: none;
-  margin-left: 0;
-  margin-right: 0;
+.marketing-page.fsos > .marketing-section {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0;
 }
 
-.marketing-page.fsos > .feature-grid {
-  margin-top: 32px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.marketing-page.fsos .marketing-card {
-  min-height: 300px;
-  padding: 25px;
-  border: 1px solid var(--school-line);
-  border-radius: 7px;
-  background: rgba(250, 251, 247, 0.72);
-  box-shadow: none;
-}
-
-.marketing-page.fsos .marketing-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--school-coral);
-  box-shadow: 0 18px 40px rgba(23, 35, 33, 0.1);
-}
-
-.marketing-page.fsos .marketing-card-icon {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 48px;
-  border-radius: 5px;
-}
-
-.marketing-page.fsos .marketing-card-title {
-  color: var(--school-ink);
-  font-size: 22px;
-  letter-spacing: -0.045em;
-}
-
-.marketing-page.fsos .marketing-card-text,
-.marketing-page.fsos .marketing-intro-block p {
-  color: var(--school-muted);
-  font-size: 13px;
-}
-
-.marketing-page.fsos .marketing-card-link {
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.marketing-page.fsos .marketing-highlight-section {
-  align-items: stretch;
-  margin-top: 76px;
-  padding-top: 76px;
-  border-top: 1px solid var(--school-line);
+.marketing-page.fsos .section-intro {
+  margin-bottom: 36px;
   text-align: center;
 }
 
-.marketing-page.fsos .marketing-intro-block h2 {
-  width: 100%;
-  max-width: none;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--school-ink);
-  font-size: clamp(2.4rem, 4.8vw, 4.5rem);
-  line-height: 1;
-  letter-spacing: -0.07em;
+.marketing-page.fsos .section-intro h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: #111827;
 }
 
-.marketing-page.fsos .marketing-intro-block p {
-  width: min(100%, 760px);
-  max-width: none;
-  margin: 0 auto 38px;
-  line-height: 1.7;
+.marketing-page.fsos .section-subtext {
+  margin: 8px auto 0;
+  max-width: 600px;
+  color: var(--school-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.marketing-page.fsos .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .marketing-page.fsos .highlight-grid {
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
 
-.marketing-page.fsos .highlight-card {
-  min-height: 220px;
+.marketing-page.fsos .marketing-card {
+  min-height: auto;
+  padding: 28px 24px;
+  border: 1px solid var(--school-line);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
 }
 
-.marketing-page.fsos .highlight-icon {
-  margin-bottom: 30px;
-  background: rgba(240, 107, 78, 0.12) !important;
-  color: var(--school-coral) !important;
+.marketing-page.fsos .marketing-card:hover {
+  transform: none;
+  border-color: #d1d5db;
+  box-shadow: none;
 }
 
-.marketing-page.fsos > .marketing-cta {
-  margin-top: 76px;
-  padding: clamp(44px, 7vw, 88px) clamp(25px, 7vw, 90px);
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f06b4e 0%, #d85c38 100%);
-  text-align: left;
-  align-items: flex-start;
-}
-
-.marketing-page.fsos .cta-badge {
-  padding: 0;
+.marketing-page.fsos .marketing-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
   margin-bottom: 20px;
-  background: transparent;
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  border-radius: 10px;
+  background: rgba(255, 102, 0, 0.08);
+  color: #ff6600;
+}
+
+.marketing-page.fsos .marketing-card-title {
+  color: #111827;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.marketing-page.fsos .marketing-card-text {
+  color: var(--school-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  flex-grow: 1;
+}
+
+.marketing-page.fsos .marketing-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff6600;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.marketing-page.fsos .school-testimonial-section {
+  padding: 48px 0;
+}
+
+.marketing-page.fsos .school-quote-card {
+  background: #ffffff;
+  border: 1px solid var(--school-line);
+  border-radius: 16px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: none;
+}
+
+.marketing-page.fsos .school-quote-card .quote-icon {
+  color: #ff6600;
+  margin-bottom: 16px;
+}
+
+.marketing-page.fsos .school-quote-card .quote-text {
+  margin: 0 auto 24px;
+  max-width: 720px;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: #111827;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.marketing-page.fsos .school-quote-card .quote-author strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.marketing-page.fsos .school-quote-card .quote-author span {
+  font-size: 0.82rem;
+  color: var(--school-muted);
 }
 
 .marketing-page.fsos .marketing-cta-title {
@@ -1209,56 +1251,24 @@ body.dark .marketing-page.fsos .marketing-intro-block h2 {
   color: var(--school-ink);
 }
 
-/* Futuristic CTA treatment: a product surface instead of a flat promotional block. */
+/* Clean modern CTA block */
 .marketing-page.fsos > .marketing-cta {
-  min-height: 390px;
+  min-height: auto;
   justify-content: center;
-  background:
-    linear-gradient(rgba(255, 149, 96, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 149, 96, 0.055) 1px, transparent 1px),
-    radial-gradient(circle at 82% 50%, rgba(255, 149, 96, 0.24), transparent 24%),
-    linear-gradient(135deg, #0b1d18 0%, #102a24 58%, #091511 100%);
-  background-size: 30px 30px, 30px 30px, auto, auto;
-  border: 1px solid rgba(255, 149, 96, 0.34);
-  box-shadow: 0 28px 70px rgba(7, 27, 22, 0.24);
+  align-items: center;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: none;
+  padding: 48px 32px;
+  width: min(1100px, calc(100% - 32px));
+  margin: 32px auto 0;
 }
 
-.marketing-page.fsos > .marketing-cta::before {
-  inset: 0;
-  width: auto;
-  height: auto;
-  border-radius: 0;
-  background:
-    linear-gradient(90deg, var(--school-coral), transparent 25%) top left / 100% 1px no-repeat,
-    linear-gradient(180deg, transparent 65%, rgba(255, 149, 96, 0.08) 100%);
-  filter: none;
-  opacity: 1;
-}
-
+.marketing-page.fsos > .marketing-cta::before,
 .marketing-page.fsos > .marketing-cta::after {
-  content: "NUVORA OS  /  LIVE WORKSPACE";
-  width: min(38vw, 470px);
-  height: 210px;
-  right: 7%;
-  top: 50%;
-  border: 1px solid rgba(255, 149, 96, 0.4);
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, transparent 0 18%, rgba(255, 149, 96, 0.18) 18.2% 18.5%, transparent 18.7% 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 52px),
-    rgba(5, 15, 12, 0.72);
-  box-shadow:
-    0 0 0 12px rgba(255, 149, 96, 0.035),
-    0 0 0 13px rgba(255, 149, 96, 0.16),
-    0 24px 50px rgba(0, 0, 0, 0.3);
-  color: rgba(237, 243, 239, 0.65);
-  padding: 18px;
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.1em;
-  transform: translateY(-50%);
-  filter: none;
-  opacity: 1;
-  pointer-events: none;
+  display: none;
 }
 
 .marketing-page.fsos > .marketing-cta > * {
@@ -1267,20 +1277,40 @@ body.dark .marketing-page.fsos .marketing-intro-block h2 {
 }
 
 .marketing-page.fsos .marketing-cta-title {
-  max-width: 560px;
-  color: #edf3ef;
+  max-width: 600px;
+  margin: 12px auto 16px;
+  color: #111827;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+  font-weight: 700;
 }
 
 .marketing-page.fsos .marketing-cta-text {
-  max-width: 500px;
-  color: #a9b9b0;
+  max-width: 540px;
+  margin: 0 auto 28px;
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.marketing-page.fsos .cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .marketing-page.fsos .cta-btn {
-  background: var(--school-coral);
-  border-color: var(--school-coral);
-  color: #ffffff;
-  box-shadow: 0 12px 26px rgba(255, 149, 96, 0.24);
+  background: #ff6600 !important;
+  border-color: #ff6600 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
 }
 
 @keyframes school-page-enter {

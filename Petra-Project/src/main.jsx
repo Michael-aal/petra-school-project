@@ -5,9 +5,9 @@ import { SchoolProvider } from "./context/SchoolContext.jsx";
 import { ToastProvider, ToastViewport } from "./context/ToastContext.jsx";
 import "./index.css";
 import App from "./App.jsx";
-import { applyTheme, getInitialTheme } from "./utils/theme.js";
+import { applyTheme } from "./utils/theme.js";
 
-applyTheme(getInitialTheme());
+applyTheme("light");
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
