@@ -63,6 +63,7 @@ const publicStudentInclude = {
 
 const resolvePublicStudentByCode = async (studentCode) => {
   const normalizedCode = String(studentCode || "").trim();
+
   if (!normalizedCode) {
     const error = new Error("Student Code is required");
     error.statusCode = 400;
@@ -70,12 +71,35 @@ const resolvePublicStudentByCode = async (studentCode) => {
   }
 
   const admission = await prisma.admission.findFirst({
-    where: { admissionCode: normalizedCode },
-    select: { studentId: true, schoolId: true },
+    where: {
+      admissionCode: {
+        equals: normalizedCode,
+        mode: "insensitive",
+      },
+    },
+    select: {
+      studentId: true,
+      schoolId: true,
+    },
   });
+
   const student = admission?.studentId
-    ? await prisma.student.findFirst({ where: { id: admission.studentId, schoolId: admission.schoolId }, include: publicStudentInclude })
-    : await prisma.student.findFirst({ where: { admissionNumber: normalizedCode }, include: publicStudentInclude });
+    ? await prisma.student.findFirst({
+        where: {
+          id: admission.studentId,
+          schoolId: admission.schoolId,
+        },
+        include: publicStudentInclude,
+      })
+    : await prisma.student.findFirst({
+        where: {
+          admissionNumber: {
+            equals: normalizedCode,
+            mode: "insensitive",
+          },
+        },
+        include: publicStudentInclude,
+      });
 
   if (!student || !student.school?.isActive) {
     const error = new Error("Student Code not found");
@@ -1072,3 +1096,4 @@ export const financeService = {
     return payload;
   },
 };
+
