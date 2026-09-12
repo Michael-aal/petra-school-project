@@ -149,21 +149,21 @@ const baseFeatures = {
 };
 
 const solutionMeta = {
-  "School OS": { icon: School, accent: "#60a5fa", eyebrow: "For Schools", badge: "Operations" },
-  "Financial Management": { icon: Wallet, accent: "#34d399", eyebrow: "For Schools", badge: "Finance" },
-  "CBT Engine": { icon: ClipboardCheck, accent: "#22d3ee", eyebrow: "For Schools", badge: "Assessment" },
-  "Nuvora Pay": { icon: ShieldCheck, accent: "#f59e0b", eyebrow: "For Parents", badge: "Payments" },
-  FlexPay: { icon: Wallet, accent: "#a78bfa", eyebrow: "For Parents", badge: "Installments" },
-  Performance: { icon: LineChart, accent: "#fb7185", eyebrow: "For Parents", badge: "Progress" },
-  "AI Study App": { icon: Sparkles, accent: "#8b5cf6", eyebrow: "For Students", badge: "AI Tutor" },
-  "Learning Hub": { icon: PanelsTopLeft, accent: "#38bdf8", eyebrow: "For Students", badge: "Learning" },
-  "Digital Library": { icon: LibraryBig, accent: "#f97316", eyebrow: "For Students", badge: "Library" },
-  "Teacher Workspace": { icon: LayoutDashboard, accent: "#14b8a6", eyebrow: "For Teachers", badge: "Workspace" },
-  "Lesson Planner": { icon: SquarePen, accent: "#eab308", eyebrow: "For Teachers", badge: "Planning" },
-  "Assessment Tools": { icon: ClipboardCheck, accent: "#f472b6", eyebrow: "For Teachers", badge: "Grading" },
-  "School Analytics": { icon: LineChart, accent: "#4ade80", eyebrow: "For Administrators", badge: "Insights" },
-  Admissions: { icon: School, accent: "#60a5fa", eyebrow: "For Administrators", badge: "Enrollment" },
-  "Communication Hub": { icon: Megaphone, accent: "#c084fc", eyebrow: "For Administrators", badge: "Messaging" },
+  "School OS": { icon: School, accent: "#ff6600", eyebrow: "For Schools", badge: "Operations" },
+  "Financial Management": { icon: Wallet, accent: "#ff6600", eyebrow: "For Schools", badge: "Finance" },
+  "CBT Engine": { icon: ClipboardCheck, accent: "#ff6600", eyebrow: "For Schools", badge: "Assessment" },
+  "Nuvora Pay": { icon: ShieldCheck, accent: "#ff6600", eyebrow: "For Parents", badge: "Payments" },
+  FlexPay: { icon: Wallet, accent: "#ff6600", eyebrow: "For Parents", badge: "Installments" },
+  Performance: { icon: LineChart, accent: "#ff6600", eyebrow: "For Parents", badge: "Progress" },
+  "AI Study App": { icon: Sparkles, accent: "#ff6600", eyebrow: "For Students", badge: "AI Tutor" },
+  "Learning Hub": { icon: PanelsTopLeft, accent: "#ff6600", eyebrow: "For Students", badge: "Learning" },
+  "Digital Library": { icon: LibraryBig, accent: "#ff6600", eyebrow: "For Students", badge: "Library" },
+  "Teacher Workspace": { icon: LayoutDashboard, accent: "#ff6600", eyebrow: "For Teachers", badge: "Workspace" },
+  "Lesson Planner": { icon: SquarePen, accent: "#ff6600", eyebrow: "For Teachers", badge: "Planning" },
+  "Assessment Tools": { icon: ClipboardCheck, accent: "#ff6600", eyebrow: "For Teachers", badge: "Grading" },
+  "School Analytics": { icon: LineChart, accent: "#ff6600", eyebrow: "For Administrators", badge: "Insights" },
+  Admissions: { icon: School, accent: "#ff6600", eyebrow: "For Administrators", badge: "Enrollment" },
+  "Communication Hub": { icon: Megaphone, accent: "#ff6600", eyebrow: "For Administrators", badge: "Messaging" },
 };
 
 export function getSolutionData(title) {
@@ -175,7 +175,7 @@ export function getSolutionData(title) {
     icon: meta.icon,
     accent: meta.accent,
     summary:
-      `A clean, responsive module for ${title.toLowerCase()} built to fit Nuvora's dark SaaS experience.`,
+      `A clean, responsive module for ${title.toLowerCase()} that fits the Nuvora school operating system with simple, structured workflows.`,
     highlights: baseFeatures[title],
     benefits: [
       "Responsive sections that scale from mobile to desktop.",

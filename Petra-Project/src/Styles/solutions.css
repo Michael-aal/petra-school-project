@@ -49,8 +49,123 @@
   line-height: 1.6;
 }
 
+.solution-template-page {
+  background: transparent;
+}
+
+.solution-template-page .marketing-header {
+  padding-top: 96px;
+}
+
+.solution-template-page .marketing-card {
+  min-height: 100%;
+}
+
+.solution-detail-grid,
+.solution-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.solution-detail-card,
+.solution-preview-card,
+.solution-benefit-card {
+  padding: 22px 20px;
+}
+
+.solution-detail-card .marketing-card-title,
+.solution-preview-card .marketing-card-title,
+.solution-benefit-card .marketing-card-title {
+  margin-top: 14px;
+}
+
+.solution-preview-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #f4d8c9;
+  margin-bottom: 16px;
+  min-height: 220px;
+  background:
+    linear-gradient(135deg, rgba(255, 102, 0, 0.08), rgba(255, 102, 0, 0.02)),
+    #fffaf5;
+}
+
+.solution-preview-media::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 102, 0, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 241, 233, 0.78)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 102, 0, 0.045),
+      rgba(255, 102, 0, 0.045) 12px,
+      rgba(255, 255, 255, 0) 12px,
+      rgba(255, 255, 255, 0) 48px
+    );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.solution-preview-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #fffaf5;
+}
+
+.solution-benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.solution-faq-list {
+  width: min(900px, calc(100% - 32px));
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+}
+
+.solution-faq-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.02);
+}
+
+.solution-faq-item summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #111827;
+  list-style: none;
+}
+
+.solution-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.solution-faq-item p {
+  margin: 12px 0 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
 @media (max-width: 900px) {
-  .solution-grid {
+  .solution-grid,
+  .solution-detail-grid,
+  .solution-preview-grid,
+  .solution-benefit-grid {
     grid-template-columns: 1fr;
   }
 }

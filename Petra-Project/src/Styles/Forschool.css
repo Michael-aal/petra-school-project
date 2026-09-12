@@ -538,7 +538,7 @@ body.dark .fsu-btnSecondary:hover {
 .marketing-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-  border-color: var(--card-accent, #3B82F6);
+  border-color: var(--card-accent, #ff6600);
 }
 
 .feature-top-circle {
@@ -635,12 +635,12 @@ body.dark .fsu-btnSecondary:hover {
 
 .highlight-card {
   text-align: left;
-  border-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(255, 102, 0, 0.15);
 }
 
 .highlight-icon {
-  background: rgba(59, 130, 246, 0.1) !important;
-  color: #3B82F6 !important;
+  background: rgba(255, 102, 0, 0.08) !important;
+  color: #ff6600 !important;
   width: 48px !important;
   height: 48px !important;
 }
