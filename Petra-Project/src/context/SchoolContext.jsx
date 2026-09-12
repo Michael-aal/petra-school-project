@@ -121,6 +121,13 @@ export function SchoolProvider({ children }) {
 
         setSelectedSchoolIdState(schoolId);
 
+        // Persist the authenticated user's school context so apiClient.js
+        // can send x-school-id on subsequent requests such as admissions.
+        localStorage.setItem(
+          SELECTED_SCHOOL_STORAGE_KEY,
+          schoolId
+        );
+
         setSelectedSchoolState({
           id: schoolId,
           name:
