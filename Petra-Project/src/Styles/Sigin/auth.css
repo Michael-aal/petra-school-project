@@ -357,7 +357,25 @@ body.dark .auth-form {
 }
 
 .auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.06);
+  color: #ff6600;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-back-link:hover {
+  background: rgba(255, 102, 0, 0.1);
+  border-color: rgba(255, 102, 0, 0.32);
+  color: #e65c00;
 }
 
 .auth-loading {
@@ -683,37 +701,25 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
   }
 }
 
-/* Futuristic registration entry surface. */
+/* Light school-brand registration entry surface. */
 .auth-page:has(.registration-choice-grid) {
-  --auth-ink: #edf3ef;
-  --auth-muted: #9aa9a2;
-  --auth-paper: #071b16;
-  --auth-surface: rgba(17, 26, 24, 0.86);
-  --auth-line: rgba(234, 239, 235, 0.13);
-  --auth-accent: #ff9560;
-  --auth-accent-soft: rgba(255, 149, 96, 0.12);
-  position: relative;
+  --auth-ink: #111827;
+  --auth-muted: #4b5563;
+  --auth-paper: #ffffff;
+  --auth-surface: #ffffff;
+  --auth-line: #e5e7eb;
+  --auth-accent: #ff6600;
+  --auth-accent-soft: rgba(255, 102, 0, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
-  padding: 118px max(20px, 7vw) 72px;
+  padding: 96px max(20px, 7vw) 72px;
   overflow-x: hidden;
-  background:
-    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
-    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
+  background: #f7f7f5;
 }
 
 .auth-page:has(.registration-choice-grid)::before {
-  content: "REGISTRATION NETWORK / ONLINE";
-  position: absolute;
-  top: 82px;
-  left: max(20px, 7vw);
-  color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
+  display: none;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-shell {
@@ -728,19 +734,20 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-brand-header {
-  margin-bottom: 34px;
+  margin-bottom: 28px;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-brand-mark {
-  background: var(--auth-accent);
-  color: #071b16;
-  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  box-shadow: none;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-brand,
@@ -758,11 +765,11 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 
 .auth-page:has(.registration-choice-grid) .auth-form {
   display: block;
-  padding: clamp(30px, 5vw, 72px);
+  padding: clamp(30px, 4vw, 64px);
   border: 1px solid var(--auth-line);
-  border-radius: 8px;
-  background: rgba(17, 26, 24, 0.68);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: none;
 }
 
 .registration-entry-heading {
@@ -772,99 +779,116 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 }
 
 .registration-entry-heading > span {
-  color: var(--auth-accent);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .registration-entry-heading h1 {
   margin: 18px 0 16px;
-  color: var(--auth-ink);
-  font-size: clamp(3rem, 6vw, 6.2rem);
-  line-height: 0.96;
-  letter-spacing: -0.075em;
+  color: #111827;
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+  font-weight: 800;
 }
 
 .registration-entry-heading p {
   width: min(100%, 650px);
   margin: 0 auto;
-  color: var(--auth-muted);
-  font-size: 16px;
+  color: #4b5563;
+  font-size: 1.04rem;
   line-height: 1.7;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-back-link {
   display: inline-flex;
   margin-bottom: 26px;
-  color: var(--auth-muted);
-  font: 11px "DM Mono", monospace;
-  letter-spacing: 0.04em;
+  color: #4b5563;
+  font-weight: 600;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-back-link:hover {
-  color: var(--auth-accent);
+  color: #ff6600;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 20px;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card {
   min-height: 280px;
-  padding: 25px;
-  border: 1px solid var(--auth-line);
-  border-radius: 7px;
-  background: rgba(9, 20, 16, 0.72);
+  padding: 24px 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #ffffff;
   box-shadow: none;
-  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 149, 96, 0.54);
-  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.24);
+  transform: translateY(-4px);
+  border-color: rgba(255, 102, 0, 0.24);
+  box-shadow: none;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-icon {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 32px;
-  border: 1px solid rgba(255, 149, 96, 0.35);
-  border-radius: 5px;
-  background: rgba(255, 149, 96, 0.12);
-  color: var(--auth-accent);
+  width: 44px;
+  height: 44px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 102, 0, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 102, 0, 0.08);
+  color: #ff6600;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card h3 {
-  color: var(--auth-ink);
+  color: #111827;
   font-size: 1.2rem;
   letter-spacing: -0.04em;
+  margin-bottom: 10px;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card p {
-  color: var(--auth-muted);
-  font-size: 0.82rem;
+  color: #4b5563;
+  font-size: 0.9rem;
   line-height: 1.65;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-button {
   min-height: 42px;
   margin-top: auto;
-  border: 1px solid rgba(255, 149, 96, 0.58);
-  border-radius: 5px;
-  background: var(--auth-accent);
-  color: #071b16;
+  border: 1px solid rgba(255, 102, 0, 0.5);
+  border-radius: 10px;
+  background: #ff6600;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.auth-page:has(.registration-choice-grid) .registration-choice-button:hover {
+  background: #e65c00;
+  border-color: #e65c00;
+  color: #ffffff;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-switch {
   margin-top: 28px;
   text-align: center;
-  color: var(--auth-muted);
+  color: #4b5563;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-switch a {
-  color: var(--auth-accent);
+  color: #ff6600;
+  font-weight: 700;
 }
 
 .auth-page:has(.registration-choice-grid) .auth-footnote {
@@ -891,39 +915,27 @@ body.dark .auth-page:has(.registration-choice-grid) {
   background-size: 36px 36px, 36px 36px, auto, auto;
 }
 
-/* Parent registration and sign-in console surfaces. */
+/* Parent registration and sign-in surface. */
 .auth-page:has(.auth-shell--parent-register),
 .auth-page:has(.auth-shell--signin) {
-  --auth-ink: #edf3ef;
-  --auth-muted: #9aa9a2;
-  --auth-paper: #071b16;
-  --auth-surface: rgba(17, 26, 24, 0.86);
-  --auth-line: rgba(234, 239, 235, 0.13);
-  --auth-accent: #ff9560;
-  --auth-accent-soft: rgba(255, 149, 96, 0.12);
-  position: relative;
+  --auth-ink: #111827;
+  --auth-muted: #4b5563;
+  --auth-paper: #ffffff;
+  --auth-surface: #ffffff;
+  --auth-line: #e5e7eb;
+  --auth-accent: #ff6600;
+  --auth-accent-soft: rgba(255, 102, 0, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
-  padding: 118px max(20px, 7vw) 72px;
+  padding: 96px max(20px, 7vw) 72px;
   overflow-x: hidden;
-  background:
-    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
-    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
+  background: #f7f7f5;
 }
 
 .auth-page:has(.auth-shell--parent-register)::before,
 .auth-page:has(.auth-shell--signin)::before {
-  content: "PARENT ACCESS NETWORK / ONLINE";
-  position: absolute;
-  top: 82px;
-  left: max(20px, 7vw);
-  color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
+  display: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-shell,
@@ -943,23 +955,18 @@ body.dark .auth-page:has(.registration-choice-grid) {
 
 .auth-page:has(.auth-shell--parent-register) .auth-brand-header::after,
 .auth-page:has(.auth-shell--signin) .auth-brand-header::after {
-  content: "ACCESS NODE / READY";
-  position: absolute;
-  right: 0;
-  bottom: 20px;
-  color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.1em;
+  display: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-brand-mark,
 .auth-page:has(.auth-shell--signin) .auth-brand-mark {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
-  background: var(--auth-accent);
-  color: #071b16;
-  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-brand,
@@ -971,23 +978,26 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--parent-register) .auth-brand-sub,
 .auth-page:has(.auth-shell--signin) .auth-brand-sub {
   color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-form,
 .auth-page:has(.auth-shell--signin) .auth-form {
-  padding: clamp(30px, 5vw, 72px);
-  border: 1px solid rgba(255, 149, 96, 0.2);
-  border-radius: 8px;
-  background: rgba(17, 26, 24, 0.68);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+  padding: clamp(24px, 4vw, 52px);
+  border: 1px solid var(--auth-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-form-header h2,
 .auth-page:has(.auth-shell--signin) .auth-form-header h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 0.98;
-  letter-spacing: -0.065em;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: #111827;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-form-header p,
@@ -998,42 +1008,46 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--parent-register) .auth-input-wrap,
 .auth-page:has(.auth-shell--signin) .auth-input-wrap {
   min-height: 52px;
-  border-radius: 6px;
-  background: rgba(9, 20, 16, 0.72);
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-input-wrap:focus-within,
 .auth-page:has(.auth-shell--signin) .auth-input-wrap:focus-within {
-  border-color: var(--auth-accent);
-  box-shadow: 0 0 0 3px var(--auth-accent-soft), 0 0 20px rgba(255, 149, 96, 0.08);
+  border-color: rgba(255, 102, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.08);
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-submit,
 .auth-page:has(.auth-shell--signin) .auth-submit {
   min-height: 52px;
-  border: 1px solid rgba(255, 149, 96, 0.65);
-  border-radius: 6px;
-  background: linear-gradient(135deg, #ff9560, #e86b46);
-  color: #071b16;
-  box-shadow: 0 12px 26px rgba(255, 149, 96, 0.2);
+  border: 1px solid rgba(255, 102, 0, 0.6);
+  border-radius: 12px;
+  background: #ff6600;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled),
 .auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffab7e, #f27a52);
-  box-shadow: 0 16px 30px rgba(255, 149, 96, 0.28);
+  background: #e65c00;
+  border-color: #e65c00;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-field > span,
 .auth-page:has(.auth-shell--signin) .auth-field > span {
-  color: var(--auth-ink);
+  color: #111827;
+  font-weight: 600;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-form .auth-link,
 .auth-page:has(.auth-shell--signin) .auth-form .auth-link,
 .auth-page:has(.auth-shell--parent-register) .auth-switch a,
 .auth-page:has(.auth-shell--signin) .auth-switch a {
-  color: var(--auth-accent);
+  color: #ff6600;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-footnote,
@@ -1052,20 +1066,7 @@ body.dark .auth-page:has(.registration-choice-grid) {
 @media (max-width: 600px) {
   .auth-page:has(.auth-shell--parent-register),
   .auth-page:has(.auth-shell--signin) {
-    padding: 108px 20px 48px;
-  }
-
-  .auth-page:has(.auth-shell--parent-register)::before,
-  .auth-page:has(.auth-shell--signin)::before {
-    left: 20px;
-  }
-
-  .auth-page:has(.auth-shell--parent-register) .auth-brand-header::after,
-  .auth-page:has(.auth-shell--signin) .auth-brand-header::after {
-    max-width: 132px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    padding: 88px 20px 48px;
   }
 }
 
@@ -1156,39 +1157,27 @@ body.dark .auth-page:has(.registration-choice-grid) {
   }
 }
 
-/* Staff and administrator auth consoles. */
+/* Staff and administrator auth console surface. */
 .auth-page:has(.auth-shell--staff-register),
 .auth-page:has(.auth-shell--admin-register) {
-  --auth-ink: #edf3ef;
-  --auth-muted: #9aa9a2;
-  --auth-paper: #071b16;
-  --auth-surface: rgba(17, 26, 24, 0.86);
-  --auth-line: rgba(234, 239, 235, 0.13);
-  --auth-accent: #ff9560;
-  --auth-accent-soft: rgba(255, 149, 96, 0.12);
-  position: relative;
+  --auth-ink: #111827;
+  --auth-muted: #4b5563;
+  --auth-paper: #ffffff;
+  --auth-surface: #ffffff;
+  --auth-line: #e5e7eb;
+  --auth-accent: #ff6600;
+  --auth-accent-soft: rgba(255, 102, 0, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
-  padding: 118px max(20px, 7vw) 72px;
+  padding: 96px max(20px, 7vw) 72px;
   overflow-x: hidden;
-  background:
-    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
-    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
+  background: #f7f7f5;
 }
 
 .auth-page:has(.auth-shell--staff-register)::before,
 .auth-page:has(.auth-shell--admin-register)::before {
-  content: "SECURE ACCESS NETWORK / ONLINE";
-  position: absolute;
-  top: 82px;
-  left: max(20px, 7vw);
-  color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
+  display: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-shell,
@@ -1210,23 +1199,18 @@ body.dark .auth-page:has(.registration-choice-grid) {
 
 .auth-page:has(.auth-shell--staff-register) .auth-brand-header::after,
 .auth-page:has(.auth-shell--admin-register) .auth-brand-header::after {
-  content: "ACCESS NODE / READY";
-  position: absolute;
-  right: 0;
-  bottom: 20px;
-  color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
-  letter-spacing: 0.1em;
+  display: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-brand-mark,
 .auth-page:has(.auth-shell--admin-register) .auth-brand-mark {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
-  background: var(--auth-accent);
-  color: #071b16;
-  box-shadow: 0 0 0 6px rgba(255, 149, 96, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 102, 0, 0.08);
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #ff6600;
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-brand,
@@ -1237,37 +1221,41 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--staff-register) .auth-brand-sub,
 .auth-page:has(.auth-shell--admin-register) .auth-brand-sub {
   color: var(--auth-muted);
-  font: 10px "DM Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-form,
 .auth-page:has(.auth-shell--admin-register) .auth-form {
-  padding: clamp(30px, 5vw, 72px);
-  border: 1px solid rgba(255, 149, 96, 0.2);
-  border-radius: 8px;
-  background: rgba(17, 26, 24, 0.68);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+  padding: clamp(24px, 4vw, 52px);
+  border: 1px solid var(--auth-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-form-header h2,
 .auth-page:has(.auth-shell--admin-register) .auth-form-header h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 0.98;
-  letter-spacing: -0.065em;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: #111827;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-form-header p,
 .auth-page:has(.auth-shell--admin-register) .auth-form-header p,
 .auth-page:has(.auth-shell--staff-register) .auth-field > span,
 .auth-page:has(.auth-shell--admin-register) .auth-field > span {
-  color: var(--auth-muted);
+  color: #111827;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-input-wrap,
 .auth-page:has(.auth-shell--admin-register) .auth-input-wrap {
   min-height: 52px;
-  border-radius: 6px;
-  background: rgba(9, 20, 16, 0.72);
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-input-wrap input,
@@ -1289,18 +1277,18 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--staff-register) .auth-submit,
 .auth-page:has(.auth-shell--admin-register) .auth-submit {
   min-height: 52px;
-  border: 1px solid rgba(255, 149, 96, 0.65);
-  border-radius: 6px;
-  background: linear-gradient(135deg, #ff9560, #e86b46);
-  color: #071b16;
+  border: 1px solid rgba(255, 102, 0, 0.65);
+  border-radius: 12px;
+  background: #ff6600;
+  color: #ffffff;
   box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-submit:hover:not(:disabled),
 .auth-page:has(.auth-shell--admin-register) .auth-submit:hover:not(:disabled) {
-  background: #ff9560;
-  border-color: #ff9560;
-  color: #071b16;
+  background: #e65c00;
+  border-color: #e65c00;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -1308,7 +1296,7 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--admin-register) .auth-link,
 .auth-page:has(.auth-shell--staff-register) .auth-switch a,
 .auth-page:has(.auth-shell--admin-register) .auth-switch a {
-  color: var(--auth-accent);
+  color: #ff6600;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-footnote,
@@ -1320,36 +1308,9 @@ body.dark .auth-page:has(.registration-choice-grid) {
   color: var(--auth-muted);
 }
 
-body.dark .auth-page:has(.auth-shell--staff-register),
-body.dark .auth-page:has(.auth-shell--admin-register) {
-  background:
-    linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 88% 8%, rgba(89, 167, 132, 0.16), transparent 28%),
-    linear-gradient(180deg, #061b17 0%, #0b201b 55%, #0a1815 100%);
-  background-size: 36px 36px, 36px 36px, auto, auto;
-}
-
-body .auth-page:has(.auth-shell--signin)::before {
-  content: "SECURE ACCESS NETWORK / ONLINE";
-}
-
 @media (max-width: 600px) {
   .auth-page:has(.auth-shell--staff-register),
   .auth-page:has(.auth-shell--admin-register) {
-    padding: 108px 20px 48px;
-  }
-
-  .auth-page:has(.auth-shell--staff-register)::before,
-  .auth-page:has(.auth-shell--admin-register)::before {
-    left: 20px;
-  }
-
-  .auth-page:has(.auth-shell--staff-register) .auth-brand-header::after,
-  .auth-page:has(.auth-shell--admin-register) .auth-brand-header::after {
-    max-width: 132px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    padding: 88px 20px 48px;
   }
 }
