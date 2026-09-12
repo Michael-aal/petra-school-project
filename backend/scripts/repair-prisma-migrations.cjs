@@ -3,11 +3,6 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const dotenv = require("dotenv");
 
-// This utility is intentionally separate from Prisma migration history.
-// It reconciles a database that is partially ahead of its migration history
-// with the current Prisma schema, while preserving legacy columns that Prisma
-// no longer maps.
-
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const backendDir = path.resolve(__dirname, "..");
@@ -64,10 +59,6 @@ function preserveLegacyColumns(sql) {
   // These columns are present in older DB versions but are intentionally no
   // longer represented by the current Prisma models. Keeping them is safer
   // than silently deleting historical data during recovery.
-  //
-  // Prisma may combine multiple DROP COLUMN clauses into one ALTER TABLE, so
-  // remove only the individual legacy clauses rather than relying on a whole
-  // statement matching exactly.
   const legacyColumns = [
     ["Admin", "name"],
     ["Teacher", "name"],
@@ -75,40 +66,46 @@ function preserveLegacyColumns(sql) {
     ["InstallmentPlan", "startDate"],
     ["StudentMedicalInfo", "insuranceNumber"],
     ["StudentMedicalInfo", "insuranceProvider"],
-    // Payment.paymentMethodId already exists in the live database and was
-    // introduced by the earlier payment-method migration. The current Prisma
-    // model no longer maps it, but removing it would discard existing schema
-    // and could break payment compatibility. Preserve it as a legacy column.
     ["Payment", "paymentMethodId"],
   ];
 
   let safeSql = sql;
 
+  // Remove only the individual legacy DROP COLUMN clauses. Prisma can put
+  // several ALTER TABLE actions into one statement, so deleting a whole
+  // ALTER TABLE block here can accidentally remove real schema changes.
   for (const [table, column] of legacyColumns) {
     const pattern = new RegExp(
-      `DROP COLUMN\\s+"${column}"(?:,\\s*|\\s*(?=;))`,
+      `DROP COLUMN\\s+"${column}"(?:\\s*,\\s*|\\s*(?=;))`,
       "g"
     );
-    safeSql = safeSql.replace(
-      pattern,
-      `/* Preserved legacy column ${table}.${column}; Prisma no longer maps it. */ `
-    );
+    safeSql = safeSql.replace(pattern, "");
   }
 
-  // If a table change contained only legacy DROP COLUMN clauses, preserving
-  // those columns leaves an empty ALTER TABLE statement. Remove only those
-  // exact empty statements; never use a cross-statement wildcard here because
-  // that can accidentally delete real ALTER TABLE operations such as Admin's
-  // new columns.
+  // A DROP COLUMN may have been the only action in an ALTER TABLE statement.
+  // In that case Prisma's generated SQL becomes `ALTER TABLE "X";`, which is
+  // invalid PostgreSQL. Remove empty ALTER TABLE statements before execution.
+  // The expression deliberately allows whitespace and comments, but requires
+  // the statement to contain no actual ALTER TABLE action.
   safeSql = safeSql.replace(
-    /ALTER TABLE\s+"[^"]+"\s+(?:(?:\/\* Preserved legacy column [^*]*\*\/\s*)+);/g,
+    /ALTER TABLE\\s+"[^"]+"\\s*(?:(?:\/\\*[\\s\\S]*?\\*\/|--[^\\r\\n]*(?:\\r?\\n|$))\\s*)*;/g,
     ""
   );
 
-  // Remove a dangling comma left before a statement terminator.
-  safeSql = safeSql.replace(/,\s*;/g, ";");
+  // Remove any dangling comma before a statement terminator left by clause
+  // removal. This is intentionally narrow and cannot consume real actions.
+  safeSql = safeSql.replace(/,\\s*;/g, ";");
 
-  return safeSql;
+  // Final defensive check: this exact form can never be valid PostgreSQL and
+  // should never reach apply-prisma-repair.cjs.
+  const emptyAlter = /ALTER TABLE\\s+"[^"]+"\\s*(?:\/\\*[\\s\\S]*?\\*\/\\s*)*;/i;
+  if (emptyAlter.test(safeSql)) {
+    throw new Error(
+      "Generated repair SQL still contains an empty ALTER TABLE statement. Refusing to write unsafe SQL."
+    );
+  }
+
+  return safeSql.trim() + "\\n";
 }
 
 function main() {
