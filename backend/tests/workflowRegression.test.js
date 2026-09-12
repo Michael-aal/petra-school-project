@@ -9,6 +9,7 @@ import { parseSchoolHeader } from "../middleware/authMiddleware.js";
 import { buildQuizlabAssessmentPayload } from "../controllers/classMarkerController.js";
 import { resolveSchoolId } from "../services/admissionService.js";
 import { prisma } from "../config/db.js";
+
 test("buildAdmissionPaymentUrl points the parent admission email at the public payment flow", () => {
   assert.equal(
     buildAdmissionPaymentUrl("https://demo.school.example/"),
