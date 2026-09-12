@@ -11,10 +11,15 @@ function CbtPage() {
     const assessmentId = searchParams.get("assessmentId") || "";
 
     const startExam = async () => {
-        if (!applicantId || !assessmentId) {
-            setError("This assessment link is missing its application details.");
+        if (!assessmentId) {
+            setError("This assessment link is missing its exam reference.");
             return;
         }
+
+        // The exam reference is also accepted by the backend applicant lookup.
+        // This keeps the Start Exam button usable even if the applicantId was
+        // lost while navigating to the CBT page.
+        const startApplicantId = applicantId || assessmentId;
 
         setLoading(true);
         setError("");
@@ -22,7 +27,10 @@ function CbtPage() {
         try {
             const response = await request("/api/assessments/start", {
                 method: "POST",
-                body: JSON.stringify({ applicantId, assessmentId }),
+                body: JSON.stringify({
+                    applicantId: startApplicantId,
+                    assessmentId,
+                }),
             });
 
             const payload = response?.data || response || {};
@@ -75,7 +83,7 @@ function CbtPage() {
 
                         {error ? <div className="cbt-error">{error}</div> : null}
 
-                        <button className="cbt-primary-btn" type="button" onClick={startExam} disabled={loading || !applicantId || !assessmentId}>
+                        <button className="cbt-primary-btn" type="button" onClick={startExam} disabled={loading || !assessmentId}>
                             {loading ? "Preparing..." : "START EXAM"}
                         </button>
                     </div>
