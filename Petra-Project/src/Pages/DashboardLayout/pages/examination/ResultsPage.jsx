@@ -137,7 +137,9 @@ export default function ResultsPage() {
     totalPages: 1,
   });
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [refreshNonce, setRefreshNonce] = useState(0);
 
   const totalCount = useMemo(
     () => pagination?.total ?? results.length,
@@ -149,7 +151,8 @@ export default function ResultsPage() {
 
     const loadResults = async () => {
       try {
-        setLoading(true);
+        if (refreshNonce > 0) setRefreshing(true);
+        else setLoading(true);
         setError("");
 
         const response = await adminApi.results({
@@ -171,7 +174,10 @@ export default function ResultsPage() {
         setError(err?.message || "Unable to load results.");
         setResults([]);
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          setRefreshing(false);
+        }
       }
     };
 
@@ -180,13 +186,17 @@ export default function ResultsPage() {
     return () => {
       mounted = false;
     };
-  }, [pagination.page, pagination.limit]);
+  }, [pagination.page, pagination.limit, refreshNonce]);
 
   const goToPage = (nextPage) => {
     setPagination((current) => ({
       ...current,
       page: Math.min(Math.max(1, nextPage), current.totalPages || 1),
     }));
+  };
+
+  const refreshResults = () => {
+    setRefreshNonce((current) => current + 1);
   };
 
   return (
@@ -202,6 +212,17 @@ export default function ResultsPage() {
           {totalCount} {totalCount === 1 ? "record" : "records"}
         </div>
       </section>
+
+      <div className="results-actions">
+        <button
+          type="button"
+          className="results-page-button"
+          onClick={refreshResults}
+          disabled={loading || refreshing}
+        >
+          {refreshing ? "Refreshing..." : "Refresh results"}
+        </button>
+      </div>
 
       {loading && (
         <div className="results-state">Loading results...</div>
