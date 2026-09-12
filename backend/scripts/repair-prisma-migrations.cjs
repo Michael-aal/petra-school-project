@@ -22,9 +22,9 @@ function runPrismaDiff() {
     throw new Error("DATABASE_URL is not loaded. Check backend/.env.");
   }
 
-  // Windows can return EINVAL when spawnSync launches npx.cmd directly with
-  // shell:false. Use the Windows command shell so the same utility works from
-  // cmd.exe, PowerShell, and VS Code terminals.
+  // Prisma 7 removed --from-url. The database connection now comes from the
+  // datasource in prisma.config.ts via --from-config-datasource.
+  // Windows needs the command shell when launching npx.cmd from Node.
   const command = process.platform === "win32" ? "npx.cmd" : "npx";
 
   const result = spawnSync(
@@ -33,9 +33,8 @@ function runPrismaDiff() {
       "prisma",
       "migrate",
       "diff",
-      "--from-url",
-      process.env.DATABASE_URL,
-      "--to-schema-datamodel",
+      "--from-config-datasource",
+      "--to-schema",
       "prisma/schema.prisma",
       "--script",
     ],
