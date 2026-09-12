@@ -1,4 +1,6 @@
 import { validationResult } from "express-validator";
+import { prisma } from "../config/db.js";
+import { syncResultsForAssessment } from "./classMarkerController.js";
 import { adminService } from "../services/adminService.js";
 
 const validate = (req, res) => {
@@ -75,6 +77,73 @@ export const listAuditLogs = async (req, res, next) => {
   }
 };
 
+export const syncAdminResults = async (req, res, next) => {
+  try {
+    const schoolId = Number(req.user?.schoolId);
+    if (!Number.isInteger(schoolId) || schoolId <= 0) {
+      return res.status(403).json({ success: false, message: "School context missing" });
+    }
+
+    const assessments = await prisma.assessment.findMany({
+      where: {
+        schoolId,
+        quizlabQuizId: { not: null },
+      },
+      select: { id: true },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    const synced = [];
+    const failed = [];
+
+    for (const assessment of assessments) {
+      let statusCode = 200;
+      let body = null;
+
+      const internalRes = {
+        status(code) {
+          statusCode = code;
+          return this;
+        },
+        json(payload) {
+          body = payload;
+          return this;
+        },
+      };
+
+      try {
+        await syncResultsForAssessment(
+          { params: { assessmentId: assessment.id }, body: {}, user: req.user },
+          internalRes,
+          (error) => {
+            throw error;
+          },
+        );
+
+        if (statusCode >= 400) {
+          failed.push({ assessmentId: assessment.id, statusCode, message: body?.message || "Sync failed" });
+        } else {
+          synced.push({ assessmentId: assessment.id, processedCount: body?.processedCount ?? 0 });
+        }
+      } catch (error) {
+        failed.push({
+          assessmentId: assessment.id,
+          statusCode: error?.statusCode || 500,
+          message: String(error?.message || error).slice(0, 500),
+        });
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      assessmentsChecked: assessments.length,
+      synced,
+      failed,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const listResults = async (req, res, next) => {
   try {
