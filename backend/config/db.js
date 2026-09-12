@@ -187,6 +187,30 @@ const connectDB = async () => {
 
   try {
     await prisma.$connect();
+    if (process.env.NODE_ENV === "production") {
+      const expectedRole = String(process.env.DATABASE_APP_ROLE || "").trim();
+      if (!expectedRole) {
+        throw new Error("DATABASE_APP_ROLE must name the non-owner PostgreSQL runtime role in production.");
+      }
+
+      const roleState = await basePrisma.$queryRaw`
+        SELECT
+          current_user AS "username",
+          (SELECT rolsuper FROM pg_roles WHERE rolname = current_user) AS "isSuperuser",
+          EXISTS (
+            SELECT 1
+            FROM pg_class table_info
+            JOIN pg_namespace namespace_info ON namespace_info.oid = table_info.relnamespace
+            WHERE namespace_info.nspname = 'public'
+              AND table_info.relname IN ('Student', 'Grade', 'StudentFee', 'Payment')
+              AND table_info.relowner = (SELECT oid FROM pg_roles WHERE rolname = current_user)
+          ) AS "ownsProtectedTable"
+      `;
+      const current = roleState?.[0];
+      if (!current || current.username !== expectedRole || current.isSuperuser || current.ownsProtectedTable) {
+        throw new Error("Database runtime role must be the configured non-superuser, non-owner application role.");
+      }
+    }
     await prisma.$queryRaw`SELECT 1`;
     console.log("Database connected successfully");
   } catch (err) {
