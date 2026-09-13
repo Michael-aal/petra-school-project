@@ -47,11 +47,25 @@ const isLocalDevOrigin = (origin) => {
   }
 };
 
+const isCodespacesDevOrigin = (origin) => {
+  if (process.env.NODE_ENV === "production") return false;
+  try {
+    const { protocol, hostname } = new URL(origin);
+    // GitHub Codespaces forwards Vite/Express ports through *.github.dev.
+    // This is intentionally development-only; production remains allow-list based.
+    return protocol === "https:" && hostname.endsWith(".github.dev");
+  } catch {
+    return false;
+  }
+};
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const normalizedOrigin = origin.trim().replace(/\/+$/, "");
-    const allowDevelopmentOrigin = process.env.NODE_ENV !== "production" && isLocalDevOrigin(normalizedOrigin);
+    const allowDevelopmentOrigin =
+      process.env.NODE_ENV !== "production" &&
+      (isLocalDevOrigin(normalizedOrigin) || isCodespacesDevOrigin(normalizedOrigin));
     if (allowedOrigins.includes(normalizedOrigin) || allowDevelopmentOrigin) {
       return callback(null, true);
     }
@@ -131,15 +145,3 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
-const isAllowedDevelopmentOrigin = (origin) => {
-  if (process.env.NODE_ENV === "production" || !origin) return false;
-
-  const configuredOrigins = [
-    process.env.CLIENT_URL,
-    process.env.CORS_ORIGIN,
-  ]
-    .filter(Boolean)
-    .map((value) => value.trim().replace(/\/+$/, ""));
-
-  return configuredOrigins.includes(origin.trim().replace(/\/+$/, ""));
-};
