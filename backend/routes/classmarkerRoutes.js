@@ -8,6 +8,7 @@ import {
 } from "../controllers/classMarkerController.js";
 import { launchForCandidate } from "../controllers/classMarkerController.js";
 import { publicWorkflowRateLimiter } from "../middleware/rateLimiter.js";
+import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ router.post("/webhook", publicWorkflowRateLimiter, quizlabWebhookHandler);
 router.post("/exams", protect, schoolGuard, teacherOrAdmin, createRemoteExamForAssessment);
 router.get("/exams/:assessmentId/launch", protect, schoolGuard, teacherOrAdmin, getLaunchLinkForAssessment);
 // Public student launch: validate admission/application code and return ClassMarker launch URL
-router.post("/exams/:assessmentId/launch-student", publicWorkflowRateLimiter, launchForCandidate);
+router.post("/exams/:assessmentId/launch-student", publicWorkflowRateLimiter, requirePublicSchoolContext(), launchForCandidate);
 router.post("/exams/:assessmentId/sync-results", protect, schoolGuard, teacherOrAdmin, syncResultsForAssessment);
 
 export default router;

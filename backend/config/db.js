@@ -257,6 +257,7 @@ const connectDB = async () => {
         SELECT
           current_user AS "username",
           (SELECT rolsuper FROM pg_roles WHERE rolname = current_user) AS "isSuperuser",
+          (SELECT rolbypassrls FROM pg_roles WHERE rolname = current_user) AS "bypassesRls",
           EXISTS (
             SELECT 1
             FROM pg_class table_info
@@ -267,7 +268,7 @@ const connectDB = async () => {
           ) AS "ownsProtectedTable"
       `;
       const current = roleState?.[0];
-      if (!current || current.username !== expectedRole || current.isSuperuser || current.ownsProtectedTable) {
+      if (!current || current.username !== expectedRole || current.isSuperuser || current.bypassesRls || current.ownsProtectedTable) {
         throw new Error("Database runtime role must be the configured non-superuser, non-owner application role.");
       }
     }

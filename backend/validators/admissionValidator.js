@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 
 export const createAdmissionValidator = [
+  body("schoolId").isInt({ min: 1 }).toInt().withMessage("A valid schoolId is required"),
   body("firstName").notEmpty().withMessage("Applicant first name is required"),
   body("lastName").notEmpty().withMessage("Applicant last name is required"),
   body("gender").notEmpty().withMessage("Applicant gender is required"),

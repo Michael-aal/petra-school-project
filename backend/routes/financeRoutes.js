@@ -4,11 +4,12 @@ import { assignFeeStructure, createFeeStructure, createPayment, createPublicPaym
 import { idValidator, listPaymentsValidator, paymentValidator, publicPaymentValidator, publicStudentLookupValidator } from "../validators/financeValidator.js";
 import { authorizeStudentResource } from "../middleware/authorizeResource.js";
 import { paymentIdempotency } from "../middleware/idempotency.js";
+import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
 
 const router = Router();
 
-router.get("/public/lookup", publicStudentLookupValidator, getPublicStudentLookup);
-router.post("/public/payments", publicPaymentValidator, paymentIdempotency, createPublicPayment);
+router.get("/public/lookup", publicStudentLookupValidator, requirePublicSchoolContext("query"), getPublicStudentLookup);
+router.post("/public/payments", publicPaymentValidator, requirePublicSchoolContext(), paymentIdempotency, createPublicPayment);
 
 router.get("/payments/lookup", protect, schoolGuard, publicStudentLookupValidator, getSchoolStudentLookup);
 router.post("/payments/checkout", protect, schoolGuard, requireRole(["parent", "principal", "super_admin"]), paymentIdempotency, paymentValidator, authorizeStudentResource(), createSchoolPayment);

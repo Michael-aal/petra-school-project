@@ -11,6 +11,7 @@ import {
   completeStudentRecord,
 } from "../controllers/admissionController.js";
 import { createAdmissionValidator } from "../validators/admissionValidator.js";
+import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
 
 const router = Router();
 
@@ -22,7 +23,7 @@ const validate = (req, res, next) => {
   return next();
 };
 
-router.post("/", createAdmissionValidator, validate, protectOptional, createAdmission);
+router.post("/", createAdmissionValidator, validate, protectOptional, requirePublicSchoolContext(), createAdmission);
 router.get("/", protect, requirePrincipal, listAdmissions);
 router.get("/:id", protect, requirePrincipal, getAdmissionById);
 router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);

@@ -41,10 +41,12 @@ export const listPaymentsValidator = [
 ];
 
 export const publicStudentLookupValidator = [
+  query("schoolId").isInt({ min: 1 }).toInt().withMessage("A valid schoolId is required"),
   query("studentCode").trim().notEmpty().withMessage("Student Code is required"),
 ];
 
 export const publicPaymentValidator = [
+  body("schoolId").isInt({ min: 1 }).toInt().withMessage("A valid schoolId is required"),
   body("studentCode").trim().notEmpty().withMessage("Student Code is required"),
   body("feeItems").isArray({ min: 1 }).withMessage("At least one payment item is required"),
   body("feeItems.*.feeStructureId").trim().notEmpty().withMessage("Payment item is required"),

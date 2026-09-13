@@ -17,6 +17,7 @@ const nigerianStates = [
 ];
 
 export default function AdmissionForm() {
+  const publicSchoolId = new URLSearchParams(window.location.search).get("schoolId");
   const [currentStep, setCurrentStep] = useState(1);
   const [showLin, setShowLin] = useState(false);
   const [submissionSummary, setSubmissionSummary] = useState(null);
@@ -88,8 +89,13 @@ useEffect(() => {
       showError("Submission blocked", "Please agree to the terms and conditions to submit.");
       return;
     }
+    if (!/^\d+$/.test(publicSchoolId || "")) {
+      showError("School link required", "Open the admission form from your school's official application link.");
+      return;
+    }
 
     try {const payload = {
+  schoolId: Number(publicSchoolId),
   // Applicant
   applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
   firstName: formData.firstName,
@@ -161,6 +167,7 @@ useEffect(() => {
       })();
       const applicantId = admission?.applicantId || safeRemarks.applicantId;
       const assessmentId = admission?.examReference || safeRemarks.examReference;
+      const schoolId = admission?.schoolId || Number(publicSchoolId);
       setSubmissionSummary({
         message: response.message || "Application submitted successfully.",
         applicantId: applicantId || "",
@@ -178,6 +185,7 @@ useEffect(() => {
           const params = new URLSearchParams();
           if (applicantId) params.set("applicantId", applicantId);
           if (assessmentId) params.set("assessmentId", assessmentId);
+          if (schoolId) params.set("schoolId", schoolId);
           window.location.href = `/dashboard/examination/cbt${params.toString() ? `?${params.toString()}` : ""}`;
           return;
         }

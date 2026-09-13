@@ -9,10 +9,11 @@ function CbtPage() {
     const [error, setError] = useState("");
     const applicantId = searchParams.get("applicantId") || "";
     const assessmentId = searchParams.get("assessmentId") || "";
+    const schoolId = searchParams.get("schoolId") || "";
 
     const startExam = async () => {
-        if (!assessmentId) {
-            setError("This assessment link is missing its exam reference.");
+        if (!assessmentId || !/^\d+$/.test(schoolId)) {
+            setError("This assessment link is missing its school or exam reference.");
             return;
         }
 
@@ -30,6 +31,7 @@ function CbtPage() {
                 body: JSON.stringify({
                     applicantId: startApplicantId,
                     assessmentId,
+                    schoolId: Number(schoolId),
                 }),
             });
 
