@@ -7,6 +7,7 @@ export const generateToken = (payload = {}) => {
     id: payload?.id ?? payload?.userId ?? payload?.sub,
     userId: payload?.userId ?? payload?.id ?? payload?.sub,
     sub: payload?.sub ?? payload?.id ?? payload?.userId,
+    sv: Number.isInteger(Number(payload?.sessionVersion)) ? Number(payload.sessionVersion) : 1,
   };
 
   return jwt.sign(normalizedPayload, getJwtPrivateKey(), {

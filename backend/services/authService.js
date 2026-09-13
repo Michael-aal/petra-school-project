@@ -286,7 +286,7 @@ export const authService = {
 
     return {
       user: safeUser(user),
-      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null }),
+      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }),
     };
   },
 
@@ -325,7 +325,7 @@ export const authService = {
 
     return {
       user: safeUser(user),
-      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null }),
+      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }),
     };
   },
 
@@ -571,7 +571,7 @@ export const authService = {
     return {
       invitation: updatedInvitation,
       user: safeUser(created),
-      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId || null }),
+      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId || null, sessionVersion: created.sessionVersion }),
     };
   },
 
@@ -694,7 +694,7 @@ export const authService = {
       return createdUser;
     });
 
-    return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role }) };
+    return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, sessionVersion: user.sessionVersion }) };
   },
 
   profile: async (userId) => {
@@ -786,6 +786,7 @@ export const authService = {
     if (payload.state !== undefined) updateData.state = payload.state.trim();
     if (payload.city !== undefined) updateData.city = payload.city.trim();
     if (payload.hearAbout !== undefined) updateData.hearAbout = payload.hearAbout.trim();
+    let revokeSessions = false;
     if (payload.password) {
       if (!payload.currentPassword) {
         const error = new Error("Current password is required to change password");
@@ -799,7 +800,10 @@ export const authService = {
         throw error;
       }
       updateData.password = await hashPassword(payload.password);
+      revokeSessions = true;
     }
+
+    if (revokeSessions) updateData.sessionVersion = { increment: 1 };
 
     const updatedUser = await userModel.update(userId, updateData);
     return { user: safeUser(updatedUser) };
@@ -820,7 +824,7 @@ export const authService = {
       throw error;
     }
 
-    await userModel.update(userId, { password: await hashPassword(newPassword) });
+    await userModel.update(userId, { password: await hashPassword(newPassword), sessionVersion: { increment: 1 } });
 
     return {
       message: "Password updated successfully",
@@ -847,6 +851,10 @@ export const authService = {
     return {
       message: "Account deleted successfully",
     };
+  },
+
+  revokeSessions: async (userId) => {
+    await userModel.updateGlobal(userId, { sessionVersion: { increment: 1 } });
   },
 
   selectSchool: async ({ userId, schoolId }) => {

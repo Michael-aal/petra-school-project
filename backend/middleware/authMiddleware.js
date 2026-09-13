@@ -117,6 +117,12 @@ const populateAuthContext = async (req, res, token) => {
       });
     }
 
+    // A server-side version counter makes logout and password changes revoke
+    // every previously issued access cookie without storing JWTs in the browser.
+    if (!Number.isInteger(decoded?.sv) || Number(decoded.sv) !== Number(user.sessionVersion || 1)) {
+      return res.status(401).json({ success: false, message: "Session has expired. Please sign in again." });
+    }
+
     if (user.accountStatus && user.accountStatus !== "active") {
       return res.status(401).json({
         success: false,

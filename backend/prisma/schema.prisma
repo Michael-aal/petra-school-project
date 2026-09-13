@@ -29,6 +29,7 @@ model User {
   staffPosition             String?
   profileImage              String?
   accountStatus             String            @default("active")
+  sessionVersion            Int               @default(1)
   linkedStudentId           String?
   parentAccessCode          String?           @unique
   parentAccessCodeUsed      Boolean           @default(false)

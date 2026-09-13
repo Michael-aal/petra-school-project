@@ -1,4 +1,4 @@
-import { API_BASE_URL, clearAuthToken, readAuthToken } from "./authApi";
+import { API_BASE_URL, clearAuthToken } from "./authApi";
 
 export const request = async (path, options = {}) => {
   const headers = {

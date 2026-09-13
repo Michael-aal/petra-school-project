@@ -144,7 +144,7 @@ export const teacherInvitationService = {
 
     return {
       user: safeUser(created),
-      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId }),
+      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId, sessionVersion: created.sessionVersion }),
     };
   },
 };

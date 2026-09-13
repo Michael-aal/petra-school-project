@@ -156,7 +156,12 @@ export const getMe = async (req, res, next) => {
   }
 };
 
-export const logoutUser = async (_req, res) => {
+export const logoutUser = async (req, res, next) => {
+  try {
+    await authService.revokeSessions(req.user.id);
+  } catch (error) {
+    return next(error);
+  }
   res.clearCookie("petra_token", { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
   return res.status(200).json({ success: true, message: "Logout successful" });
 };
