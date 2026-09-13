@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { protect, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { assignFeeStructure, createFeeStructure, createPayment, createPublicPayment, createSchoolPayment, deleteFeeStructure, deletePayment, getAdminWallet, getCashflow, getFeeStructures, getInvoices, getInstallmentPlans, getParentFees, getPublicStudentLookup, getSchoolStudentLookup, getPayment, getPaymentReceipt, listPayments, updateFeeStructure, updatePayment } from "../controllers/financeController.js";
+import { listExpenseCategories, createExpense } from "../controllers/expenseController.js";
 import { idValidator, listPaymentsValidator, paymentValidator, publicPaymentValidator, publicStudentLookupValidator } from "../validators/financeValidator.js";
 import { authorizeStudentResource } from "../middleware/authorizeResource.js";
 import { paymentIdempotency } from "../middleware/idempotency.js";
@@ -29,6 +30,8 @@ router.delete("/fees/:id", protect, schoolGuard, requirePrincipal, deleteFeeStru
 router.post("/fees/assign", protect, schoolGuard, requirePrincipal, assignFeeStructure);
 router.get("/flexpay", protect, schoolGuard, requirePrincipal, getInstallmentPlans);
 router.get("/cashflow", protect, schoolGuard, requirePrincipal, getCashflow);
+router.get("/expenses/categories", protect, schoolGuard, requireRole(["staff", "principal", "super_admin"]), listExpenseCategories);
+router.post("/expenses", protect, schoolGuard, requireRole(["staff", "principal", "super_admin"]), createExpense);
 router.get("/parent/fees", protect, authorizeStudentResource({ source: "query", allowMissing: true }), getParentFees);
 router.get("/wallet/summary", protect, schoolGuard, requirePrincipal, getAdminWallet);
 
