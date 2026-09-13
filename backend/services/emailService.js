@@ -47,7 +47,11 @@ const getAdmissionRecipients = (admission) =>
 const getEmailRecipients = (admission) => {
   const parentRecipients = getAdmissionRecipients(admission);
   const testEmail = String(process.env.TEST_EMAIL || "").trim().toLowerCase();
-  if (["development", "test"].includes(process.env.NODE_ENV) && testEmail) return [testEmail];
+  const testMode = String(process.env.EMAIL_TEST_MODE || "false").trim().toLowerCase() === "true";
+
+  // Never redirect real admission emails merely because NODE_ENV is development.
+  // Test delivery must be explicitly enabled with EMAIL_TEST_MODE=true.
+  if (testMode && testEmail) return [testEmail];
   return parentRecipients;
 };
 
