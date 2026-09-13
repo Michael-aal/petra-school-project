@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, Clock3, DollarSign, FileText, Users } from "lucide-react";
+import { CalendarDays, Clock3, DollarSign, FileText } from "lucide-react";
 import { academicApi } from "../../../../services/academicApi";
 import { admissionApi } from "../../../../services/admissionApi";
 import { financeApi } from "../../../../services/financeApi";
@@ -8,7 +8,14 @@ import StatCard from "../../../../components/dashboard/StatCard";
 import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import "../page-styles/OverviewPage.css";
 
-const getIsoDate = (date) => date.toISOString().slice(0, 10);
+// Keep report dates in the browser's local timezone. toISOString() can move a
+// Nigerian date to the previous UTC date around midnight and load the wrong day.
+const getIsoDate = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function DailyReportsPage() {
   const [loading, setLoading] = useState(true);
@@ -18,9 +25,7 @@ export default function DailyReportsPage() {
   const [cashflow, setCashflow] = useState({ recentTransactions: [], recentExpenses: [] });
   const [applicantCounts, setApplicantCounts] = useState({ pending: 0, approved: 0, rejected: 0 });
 
-  const today = new Date();
-  const defaultDate = getIsoDate(today);
-  const [selectedDate, setSelectedDate] = useState(defaultDate);
+  const [selectedDate, setSelectedDate] = useState(getIsoDate());
 
   const loadDailyReport = async (date) => {
     setLoading(true);
@@ -55,21 +60,18 @@ export default function DailyReportsPage() {
   }, [selectedDate]);
 
   const reportSummary = useMemo(() => {
-    const sameDay = (value) => {
-      if (!value) return false;
-      const date = new Date(value);
-      return getIsoDate(date) === selectedDate;
-    };
-
+    const sameDay = (value) => value ? getIsoDate(new Date(value)) === selectedDate : false;
     const payments = (cashflow.recentTransactions || []).filter((item) => sameDay(item.paidAt));
     const expenses = (cashflow.recentExpenses || []).filter((item) => sameDay(item.occurredAt));
+    const paymentTotal = payments.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const expenseTotal = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
     return {
       paymentCount: payments.length,
       expenseCount: expenses.length,
-      paymentTotal: payments.reduce((sum, item) => sum + Number(item.amount || 0), 0),
-      expenseTotal: expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0),
-      netTotal: payments.reduce((sum, item) => sum + Number(item.amount || 0), 0) - expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0),
+      paymentTotal,
+      expenseTotal,
+      netTotal: paymentTotal - expenseTotal,
       paymentItems: payments,
       expenseItems: expenses,
     };
@@ -80,7 +82,7 @@ export default function DailyReportsPage() {
       <DashboardHeader
         eyebrow="Overview"
         title="Daily school report"
-        subtitle={`A daily snapshot for ${new Date(selectedDate).toLocaleDateString()}.`}
+        subtitle={`A daily snapshot for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}.`}
         badge="Daily"
       />
 
@@ -97,15 +99,15 @@ export default function DailyReportsPage() {
         </label>
       </section>
 
-    <section className="overview-card-grid">
-  <StatCard label="Attendance" value={attendancePagination.total || 0} icon={CalendarDays} tone="neutral" description="Attendance entries recorded" />
-  <StatCard label="Payments" value={`₦${reportSummary.paymentTotal.toLocaleString()}`} icon={DollarSign} tone="neutral" description={`${reportSummary.paymentCount} payment${reportSummary.paymentCount === 1 ? "" : "s"}`} />
-  <StatCard label="Expenses" value={`₦${reportSummary.expenseTotal.toLocaleString()}`} icon={Clock3} tone="neutral" description={`${reportSummary.expenseCount} expense${reportSummary.expenseCount === 1 ? "" : "s"}`} />
-  <StatCard label="Pending applicants" value={applicantCounts.pending} icon={FileText} tone="neutral" description="Applications waiting for review" />
-</section>
+      <section className="overview-card-grid">
+        <StatCard label="Attendance" value={attendancePagination.total || 0} icon={CalendarDays} tone="neutral" description="Attendance entries recorded" />
+        <StatCard label="Payments" value={`₦${reportSummary.paymentTotal.toLocaleString()}`} icon={DollarSign} tone="neutral" description={`${reportSummary.paymentCount} payment${reportSummary.paymentCount === 1 ? "" : "s"}`} />
+        <StatCard label="Expenses" value={`₦${reportSummary.expenseTotal.toLocaleString()}`} icon={Clock3} tone="neutral" description={`${reportSummary.expenseCount} expense${reportSummary.expenseCount === 1 ? "" : "s"}`} />
+        <StatCard label="Pending applicants" value={applicantCounts.pending} icon={FileText} tone="neutral" description="Applications waiting for review" />
+      </section>
 
       <section className="overview-section overview-flex-grid">
-        <DashboardWidget title="Report attendance" subtitle={`Latest records for ${new Date(selectedDate).toLocaleDateString()}`}>
+        <DashboardWidget title="Report attendance" subtitle={`Latest records for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}`}>
           <div className="overview-list">
             {loading ? (
               <div className="overview-empty">Loading attendance…</div>
@@ -123,7 +125,7 @@ export default function DailyReportsPage() {
           </div>
         </DashboardWidget>
 
-        <DashboardWidget title="Transactions" subtitle={`Payments and expenses for ${new Date(selectedDate).toLocaleDateString()}`}>
+        <DashboardWidget title="Transactions" subtitle={`Payments and expenses for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}`}>
           <div className="overview-list">
             {loading ? (
               <div className="overview-empty">Loading financial data…</div>
