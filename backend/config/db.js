@@ -116,7 +116,7 @@ export const scopeTenantData = (data, tenant) => {
   return { ...data, schoolId: tenant };
 };
 
-const prisma = basePrisma.$extends({
+const createTenantScopedClient = (client) => client.$extends({
   query: {
     $allModels: {
       async $allOperations({ model, operation, args, query }) {
@@ -127,10 +127,6 @@ const prisma = basePrisma.$extends({
         if (!tenant || !modelHasSchoolId(model)) return query(args);
 
         const nextArgs = args ? { ...args } : {};
-        if (typeof basePrisma.$executeRaw === "function") {
-          await basePrisma.$executeRaw`SELECT set_config('app.current_school_id', ${String(tenant)}, false)`;
-        }
-
         if (WHERE_SCOPED_OPERATIONS.has(operation)) {
           nextArgs.where = scopeWhere(nextArgs.where, tenant);
         }
@@ -151,6 +147,70 @@ const prisma = basePrisma.$extends({
         return query(nextArgs);
       },
     },
+  },
+});
+
+const globalPrisma = createTenantScopedClient(basePrisma);
+const TENANT_RAW_OPERATIONS = new Set(["$queryRaw", "$queryRawUnsafe", "$executeRaw", "$executeRawUnsafe"]);
+
+const runTenantTransaction = async (callback, options) => {
+  const store = schoolContext.getStore();
+  const tenant = Number(store?.schoolId);
+  if (store?.skipTenant || !Number.isInteger(tenant) || tenant <= 0) {
+    return globalPrisma.$transaction(callback, options);
+  }
+
+  return basePrisma.$transaction(async (transaction) => {
+    // SET LOCAL is cleared automatically at commit/rollback. It cannot leak to
+    // another pooled request, and the scoped client below uses this same socket.
+    await transaction.$executeRaw`SELECT set_config('app.current_school_id', ${String(tenant)}, true)`;
+    const scopedTransaction = createTenantScopedClient(transaction);
+    return schoolContext.run({ ...store, client: scopedTransaction }, () => callback(scopedTransaction));
+  }, options);
+};
+
+const runTenantOperation = async (model, operation, args) => {
+  const store = schoolContext.getStore();
+  const tenant = Number(store?.schoolId);
+  if (store?.client || store?.skipTenant || !Number.isInteger(tenant) || tenant <= 0 || !modelHasSchoolId(model)) {
+    return globalPrisma[model][operation](...args);
+  }
+
+  return runTenantTransaction((transaction) => transaction[model][operation](...args));
+};
+
+// Tenant model operations are routed through a short interactive transaction.
+// This lets PostgreSQL RLS see SET LOCAL and the query on the exact same
+// connection, while keeping transactions out of external API calls.
+const prisma = new Proxy(globalPrisma, {
+  get(target, property, receiver) {
+    const store = schoolContext.getStore();
+    if (store?.client) return Reflect.get(store.client, property, receiver);
+
+    if (property === "$transaction") {
+      return (input, options) => {
+        if (typeof input === "function") return runTenantTransaction(input, options);
+        if (Array.isArray(input) && Number.isInteger(Number(store?.schoolId)) && !store?.skipTenant) {
+          throw new Error("Array-form Prisma transactions are not supported in a tenant context; use an interactive transaction callback.");
+        }
+        return target.$transaction(input, options);
+      };
+    }
+
+    if (TENANT_RAW_OPERATIONS.has(property)) {
+      return (...args) => runTenantTransaction((transaction) => transaction[property](...args));
+    }
+
+    const value = Reflect.get(target, property, receiver);
+    if (typeof property !== "string" || !modelHasSchoolId(property) || !value || typeof value !== "object") return value;
+
+    return new Proxy(value, {
+      get(delegate, operation, delegateReceiver) {
+        const method = Reflect.get(delegate, operation, delegateReceiver);
+        if (typeof method !== "function") return method;
+        return (...args) => runTenantOperation(property, operation, args);
+      },
+    });
   },
 });
 
