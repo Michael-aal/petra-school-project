@@ -18,7 +18,6 @@ export default function TermSummaryPage() {
   const loadSummary = async () => {
     setLoading(true);
     setError("");
-
     try {
       const [dashboardResponse, cashflowResponse, pendingResponse, approvedResponse, rejectedResponse] = await Promise.all([
         adminApi.dashboard(),
@@ -27,14 +26,9 @@ export default function TermSummaryPage() {
         admissionApi.list({ page: 1, limit: 1, status: "approved" }),
         admissionApi.list({ page: 1, limit: 1, status: "rejected" }),
       ]);
-
       setDashboard(dashboardResponse.data || dashboardResponse);
       setCashflow(cashflowResponse || {});
-      setAdmissionCounts({
-        pending: pendingResponse.pagination?.total || 0,
-        approved: approvedResponse.pagination?.total || 0,
-        rejected: rejectedResponse.pagination?.total || 0,
-      });
+      setAdmissionCounts({ pending: pendingResponse.pagination?.total || 0, approved: approvedResponse.pagination?.total || 0, rejected: rejectedResponse.pagination?.total || 0 });
     } catch (requestError) {
       setError(requestError.message || "Unable to load term summary");
     } finally {
@@ -42,84 +36,44 @@ export default function TermSummaryPage() {
     }
   };
 
-  useEffect(() => {
-    loadSummary();
-  }, []);
+  useEffect(() => { loadSummary(); }, []);
 
   return (
     <div className="dashboard-page overview-page term-summary-page">
-      <DashboardHeader
-        eyebrow="Overview"
-        title="Term summary"
-        subtitle="A high-level term review of school operations and finance."
-        badge="Term"
-      />
-
+      <DashboardHeader eyebrow="Overview" title="Term summary" subtitle="A high-level term review of school operations and finance." badge="Term" />
       {error ? <div className="overview-error">{error}</div> : null}
-
       <section className="overview-card-grid">
-        <StatCard
-          label="Total students"
-          value={dashboard?.stats?.students ?? 0}
-          icon={Flag}
-          tone="blue"
-          description="Total active learners"
-        />
-        <StatCard
-          label="Total teachers"
-          value={dashboard?.stats?.teachers ?? 0}
-          icon={BarChart3}
-          tone="teal"
-          description="Active teaching staff at term end"
-        />
-        <StatCard
-          label="Approved applicants"
-          value={admissionCounts.approved}
-          icon={FileText}
-          tone="teal"
-          description="Offers issued this term"
-        />
-        <StatCard
-          label="Net income"
-          value={`₦${Number(cashflow.netIncome || 0).toLocaleString()}`}
-          icon={Wallet}
-          tone="rose"
-          description="Period revenue minus expense"
-        />
+        <StatCard label="Total students" value={dashboard?.stats?.students ?? 0} icon={Flag} tone="blue" description="Total active learners" />
+        <StatCard label="Total teachers" value={dashboard?.stats?.teachers ?? 0} icon={BarChart3} tone="teal" description="Active teaching staff at term end" />
+        <StatCard label="Approved applicants" value={admissionCounts.approved} icon={FileText} tone="teal" description="Offers issued this term" />
+        <StatCard label="Net income" value={`₦${Number(cashflow.netIncome || 0).toLocaleString()}`} icon={Wallet} tone="rose" description="Period revenue minus expense" />
       </section>
-
       <section className="overview-flex-grid">
         <DashboardWidget title="Term admissions" subtitle="Application status">
           <div className="overview-list">
-            <div className="overview-list-item">
-              <strong>Pending applications</strong>
-              <p>{admissionCounts.pending} application{admissionCounts.pending === 1 ? "" : "s"}</p>
-            </div>
-            <div className="overview-list-item">
-              <strong>Approved applications</strong>
-              <p>{admissionCounts.approved} application{admissionCounts.approved === 1 ? "" : "s"}</p>
-            </div>
-            <div className="overview-list-item">
-              <strong>Rejected applications</strong>
-              <p>{admissionCounts.rejected} application{admissionCounts.rejected === 1 ? "" : "s"}</p>
-            </div>
+            <div className="overview-list-item"><strong>Pending applications</strong><p>{admissionCounts.pending} application{admissionCounts.pending === 1 ? "" : "s"}</p></div>
+            <div className="overview-list-item"><strong>Approved applications</strong><p>{admissionCounts.approved} application{admissionCounts.approved === 1 ? "" : "s"}</p></div>
+            <div className="overview-list-item"><strong>Rejected applications</strong><p>{admissionCounts.rejected} application{admissionCounts.rejected === 1 ? "" : "s"}</p></div>
           </div>
         </DashboardWidget>
-
-        <DashboardWidget title="Cashflow summary" subtitle="Recent activity">
+        <DashboardWidget title="Cashflow summary" subtitle="Active academic term">
           <div className="overview-list">
-            <div className="overview-list-item">
-              <strong>Total revenue</strong>
-              <p>₦{Number(cashflow.totalRevenue || 0).toLocaleString()}</p>
-            </div>
-            <div className="overview-list-item">
-              <strong>Total expenses</strong>
-              <p>₦{Number(cashflow.totalExpenses || 0).toLocaleString()}</p>
-            </div>
-            <div className="overview-list-item">
-              <strong>Net income</strong>
-              <p>₦{Number(cashflow.netIncome || 0).toLocaleString()}</p>
-            </div>
+            <div className="overview-list-item"><strong>Total revenue</strong><p>₦{Number(cashflow.totalRevenue || 0).toLocaleString()}</p></div>
+            <div className="overview-list-item"><strong>Total expenses</strong><p>₦{Number(cashflow.totalExpenses || 0).toLocaleString()}</p></div>
+            <div className="overview-list-item"><strong>Net income</strong><p>₦{Number(cashflow.netIncome || 0).toLocaleString()}</p></div>
+          </div>
+        </DashboardWidget>
+      </section>
+      <section className="overview-section">
+        <DashboardWidget title="Term expenses" subtitle="Where school money went during the active term">
+          <div className="overview-list">
+            {loading ? <div className="overview-empty">Loading expenses…</div> : (cashflow.recentExpenses || []).length ? cashflow.recentExpenses.map((item) => (
+              <div key={item.id} className="overview-list-item">
+                <strong>{item.title || "Expense"}</strong>
+                <p>{item.expenseCategory?.name || "Uncategorized"}{item.note ? ` • ${item.note}` : ""}</p>
+                <span>₦{Number(item.amount || 0).toLocaleString()}</span>
+              </div>
+            )) : <div className="overview-empty">No expenses recorded for this term.</div>}
           </div>
         </DashboardWidget>
       </section>
