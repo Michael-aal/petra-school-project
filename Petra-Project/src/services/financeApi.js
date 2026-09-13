@@ -26,4 +26,6 @@ export const financeApi = {
   assignFee: (payload) => request("/api/finance/fees/assign", { method: "POST", body: JSON.stringify(payload) }),
   flexpay: () => request("/api/finance/flexpay"),
   cashflow: (query = {}) => request(`/api/finance/cashflow${new URLSearchParams(query).toString() ? `?${new URLSearchParams(query).toString()}` : ""}`),
+  expenseCategories: () => request("/api/finance/expenses/categories"),
+  createExpense: (payload) => request("/api/finance/expenses", { method: "POST", body: JSON.stringify(payload) }),
 };
