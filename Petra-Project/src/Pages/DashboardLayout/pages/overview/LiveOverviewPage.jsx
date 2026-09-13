@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
-  CalendarDays,
   CheckCircle2,
   FileText,
   Flag,
@@ -56,7 +55,12 @@ export default function LiveOverviewPage() {
         rejected: rejectedResponse.pagination?.total || 0,
       });
       setEnrollmentStats(enrollmentResponse.data || enrollmentResponse);
-      setTeacherAttendanceCount(staffAttendanceResponse.data?.pagination?.total || 0);
+      // /api/admin/staff-attendance returns { success, data: { pagination, ... } }.
+      setTeacherAttendanceCount(
+        staffAttendanceResponse.data?.pagination?.total ??
+        staffAttendanceResponse.pagination?.total ??
+        0,
+      );
     } catch (requestError) {
       setError(requestError.message || "Unable to load overview data");
     } finally {
@@ -119,7 +123,7 @@ export default function LiveOverviewPage() {
       value: teacherAttendanceCount,
       icon: BarChart3,
       tone: "teal",
-      description: "Recent teacher attendance records",
+      description: "Staff attendance records",
     },
   ];
 
