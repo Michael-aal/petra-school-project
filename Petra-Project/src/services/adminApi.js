@@ -14,6 +14,8 @@ export const adminApi = {
     request(
       `/api/admin/results${buildQuery(params) ? `?${buildQuery(params)}` : ""}`,
     ),
+  syncResults: () =>
+    request("/api/admin/results/sync", { method: "POST" }),
   dashboard: () => request("/api/admin/dashboard"),
   users: (params = {}) =>
     request(
