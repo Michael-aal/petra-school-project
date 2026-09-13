@@ -8,8 +8,6 @@ import StatCard from "../../../../components/dashboard/StatCard";
 import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import "../page-styles/OverviewPage.css";
 
-// Keep report dates in the browser's local timezone. toISOString() can move a
-// Nigerian date to the previous UTC date around midnight and load the wrong day.
 const getIsoDate = (date = new Date()) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -24,13 +22,11 @@ export default function DailyReportsPage() {
   const [attendancePagination, setAttendancePagination] = useState({ page: 1, limit: 25, total: 0, totalPages: 1 });
   const [cashflow, setCashflow] = useState({ recentTransactions: [], recentExpenses: [] });
   const [applicantCounts, setApplicantCounts] = useState({ pending: 0, approved: 0, rejected: 0 });
-
   const [selectedDate, setSelectedDate] = useState(getIsoDate());
 
   const loadDailyReport = async (date) => {
     setLoading(true);
     setError("");
-
     try {
       const [attendanceResponse, cashflowResponse, pendingResponse, approvedResponse, rejectedResponse] = await Promise.all([
         academicApi.attendance({ date, page: 1, limit: 50 }),
@@ -65,90 +61,36 @@ export default function DailyReportsPage() {
     const expenses = (cashflow.recentExpenses || []).filter((item) => sameDay(item.occurredAt));
     const paymentTotal = payments.reduce((sum, item) => sum + Number(item.amount || 0), 0);
     const expenseTotal = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-    return {
-      paymentCount: payments.length,
-      expenseCount: expenses.length,
-      paymentTotal,
-      expenseTotal,
-      netTotal: paymentTotal - expenseTotal,
-      paymentItems: payments,
-      expenseItems: expenses,
-    };
+    return { paymentCount: payments.length, expenseCount: expenses.length, paymentTotal, expenseTotal, netTotal: paymentTotal - expenseTotal, paymentItems: payments, expenseItems: expenses };
   }, [cashflow.recentTransactions, cashflow.recentExpenses, selectedDate]);
 
   return (
     <div className="dashboard-page overview-page daily-report-page">
-      <DashboardHeader
-        eyebrow="Overview"
-        title="Daily school report"
-        subtitle={`A daily snapshot for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}.`}
-        badge="Daily"
-      />
-
+      <DashboardHeader eyebrow="Overview" title="Daily school report" subtitle={`A daily snapshot for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}.`} badge="Daily" />
       {error ? <div className="overview-error">{error}</div> : null}
-
       <section className="overview-page-toolbar">
-        <label className="overview-date-picker">
-          Report date
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(event) => setSelectedDate(event.target.value)}
-          />
-        </label>
+        <label className="overview-date-picker">Report date<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label>
       </section>
-
       <section className="overview-card-grid">
         <StatCard label="Attendance" value={attendancePagination.total || 0} icon={CalendarDays} tone="neutral" description="Attendance entries recorded" />
         <StatCard label="Payments" value={`₦${reportSummary.paymentTotal.toLocaleString()}`} icon={DollarSign} tone="neutral" description={`${reportSummary.paymentCount} payment${reportSummary.paymentCount === 1 ? "" : "s"}`} />
         <StatCard label="Expenses" value={`₦${reportSummary.expenseTotal.toLocaleString()}`} icon={Clock3} tone="neutral" description={`${reportSummary.expenseCount} expense${reportSummary.expenseCount === 1 ? "" : "s"}`} />
         <StatCard label="Pending applicants" value={applicantCounts.pending} icon={FileText} tone="neutral" description="Applications waiting for review" />
       </section>
-
       <section className="overview-section overview-flex-grid">
         <DashboardWidget title="Report attendance" subtitle={`Latest records for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}`}>
           <div className="overview-list">
-            {loading ? (
-              <div className="overview-empty">Loading attendance…</div>
-            ) : attendance.length ? (
-              attendance.map((item) => (
-                <div key={item.id} className="overview-list-item">
-                  <strong>{item.student?.name || "Unnamed student"}</strong>
-                  <p>{item.status} • {item.className || "No class"}</p>
-                  <span>{new Date(item.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-                </div>
-              ))
-            ) : (
-              <div className="overview-empty">No attendance recorded for this date.</div>
-            )}
+            {loading ? <div className="overview-empty">Loading attendance…</div> : attendance.length ? attendance.map((item) => (
+              <div key={item.id} className="overview-list-item"><strong>{item.student?.name || "Unnamed student"}</strong><p>{item.status} • {item.className || "No class"}</p><span>{new Date(item.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span></div>
+            )) : <div className="overview-empty">No attendance recorded for this date.</div>}
           </div>
         </DashboardWidget>
-
         <DashboardWidget title="Transactions" subtitle={`Payments and expenses for ${new Date(`${selectedDate}T00:00:00`).toLocaleDateString()}`}>
           <div className="overview-list">
-            {loading ? (
-              <div className="overview-empty">Loading financial data…</div>
-            ) : reportSummary.paymentItems.length || reportSummary.expenseItems.length ? (
-              <>
-                {reportSummary.paymentItems.map((item) => (
-                  <div key={`p-${item.id}`} className="overview-list-item">
-                    <strong>Payment</strong>
-                    <p>{item.student?.name || item.reference || "Unknown"}</p>
-                    <span>₦{Number(item.amount || 0).toLocaleString()}</span>
-                  </div>
-                ))}
-                {reportSummary.expenseItems.map((item) => (
-                  <div key={`e-${item.id}`} className="overview-list-item">
-                    <strong>Expense</strong>
-                    <p>{item.category?.name || item.description || "General expense"}</p>
-                    <span>₦{Number(item.amount || 0).toLocaleString()}</span>
-                  </div>
-                ))}
-              </>
-            ) : (
-              <div className="overview-empty">No transactions recorded for this date.</div>
-            )}
+            {loading ? <div className="overview-empty">Loading financial data…</div> : reportSummary.paymentItems.length || reportSummary.expenseItems.length ? <>
+              {reportSummary.paymentItems.map((item) => <div key={`p-${item.id}`} className="overview-list-item"><strong>Payment</strong><p>{item.student?.name || item.reference || "Unknown"}</p><span>₦{Number(item.amount || 0).toLocaleString()}</span></div>)}
+              {reportSummary.expenseItems.map((item) => <div key={`e-${item.id}`} className="overview-list-item"><strong>{item.title || "Expense"}</strong><p>{item.expenseCategory?.name || "Uncategorized"}{item.note ? ` • ${item.note}` : ""}</p><span>₦{Number(item.amount || 0).toLocaleString()}</span></div>)}
+            </> : <div className="overview-empty">No transactions recorded for this date.</div>}
           </div>
         </DashboardWidget>
       </section>
