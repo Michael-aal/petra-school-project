@@ -52,6 +52,7 @@ const safeUser = (user) => {
   const fallbackSchoolId = user.schoolId || user.principalProfile?.schoolId || user.adminProfile?.schoolId || user.teacherProfile?.schoolId || user.staffProfile?.schoolId || user.parentProfile?.schoolId || user.guardianProfile?.schoolId || user.studentProfile?.schoolId || null;
   return { id: user.id, firstName: user.firstName || firstName, middleName: user.middleName || "", lastName: user.lastName || lastName, username: user.username || "", fullName: user.fullName || "", email: user.email, role: normalizeRole(user.role), phone: user.phone || "", institution: user.institution || "", institutionType: user.institutionType || "", state: user.state || "", city: user.city || "", hearAbout: user.hearAbout || "", staffRole: user.staffRole || "", staffDepartment: user.staffDepartment || "", staffClassAssigned: user.staffClassAssigned || "", staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [], accountStatus: user.accountStatus || "active", schoolId: fallbackSchoolId, profilePicture: user.profilePicture || "", profileImage: user.profileImage || user.profilePicture || "", linkedStudentId: user.linkedStudentId || null };
 };
+const mapChild = (student) => ({ id: student.id, name: student.name || student.user?.fullName || [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") || student.admissionNumber || "Unnamed learner", className: student.className || "", admissionNumber: student.admissionNumber || "", gender: student.gender || "", status: student.profile?.status || "active", parentId: student.parentId || "" });
 const makeCode = (prefix) => `${prefix}-${crypto.randomBytes(4).toString("hex").slice(0, 6).toUpperCase()}`;
 const makeInvitationCode = () => `PET-STAFF-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 
@@ -69,7 +70,6 @@ export const authService = {
     if (duplicateChecks[0]) { const error = new Error("Email already in use"); error.statusCode = 409; throw error; }
     if (duplicateChecks[1]) { const error = new Error("Username already in use"); error.statusCode = 409; throw error; }
     if (duplicateChecks[2]) { const error = new Error("Phone number already in use"); error.statusCode = 409; throw error; }
-
     const schoolName = String(institution || "").trim();
     let adoptableSchoolId = null;
     if (resolvedRole === "principal") {
@@ -81,28 +81,19 @@ export const authService = {
         adoptableSchoolId = existingSchool.id;
       }
     }
-
     const hashed = await hashPassword(password);
     const user = await prisma.$transaction(async (tx) => {
       let schoolId = null;
       if (resolvedRole === "principal") {
-        if (adoptableSchoolId) {
-          schoolId = adoptableSchoolId;
-        } else {
+        if (adoptableSchoolId) schoolId = adoptableSchoolId;
+        else {
           const school = await tx.school.create({ data: { name: schoolName, address: "Not provided", state: state || null, city: city || null, email: normalizedEmail, phone: normalizedPhone, isActive: true } });
           schoolId = school.id;
         }
-
-        // Principal registration is a pre-authentication operation. Set the tenant
-        // context inside this same transaction before creating any school-scoped
-        // rows, so the existing forced-RLS tenant policy can authorize the insert.
         await tx.$executeRaw`SELECT set_config('app.current_school_id', ${String(schoolId)}, true)`;
       }
-
       const createdUser = await tx.user.create({ data: { firstName: nameParts.firstName, middleName: nameParts.middleName || null, lastName: nameParts.lastName, username: normalizedUsername, fullName: nameParts.fullName, email: normalizedEmail, password: hashed, phone: normalizedPhone, institution, institutionType, state, city, hearAbout, role: resolvedRole, schoolId } });
-      if (resolvedRole === "principal" && schoolId) {
-        await tx.principal.create({ data: { userId: createdUser.id, schoolId, designation: "Principal", isActive: true } });
-      }
+      if (resolvedRole === "principal" && schoolId) await tx.principal.create({ data: { userId: createdUser.id, schoolId, designation: "Principal", isActive: true } });
       return createdUser;
     });
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }) };
@@ -120,5 +111,26 @@ export const authService = {
     logger.info("authService.login: user authenticated", { userId: user.id, role: user.role });
     await logAudit({ userId: user.id, schoolId: user.schoolId, action: "auth.login", entity: "User" });
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }) };
+  },
+
+  profile: async (userId) => {
+    const user = await userModel.findById(userId);
+    if (!user) { const error = new Error("User not found"); error.statusCode = 404; throw error; }
+    let school = null;
+    let selectedSchool = null;
+    const fallbackSchoolId = user.schoolId || user.principalProfile?.schoolId || user.adminProfile?.schoolId || user.teacherProfile?.schoolId || user.staffProfile?.schoolId || user.parentProfile?.schoolId || user.guardianProfile?.schoolId || user.studentProfile?.schoolId || null;
+    try {
+      if (fallbackSchoolId) school = await prisma.school.findUnique({ where: { id: Number(fallbackSchoolId) } });
+      if (user.selectedSchoolId) selectedSchool = await prisma.school.findUnique({ where: { id: Number(user.selectedSchoolId) } });
+    } catch (err) {
+      logger.warn?.("Failed to load school info for user profile", { error: err.message });
+    }
+    let children = [];
+    if (["parent", "guardian"].includes(String(user.role || "").toLowerCase())) {
+      try { children = (await userModel.listChildrenByParentUserId(userId)).map(mapChild); }
+      catch (childError) { logger.error("authService.profile: failed to load children", { userId, error: childError.message }); }
+    }
+    const base = safeUser(user);
+    return { ...base, school: school ? { id: school.id, name: school.name } : null, selectedSchool: selectedSchool ? { id: selectedSchool.id, name: selectedSchool.name } : null, children, linkedStudentId: user.linkedStudentId || null, primaryChildId: children[0]?.id || user.linkedStudentId || null, childCount: children.length };
   }
 };
