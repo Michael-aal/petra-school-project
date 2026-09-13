@@ -418,6 +418,12 @@
 .admission-page .highlight-checkbox label { color: var(--app-text-muted); }
 .admission-page .highlight-checkbox label { color: var(--app-text); }
 .admission-page .btn-primary { background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2)); }
+.admission-page .btn-primary:hover,
+.admission-page .btn-primary:focus-visible {
+  background: linear-gradient(135deg, var(--app-accent-2), #b94713);
+  color: var(--primary-foreground);
+  border-color: var(--app-accent-2);
+}
 .admission-page .btn-secondary { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border); }
 .admission-page .btn-secondary:hover { border-color: var(--app-accent); color: var(--app-accent-2); }
 .admission-page .btn-submit { background: linear-gradient(135deg, #3fa764, #27854c); border-color: #3fa764; }
