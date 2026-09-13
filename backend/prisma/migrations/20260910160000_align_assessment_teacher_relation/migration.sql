@@ -11,10 +11,11 @@ ALTER TABLE "Assessment"
 
 -- Repair admissions whose existing exam reference was persisted while the
 -- legacy constraint prevented the intended Assessment upsert.
-INSERT INTO "Teacher" ("id", "name", "schoolId", "createdAt", "updatedAt")
+-- Teacher has no name column; the school-scoped system record only exists to
+-- satisfy Assessment.teacherId while repairing legacy admissions.
+INSERT INTO "Teacher" ("id", "schoolId", "createdAt", "updatedAt")
 SELECT DISTINCT
   'sys_teacher_' || a."schoolId",
-  'Admission System',
   a."schoolId",
   CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP

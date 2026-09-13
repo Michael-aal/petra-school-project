@@ -11,7 +11,8 @@ BEGIN
     SELECT 1
     FROM pg_constraint
     WHERE conname = 'Payment_paymentMethodId_fkey'
-      AND conrelid = 'Payment'::regclass
+      -- Camel-cased Prisma tables must stay quoted when resolved by PostgreSQL.
+      AND conrelid = to_regclass('"Payment"')
   ) THEN
     ALTER TABLE "Payment"
       ADD CONSTRAINT "Payment_paymentMethodId_fkey"
