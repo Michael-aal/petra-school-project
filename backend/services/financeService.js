@@ -1079,6 +1079,10 @@ export const financeService = {
 
   processPaystackWebhook: async (rawBody, signatureHeader) => {
     const payload = paystackService.parseWebhookPayload(rawBody, signatureHeader);
+    return financeService.processPaystackPayload(payload);
+  },
+
+  processPaystackPayload: async (payload) => {
     const reference = payload?.data?.reference;
     if (!reference) {
       throw Object.assign(new Error("Webhook missing payment reference"), { statusCode: 400 });

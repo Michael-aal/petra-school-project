@@ -1,6 +1,7 @@
 import { prisma } from "../config/db.js";
 // import { classMarkerService } from "../services/classMarkerService.js";
 import { quizlabService } from "../services/quizlabService.js";
+import { webhookEventService } from "../services/webhookEventService.js";
 import { sendAdmissionEmail, sendAdmissionFailureEmail, buildAdmissionPaymentUrl } from "../services/emailService.js";
 import crypto from "crypto";
 
@@ -1502,15 +1503,29 @@ export const quizlabWebhookHandler = async (
       });
     }
 
-    return await syncResultsForAssessment(
-      {
-        params: { assessmentId: String(assessmentId) },
-        body: payload,
-        user: req.user || null,
-      },
-      res,
-      next
-    );
+    const eventKey = webhookEventService.eventKey({
+      providerEventId: payload?.event_id || payload?.eventId || payload?.id || payload?.attempt_id || payload?.attempt?.id,
+      rawBody: req.rawBody,
+    });
+    const reserved = await webhookEventService.reserve({ provider: "quizlab", eventKey });
+    if (!reserved) return res.status(200).json({ success: true, duplicate: true });
+
+    try {
+      const result = await syncResultsForAssessment(
+        {
+          params: { assessmentId: String(assessmentId) },
+          body: payload,
+          user: req.user || null,
+        },
+        res,
+        next,
+      );
+      await webhookEventService.complete("quizlab", eventKey);
+      return result;
+    } catch (error) {
+      await webhookEventService.release("quizlab", eventKey);
+      throw error;
+    }
   } catch (error) {
     return next(error);
   }

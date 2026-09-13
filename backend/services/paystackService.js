@@ -2,6 +2,16 @@ import { createHmac, timingSafeEqual, randomBytes } from "crypto";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE = "https://api.paystack.co";
+const PROVIDER_TIMEOUT_MS = Number(process.env.PAYSTACK_TIMEOUT_MS || 10_000);
+
+const providerFetch = (url, options) => fetch(url, {
+  ...options,
+  signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+}).catch((error) => {
+  const wrapped = new Error("Paystack request timed out or could not be completed", { cause: error });
+  wrapped.statusCode = 502;
+  throw wrapped;
+});
 
 const resolveCallbackUrl = (callbackUrl) => {
   if (!callbackUrl) return process.env.PAYSTACK_CALLBACK_URL || undefined;
@@ -50,7 +60,7 @@ export const paystackService = {
       throw error;
     }
 
-    const response = await fetch(`${PAYSTACK_BASE}/transaction/initialize`, {
+    const response = await providerFetch(`${PAYSTACK_BASE}/transaction/initialize`, {
       method: "POST",
       headers: getPaystackHeaders(),
       body: JSON.stringify({
@@ -95,7 +105,7 @@ export const paystackService = {
   },
 
   verifyTransaction: async (reference) => {
-    const response = await fetch(`${PAYSTACK_BASE}/transaction/verify/${encodeURIComponent(reference)}`, {
+    const response = await providerFetch(`${PAYSTACK_BASE}/transaction/verify/${encodeURIComponent(reference)}`, {
       method: "GET",
       headers: getPaystackHeaders(),
     });

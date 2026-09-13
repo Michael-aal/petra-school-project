@@ -1693,3 +1693,15 @@ model Expense {
   @@index([schoolId, academicYearId, termId])
   @@index([expenseCategoryId, occurredAt])
 }
+
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  provider    String
+  eventKey    String
+  status      String   @default("processing")
+  receivedAt  DateTime @default(now())
+  completedAt DateTime?
+
+  @@unique([provider, eventKey])
+  @@index([provider, status, receivedAt])
+}

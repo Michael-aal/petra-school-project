@@ -4,6 +4,16 @@ import fetch from 'node-fetch';
 const QUIZLAB_MCP_URL = process.env.QUIZLAB_MCP_URL || 'https://quizlab.in/mcp';
 const API_KEY = process.env.QUIZLAB_API_KEY || '';
 const ATS_API_KEY = process.env.QUIZLAB_ATS_API_KEY || process.env.ATS_API_KEY || '';
+const PROVIDER_TIMEOUT_MS = Number(process.env.QUIZLAB_TIMEOUT_MS || 10_000);
+
+const providerFetch = (url, options) => fetch(url, {
+  ...options,
+  signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+}).catch((error) => {
+  const wrapped = new Error('QuizLab request timed out or could not be completed', { cause: error });
+  wrapped.status = 502;
+  throw wrapped;
+});
 
 let mcpSessionId = null;
 let mcpSessionExpiresAt = 0;
@@ -17,7 +27,7 @@ const ensureSession = async () => {
     method: 'initialize',
     params: {},
   };
-  const res = await fetch(QUIZLAB_MCP_URL, {
+  const res = await providerFetch(QUIZLAB_MCP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +54,7 @@ const callMcp = async (method, params = {}) => {
     method: 'tools/call',
     params: { name: method, arguments: params },
   };
-  const res = await fetch(QUIZLAB_MCP_URL, {
+  const res = await providerFetch(QUIZLAB_MCP_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +97,7 @@ const callMcp = async (method, params = {}) => {
 
 const callAts = async (path, { method = 'GET', body } = {}) => {
   if (!ATS_API_KEY) throw new Error('ATS_API_KEY not configured');
-  const res = await fetch(`https://quizlab.in${path}`, {
+  const res = await providerFetch(`https://quizlab.in${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
