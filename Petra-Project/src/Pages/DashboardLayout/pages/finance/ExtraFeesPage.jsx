@@ -10,6 +10,7 @@ const emptyForm = {
   session: "",
   term: "",
   amount: "",
+  quantityRequired: false,
   dueDate: "",
   isActive: true,
 };
@@ -49,6 +50,7 @@ export default function ExtraFeesPage() {
         ...form,
         name: String(form.name || "").trim(),
         amount: Number(form.amount),
+        quantityRequired: Boolean(form.quantityRequired),
         dueDate: form.dueDate || null,
         isActive: Boolean(form.isActive),
       };
@@ -76,6 +78,7 @@ export default function ExtraFeesPage() {
       session: fee.session || "",
       term: fee.term || "",
       amount: fee.amount || "",
+      quantityRequired: Boolean(fee.quantityRequired),
       dueDate: fee.dueDate ? String(fee.dueDate).slice(0, 10) : "",
       isActive: fee.isActive !== false,
     });
@@ -137,6 +140,19 @@ export default function ExtraFeesPage() {
             <input value={form.session} onChange={(e) => setForm({ ...form, session: e.target.value })} placeholder="Session" />
             <input value={form.term} onChange={(e) => setForm({ ...form, term: e.target.value })} placeholder="Term" />
             <input value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} placeholder="Amount" type="number" min="0" />
+
+            <label className="fees-switch">
+              <input
+                type="checkbox"
+                checked={form.quantityRequired}
+                onChange={(e) => setForm({ ...form, quantityRequired: e.target.checked })}
+              />
+              Allow quantity
+            </label>
+            <small className="fees-help-text">
+              When enabled, parents/students can choose how many units they want to pay for.
+            </small>
+
             <input value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} type="date" />
             <label className="fees-switch"><input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} /> Active</label>
             <div className="fees-actions">
@@ -183,6 +199,9 @@ export default function ExtraFeesPage() {
               <div className="module-meta">
                 <span>{fee.className || "All classes"}</span>
                 <span>{new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(Number(fee.amount || 0))}</span>
+              </div>
+              <div className="module-meta">
+                <span>{fee.quantityRequired ? "Quantity enabled" : "Single item"}</span>
               </div>
               <div className="fees-actions">
                 <button type="button" className="module-button ghost" onClick={() => editFee(fee)}><Edit3 size={14} /> Edit</button>
