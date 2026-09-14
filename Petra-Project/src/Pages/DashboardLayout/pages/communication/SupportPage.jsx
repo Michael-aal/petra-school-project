@@ -1,5 +1,5 @@
 import "../page-styles/SupportPage.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, Clock, HelpCircle, LifeBuoy, MessageSquare, Send } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
 import { supportApi } from "../../../../services/supportApi";
@@ -13,6 +13,20 @@ const formatDate = (value) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 };
+
+const requesterGroup = (role) => {
+  const normalized = String(role || "").toLowerCase().replace(/\s+/g, "_");
+  if (normalized === "parent") return "Parents";
+  if (["staff", "teacher", "non_teaching_staff"].includes(normalized)) return "Staff";
+  if (["admin", "principal", "school_admin"].includes(normalized)) return "Admins";
+  return "Staff";
+};
+
+const groupTickets = (tickets) => ({
+  Parents: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Parents"),
+  Staff: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Staff"),
+  Admins: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Admins"),
+});
 
 export default function SupportPage() {
   const { userInfo } = useContext(UserContext);
@@ -70,6 +84,31 @@ export default function SupportPage() {
     } catch (e) { setError(e.data?.message || e.message || "Unable to update ticket"); }
   };
 
+  const groupedTickets = useMemo(() => groupTickets(tickets), [tickets]);
+
+  const renderTicket = (ticket) => (
+    <button key={ticket.id} type="button" className="ticket-item support-requester-item" onClick={() => openTicket(ticket.id)}>
+      <div className="ticket-person-row">
+        <div className="support-person-avatar">{String(ticket.createdBy?.fullName || "U").trim().charAt(0).toUpperCase()}</div>
+        <div className="support-person-info">
+          <strong>{ticket.createdBy?.fullName || "Unknown user"}</strong>
+          <span>{ticket.createdBy?.role || "User"}{ticket.createdBy?.email ? ` • ${ticket.createdBy.email}` : ""}</span>
+        </div>
+      </div>
+      <div className="ticket-top"><span className="ticket-subject">{ticket.subject}</span><span className="ticket-status">{ticket.status}</span></div>
+      <div className="ticket-bottom"><span className="ticket-meta">{ticket.category} • {ticket.priority}</span><span className="ticket-date">{formatDate(ticket.updatedAt)}</span></div>
+    </button>
+  );
+
+  const renderGroup = (label, items) => (
+    <section className="support-role-group" key={label}>
+      <div className="support-role-heading">
+        <div><h4>{label}</h4><span>{items.length} request{items.length === 1 ? "" : "s"}</span></div>
+      </div>
+      {items.length ? <div className="tickets-list">{items.map(renderTicket)}</div> : <div className="support-role-empty">No {label.toLowerCase()} support requests.</div>}
+    </section>
+  );
+
   return (
     <div className="support-page">
       <div className="support-header">
@@ -77,7 +116,7 @@ export default function SupportPage() {
           <div className="support-icon-box"><LifeBuoy size={24} /></div>
           <div>
             <h2>{isPlatform ? "Support Center" : "Help & Support"}</h2>
-            <p>{isPlatform ? "Platform-wide support requests from schools, staff and parents." : "Report a problem or ask the Petra support team for help."}</p>
+            <p>{isPlatform ? "Platform-wide support requests organized by the person asking for help." : "Report a problem or ask the Petra support team for help."}</p>
           </div>
         </div>
       </div>
@@ -103,16 +142,15 @@ export default function SupportPage() {
 
       <div className="support-grid">
         <section className="support-card tickets-card">
-          <div className="card-header"><h3><Clock size={18} /> {isPlatform ? "All Platform Tickets" : "My Support Requests"}</h3></div>
-          {loading ? <p>Loading tickets…</p> : tickets.length === 0 ? <div className="empty-tickets"><HelpCircle size={20} /><p>No support tickets yet.</p></div> : (
-            <div className="tickets-list">
-              {tickets.map((ticket) => (
-                <button key={ticket.id} type="button" className="ticket-item" onClick={() => openTicket(ticket.id)}>
-                  <div className="ticket-top"><span className="ticket-subject">{ticket.subject}</span><span>{ticket.status}</span></div>
-                  <div className="ticket-bottom"><span className="ticket-meta">{ticket.category} • {ticket.priority}{isPlatform && ticket.createdBy ? ` • ${ticket.createdBy.fullName}` : ""}</span><span className="ticket-date">{formatDate(ticket.updatedAt)}</span></div>
-                </button>
-              ))}
+          <div className="card-header"><h3><Clock size={18} /> {isPlatform ? "Developer Support Inbox" : "My Support Requests"}</h3></div>
+          {loading ? <p>Loading tickets…</p> : tickets.length === 0 ? <div className="empty-tickets"><HelpCircle size={20} /><p>No support tickets yet.</p></div> : isPlatform ? (
+            <div className="support-role-groups">
+              {renderGroup("Parents", groupedTickets.Parents)}
+              {renderGroup("Staff", groupedTickets.Staff)}
+              {renderGroup("Admins", groupedTickets.Admins)}
             </div>
+          ) : (
+            <div className="tickets-list">{tickets.map(renderTicket)}</div>
           )}
         </section>
 
@@ -122,7 +160,10 @@ export default function SupportPage() {
               <div><h3>{selected.ticket.subject}</h3><p>{selected.ticket.category} • {selected.ticket.priority} • {selected.ticket.status}</p></div>
               {isPlatform || isSchoolAdmin ? <div style={{ display: "flex", gap: 8 }}><select value={selected.ticket.status} onChange={(e) => update({ status: e.target.value })}>{statuses.map((x) => <option key={x}>{x}</option>)}</select><select value={selected.ticket.priority} onChange={(e) => update({ priority: e.target.value })}>{priorities.map((x) => <option key={x}>{x}</option>)}</select></div> : null}
             </div>
-            <p><strong>{selected.ticket.createdBy?.fullName || "User"}</strong>{selected.ticket.createdBy?.email ? ` • ${selected.ticket.createdBy.email}` : ""}</p>
+            <div className="selected-requester">
+              <div className="support-person-avatar">{String(selected.ticket.createdBy?.fullName || "U").trim().charAt(0).toUpperCase()}</div>
+              <div><strong>{selected.ticket.createdBy?.fullName || "User"}</strong><span>{selected.ticket.createdBy?.role || "User"}{selected.ticket.createdBy?.email ? ` • ${selected.ticket.createdBy.email}` : ""}</span></div>
+            </div>
             <p>{selected.ticket.description}</p>
             <div className="tickets-list">
               {(selected.messages || []).map((message) => <div key={message.id} className="ticket-item"><strong>{message.authorName || "User"}</strong><p>{message.body}</p><small>{formatDate(message.createdAt)}{message.isInternal ? " • Internal note" : ""}</small></div>)}
