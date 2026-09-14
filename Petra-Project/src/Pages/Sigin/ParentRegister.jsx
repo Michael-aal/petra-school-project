@@ -45,11 +45,17 @@ export default function ParentRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const nextErrors = validate();
+    const storedSchoolId = window.localStorage.getItem("petra_selected_school_id");
+    const schoolId = Number.parseInt(String(storedSchoolId ?? ""), 10);
+    if (!Number.isInteger(schoolId) || schoolId <= 0) {
+      nextErrors.schoolId = "Please select a valid school before registering.";
+    }
     setErrors(nextErrors);
+    setServerError("");
     if (Object.keys(nextErrors).length) return;
     setLoading(true);
     try {
-      const response = await authApi.parentRegister({ ...form, role: "parent" });
+      const response = await authApi.parentRegister({ ...form, role: "parent", schoolId });
       writeAuthToken(response?.token);
       setUserInfo(
         normalizeUser({
@@ -72,6 +78,7 @@ export default function ParentRegister() {
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-form-header"><h2>Parent Registration</h2><p>Fill in your details to register.</p></div>
         {serverError ? <div className="auth-alert">{serverError}</div> : null}
+        {errors.schoolId ? <div className="auth-alert">{errors.schoolId}</div> : null}
         <label className="auth-field"><span>Full Name</span><div className="auth-input-wrap"><UserRound size={18} /><input name="fullName" value={form.fullName} onChange={handleChange} /></div>{errors.fullName ? <small>{errors.fullName}</small> : null}</label>
         <label className="auth-field"><span>Email Address</span><div className="auth-input-wrap"><Mail size={18} /><input name="email" type="email" value={form.email} onChange={handleChange} /></div>{errors.email ? <small>{errors.email}</small> : null}</label>
         <label className="auth-field"><span>Phone Number</span><div className="auth-input-wrap"><Phone size={18} /><input name="phone" value={form.phone} onChange={handleChange} /></div></label>
