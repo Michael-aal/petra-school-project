@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { authService } from "../services/authService.js";
 import { teacherInvitationService } from "../services/teacherInvitationService.js";
+import { linkParentToMatchingChildren } from "../utils/parentLinking.js";
 
 const authCookieOptions = {
   httpOnly: true,
@@ -119,7 +120,12 @@ export const registerParent = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.registerParent(req.body);
-    return sendAuthenticated(res, 201, "Parent registered successfully", result);
+    const linked = await linkParentToMatchingChildren({
+      parentUserId: result?.user?.id,
+      schoolId: result?.user?.schoolId || req.body?.schoolId,
+      email: req.body?.email,
+    });
+    return sendAuthenticated(res, 201, "Parent registered successfully", { ...result, linkedChildren: linked.linkedChildren });
   } catch (error) {
     next(error);
   }
