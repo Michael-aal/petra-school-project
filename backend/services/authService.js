@@ -174,6 +174,12 @@ export const authService = {
     };
   },
 
+  listStaffInvitations: async (schoolId) => {
+    const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
+    return userModel.listStaffInvitations(resolvedSchoolId);
+  },
+
   login: async ({ email, password }) => {
     const normalizedEmail = String(email || "").trim().toLowerCase();
     const normalizedPassword = String(password || "");
