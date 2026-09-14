@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { prisma } from "../config/db.js";
+import notificationService from "./notificationService.js";
 
 const roleOf = (user) => String(user?.role || "").trim().toLowerCase().replace(/\s+/g, "_");
 const isPlatform = (user) => ["super_admin", "developer"].includes(roleOf(user));
@@ -59,7 +60,6 @@ export const supportService = {
       if (Number.isInteger(schoolId) && schoolId > 0) filters.push(`t."schoolId"=${add(schoolId)}`);
     } else {
       const schoolId = schoolIdFor(user);
-      // School users can only see the tickets they personally submitted.
       filters.push(`t."schoolId"=${add(schoolId)}`);
       filters.push(`t."createdById"=${add(user.id)}`);
     }
@@ -114,6 +114,23 @@ export const supportService = {
       String(payload.category || "General"),
       String(payload.priority || "Medium"),
     );
+
+    // Support requests must actively reach the platform support team, not merely sit in the ticket list.
+    if (schoolId) {
+      try {
+        await notificationService.notifySupportTeam({
+          schoolId,
+          ticketId: id,
+          requesterName: user.fullName,
+          requesterRole: roleOf(user),
+          subject,
+        });
+      } catch (notificationError) {
+        // The support ticket is already persisted; notification failure must not make the user's request disappear.
+        console.error("Support notification failed:", notificationError);
+      }
+    }
+
     return supportService.getTicket(user, id);
   },
 
