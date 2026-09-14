@@ -1,5 +1,6 @@
--- Repair the Section.capacity column expected by the current Prisma schema.
--- Existing databases may have an older Section table without this field.
+-- Repair the Section -> capacity field expected by the current Prisma schema.
+-- Some existing databases have Section without capacity, which causes Prisma
+-- to fail when Student -> Enrollment -> Section is loaded.
 
 DO $$
 BEGIN
