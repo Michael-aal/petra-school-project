@@ -15,6 +15,6 @@ router.get("/support", protect, listTickets);
 router.post("/support", protect, createTicket);
 router.get("/support/:id", protect, getTicket);
 router.post("/support/:id/messages", protect, addMessage);
-router.patch("/support/:id", protect, requireRole(["admin", "principal", "super_admin", "developer"]), updateTicket);
+router.patch("/support/:id", protect, requireRole(["super_admin", "developer"]), updateTicket);
 
 export default router;
