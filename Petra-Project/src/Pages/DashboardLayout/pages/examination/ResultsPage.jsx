@@ -93,8 +93,8 @@ export default function ResultsPage() {
         else setLoading(true);
         setError("");
 
-        // QuizLab does not redirect back to Petra after completion. Sync first,
-        // then read the canonical ExamResult/Result records from Petra.
+        // Sync QuizLab into Petra first. The backend sync also processes
+        // admission result emails for newly finalized pass/fail outcomes.
         await adminApi.syncResults();
 
         const response = await adminApi.results({
@@ -148,7 +148,7 @@ export default function ResultsPage() {
 
       <div className="results-actions">
         <button type="button" className="results-page-button" onClick={refreshResults} disabled={loading || refreshing}>
-          {refreshing ? "Refreshing..." : "Refresh results"}
+          {refreshing ? "Syncing & sending..." : "Sync Results & Send Emails"}
         </button>
       </div>
 
