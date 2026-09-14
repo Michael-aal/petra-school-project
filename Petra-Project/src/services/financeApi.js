@@ -8,20 +8,35 @@ const createIdempotencyKey = () => {
   return `payment-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 };
 
+const getPaymentIdempotencyKey = (payload = {}, explicitKey) =>
+  String(explicitKey || payload?.idempotencyKey || "").trim() || createIdempotencyKey();
+
 export const financeApi = {
   payments: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/api/finance/payments${query ? `?${query}` : ""}`);
   },
   payment: (id) => request(`/api/finance/payments/${id}`),
-  createPayment: (payload) => request("/api/finance/payments", { method: "POST", body: JSON.stringify(payload) }),
-  createPublicPayment: (payload) => request("/api/finance/public/payments", { method: "POST", body: JSON.stringify(payload) }),
-  publicStudentLookup: (studentCode, schoolId) => request(`/api/finance/public/lookup?studentCode=${encodeURIComponent(studentCode)}&schoolId=${encodeURIComponent(schoolId)}`),
-  schoolStudentLookup: (studentCode) => request(`/api/finance/payments/lookup?studentCode=${encodeURIComponent(studentCode)}`),
-  createSchoolPayment: (payload) => request("/api/finance/payments/checkout", {
+  createPayment: (payload, idempotencyKey) => request("/api/finance/payments", {
     method: "POST",
     headers: {
-      "X-Idempotency-Key": createIdempotencyKey(),
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
+    },
+    body: JSON.stringify(payload),
+  }),
+  createPublicPayment: (payload, idempotencyKey) => request("/api/finance/public/payments", {
+    method: "POST",
+    headers: {
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
+    },
+    body: JSON.stringify(payload),
+  }),
+  publicStudentLookup: (studentCode, schoolId) => request(`/api/finance/public/lookup?studentCode=${encodeURIComponent(studentCode)}&schoolId=${encodeURIComponent(schoolId)}`),
+  schoolStudentLookup: (studentCode) => request(`/api/finance/payments/lookup?studentCode=${encodeURIComponent(studentCode)}`),
+  createSchoolPayment: (payload, idempotencyKey) => request("/api/finance/payments/checkout", {
+    method: "POST",
+    headers: {
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
     },
     body: JSON.stringify(payload),
   }),
