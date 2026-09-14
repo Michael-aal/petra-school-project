@@ -5,6 +5,7 @@ import {
   Building2,
   Database,
   FileClock,
+  HelpCircle,
   Layers3,
   LayoutDashboard,
   LogOut,
@@ -27,6 +28,7 @@ import { getDisplayName, normalizeUser } from "../../../../utils/userProfile";
 import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import EmptyState from "../../../../components/dashboard/EmptyState";
 import StatCard from "../../../../components/dashboard/StatCard";
+import SupportPage from "../communication/SupportPage";
 import "../../../../components/dashboard/dashboard.css";
 import "./superadmin.css";
 
@@ -34,6 +36,7 @@ const navItems = [
   { label: "Dashboard", href: "/dev", icon: LayoutDashboard },
   { label: "Schools", href: "/dev/schools", icon: School },
   { label: "Users", href: "/dev/users", icon: Users },
+  { label: "Support", href: "/dev/support", icon: HelpCircle },
   { label: "Roles & Permissions", href: "/dev/roles", icon: Layers3 },
   { label: "System Logs", href: "/dev/logs", icon: FileClock },
   { label: "System Settings", href: "/dev/settings", icon: Settings2 },
@@ -336,6 +339,7 @@ export default function SuperAdminDashboard() {
   const page = useMemo(() => {
     if (location.pathname.startsWith("/dev/schools")) return "schools";
     if (location.pathname.startsWith("/dev/users")) return "users";
+    if (location.pathname.startsWith("/dev/support")) return "support";
     if (location.pathname.startsWith("/dev/logs")) return "logs";
     if (location.pathname.startsWith("/dev/roles")) return "roles";
     if (location.pathname.startsWith("/dev/settings")) return "settings";
@@ -518,12 +522,12 @@ export default function SuperAdminDashboard() {
       ) : null}
 
       <main className="superadmin-main">
-        {schoolContext.schoolReady && !schoolContext.selectedSchoolId && normalizeRole(userInfo?.role) === "super_admin" && page !== "settings" && page !== "roles" ? (
+        {schoolContext.schoolReady && !schoolContext.selectedSchoolId && normalizeRole(userInfo?.role) === "super_admin" && !["settings", "roles", "support"].includes(page) ? (
           <div className="superadmin-alert error">Select a school to continue.</div>
         ) : null}
         <TopBar
-          title={page === "dashboard" ? "SuperAdmin Dashboard" : page === "schools" ? "Schools" : page === "users" ? "Users" : page === "logs" ? "System Logs" : "System Settings"}
-          subtitle={page === "dashboard" ? "System-wide overview and platform management" : page === "schools" ? "Manage all schools on the platform." : page === "users" ? "View and filter every platform user." : page === "logs" ? "Track system-wide activity." : "Configure platform settings."}
+          title={page === "dashboard" ? "SuperAdmin Dashboard" : page === "schools" ? "Schools" : page === "users" ? "Users" : page === "support" ? "Support Center" : page === "logs" ? "System Logs" : "System Settings"}
+          subtitle={page === "dashboard" ? "System-wide overview and platform management" : page === "schools" ? "Manage all schools on the platform." : page === "users" ? "View and filter every platform user." : page === "support" ? "Platform-wide support requests from schools, staff and parents." : page === "logs" ? "Track system-wide activity." : "Configure platform settings."}
           onMenu={() => setMobileOpen((current) => !current)}
           user={userInfo}
         />
@@ -646,6 +650,8 @@ export default function SuperAdminDashboard() {
             </DashboardWidget>
           </section>
         ) : null}
+
+        {page === "support" ? <SupportPage /> : null}
 
         {page === "logs" ? (
           <section className="superadmin-section">
