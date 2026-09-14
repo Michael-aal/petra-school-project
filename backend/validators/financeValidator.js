@@ -45,6 +45,10 @@ export const publicStudentLookupValidator = [
   query("studentCode").trim().notEmpty().withMessage("Student Code is required"),
 ];
 
+export const schoolStudentLookupValidator = [
+  query("studentCode").trim().notEmpty().withMessage("Student Code is required"),
+];
+
 export const publicPaymentValidator = [
   body("schoolId").isInt({ min: 1 }).toInt().withMessage("A valid schoolId is required"),
   body("studentCode").trim().notEmpty().withMessage("Student Code is required"),
