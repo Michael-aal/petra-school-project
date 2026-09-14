@@ -50,7 +50,7 @@ const getNameParts = (fullName = "") => {
 const safeUser = (user) => {
   const { firstName, lastName } = getNameParts(user.fullName || "");
   const fallbackSchoolId = user.schoolId || user.principalProfile?.schoolId || user.adminProfile?.schoolId || user.teacherProfile?.schoolId || user.staffProfile?.schoolId || user.parentProfile?.schoolId || user.guardianProfile?.schoolId || user.studentProfile?.schoolId || null;
-  return { id: user.id, firstName: user.firstName || firstName, middleName: user.middleName || "", lastName: user.lastName || lastName, username: user.username || "", fullName: user.fullName || "", email: user.email, role: normalizeRole(user.role), phone: user.phone || "", institution: user.institution || "", institutionType: user.institutionType || "", state: user.state || "", city: user.city || "", hearAbout: user.hearAbout || "", staffRole: user.staffRole || "", staffDepartment: user.staffDepartment || "", staffClassAssigned: user.staffClassAssigned || "", staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [], accountStatus: user.accountStatus || "active", schoolId: fallbackSchoolId, profilePicture: user.profilePicture || "", profileImage: user.profileImage || user.profilePicture || "", linkedStudentId: user.linkedStudentId || null };
+  return { id: user.id, firstName: user.firstName || firstName, middleName: user.middleName || "", lastName: user.lastName || lastName, username: user.username || "", fullName: user.fullName || "", email: user.email, role: normalizeRole(user.role), phone: user.phone || "", institution: user.institution || "", institutionType: user.institutionType || "", state: user.state || "", city: user.city || "", hearAbout: user.hearAbout || "", staffRole: user.staffRole || "", staffDepartment: user.staffDepartment || "", staffClassAssigned: user.staffClassAssigned || "", staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [], accountStatus: user.accountStatus || "active", schoolId: fallbackSchoolId, selectedSchoolId: user.selectedSchoolId || null, profilePicture: user.profilePicture || "", profileImage: user.profileImage || user.profilePicture || "", linkedStudentId: user.linkedStudentId || null };
 };
 const mapChild = (student) => ({ id: student.id, name: student.name || student.user?.fullName || [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") || student.admissionNumber || "Unnamed learner", className: student.className || "", admissionNumber: student.admissionNumber || "", gender: student.gender || "", status: student.profile?.status || "active", parentId: student.parentId || "" });
 const makeCode = (prefix) => `${prefix}-${crypto.randomBytes(4).toString("hex").slice(0, 6).toUpperCase()}`;
@@ -192,6 +192,65 @@ export const authService = {
     logger.info("authService.login: user authenticated", { userId: user.id, role: user.role });
     await logAudit({ userId: user.id, schoolId: user.schoolId, action: "auth.login", entity: "User" });
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }) };
+  },
+
+  selectSchool: async ({ userId, schoolId }) => {
+    const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) {
+      throw buildPasswordError("A valid school is required");
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true },
+    });
+
+    if (!user || normalizeRole(user.role) !== "super_admin") {
+      const error = new Error("Only Super Admin can select a school");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const school = await prisma.school.findUnique({
+      where: { id: resolvedSchoolId },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        email: true,
+        phone: true,
+        website: true,
+        country: true,
+        state: true,
+        city: true,
+        timezone: true,
+        logo: true,
+        isActive: true,
+      },
+    });
+
+    if (!school) {
+      const error = new Error("School not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (!school.isActive) {
+      const error = new Error("Cannot select an inactive school");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { selectedSchoolId: school.id },
+      select: { id: true, selectedSchoolId: true },
+    });
+
+    return {
+      selectedSchool: school,
+      selectedSchoolId: updatedUser.selectedSchoolId,
+    };
   },
 
   profile: async (userId) => {
