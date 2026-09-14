@@ -8,8 +8,6 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const sqlPath = path.resolve(__dirname, "../prisma/migration-repair.sql");
 
 function splitSqlStatements(sql) {
-  // migration-repair.sql is a DDL repair script. Its statements are terminated
-  // with semicolons and do not contain procedural dollar-quoted blocks.
   return sql
     .split(/;\s*(?:\r?\n|$)/)
     .map((statement) => statement.trim())
@@ -17,9 +15,6 @@ function splitSqlStatements(sql) {
 }
 
 function isSafeDuplicateError(error) {
-  // These errors mean the object being repaired is already present. They are
-  // safe to skip because this script is specifically designed to reconcile a
-  // partially repaired database without deleting existing data.
   return ["42P07", "42701", "42710"].includes(error?.code);
 }
 
@@ -28,16 +23,27 @@ async function applyRepairSql(client, sql) {
   let applied = 0;
   let skipped = 0;
 
-  for (const statement of statements) {
+  for (let index = 0; index < statements.length; index += 1) {
+    const statement = statements[index];
+    const savepoint = `repair_stmt_${index}`;
+
+    await client.query(`SAVEPOINT ${savepoint}`);
+
     try {
       await client.query(statement);
+      await client.query(`RELEASE SAVEPOINT ${savepoint}`);
       applied += 1;
     } catch (error) {
       if (isSafeDuplicateError(error)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
         skipped += 1;
         console.log(`Skipping existing database object: ${error.message}`);
         continue;
       }
+
+      await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+      await client.query(`RELEASE SAVEPOINT ${savepoint}`);
       throw error;
     }
   }
