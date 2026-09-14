@@ -1,21 +1,54 @@
 import crypto from "crypto";
 import { prisma } from "../config/db.js";
 
+const normalizeFeeName = (value) => String(value || "").trim().toLowerCase();
+
 const isTuitionFeeName = (value) => {
-  const normalized = String(value || "").trim().toLowerCase();
-  return normalized.includes("tuition") || normalized.includes("school fee") || normalized.includes("school fees");
+  const normalized = normalizeFeeName(value);
+  return (
+    normalized.includes("tuition") ||
+    normalized.includes("school fee") ||
+    normalized.includes("school fees")
+  );
 };
 
-const hasTuitionPayment = (payment) => {
+const isApplicationFeeName = (value) =>
+  normalizeFeeName(value).includes("application");
+
+const toNumber = (value) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+};
+
+/**
+ * A student is promoted only when the successful payment contains a tuition /
+ * school-fee line AND the full configured tuition amount represented by those
+ * lines has been paid. Extra fees never count toward the tuition requirement.
+ */
+const hasFullTuitionPayment = (payment) => {
   const lines = Array.isArray(payment?.paymentLines) ? payment.paymentLines : [];
-  return lines.some((line) =>
+  const tuitionLines = lines.filter((line) =>
     isTuitionFeeName(line?.feeStructure?.feeCategory?.name),
   );
+
+  if (!tuitionLines.length) return false;
+
+  const requiredTuitionAmount = tuitionLines.reduce(
+    (total, line) => total + toNumber(line?.lineTotal),
+    0,
+  );
+
+  const successfulPaymentAmount = toNumber(payment?.amount);
+
+  // The payment may also contain extra fees, so the total payment can be
+  // higher than tuition. What matters is that it covers the complete tuition
+  // amount. A partial tuition payment must never activate the student.
+  return requiredTuitionAmount > 0 && successfulPaymentAmount >= requiredTuitionAmount;
 };
 
 /**
  * Promote an admitted applicant into the active student/enrollment records
- * only after a verified tuition/school-fee payment.
+ * only after a verified full tuition/school-fee payment.
  *
  * This is intentionally idempotent: Paystack may retry a webhook, so an
  * already-enrolled student is left intact rather than duplicated.
@@ -34,6 +67,7 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
     },
     select: {
       id: true,
+      amount: true,
       note: true,
       reference: true,
       paymentLines: {
@@ -50,15 +84,16 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
     return { activated: false, reason: "successful_payment_not_found" };
   }
 
-  // Never promote an applicant from the application-fee payment itself.
-  if (String(payment.note || "").toLowerCase().includes("application")) {
+  // Never promote an applicant from an application-fee payment.
+  const paymentNote = normalizeFeeName(payment.note);
+  if (isApplicationFeeName(paymentNote)) {
     return { activated: false, reason: "application_fee_only" };
   }
 
-  // Extra fees alone must never activate a student. The verified payment must
-  // contain a configured tuition/school-fee line.
-  if (!hasTuitionPayment(payment)) {
-    return { activated: false, reason: "tuition_payment_required" };
+  // Extra fees alone, or a partial tuition payment, must leave the applicant
+  // exactly as-is. Only a full tuition/school-fee payment can promote them.
+  if (!hasFullTuitionPayment(payment)) {
+    return { activated: false, reason: "full_tuition_payment_required" };
   }
 
   const admission = await prisma.admission.findFirst({
