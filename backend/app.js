@@ -16,6 +16,7 @@ import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import schoolRoutes from "./routes/schoolRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
@@ -47,100 +48,48 @@ const isLocalDevOrigin = (origin) => {
   }
 };
 
-const isCodespacesDevOrigin = (origin) => {
-  if (process.env.NODE_ENV === "production") return false;
-  try {
-    const { protocol, hostname } = new URL(origin);
-    // GitHub Codespaces forwards Vite/Express ports through *.github.dev.
-    // This is intentionally development-only; production remains allow-list based.
-    return protocol === "https:" && hostname.endsWith(".github.dev");
-  } catch {
-    return false;
-  }
-};
-
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    const normalizedOrigin = origin.trim().replace(/\/+$/, "");
-    const allowDevelopmentOrigin =
-      process.env.NODE_ENV !== "production" &&
-      (isLocalDevOrigin(normalizedOrigin) || isCodespacesDevOrigin(normalizedOrigin));
-    if (allowedOrigins.includes(normalizedOrigin) || allowDevelopmentOrigin) {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin.replace(/\/+$/, "")) || isLocalDevOrigin(origin)) {
       return callback(null, true);
     }
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
+    return callback(new Error("Origin not allowed by CORS"));
   },
   credentials: true,
-  optionsSuccessStatus: 204,
-  maxAge: 600,
 };
 
-app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      baseUri: ["'self'"],
-      frameAncestors: ["'none'"],
-      objectSrc: ["'none'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'"],
-    },
-  },
-  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-}));
-app.use(compression());
 app.use(requestId);
-app.use(express.json({
-  limit: "1mb",
-  verify: (req, _res, buf) => {
-    if (["/api/paystack/webhook", "/api/classmarker/webhook"].includes(req.originalUrl)) req.rawBody = buf;
-  },
-}));
+app.use(helmet());
+app.use(cors(corsOptions));
+app.use(compression());
+app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+app.use(apiRateLimiter);
+app.use(distributedApiRateLimiter);
 
-app.use("/", healthRoutes);
 app.get("/.well-known/jwks.json", jwksHandler);
-app.get("/health", async (_req, res) => {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-  } catch {
-    return res.status(503).json({ status: "unhealthy", database: "disconnected" });
-  }
-
-  try {
-    const redis = await checkQueueHealth();
-    return res.status(200).json({ status: "healthy", database: "connected", redis: redis.connected ? "connected" : "disconnected" });
-  } catch {
-    return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
-  }
-});
-// CORS is an explicit browser policy, not an authentication boundary.  Requiring
-// a secret header from browsers both leaks that secret and blocks payment providers.
-// Protected routes authenticate with JWTs; webhooks authenticate their signatures.
-app.use("/api", process.env.NODE_ENV === "production" ? distributedApiRateLimiter() : apiRateLimiter);
+app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/academic", academicRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
-app.use("/api/parent", parentRoutes);
-app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/parents", parentRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/teachers", teacherRoutes);
+app.use("/api/announcements", announcementRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/schools", schoolRoutes);
+app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/admissions", admissionRoutes);
-app.use("/api/teacher", teacherRoutes);
 app.use("/api/classmarker", classmarkerRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/assessments", assessmentsRoutes);
-app.use("/api/announcements", announcementRoutes);
-app.use("/api/messages", messageRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/schools", schoolRoutes);
-app.use("/api/superadmin", superAdminRoutes);
-app.get("/", (_req, res) => res.status(200).json({ success: true, message: "Petra School API is running" }));
+
 app.use(notFound);
 app.use(errorHandler);
 
