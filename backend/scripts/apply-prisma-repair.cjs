@@ -22,11 +22,19 @@ function isMissingIndexColumnError(error, statement) {
   return error?.code === "42703" && /\bCREATE\s+(?:UNIQUE\s+)?INDEX\b/i.test(statement);
 }
 
+function isMissingForeignKeyColumnError(error, statement) {
+  return (
+    error?.code === "42703" &&
+    /\bALTER\s+TABLE\b[\s\S]*\bADD\s+CONSTRAINT\b[\s\S]*\bFOREIGN\s+KEY\b/i.test(statement)
+  );
+}
+
 async function applyRepairSql(client, sql) {
   const statements = splitSqlStatements(sql);
   let applied = 0;
   let skipped = 0;
   let skippedIndexes = 0;
+  let skippedForeignKeys = 0;
 
   for (let index = 0; index < statements.length; index += 1) {
     const statement = statements[index];
@@ -55,13 +63,26 @@ async function applyRepairSql(client, sql) {
         continue;
       }
 
+      // Some older databases have a legacy table shape that is missing a
+      // relationship column (for example classId). Do not roll back the whole
+      // repair just because a foreign-key constraint targets that absent
+      // column. The repair must preserve existing data and continue restoring
+      // independent tables such as TeacherAttendance, AcademicYear and Term.
+      if (isMissingForeignKeyColumnError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        skippedForeignKeys += 1;
+        console.log(`Skipping incompatible foreign key because a referenced/local column is absent: ${error.message}`);
+        continue;
+      }
+
       await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
       await client.query(`RELEASE SAVEPOINT ${savepoint}`);
       throw error;
     }
   }
 
-  return { applied, skipped, skippedIndexes, total: statements.length };
+  return { applied, skipped, skippedIndexes, skippedForeignKeys, total: statements.length };
 }
 
 async function backfillAcademicCalendar(client) {
@@ -113,8 +134,6 @@ async function backfillAcademicCalendar(client) {
     RETURNING "id"
   `);
 
-  // If canonical records already existed, make sure an active session's
-  // matching year/term is active too. Existing records are otherwise left alone.
   await client.query(`
     UPDATE "AcademicYear" ay
     SET "isActive" = TRUE, "updatedAt" = CURRENT_TIMESTAMP
@@ -186,7 +205,7 @@ async function main() {
       const result = await applyRepairSql(client, sql);
       const calendar = await backfillAcademicCalendar(client);
       console.log(
-        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.total} total statements.`
+        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.skippedForeignKeys} incompatible foreign keys skipped, ${result.total} total statements.`
       );
       console.log(
         `Academic calendar backfill: ${calendar.yearsCreated} years created, ${calendar.termsCreated} terms created.`
