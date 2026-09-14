@@ -157,10 +157,10 @@ function Payment() {
                 {feeStructures.map((fee) => {
                   const selected = Boolean(selectedFees[fee.id]);
                   const quantity = fee.quantityRequired ? Number(selectedFees[fee.id]) || 1 : 1;
-                  return <div key={fee.id} className={`fee-card ${selected ? "fee-card-selected" : ""}`} onClick={() => toggleFee(fee)}>
+                  return <div key={fee.id} className={`fee-card ${selected ? "fee-card-selected" : ""}`} style={fee.quantityRequired && selected ? { flexWrap: "wrap" } : undefined} onClick={() => toggleFee(fee)}>
                     <div className="fee-card-left"><div className={`custom-checkbox ${selected ? "checked" : ""}`}>{selected && "✓"}</div><div className="fee-info"><div className="fee-name">{fee.name || fee.category || "School fee"}</div><div className="fee-meta">{fee.className || "School fee"}{fee.term ? ` • ${fee.term}` : ""}</div></div></div>
                     <div className="fee-card-right"><strong>{formatMoney(fee.amount)}</strong>{fee.quantityRequired && <span className="quantity-label">per item</span>}</div>
-                    {selected && fee.quantityRequired && <div className="quantity-control" onClick={(event) => event.stopPropagation()}><label htmlFor={`quantity-${fee.id}`}>Quantity</label><div className="quantity-input"><button type="button" onClick={() => changeQuantity(fee.id, quantity - 1)} disabled={quantity <= 1}>−</button><input id={`quantity-${fee.id}`} type="number" min="1" value={quantity} onChange={(event) => changeQuantity(fee.id, event.target.value)} /><button type="button" onClick={() => changeQuantity(fee.id, quantity + 1)}>+</button></div></div>}
+                    {selected && fee.quantityRequired && <div className="quantity-control" style={{ flex: "1 0 100%", width: "100%", marginTop: 0 }} onClick={(event) => event.stopPropagation()}><label htmlFor={`quantity-${fee.id}`}>Quantity</label><div className="quantity-input"><button type="button" onClick={() => changeQuantity(fee.id, quantity - 1)} disabled={quantity <= 1}>−</button><input id={`quantity-${fee.id}`} type="number" min="1" value={quantity} onChange={(event) => changeQuantity(fee.id, event.target.value)} /><button type="button" onClick={() => changeQuantity(fee.id, quantity + 1)}>+</button></div></div>}
                   </div>;
                 })}
               </div> : <div className="empty-state"><div className="empty-icon">₦</div><h3>No payment items available</h3><p>There are currently no active fees available for payment.</p></div>}
