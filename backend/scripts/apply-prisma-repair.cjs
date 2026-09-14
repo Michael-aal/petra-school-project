@@ -18,10 +18,15 @@ function isSafeDuplicateError(error) {
   return ["42P07", "42701", "42710"].includes(error?.code);
 }
 
+function isMissingIndexColumnError(error, statement) {
+  return error?.code === "42703" && /\bCREATE\s+(?:UNIQUE\s+)?INDEX\b/i.test(statement);
+}
+
 async function applyRepairSql(client, sql) {
   const statements = splitSqlStatements(sql);
   let applied = 0;
   let skipped = 0;
+  let skippedIndexes = 0;
 
   for (let index = 0; index < statements.length; index += 1) {
     const statement = statements[index];
@@ -42,13 +47,21 @@ async function applyRepairSql(client, sql) {
         continue;
       }
 
+      if (isMissingIndexColumnError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        skippedIndexes += 1;
+        console.log(`Skipping incompatible index because its column is absent: ${error.message}`);
+        continue;
+      }
+
       await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
       await client.query(`RELEASE SAVEPOINT ${savepoint}`);
       throw error;
     }
   }
 
-  return { applied, skipped, total: statements.length };
+  return { applied, skipped, skippedIndexes, total: statements.length };
 }
 
 async function main() {
@@ -93,7 +106,7 @@ async function main() {
     try {
       const result = await applyRepairSql(client, sql);
       console.log(
-        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.total} total statements.`
+        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.total} total statements.`
       );
       await client.query("COMMIT");
     } catch (error) {
