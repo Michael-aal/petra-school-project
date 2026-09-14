@@ -29,12 +29,51 @@ function isMissingForeignKeyColumnError(error, statement) {
   );
 }
 
+function isResultTeacherForeignKeyDataError(error, statement) {
+  return (
+    error?.code === "23503" &&
+    /Result_teacherId_fkey/i.test(statement)
+  );
+}
+
+async function repairResultTeacherForeignKey(client) {
+  // Legacy Result rows may contain teacher IDs that no longer exist in the
+  // current Teacher table. Preserve those historical rows rather than deleting
+  // or rewriting them. NOT VALID keeps the FK enforced for future inserts and
+  // updates while allowing the existing legacy rows to remain untouched.
+  await client.query(`ALTER TABLE "Result" DROP CONSTRAINT IF EXISTS "Result_teacherId_fkey"`);
+  await client.query(`
+    ALTER TABLE "Result"
+      ADD CONSTRAINT "Result_teacherId_fkey"
+      FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id")
+      ON DELETE CASCADE ON UPDATE CASCADE
+      NOT VALID
+  `);
+  await client.query(`
+    ALTER TABLE "Result"
+      ADD CONSTRAINT "Result_schoolId_fkey"
+      FOREIGN KEY ("schoolId") REFERENCES "School"("id")
+      ON DELETE CASCADE ON UPDATE CASCADE
+  `).catch(async (error) => {
+    if (!["42710", "42P07"].includes(error?.code)) throw error;
+  });
+  await client.query(`
+    ALTER TABLE "Result"
+      ADD CONSTRAINT "Result_subjectId_fkey"
+      FOREIGN KEY ("subjectId") REFERENCES "Subject"("id")
+      ON DELETE NO ACTION ON UPDATE CASCADE
+  `).catch(async (error) => {
+    if (!["42710", "42P07"].includes(error?.code)) throw error;
+  });
+}
+
 async function applyRepairSql(client, sql) {
   const statements = splitSqlStatements(sql);
   let applied = 0;
   let skipped = 0;
   let skippedIndexes = 0;
   let skippedForeignKeys = 0;
+  let repairedResultForeignKey = false;
 
   for (let index = 0; index < statements.length; index += 1) {
     const statement = statements[index];
@@ -63,16 +102,20 @@ async function applyRepairSql(client, sql) {
         continue;
       }
 
-      // Some older databases have a legacy table shape that is missing a
-      // relationship column (for example classId). Do not roll back the whole
-      // repair just because a foreign-key constraint targets that absent
-      // column. The repair must preserve existing data and continue restoring
-      // independent tables such as TeacherAttendance, AcademicYear and Term.
       if (isMissingForeignKeyColumnError(error, statement)) {
         await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
         await client.query(`RELEASE SAVEPOINT ${savepoint}`);
         skippedForeignKeys += 1;
         console.log(`Skipping incompatible foreign key because a referenced/local column is absent: ${error.message}`);
+        continue;
+      }
+
+      if (isResultTeacherForeignKeyDataError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        await repairResultTeacherForeignKey(client);
+        repairedResultForeignKey = true;
+        console.log("Repaired Result.teacherId foreign key as NOT VALID to preserve legacy orphaned teacher IDs.");
         continue;
       }
 
@@ -82,7 +125,7 @@ async function applyRepairSql(client, sql) {
     }
   }
 
-  return { applied, skipped, skippedIndexes, skippedForeignKeys, total: statements.length };
+  return { applied, skipped, skippedIndexes, skippedForeignKeys, repairedResultForeignKey, total: statements.length };
 }
 
 async function backfillAcademicCalendar(client) {
@@ -205,7 +248,7 @@ async function main() {
       const result = await applyRepairSql(client, sql);
       const calendar = await backfillAcademicCalendar(client);
       console.log(
-        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.skippedForeignKeys} incompatible foreign keys skipped, ${result.total} total statements.`
+        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.skippedForeignKeys} incompatible foreign keys skipped, ${result.repairedResultForeignKey ? 1 : 0} Result teacher foreign keys repaired, ${result.total} total statements.`
       );
       console.log(
         `Academic calendar backfill: ${calendar.yearsCreated} years created, ${calendar.termsCreated} terms created.`
