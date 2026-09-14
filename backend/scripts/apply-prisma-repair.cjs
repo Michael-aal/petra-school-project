@@ -30,41 +30,63 @@ function isMissingForeignKeyColumnError(error, statement) {
 }
 
 function isResultTeacherForeignKeyDataError(error, statement) {
-  return (
-    error?.code === "23503" &&
-    /Result_teacherId_fkey/i.test(statement)
-  );
+  return error?.code === "23503" && /Result_teacherId_fkey/i.test(statement);
 }
 
 async function repairResultTeacherForeignKey(client) {
-  // Legacy Result rows may contain teacher IDs that no longer exist in the
-  // current Teacher table. Preserve those historical rows rather than deleting
-  // or rewriting them. NOT VALID keeps the FK enforced for future inserts and
-  // updates while allowing the existing legacy rows to remain untouched.
-  await client.query(`ALTER TABLE "Result" DROP CONSTRAINT IF EXISTS "Result_teacherId_fkey"`);
-  await client.query(`
-    ALTER TABLE "Result"
-      ADD CONSTRAINT "Result_teacherId_fkey"
-      FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id")
-      ON DELETE CASCADE ON UPDATE CASCADE
-      NOT VALID
-  `);
-  await client.query(`
-    ALTER TABLE "Result"
-      ADD CONSTRAINT "Result_schoolId_fkey"
-      FOREIGN KEY ("schoolId") REFERENCES "School"("id")
-      ON DELETE CASCADE ON UPDATE CASCADE
-  `).catch(async (error) => {
-    if (!["42710", "42P07"].includes(error?.code)) throw error;
-  });
-  await client.query(`
-    ALTER TABLE "Result"
-      ADD CONSTRAINT "Result_subjectId_fkey"
-      FOREIGN KEY ("subjectId") REFERENCES "Subject"("id")
-      ON DELETE NO ACTION ON UPDATE CASCADE
-  `).catch(async (error) => {
-    if (!["42710", "42P07"].includes(error?.code)) throw error;
-  });
+  // Legacy Result rows can reference teachers/schools/subjects that no longer
+  // exist. Preserve those historical rows instead of deleting or rewriting them.
+  // NOT VALID enforces each FK for new INSERT/UPDATE operations while allowing
+  // the existing legacy rows to remain untouched.
+  const repairSavepoint = "repair_result_fks";
+  await client.query(`SAVEPOINT ${repairSavepoint}`);
+
+  try {
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_teacherId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_schoolId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_subjectId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_teacherId_fkey"
+        FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_schoolId_fkey"
+        FOREIGN KEY ("schoolId") REFERENCES "School"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_subjectId_fkey"
+        FOREIGN KEY ("subjectId") REFERENCES "Subject"("id")
+        ON DELETE NO ACTION ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`RELEASE SAVEPOINT ${repairSavepoint}`);
+  } catch (error) {
+    await client.query(`ROLLBACK TO SAVEPOINT ${repairSavepoint}`);
+    await client.query(`RELEASE SAVEPOINT ${repairSavepoint}`);
+    throw error;
+  }
 }
 
 async function applyRepairSql(client, sql) {
@@ -115,7 +137,7 @@ async function applyRepairSql(client, sql) {
         await client.query(`RELEASE SAVEPOINT ${savepoint}`);
         await repairResultTeacherForeignKey(client);
         repairedResultForeignKey = true;
-        console.log("Repaired Result.teacherId foreign key as NOT VALID to preserve legacy orphaned teacher IDs.");
+        console.log("Repaired Result foreign keys as NOT VALID to preserve legacy orphaned rows.");
         continue;
       }
 
