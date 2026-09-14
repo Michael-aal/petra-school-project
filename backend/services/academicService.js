@@ -14,6 +14,11 @@ const safeSession = (item) => ({ ...item, schoolId: item.schoolId });
 const safeClass = (item) => ({ ...item, schoolId: item.schoolId });
 const safeSubject = (item) => ({ ...item, schoolId: item.schoolId });
 const safeTimetable = (item) => ({ ...item, schoolId: item.schoolId });
+const normalizeTermName = (value) => {
+  const name = String(value || "").trim();
+  if (!name) return "";
+  return /\bterm$/i.test(name) ? name : `${name} Term`;
+};
 const assertScopedRecord = async (delegate, user, id, label) => {
   const record = await delegate.findFirst({ where: { id, schoolId: getSchoolId(user) } });
   if (!record) {
@@ -28,28 +33,107 @@ const toNumber = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
+// AcademicSession is the setup UI's source of truth, while attendance/finance
+// use the normalized AcademicYear + Term records. Keep all three in sync so a
+// newly created or edited session can immediately be used by those features.
+const syncAcademicCalendar = async (tx, { schoolId, name, term, startsAt, endsAt, isActive }) => {
+  const yearName = String(name || "").trim();
+  const termName = normalizeTermName(term);
+  if (!yearName || !termName) return;
+
+  if (isActive) {
+    await tx.academicYear.updateMany({ where: { schoolId }, data: { isActive: false } });
+    await tx.term.updateMany({ where: { schoolId }, data: { isActive: false } });
+  }
+
+  const academicYear = await tx.academicYear.upsert({
+    where: { schoolId_name: { schoolId, name: yearName } },
+    create: {
+      schoolId,
+      name: yearName,
+      startsAt,
+      endsAt,
+      isActive: Boolean(isActive),
+    },
+    update: {
+      startsAt,
+      endsAt,
+      isActive: Boolean(isActive),
+    },
+  });
+
+  await tx.term.upsert({
+    where: { academicYearId_name: { academicYearId: academicYear.id, name: termName } },
+    create: {
+      schoolId,
+      academicYearId: academicYear.id,
+      name: termName,
+      startsAt,
+      endsAt,
+      isActive: Boolean(isActive),
+    },
+    update: {
+      schoolId,
+      startsAt,
+      endsAt,
+      isActive: Boolean(isActive),
+    },
+  });
+
+  return academicYear;
+};
+
 export const academicService = {
   listSessions: async (user) =>
     prisma.academicSession.findMany({ where: { schoolId: getSchoolId(user) }, orderBy: { startsAt: "desc" } }),
-  createSession: async (user, payload) =>
-    safeSession(await prisma.academicSession.create({ data: {
-      name: String(payload.name).trim(),
-      term: String(payload.term).trim(),
-      schoolId: getSchoolId(user),
-      startsAt: new Date(payload.startsAt),
-      endsAt: new Date(payload.endsAt),
-      isActive: Boolean(payload.isActive),
-    } })),
-  updateSession: async (user, id, payload) => {
-    await assertScopedRecord(prisma.academicSession, user, id, "Session");
-    return safeSession(await prisma.academicSession.update({ where: { id }, data: {
-      ...(payload.name !== undefined ? { name: String(payload.name).trim() } : {}),
-      ...(payload.term !== undefined ? { term: String(payload.term).trim() } : {}),
-      ...(payload.startsAt ? { startsAt: new Date(payload.startsAt) } : {}),
-      ...(payload.endsAt ? { endsAt: new Date(payload.endsAt) } : {}),
-      ...(payload.isActive !== undefined ? { isActive: Boolean(payload.isActive) } : {}),
-    } }));
+
+  createSession: async (user, payload) => {
+    const schoolId = getSchoolId(user);
+    const name = String(payload.name).trim();
+    const term = String(payload.term).trim();
+    const startsAt = new Date(payload.startsAt);
+    const endsAt = new Date(payload.endsAt);
+    const isActive = Boolean(payload.isActive);
+
+    return prisma.$transaction(async (tx) => {
+      const session = await tx.academicSession.create({
+        data: { name, term, schoolId, startsAt, endsAt, isActive },
+      });
+      await syncAcademicCalendar(tx, { schoolId, name, term, startsAt, endsAt, isActive });
+      return safeSession(session);
+    });
   },
+
+  updateSession: async (user, id, payload) => {
+    const schoolId = getSchoolId(user);
+    await assertScopedRecord(prisma.academicSession, user, id, "Session");
+
+    return prisma.$transaction(async (tx) => {
+      const current = await tx.academicSession.findFirst({ where: { id, schoolId } });
+      if (!current) {
+        const error = new Error("Session not found");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const name = payload.name !== undefined ? String(payload.name).trim() : current.name;
+      const term = payload.term !== undefined ? String(payload.term).trim() : current.term;
+      const startsAt = payload.startsAt ? new Date(payload.startsAt) : current.startsAt;
+      const endsAt = payload.endsAt ? new Date(payload.endsAt) : current.endsAt;
+      const isActive = payload.isActive !== undefined ? Boolean(payload.isActive) : current.isActive;
+
+      const session = await tx.academicSession.update({
+        where: { id },
+        data: { name, term, startsAt, endsAt, isActive },
+      });
+
+      // If the session was renamed, leave the old normalized year/term intact
+      // for historical records and create/update the new canonical pair.
+      await syncAcademicCalendar(tx, { schoolId, name, term, startsAt, endsAt, isActive });
+      return safeSession(session);
+    });
+  },
+
   deleteSession: async (user, id) => {
     await assertScopedRecord(prisma.academicSession, user, id, "Session");
     return prisma.academicSession.delete({ where: { id } });
