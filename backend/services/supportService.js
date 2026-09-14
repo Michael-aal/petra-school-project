@@ -3,7 +3,7 @@ import { prisma } from "../config/db.js";
 import notificationService from "./notificationService.js";
 
 const roleOf = (user) => String(user?.role || "").trim().toLowerCase().replace(/\s+/g, "_");
-const isPlatform = (user) => ["super_admin", "developer"].includes(roleOf(user));
+const isPlatform = (user) => ["super_admin", "superadmin", "developer"].includes(roleOf(user));
 
 const schoolIdFor = (user) => {
   if (isPlatform(user)) return user?.schoolId == null ? null : Number(user.schoolId);
@@ -115,7 +115,6 @@ export const supportService = {
       String(payload.priority || "Medium"),
     );
 
-    // Support requests must actively reach the platform support team, not merely sit in the ticket list.
     if (schoolId) {
       try {
         await notificationService.notifySupportTeam({
@@ -126,7 +125,6 @@ export const supportService = {
           subject,
         });
       } catch (notificationError) {
-        // The support ticket is already persisted; notification failure must not make the user's request disappear.
         console.error("Support notification failed:", notificationError);
       }
     }
