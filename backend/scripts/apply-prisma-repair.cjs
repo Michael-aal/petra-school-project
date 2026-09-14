@@ -64,6 +64,85 @@ async function applyRepairSql(client, sql) {
   return { applied, skipped, skippedIndexes, total: statements.length };
 }
 
+async function backfillAcademicCalendar(client) {
+  // Older installations created AcademicSession records without creating the
+  // normalized AcademicYear + Term records used by attendance/finance.
+  // Backfill only missing canonical records; never delete or rewrite history.
+  const years = await client.query(`
+    INSERT INTO "AcademicYear" (
+      "id", "schoolId", "name", "startsAt", "endsAt", "isActive", "createdAt", "updatedAt"
+    )
+    SELECT
+      md5('academic-year:' || s."schoolId"::text || ':' || s."name") AS "id",
+      s."schoolId",
+      s."name",
+      MIN(s."startsAt"),
+      MAX(s."endsAt"),
+      BOOL_OR(s."isActive"),
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    GROUP BY s."schoolId", s."name"
+    ON CONFLICT ("schoolId", "name") DO NOTHING
+    RETURNING "id"
+  `);
+
+  const terms = await client.query(`
+    INSERT INTO "Term" (
+      "id", "schoolId", "academicYearId", "name", "startsAt", "endsAt", "isActive", "createdAt", "updatedAt"
+    )
+    SELECT
+      md5('term:' || s."schoolId"::text || ':' || s."name" || ':' || s."term") AS "id",
+      s."schoolId",
+      ay."id",
+      CASE
+        WHEN s."term" ~* '\\mterm$' THEN s."term"
+        ELSE s."term" || ' Term'
+      END,
+      MIN(s."startsAt"),
+      MAX(s."endsAt"),
+      BOOL_OR(s."isActive"),
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    JOIN "AcademicYear" ay
+      ON ay."schoolId" = s."schoolId"
+     AND ay."name" = s."name"
+    GROUP BY s."schoolId", s."name", s."term", ay."id"
+    ON CONFLICT ("academicYearId", "name") DO NOTHING
+    RETURNING "id"
+  `);
+
+  // If canonical records already existed, make sure an active session's
+  // matching year/term is active too. Existing records are otherwise left alone.
+  await client.query(`
+    UPDATE "AcademicYear" ay
+    SET "isActive" = TRUE, "updatedAt" = CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    WHERE s."schoolId" = ay."schoolId"
+      AND s."name" = ay."name"
+      AND s."isActive" = TRUE
+  `);
+
+  await client.query(`
+    UPDATE "Term" t
+    SET "isActive" = TRUE, "updatedAt" = CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    JOIN "AcademicYear" ay
+      ON ay."schoolId" = s."schoolId"
+     AND ay."name" = s."name"
+    WHERE t."academicYearId" = ay."id"
+      AND t."schoolId" = s."schoolId"
+      AND t."name" = CASE
+        WHEN s."term" ~* '\\mterm$' THEN s."term"
+        ELSE s."term" || ' Term'
+      END
+      AND s."isActive" = TRUE
+  `);
+
+  return { yearsCreated: years.rowCount, termsCreated: terms.rowCount };
+}
+
 async function main() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not loaded. Check backend/.env.");
@@ -105,8 +184,12 @@ async function main() {
 
     try {
       const result = await applyRepairSql(client, sql);
+      const calendar = await backfillAcademicCalendar(client);
       console.log(
         `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.total} total statements.`
+      );
+      console.log(
+        `Academic calendar backfill: ${calendar.yearsCreated} years created, ${calendar.termsCreated} terms created.`
       );
       await client.query("COMMIT");
     } catch (error) {
@@ -175,9 +258,18 @@ async function main() {
       );
     }
 
+    const academicCalendarTables = await client.query(`
+      SELECT
+        (SELECT COUNT(*) FROM "AcademicYear") AS "academicYears",
+        (SELECT COUNT(*) FROM "Term") AS "terms"
+    `);
+
     console.log("Schema repair committed successfully.");
     console.log("Payment.paymentMethodId is still present.");
     console.log("Required missing tables are present.");
+    console.log(
+      `Academic calendar verified: ${academicCalendarTables.rows[0].academicYears} years, ${academicCalendarTables.rows[0].terms} terms.`
+    );
     console.log("Next step: run `npx prisma generate` and restart the backend.");
   } finally {
     await client.end().catch(() => {});
