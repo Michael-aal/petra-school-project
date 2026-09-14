@@ -1,8 +1,21 @@
+import crypto from "crypto";
 import { prisma } from "../config/db.js";
+
+const isTuitionFeeName = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized.includes("tuition") || normalized.includes("school fee") || normalized.includes("school fees");
+};
+
+const hasTuitionPayment = (payment) => {
+  const lines = Array.isArray(payment?.paymentLines) ? payment.paymentLines : [];
+  return lines.some((line) =>
+    isTuitionFeeName(line?.feeStructure?.feeCategory?.name),
+  );
+};
 
 /**
  * Promote an admitted applicant into the active student/enrollment records
- * after a verified school-fee payment.
+ * only after a verified tuition/school-fee payment.
  *
  * This is intentionally idempotent: Paystack may retry a webhook, so an
  * already-enrolled student is left intact rather than duplicated.
@@ -19,7 +32,18 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
       studentId: String(studentId),
       status: "Successful",
     },
-    select: { id: true, note: true, reference: true },
+    select: {
+      id: true,
+      note: true,
+      reference: true,
+      paymentLines: {
+        include: {
+          feeStructure: {
+            include: { feeCategory: true },
+          },
+        },
+      },
+    },
   });
 
   if (!payment) {
@@ -29,6 +53,12 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
   // Never promote an applicant from the application-fee payment itself.
   if (String(payment.note || "").toLowerCase().includes("application")) {
     return { activated: false, reason: "application_fee_only" };
+  }
+
+  // Extra fees alone must never activate a student. The verified payment must
+  // contain a configured tuition/school-fee line.
+  if (!hasTuitionPayment(payment)) {
+    return { activated: false, reason: "tuition_payment_required" };
   }
 
   const admission = await prisma.admission.findFirst({
@@ -58,12 +88,34 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
       return { activated: false, reason: "student_not_found" };
     }
 
-    if (student.status !== "active") {
-      await tx.student.update({
-        where: { id: student.id },
-        data: { status: "active" },
-      });
-    }
+    const generatedAdmissionNumber = `STU-${Number(schoolId)}-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`.slice(0, 40);
+    const derivedName =
+      admission.applicantName ||
+      [admission.applicantFirstName, admission.applicantMiddleName, admission.applicantLastName]
+        .filter(Boolean)
+        .join(" ");
+    const derivedEmail = admission.parentEmail || admission.fatherEmail || admission.motherEmail || null;
+    const derivedPhone = admission.parentPhone || admission.fatherPhone1 || admission.motherPhone1 || null;
+    const derivedGuardian = admission.fatherName || admission.motherName || null;
+
+    // Fill missing student-form fields from the original admission instead of
+    // forcing an administrator to type the same information again.
+    const studentUpdate = {
+      status: "active",
+      ...(student.name ? {} : derivedName ? { name: derivedName } : {}),
+      ...(student.admissionNumber ? {} : { admissionNumber: generatedAdmissionNumber }),
+      ...(student.className ? {} : admission.intendedClass ? { className: String(admission.intendedClass).trim() } : {}),
+      ...(student.dob ? {} : admission.applicantDob ? { dob: admission.applicantDob } : {}),
+      ...(student.gender ? {} : admission.applicantGender ? { gender: admission.applicantGender } : {}),
+      ...(student.parentEmail ? {} : derivedEmail ? { parentEmail: derivedEmail } : {}),
+      ...(student.parentPhone ? {} : derivedPhone ? { parentPhone: derivedPhone } : {}),
+      ...(student.guardianName ? {} : derivedGuardian ? { guardianName: derivedGuardian } : {}),
+    };
+
+    const updatedStudent = await tx.student.update({
+      where: { id: student.id },
+      data: studentUpdate,
+    });
 
     const existingProfile = await tx.studentProfile.findUnique({
       where: { studentId: student.id },
@@ -74,9 +126,24 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
         data: {
           studentId: student.id,
           schoolId: student.schoolId,
-          admissionNumber: student.admissionNumber || null,
+          admissionNumber: updatedStudent.admissionNumber || null,
+          address: admission.fatherAddress || admission.motherAddress || null,
+          bloodGroup: admission.bloodGroup || null,
+          nationality: admission.applicantNationality || null,
+          religion: admission.religion || null,
         },
       });
+    } else {
+      const profileUpdate = {
+        ...(existingProfile.admissionNumber ? {} : updatedStudent.admissionNumber ? { admissionNumber: updatedStudent.admissionNumber } : {}),
+        ...(existingProfile.address ? {} : admission.fatherAddress || admission.motherAddress ? { address: admission.fatherAddress || admission.motherAddress } : {}),
+        ...(existingProfile.bloodGroup ? {} : admission.bloodGroup ? { bloodGroup: admission.bloodGroup } : {}),
+        ...(existingProfile.nationality ? {} : admission.applicantNationality ? { nationality: admission.applicantNationality } : {}),
+        ...(existingProfile.religion ? {} : admission.religion ? { religion: admission.religion } : {}),
+      };
+      if (Object.keys(profileUpdate).length) {
+        await tx.studentProfile.update({ where: { studentId: student.id }, data: profileUpdate });
+      }
     }
 
     let enrollment = await tx.enrollment.findFirst({
