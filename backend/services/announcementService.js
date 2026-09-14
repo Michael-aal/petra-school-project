@@ -85,7 +85,7 @@ export const announcementService = {
       prisma.announcement.count({ where }),
       prisma.announcement.findMany({
         where,
-        orderBy: [{ publishAt: "desc" }, { createdAt: "desc" }],
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * limit,
         take: limit,
         include: { attachments: true },
@@ -111,7 +111,7 @@ export const announcementService = {
         priority: payload.priority || "NORMAL",
         audience: payload.audience || "TEACHERS_AND_PARENTS",
         isDraft: payload.isDraft === true || payload.isDraft === "true",
-        publishAt: payload.publishAt ? new Date(payload.publishAt) : payload.isDraft ? null : new Date(),
+        publishedAt: payload.publishAt ? new Date(payload.publishAt) : payload.isDraft ? null : new Date(),
         expiryAt: payload.expiryAt ? new Date(payload.expiryAt) : null,
       },
     });
