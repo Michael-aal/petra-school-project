@@ -1,5 +1,4 @@
 import { admissionService } from "../services/admissionService.js";
-import { prepareAdmissionForFeePayment } from "../services/admissionEnrollmentService.js";
 
 const getAdmissionSchoolId = (req) => {
   const candidates = [
@@ -45,7 +44,7 @@ export const getAdmissionById = async (req, res, next) => {
 export const approveAdmission = async (req, res, next) => {
   try {
     const admission = await admissionService.approve(req.params.id, req.user.id, req.schoolId);
-    return res.status(200).json({ success: true, message: "Applicant approved for entrance exam", admission });
+    return res.status(200).json({ success: true, message: "Applicant approved", admission });
   } catch (error) {
     return next(error);
   }
@@ -68,7 +67,6 @@ export const createAdmission = async (req, res, next) => {
       req.user,
     );
 
-    // Return the safe admission shape so callers get canonical fields like admissionCode.
     const admission = await admissionService.getById(created.id);
     return res.status(201).json({
       success: true,
@@ -82,14 +80,15 @@ export const createAdmission = async (req, res, next) => {
 
 export const enrollAdmission = async (req, res, next) => {
   try {
-    const admission = await prepareAdmissionForFeePayment(
+    const admission = await admissionService.enroll(
       req.params.id,
+      req.user?.id || null,
       req.body || {},
       req.schoolId,
     );
     return res.status(200).json({
       success: true,
-      message: "Applicant prepared for school-fee payment",
+      message: "Applicant enrolled successfully",
       admission,
     });
   } catch (error) {
