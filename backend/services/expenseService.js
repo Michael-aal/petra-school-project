@@ -86,7 +86,10 @@ export const expenseService = {
         occurredAt,
         note,
       },
-      include: { expenseCategory: true, createdBy: { select: { id: true, name: true, email: true } } },
+      include: {
+        expenseCategory: true,
+        createdBy: { select: { id: true, firstName: true, middleName: true, lastName: true, email: true } },
+      },
     });
 
     await recordAuditMutation({
