@@ -185,12 +185,70 @@
   text-align: right;
 }
 
+.overview-activity-item {
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px 10px;
+}
+
+.overview-activity-icon {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border-radius: 10px;
+  background: var(--app-surface-muted, rgba(37, 99, 235, 0.08));
+  color: var(--app-primary, #2563eb);
+}
+
+.overview-activity-content {
+  grid-column: 2;
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.overview-activity-content strong {
+  grid-column: auto;
+}
+
+.overview-activity-content p {
+  grid-column: auto;
+  font-size: 0.88rem;
+}
+
+.overview-activity-meta,
+.overview-activity-actor {
+  color: var(--app-text-muted);
+  font-size: 0.78rem;
+}
+
+.overview-activity-actor {
+  font-weight: 600;
+}
+
+.overview-activity-item time {
+  grid-column: 3;
+  grid-row: 1 / span 4;
+  align-self: start;
+  margin-top: 2px;
+  color: var(--app-text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  text-align: right;
+}
+
 .overview-empty {
   padding: 16px;
   border-radius: 14px;
   border: 1px dashed var(--app-border);
   color: var(--app-text-muted);
 }
+
 .overview-date-picker {
   display: flex;
   flex-direction: column;
@@ -198,6 +256,7 @@
   font-size: 14px;
   font-weight: 500;
 }
+
 @media (max-width: 1050px) {
   .overview-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -210,11 +269,30 @@
     grid-template-columns: 1fr;
   }
 
+  .overview-activity-item {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .overview-activity-item time {
+    grid-column: 2;
+    grid-row: auto;
+    margin-top: 2px;
+    text-align: left;
+  }
+
   .daily-report-page .dashboard-shell-header {
     margin-bottom: 14px;
   }
 
   .term-summary-page .dashboard-shell-header {
     margin-bottom: 14px;
+  }
+
+  .daily-report-page .dashboard-widget {
+    padding: 14px;
+  }
+
+  .term-summary-page .dashboard-widget {
+    padding: 14px;
   }
 }
