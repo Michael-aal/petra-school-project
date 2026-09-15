@@ -57,7 +57,7 @@ export const sendPushTest = async (req, res, next) => {
     if (!result.sent) {
       const error = new Error("Petra reached the push service, but the device rejected the notification.");
       error.statusCode = 502;
-      error.pushDelivery = result;
+      error.details = { attempted: result.attempted, failed: result.failed, deliveryErrors: result.errors || [] };
       throw error;
     }
 
