@@ -18,6 +18,8 @@ export const authCookieOptions = {
 };
 const refreshCookieOptions = { ...authCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000 };
 
+const isTabAuthRequest = (req) => req.get("x-petra-tab-auth") === "1";
+
 const issueSession = async (req, res, result) => {
   const user = result?.user;
   if (!user?.id) return result;
@@ -32,9 +34,20 @@ const issueSession = async (req, res, result) => {
     token: refreshToken,
     expiresAt: new Date(now + refreshCookieOptions.maxAge),
   });
+
+  // Keep the existing secure cookie session for normal clients. Tab-aware
+  // clients also receive credentials that are isolated by sessionStorage.
   res.cookie("petra_session", accessToken, authCookieOptions);
   res.cookie("petra_refresh", refreshToken, refreshCookieOptions);
-  return { ...result, token: undefined };
+
+  const authenticated = { ...result, token: undefined };
+  if (isTabAuthRequest(req)) {
+    authenticated.tabSession = {
+      accessToken,
+      refreshToken,
+    };
+  }
+  return authenticated;
 };
 
 const sendAuthenticated = async (req, res, status, message, result) => {
@@ -80,11 +93,7 @@ export const createStaffInvitation = async (req, res, next) => {
   try {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
-    const result = await teacherInvitationService.create({
-      ...req.body,
-      generatedBy: req.user?.id || null,
-      schoolId: req.schoolId,
-    });
+    const result = await teacherInvitationService.create({ ...req.body, generatedBy: req.user?.id || null, schoolId: req.schoolId });
     return res.status(201).json({ success: true, message: "Teacher invitation created successfully", invitation: result });
   } catch (error) {
     next(error);
@@ -114,7 +123,7 @@ export const revokeStaffInvitation = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const invitation = await authService.revokeStaffInvitation({ registrationCode: req.body.registrationCode, schoolId: req.schoolId });
-    return res.status(200).json({ success: true, message: "Staff invitation revoked", invitation });
+    return res.status(200).json({ success: true, message: "Teacher invitation revoked", invitation });
   } catch (error) {
     next(error);
   }
@@ -142,11 +151,7 @@ export const listManagedTeachers = async (req, res, next) => {
 
 export const deactivateManagedTeacher = async (req, res, next) => {
   try {
-    const result = await teacherManagementService.deactivate({
-      user: req.user,
-      schoolId: req.schoolId,
-      teacherUserId: req.params.teacherUserId,
-    });
+    const result = await teacherManagementService.deactivate({ user: req.user, schoolId: req.schoolId, teacherUserId: req.params.teacherUserId });
     return res.status(200).json({ success: true, message: "Teacher deactivated successfully", teacher: result });
   } catch (error) {
     next(error);
@@ -155,11 +160,7 @@ export const deactivateManagedTeacher = async (req, res, next) => {
 
 export const reactivateManagedTeacher = async (req, res, next) => {
   try {
-    const result = await teacherManagementService.reactivate({
-      user: req.user,
-      schoolId: req.schoolId,
-      teacherUserId: req.params.teacherUserId,
-    });
+    const result = await teacherManagementService.reactivate({ user: req.user, schoolId: req.schoolId, teacherUserId: req.params.teacherUserId });
     return res.status(200).json({ success: true, message: "Teacher reactivated successfully", teacher: result });
   } catch (error) {
     next(error);
@@ -182,11 +183,7 @@ export const registerParent = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.registerParent(req.body);
-    const linked = await linkParentToMatchingChildren({
-      parentUserId: result?.user?.id,
-      schoolId: result?.user?.schoolId || req.body?.schoolId,
-      email: req.body?.email,
-    });
+    const linked = await linkParentToMatchingChildren({ parentUserId: result?.user?.id, schoolId: result?.user?.schoolId || req.body?.schoolId, email: req.body?.email });
     return sendAuthenticated(req, res, 201, "Parent registered successfully", { ...result, linkedChildren: linked.linkedChildren });
   } catch (error) {
     next(error);
@@ -225,16 +222,27 @@ const readCookie = (req, name) => {
 
 export const refreshSession = async (req, res, next) => {
   try {
-    const refreshToken = readCookie(req, "petra_refresh");
+    const tabRefreshToken = req.get("x-petra-tab-refresh");
+    const tabRequest = Boolean(tabRefreshToken);
+    const refreshToken = tabRefreshToken || readCookie(req, "petra_refresh");
     if (!refreshToken) return res.status(401).json({ success: false, message: "Refresh token missing" });
+
     const storedToken = await sessionModel.findActiveRefreshToken(refreshToken);
     if (!storedToken) return res.status(401).json({ success: false, message: "Refresh token expired or revoked" });
 
     await sessionModel.revokeRefreshToken(storedToken.id);
-    await sessionService.revokeAll(storedToken.userId);
+    // A tab refresh must not revoke other tabs belonging to the same user.
+    if (!tabRequest) await sessionService.revokeAll(storedToken.userId);
+
     const user = await authService.profile(storedToken.userId);
+    if (tabRequest) req.headers["x-petra-tab-auth"] = "1";
     await issueSession(req, res, { user });
-    return res.status(200).json({ success: true, user });
+    const response = { success: true, user };
+    if (isTabAuthRequest(req)) {
+      const authenticated = await issueSession(req, res, { user });
+      return res.status(200).json({ success: true, user, tabSession: authenticated.tabSession });
+    }
+    return res.status(200).json(response);
   } catch (error) {
     return next(error);
   }
@@ -250,15 +258,18 @@ export const getMe = async (req, res, next) => {
 };
 
 export const revokeSession = async (req, res, next) => {
+  const tabRequest = req.get("x-petra-tab-auth") === "1";
   try {
     if (req.auth?.sessionId) await sessionService.revoke({ id: req.auth.sessionId, userId: req.user.id });
-    await sessionModel.revokeAllRefreshTokens(req.user.id);
+    if (!tabRequest) await sessionModel.revokeAllRefreshTokens(req.user.id);
     await logAudit({ userId: req.user.id, schoolId: req.schoolId, action: "auth.logout", actionType: "LOGOUT", entity: "Session", resourceId: req.auth?.sessionId });
   } catch (error) {
     return next(error);
   }
-  res.clearCookie("petra_session", authCookieOptions);
-  res.clearCookie("petra_refresh", refreshCookieOptions);
+  if (!tabRequest) {
+    res.clearCookie("petra_session", authCookieOptions);
+    res.clearCookie("petra_refresh", refreshCookieOptions);
+  }
   return res.status(200).json({ success: true, message: "Logout successful" });
 };
 
