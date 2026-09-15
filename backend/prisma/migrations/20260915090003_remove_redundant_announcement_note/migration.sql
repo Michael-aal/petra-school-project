@@ -1,2 +1,0 @@
--- No database change. This migration marker documents that announcement metadata
--- is handled additively without changing existing announcement rows.
