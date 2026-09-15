@@ -42,18 +42,32 @@ export const sendPushTest = async (req, res, next) => {
   try {
     const result = await pushNotificationService.sendToUser(req.user.id, {
       title: "Petra School test",
-      body: "Device notifications are working. This is a test alert from Petra.",
+      body: "This is a real external device notification test from Petra.",
       url: "/dashboard/communication/notifications",
       tag: `petra-push-test-${Date.now()}`,
+      forceExternal: true,
     });
 
-    if (!result?.sent) {
+    if (!result?.attempted) {
       const error = new Error("No active device subscription was found. Enable device alerts first.");
       error.statusCode = 409;
       throw error;
     }
 
-    return res.json({ sent: result.sent, message: "Test device notification sent." });
+    if (!result.sent) {
+      const error = new Error("Petra reached the push service, but the device rejected the notification.");
+      error.statusCode = 502;
+      error.pushDelivery = result;
+      throw error;
+    }
+
+    return res.json({
+      sent: result.sent,
+      attempted: result.attempted,
+      failed: result.failed,
+      message: "External device notification delivered to the browser push service. Check the system notification area.",
+      deliveryErrors: result.errors || [],
+    });
   } catch (error) {
     return next(error);
   }
