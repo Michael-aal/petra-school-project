@@ -1,6 +1,7 @@
 import { assertAIToolPermission, normalizeToolName } from "./aiPermissions.js";
 import { buildAIContext, validateToolInput } from "./aiContext.js";
 import { aiDataService } from "../services/aiDataService.js";
+import { getLatestStudentResults } from "./latestResultsService.js";
 import { normalizeRole } from "../utils/roleUtils.js";
 
 const toolRegistry = {
@@ -46,15 +47,15 @@ const toolRegistry = {
   getStudentResults: {
     name: "getStudentResults",
     description:
-      "Retrieve published academic scores, percentages, grades, and overall average for an authorized student.",
+      "Retrieve the latest published academic and exam results for an authorized student. Safe for parents, guardians, students, teachers, principals, and super admins according to their existing permissions.",
     parameters: {
       type: "object",
       properties: {
         studentId: { type: "string", description: "Student ID. Optional for students or parents with a single linked child." },
-        termId: { type: "string", description: "Optional term name or ID" },
+        limit: { type: "integer", description: "Maximum number of latest results to return, from 1 to 25." },
       },
     },
-    handler: aiDataService.getStudentResults,
+    handler: getLatestStudentResults,
   },
   getFeeSummary: {
     name: "getFeeSummary",
@@ -118,7 +119,7 @@ export const executeAITool = async ({ user, toolName, input = {} }) => {
   const toolEntry = toolRegistry[canonicalName] || toolRegistry[toolName];
 
   if (!toolEntry) {
-    throw Object.assign(new Error(`AI tool "${toolName}" is not registered or approved`), { statusCode: 400 });
+    throw Object.assign(new Error(`AI tool \"${toolName}\" is not registered or approved`), { statusCode: 400 });
   }
 
   const validatedInput = validateToolInput(canonicalName, input);
