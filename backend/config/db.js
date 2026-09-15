@@ -96,7 +96,6 @@ const enforceTenantValue = (tenant, context = {}) => {
   return resolved;
 };
 
-// Operations that accept a full `where` filter and must be scoped to the tenant.
 const WHERE_SCOPED_OPERATIONS = new Set([
   "findMany",
   "findUnique",
@@ -109,6 +108,15 @@ const WHERE_SCOPED_OPERATIONS = new Set([
   "updateMany",
   "delete",
   "deleteMany",
+]);
+
+// Prisma's findUnique/update/delete require a unique selector. A tenant
+// predicate cannot be injected into those selectors as an AND expression.
+// PostgreSQL RLS is the tenant boundary for these unique operations.
+const UNIQUE_SELECTOR_OPERATIONS = new Set([
+  "findUnique",
+  "update",
+  "delete",
 ]);
 
 export const scopeWhere = (where, tenant) => {
@@ -125,25 +133,19 @@ export const scopeWhere = (where, tenant) => {
   return { AND: [where, { schoolId: resolvedTenant }] };
 };
 
-export const scopeTenantData = (data, tenant) => {
-  const resolvedTenant = enforceTenantValue(tenant, { model: "tenant-write" });
-  if (!data || typeof data !== "object") return data;
-  if (Object.prototype.hasOwnProperty.call(data, "school")) {
-    throw Object.assign(new Error("Nested school relation writes are not allowed in a tenant context"), {
-      statusCode: 403,
-    });
-  }
-  const { schoolId: _ignoredSchoolId, ...rest } = data;
-  return { ...rest, schoolId: resolvedTenant };
-};
-
 const scopeOperationArgs = (model, operation, args, tenant) => {
   if (!tenant || !modelHasSchoolId(model)) return args;
 
   const resolvedTenant = enforceTenantValue(tenant, { model });
   const nextArgs = args ? { ...args } : {};
+
   if (WHERE_SCOPED_OPERATIONS.has(operation)) {
-    nextArgs.where = scopeWhere(nextArgs.where, resolvedTenant);
+    // Do not turn a unique selector into an AND expression. The generated
+    // Prisma client correctly accepts only id/userId/etc. for findUnique,
+    // update and delete. RLS still enforces the active school boundary.
+    nextArgs.where = UNIQUE_SELECTOR_OPERATIONS.has(operation)
+      ? nextArgs.where
+      : scopeWhere(nextArgs.where, resolvedTenant);
   }
 
   if ((operation === "create" || operation === "update") && nextArgs.data && !Array.isArray(nextArgs.data)) {
@@ -162,9 +164,18 @@ const scopeOperationArgs = (model, operation, args, tenant) => {
   return nextArgs;
 };
 
-// Prisma 7 interactive transaction clients do not expose `$extends`.
-// Use an extension for normal Prisma clients and a lightweight proxy for
-// transaction clients so tenant scoping works in both cases.
+export const scopeTenantData = (data, tenant) => {
+  const resolvedTenant = enforceTenantValue(tenant, { model: "tenant-write" });
+  if (!data || typeof data !== "object") return data;
+  if (Object.prototype.hasOwnProperty.call(data, "school")) {
+    throw Object.assign(new Error("Nested school relation writes are not allowed in a tenant context"), {
+      statusCode: 403,
+    });
+  }
+  const { schoolId: _ignoredSchoolId, ...rest } = data;
+  return { ...rest, schoolId: resolvedTenant };
+};
+
 const createTenantScopedClient = (client) => {
   if (typeof client?.$extends === "function") {
     return client.$extends({
@@ -219,8 +230,6 @@ const runTenantTransaction = async (callback, options) => {
   }
 
   return basePrisma.$transaction(async (transaction) => {
-    // SET LOCAL is cleared automatically at commit/rollback. It cannot leak to
-    // another pooled request, and the scoped client below uses this same socket.
     await transaction.$executeRaw`SELECT set_config('app.current_school_id', ${String(tenant)}, true)`;
     const scopedTransaction = createTenantScopedClient(transaction);
     return schoolContext.run({ ...store, client: scopedTransaction }, () => callback(scopedTransaction));
@@ -237,9 +246,6 @@ const runTenantOperation = async (model, operation, args) => {
   return runTenantTransaction((transaction) => transaction[model][operation](...args));
 };
 
-// Tenant model operations are routed through a short interactive transaction.
-// This lets PostgreSQL RLS see SET LOCAL and the query on the exact same
-// connection, while keeping transactions out of external API calls.
 const prisma = new Proxy(globalPrisma, {
   get(target, property, receiver) {
     const store = schoolContext.getStore();
