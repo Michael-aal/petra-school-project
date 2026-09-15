@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Copy, RotateCw, Ban, UserCog, Filter } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { authApi } from "../../../../services/authApi";
+import TeacherApplicationsPage from "./TeacherApplicationsPage";
 import "../page-styles/DashboardHomePage.css";
 
 const initialForm = {
@@ -19,6 +21,11 @@ const splitSubjects = (value = "") =>
     .filter(Boolean);
 
 export default function StaffManagementPage() {
+  const location = useLocation();
+  if (new URLSearchParams(location.search).get("view") === "applications") {
+    return <TeacherApplicationsPage />;
+  }
+
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [showForm, setShowForm] = useState(false);
