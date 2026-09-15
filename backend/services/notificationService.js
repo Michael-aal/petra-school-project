@@ -18,6 +18,23 @@ const toNumber = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
+const notificationSection = (notification) => {
+  const text = `${notification?.title || ""} ${notification?.body || ""}`.toLowerCase();
+  if (/announcement|notice|school resumption/.test(text)) return "announcements";
+  if (/message|inbox|replied|reply/.test(text)) return "messages";
+  if (/result|report card|grade|score|exam result/.test(text)) return "results";
+  if (/payment|invoice|fee|receipt|paystack|wallet|flexpay|cashflow/.test(text)) return "payments";
+  if (/attendance|absent|present/.test(text)) return "attendance";
+  if (/assignment|homework|classwork/.test(text)) return "assignments";
+  if (/admission|applicant|enrollment|enrol/.test(text)) return "admissions";
+  if (/student|parent|guardian/.test(text)) return "students";
+  if (/staff|teacher|admin|principal|invitation/.test(text)) return "staff";
+  if (/support|ticket|help request/.test(text)) return "support";
+  return "notifications";
+};
+
+const sectionMatches = (notification, section) => notificationSection(notification) === section;
+
 export const notificationService = {
   listForUser: async (user, query = {}) => {
     const platformUser = isPlatform(user);
@@ -68,6 +85,66 @@ export const notificationService = {
     };
   },
 
+  unreadSummary: async (user) => {
+    const platformUser = isPlatform(user);
+    const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
+    const where = platformUser
+      ? { userId: user.id, isRead: false }
+      : { schoolId, userId: user.id, isRead: false };
+
+    const notifications = await prisma.notification.findMany({
+      where,
+      select: { id: true, title: true, body: true },
+    });
+
+    const bySection = {
+      dashboard: false,
+      admissions: false,
+      students: false,
+      academics: false,
+      attendance: false,
+      results: false,
+      staff: false,
+      payments: false,
+      invoices: false,
+      announcements: false,
+      messages: false,
+      assignments: false,
+      support: false,
+      notifications: notifications.length > 0,
+    };
+
+    for (const notification of notifications) {
+      const section = notificationSection(notification);
+      if (section in bySection) bySection[section] = true;
+    }
+
+    return { total: notifications.length, bySection };
+  },
+
+  markSectionRead: async (user, section) => {
+    const allowed = new Set([
+      "announcements", "messages", "results", "payments", "invoices", "attendance",
+      "assignments", "admissions", "students", "staff", "support", "notifications",
+    ]);
+    const normalizedSection = String(section || "").trim().toLowerCase();
+    if (!allowed.has(normalizedSection)) {
+      const err = new Error("Unknown notification section");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const platformUser = isPlatform(user);
+    const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
+    const where = platformUser ? { userId: user.id, isRead: false } : { schoolId, userId: user.id, isRead: false };
+    const unread = await prisma.notification.findMany({ where, select: { id: true, title: true, body: true } });
+    const ids = unread.filter((item) => sectionMatches(item, normalizedSection)).map((item) => item.id);
+
+    if (!ids.length) return { updated: 0 };
+    const result = await prisma.notification.updateMany({ where: { id: { in: ids } }, data: { isRead: true } });
+    return { updated: result.count };
+  },
+
   markRead: async (user, notificationId) => {
     const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
@@ -80,10 +157,7 @@ export const notificationService = {
       err.statusCode = 404;
       throw err;
     }
-    return prisma.notification.update({
-      where: { id: existing.id },
-      data: { isRead: true },
-    });
+    return prisma.notification.update({ where: { id: existing.id }, data: { isRead: true } });
   },
 
   markAllRead: async (user) => {
@@ -92,10 +166,7 @@ export const notificationService = {
     const where = platformUser
       ? { userId: user.id, isRead: false }
       : { schoolId, userId: user.id, isRead: false };
-    const result = await prisma.notification.updateMany({
-      where,
-      data: { isRead: true },
-    });
+    const result = await prisma.notification.updateMany({ where, data: { isRead: true } });
     return { updated: result.count };
   },
 
