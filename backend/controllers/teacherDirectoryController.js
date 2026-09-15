@@ -59,6 +59,7 @@ export const listTeacherDirectory = async (req, res, next) => {
     return res.json({
       success: true,
       teachers: teachers.map((teacher) => ({
+        ...teacher.user,
         id: teacher.id,
         userId: teacher.user?.id || null,
         schoolId: teacher.schoolId,
@@ -66,7 +67,6 @@ export const listTeacherDirectory = async (req, res, next) => {
         isActive: teacher.isActive,
         createdAt: teacher.createdAt,
         department: teacher.department || null,
-        ...teacher.user,
       })),
     });
   } catch (error) {
