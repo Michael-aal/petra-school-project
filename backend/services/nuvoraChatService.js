@@ -65,11 +65,12 @@ export const nuvoraChatService = {
     const id = randomUUID();
     const normalizedRole = role === "assistant" ? "assistant" : "user";
     const safeContent = String(content || "").slice(0, 10000);
+    const serializedData = data == null ? null : JSON.stringify(data);
 
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`
         INSERT INTO "NuvoraMessage" ("id", "conversationId", "role", "content", "data", "createdAt")
-        VALUES (${id}, ${normalizeId(conversationId)}, ${normalizedRole}, ${safeContent}, ${data ? JSON.stringify(data) : null}, CURRENT_TIMESTAMP)
+        VALUES (${id}, ${normalizeId(conversationId)}, ${normalizedRole}, ${safeContent}, CAST(${serializedData} AS JSONB), CURRENT_TIMESTAMP)
       `;
       await tx.$executeRaw`
         UPDATE "NuvoraConversation"
@@ -79,16 +80,6 @@ export const nuvoraChatService = {
     });
 
     return id;
-  },
-
-  async renameConversation(userId, conversationId, title) {
-    const safeTitle = String(title || "New chat").trim().slice(0, 120) || "New chat";
-    const result = await prisma.$executeRaw`
-      UPDATE "NuvoraConversation"
-      SET "title" = ${safeTitle}, "updatedAt" = CURRENT_TIMESTAMP
-      WHERE "id" = ${normalizeId(conversationId)} AND "userId" = ${normalizeId(userId)}
-    `;
-    return Number(result) > 0;
   },
 
   async deleteConversation(userId, conversationId) {
