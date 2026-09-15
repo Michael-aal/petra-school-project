@@ -39,6 +39,22 @@ export const pushNotificationService = {
     return publicKey;
   },
 
+  getStatus: async (userId, endpoint) => {
+    if (!redisClient || !userId) {
+      return { configured: Boolean(publicKey && privateKey), storageAvailable: false, subscriptionCount: 0, subscribed: false };
+    }
+    await ensureRedis();
+    const stored = await redisClient.hgetall(redisKey(userId));
+    const subscriptions = Object.values(stored || {});
+    const normalizedEndpoint = String(endpoint || "").trim();
+    return {
+      configured: Boolean(publicKey && privateKey),
+      storageAvailable: true,
+      subscriptionCount: subscriptions.length,
+      subscribed: normalizedEndpoint ? Boolean(await redisClient.hget(redisKey(userId), normalizedEndpoint)) : false,
+    };
+  },
+
   wasDelivered: async (notificationId, userId) => {
     if (!redisClient || !notificationId || !userId) return false;
     await ensureRedis();
