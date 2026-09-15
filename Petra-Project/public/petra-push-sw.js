@@ -1,11 +1,21 @@
-const SW_VERSION = "petra-push-v4";
+const SW_VERSION = "petra-push-v5";
+
+const postDiagnostic = async (payload) => {
+  const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  for (const client of clients) {
+    client.postMessage({ type: "PETRA_PUSH_DIAGNOSTIC", payload: { version: SW_VERSION, ...payload } });
+  }
+};
 
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    await postDiagnostic({ phase: "activate", ok: true });
+  })());
 });
 
 self.addEventListener("push", (event) => {
@@ -33,22 +43,39 @@ self.addEventListener("push", (event) => {
 
     if (visibleClient && payload.forceExternal !== true) {
       visibleClient.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
+      await postDiagnostic({ phase: "in-app", ok: true, notificationId: notificationPayload.notificationId });
       return;
     }
 
-    await self.registration.showNotification(notificationPayload.title, {
-      body: notificationPayload.body,
-      tag: notificationPayload.tag,
-      renotify: true,
-      requireInteraction: true,
-      silent: false,
-      icon: "/favicon.ico",
-      badge: "/favicon.ico",
-      data: {
-        url: notificationPayload.url,
+    try {
+      if (typeof self.registration.showNotification !== "function") {
+        throw new Error("Service worker showNotification() is unavailable in this browser.");
+      }
+
+      await self.registration.showNotification(notificationPayload.title, {
+        body: notificationPayload.body,
+        tag: notificationPayload.tag,
+        renotify: true,
+        requireInteraction: true,
+        silent: false,
+        icon: "/favicon.ico",
+        badge: "/favicon.ico",
+        data: {
+          url: notificationPayload.url,
+          notificationId: notificationPayload.notificationId,
+        },
+      });
+
+      await postDiagnostic({ phase: "showNotification", ok: true, notificationId: notificationPayload.notificationId });
+    } catch (error) {
+      await postDiagnostic({
+        phase: "showNotification",
+        ok: false,
         notificationId: notificationPayload.notificationId,
-      },
-    });
+        error: String(error?.message || error || "showNotification() failed").slice(0, 300),
+      });
+      throw error;
+    }
   })());
 });
 
