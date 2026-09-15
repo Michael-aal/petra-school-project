@@ -9,8 +9,6 @@ self.addEventListener("push", (event) => {
   const title = payload.title || "Petra School";
   const options = {
     body: payload.body || "You have a new notification.",
-    icon: payload.icon || "/pwa-192x192.png",
-    badge: payload.badge || "/pwa-192x192.png",
     tag: payload.tag || "petra-notification",
     renotify: true,
     data: { url: payload.url || "/notifications", notificationId: payload.notificationId || null },
