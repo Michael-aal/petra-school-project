@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { scopeTenantData, scopeWhere, runWithSchoolContext } from "../config/db.js";
+import { scopeTenantData, scopeWhere, runWithSchoolContext, UNSCOPED_TENANT_MODEL_ALLOWLIST } from "../config/db.js";
 import { logAudit } from "../utils/auditLog.js";
 import { prisma } from "../config/db.js";
 
@@ -13,6 +13,12 @@ test("tenant guard scopes where clauses to a single school", () => {
 test("tenant guard blocks cross-school writes", () => {
   assert.equal(scopeTenantData({ schoolId: 9, name: "bad" }, 12).schoolId, 12);
   assert.equal(scopeTenantData({ name: "good" }, 12).schoolId, 12);
+});
+
+test("tenant boundary has an explicit global-model allowlist", () => {
+  assert.equal(UNSCOPED_TENANT_MODEL_ALLOWLIST.has("Session"), true);
+  assert.equal(UNSCOPED_TENANT_MODEL_ALLOWLIST.has("WebhookLog"), true);
+  assert.equal(UNSCOPED_TENANT_MODEL_ALLOWLIST.has("Student"), false);
 });
 
 test("runWithSchoolContext sets the active tenant for nested Prisma operations", () => {

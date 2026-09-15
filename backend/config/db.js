@@ -54,6 +54,27 @@ globalThis.prisma = basePrisma;
 
 const schoolContext = new AsyncLocalStorage();
 
+// These models are intentionally global or relationship-only. Every other
+// Prisma model with a schoolId field is tenant-scoped by the wrapper below.
+export const UNSCOPED_TENANT_MODEL_ALLOWLIST = new Set([
+  "Session",
+  "RefreshToken",
+  "RolePermission",
+  "SubjectClass",
+  "StudentParent",
+  "GuardianStudent",
+  "StudentMedicalInfo",
+  "StudentDocument",
+  "AssignmentSubmission",
+  "InvoiceItem",
+  "PaymentLine",
+  "InstallmentPayment",
+  "ExamAttempt",
+  "ExamResult",
+  "WebhookEvent",
+  "WebhookLog",
+]);
+
 const getSchemaModel = (model) => {
   if (!model) return null;
   const candidateNames = [String(model), String(model).slice(0, 1).toUpperCase() + String(model).slice(1)];
@@ -79,6 +100,8 @@ const getSchemaModel = (model) => {
 
 const modelHasSchoolId = (model) => {
   try {
+    const modelName = String(model).slice(0, 1).toUpperCase() + String(model).slice(1);
+    if (UNSCOPED_TENANT_MODEL_ALLOWLIST.has(modelName)) return false;
     const schemaModel = getSchemaModel(model);
     return Boolean(schemaModel?.fields?.some((field) => field.name === "schoolId"));
   } catch {
@@ -110,9 +133,6 @@ const WHERE_SCOPED_OPERATIONS = new Set([
   "deleteMany",
 ]);
 
-// Prisma's findUnique/update/delete require a unique selector. A tenant
-// predicate cannot be injected into those selectors as an AND expression.
-// PostgreSQL RLS is the tenant boundary for these unique operations.
 const UNIQUE_SELECTOR_OPERATIONS = new Set([
   "findUnique",
   "update",
@@ -140,9 +160,6 @@ const scopeOperationArgs = (model, operation, args, tenant) => {
   const nextArgs = args ? { ...args } : {};
 
   if (WHERE_SCOPED_OPERATIONS.has(operation)) {
-    // Do not turn a unique selector into an AND expression. The generated
-    // Prisma client correctly accepts only id/userId/etc. for findUnique,
-    // update and delete. RLS still enforces the active school boundary.
     nextArgs.where = UNIQUE_SELECTOR_OPERATIONS.has(operation)
       ? nextArgs.where
       : scopeWhere(nextArgs.where, resolvedTenant);
@@ -162,6 +179,40 @@ const scopeOperationArgs = (model, operation, args, tenant) => {
   }
 
   return nextArgs;
+};
+
+const notFoundForTenant = (model) => Object.assign(new Error(`${model} record not found`), { code: "P2025", statusCode: 404 });
+
+const executeTenantUniqueOperation = async (transaction, model, operation, args, tenant) => {
+  const resolvedTenant = enforceTenantValue(tenant, { model });
+  const nextArgs = args ? { ...args } : {};
+  const scopedWhere = scopeWhere(nextArgs.where, resolvedTenant);
+
+  if (operation === "findUnique") {
+    return transaction[model].findFirst({ ...nextArgs, where: scopedWhere });
+  }
+
+  if (operation === "update" || operation === "delete") {
+    const existing = await transaction[model].findFirst({ where: scopedWhere, select: { id: true } });
+    if (!existing) throw notFoundForTenant(model);
+    if (operation === "update" && nextArgs.data) nextArgs.data = scopeTenantData(nextArgs.data, resolvedTenant);
+    return transaction[model][operation](nextArgs);
+  }
+
+  if (operation === "upsert") {
+    const existing = await transaction[model].findFirst({ where: scopedWhere, select: { id: true } });
+    if (existing) {
+      return transaction[model].update({
+        ...nextArgs,
+        where: { id: existing.id },
+        data: scopeTenantData(nextArgs.update, resolvedTenant),
+      });
+    }
+    const { where: _where, update: _update, create: _create, ...createArgs } = nextArgs;
+    return transaction[model].create({ ...createArgs, data: scopeTenantData(nextArgs.create, resolvedTenant) });
+  }
+
+  return transaction[model][operation](scopeOperationArgs(model, operation, nextArgs, resolvedTenant));
 };
 
 export const scopeTenantData = (data, tenant) => {
@@ -210,6 +261,9 @@ const createTenantScopedClient = (client) => {
             if (store?.skipTenant) return method(...args);
 
             const tenant = store?.schoolId;
+            if (UNIQUE_SELECTOR_OPERATIONS.has(operation) || operation === "upsert") {
+              return executeTenantUniqueOperation(client, property, operation, args[0], tenant);
+            }
             const nextArgs = scopeOperationArgs(property, operation, args[0], tenant);
             return method(nextArgs);
           };
@@ -241,6 +295,10 @@ const runTenantOperation = async (model, operation, args) => {
   const tenant = Number(store?.schoolId);
   if (store?.client || store?.skipTenant || !Number.isInteger(tenant) || tenant <= 0 || !modelHasSchoolId(model)) {
     return globalPrisma[model][operation](...args);
+  }
+
+  if (UNIQUE_SELECTOR_OPERATIONS.has(operation) || operation === "upsert") {
+    return runTenantTransaction((transaction) => executeTenantUniqueOperation(transaction, model, operation, args[0], tenant));
   }
 
   return runTenantTransaction((transaction) => transaction[model][operation](...args));

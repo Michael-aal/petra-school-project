@@ -6,7 +6,8 @@ import { sessionModel } from "../models/sessionModel.js";
 
 const MAX_SESSIONS = Math.max(1, Number(process.env.MAX_SESSIONS_PER_USER || 5));
 const ACCESS_TTL_MS = 15 * 60 * 1000;
-const redis = process.env.REDIS_URL
+const redisEnabled = process.env.NODE_ENV === "production" || process.env.RUN_INTEGRATION_TESTS === "true";
+const redis = redisEnabled && process.env.REDIS_URL
   ? new IORedis(process.env.REDIS_URL, { lazyConnect: true, maxRetriesPerRequest: 1, enableOfflineQueue: false })
   : null;
 
