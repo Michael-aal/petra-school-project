@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db.js";
 
@@ -40,6 +41,9 @@ const withMetadata = (announcement, metadata) => ({
   expiryAt: metadata?.expiryAt ?? null,
 });
 
+const buildRecipientRoleCondition = (roleFilter) =>
+  roleFilter ? Prisma.sql` AND ar."role" = ${roleFilter}` : Prisma.empty;
+
 export const announcementService = {
   listForUser: async (user, query = {}) => {
     const schoolId = normalizeSchoolId(user);
@@ -47,39 +51,45 @@ export const announcementService = {
     const page = Math.max(1, toNumber(query.page, 1));
     const limit = Math.max(1, Math.min(50, toNumber(query.limit, 20)));
     const search = query.search ? String(query.search).trim() : "";
+    if (role === "principal" || role === "super_admin") return announcementService.listForSchool(user, query);
 
-    if (role === "principal" || role === "super_admin") {
-      return announcementService.listForSchool(user, query);
-    }
+    const searchSql = search
+      ? Prisma.sql` AND (a."title" ILIKE ${`%${search}%`} OR a."body" ILIKE ${`%${search}%`})`
+      : Prisma.empty;
+    const offset = (page - 1) * limit;
 
-    const recipientWhere = { userId: user.id, schoolId };
-    const recipients = await prisma.announcementRecipient.findMany({
-      where: recipientWhere,
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: { announcement: true },
-    });
+    const [countRows, rows] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT COUNT(*)::int AS "count"
+        FROM "AnnouncementRecipient" ar
+        JOIN "Announcement" a ON a."id" = ar."announcementId"
+        WHERE ar."userId" = ${user.id} AND ar."schoolId" = ${schoolId}${searchSql}
+      `,
+      prisma.$queryRaw`
+        SELECT
+          ar."id" AS "recipientId",
+          ar."isRead" AS "recipientIsRead",
+          ar."readAt" AS "recipientReadAt",
+          ar."reaction" AS "recipientReaction",
+          a.*
+        FROM "AnnouncementRecipient" ar
+        JOIN "Announcement" a ON a."id" = ar."announcementId"
+        WHERE ar."userId" = ${user.id} AND ar."schoolId" = ${schoolId}${searchSql}
+        ORDER BY ar."createdAt" DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `,
+    ]);
 
-    const total = await prisma.announcementRecipient.count({ where: recipientWhere });
-    const metadata = await loadAnnouncementMetadata(recipients.map((recipient) => recipient.announcement.id));
-
-    const announcements = recipients
-      .filter((recipient) => {
-        if (!search) return true;
-        const content = `${recipient.announcement.title} ${recipient.announcement.body}`.toLowerCase();
-        return content.includes(search.toLowerCase());
-      })
-      .map((recipient) => ({
-        ...withMetadata(recipient.announcement, metadata.get(recipient.announcement.id)),
-        recipient: {
-          id: recipient.id,
-          isRead: recipient.isRead,
-          readAt: recipient.readAt,
-          reaction: recipient.reaction,
-        },
-      }));
-
+    const announcements = rows.map((row) => ({
+      ...withMetadata(row, row),
+      recipient: {
+        id: row.recipientId,
+        isRead: row.recipientIsRead,
+        readAt: row.recipientReadAt,
+        reaction: row.recipientReaction,
+      },
+    }));
+    const total = Number(countRows[0]?.count || 0);
     return {
       announcements,
       pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
@@ -92,7 +102,6 @@ export const announcementService = {
     const limit = Math.max(1, Math.min(50, toNumber(query.limit, 20)));
     const search = query.search ? String(query.search).trim() : "";
     const conditions = [Prisma.sql`"schoolId" = ${schoolId}`];
-
     if (query.onlyDrafts === "true") conditions.push(Prisma.sql`"isDraft" = true`);
     if (query.published === "true") conditions.push(Prisma.sql`"isDraft" = false`);
     if (search) {
@@ -103,24 +112,19 @@ export const announcementService = {
     const whereSql = Prisma.join(conditions, " AND ");
     const offset = (page - 1) * limit;
     const [countRows, announcements] = await Promise.all([
+      prisma.$queryRaw`SELECT COUNT(*)::int AS "count" FROM "Announcement" WHERE ${whereSql}`,
       prisma.$queryRaw`
-        SELECT COUNT(*)::int AS "count"
-        FROM "Announcement"
-        WHERE ${whereSql}
-      `,
-      prisma.$queryRaw`
-        SELECT *
-        FROM "Announcement"
+        SELECT * FROM "Announcement"
         WHERE ${whereSql}
         ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
-        LIMIT ${limit}
-        OFFSET ${offset}
+        LIMIT ${limit} OFFSET ${offset}
       `,
     ]);
 
     const total = Number(countRows[0]?.count || 0);
+    const metadata = await loadAnnouncementMetadata(announcements.map((item) => item.id));
     return {
-      announcements,
+      announcements: announcements.map((item) => withMetadata(item, metadata.get(item.id))),
       pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
     };
   },
@@ -157,13 +161,18 @@ export const announcementService = {
     });
 
     if (recipients.length) {
-      const recipientRecords = recipients.map((recipient) => ({
-        announcementId: announcement.id,
-        schoolId,
-        userId: recipient.id,
-        role: recipient.role,
-      }));
-      await prisma.announcementRecipient.createMany({ data: recipientRecords, skipDuplicates: true });
+      const values = Prisma.join(
+        recipients.map((recipient) =>
+          Prisma.sql`(${randomUUID()}, ${announcement.id}, ${schoolId}, ${recipient.id}, ${recipient.role}, false, NULL, NULL, NOW(), NOW())`,
+        ),
+        ",",
+      );
+      await prisma.$executeRaw`
+        INSERT INTO "AnnouncementRecipient"
+          ("id", "announcementId", "schoolId", "userId", "role", "isRead", "readAt", "reaction", "createdAt", "updatedAt")
+        VALUES ${values}
+        ON CONFLICT ("announcementId", "userId") DO NOTHING
+      `;
 
       const notifications = recipients.map((recipient) => ({
         schoolId,
@@ -179,30 +188,38 @@ export const announcementService = {
 
   markRead: async (user, announcementId) => {
     const schoolId = normalizeSchoolId(user);
-    const recipient = await prisma.announcementRecipient.findFirst({ where: { announcementId, userId: user.id, schoolId } });
-    if (!recipient) {
+    const rows = await prisma.$queryRaw`
+      UPDATE "AnnouncementRecipient"
+      SET "isRead" = true, "readAt" = NOW(), "updatedAt" = NOW()
+      WHERE "announcementId" = ${announcementId}
+        AND "userId" = ${user.id}
+        AND "schoolId" = ${schoolId}
+      RETURNING *
+    `;
+    if (!rows.length) {
       const err = new Error("Announcement not accessible");
       err.statusCode = 404;
       throw err;
     }
-    return prisma.announcementRecipient.update({
-      where: { id: recipient.id },
-      data: { isRead: true, readAt: new Date() },
-    });
+    return rows[0];
   },
 
   react: async (user, announcementId, reaction) => {
     const schoolId = normalizeSchoolId(user);
-    const recipient = await prisma.announcementRecipient.findFirst({ where: { announcementId, userId: user.id, schoolId } });
-    if (!recipient) {
+    const rows = await prisma.$queryRaw`
+      UPDATE "AnnouncementRecipient"
+      SET "reaction" = ${reaction || null}, "updatedAt" = NOW()
+      WHERE "announcementId" = ${announcementId}
+        AND "userId" = ${user.id}
+        AND "schoolId" = ${schoolId}
+      RETURNING *
+    `;
+    if (!rows.length) {
       const err = new Error("Announcement not accessible");
       err.statusCode = 404;
       throw err;
     }
-    return prisma.announcementRecipient.update({
-      where: { id: recipient.id },
-      data: { reaction: reaction || null },
-    });
+    return rows[0];
   },
 
   getAnalytics: async (user, announcementId, roleFilter) => {
@@ -216,15 +233,26 @@ export const announcementService = {
 
     const metadata = await loadAnnouncementMetadata([announcementId]);
     const enrichedAnnouncement = withMetadata(announcement, metadata.get(announcementId));
+    const roleCondition = buildRecipientRoleCondition(roleFilter);
+    const [totalRows, readRows, reactionRows] = await Promise.all([
+      prisma.$queryRaw`SELECT COUNT(*)::int AS "count" FROM "AnnouncementRecipient" ar WHERE ar."announcementId" = ${announcementId} AND ar."schoolId" = ${schoolId}${roleCondition}`,
+      prisma.$queryRaw`SELECT COUNT(*)::int AS "count" FROM "AnnouncementRecipient" ar WHERE ar."announcementId" = ${announcementId} AND ar."schoolId" = ${schoolId} AND ar."isRead" = true${roleCondition}`,
+      prisma.$queryRaw`
+        SELECT "reaction", COUNT(*)::int AS "count"
+        FROM "AnnouncementRecipient" ar
+        WHERE ar."announcementId" = ${announcementId} AND ar."schoolId" = ${schoolId}${roleCondition}
+        GROUP BY "reaction"
+      `,
+    ]);
 
-    const recipientWhere = { announcementId, schoolId, ...(roleFilter ? { role: roleFilter } : {}) };
-    const totalRecipients = await prisma.announcementRecipient.count({ where: recipientWhere });
-    const reads = await prisma.announcementRecipient.count({ where: { ...recipientWhere, isRead: true } });
-    const acknowledged = await prisma.announcementRecipient.count({ where: { ...recipientWhere, reaction: "ACKNOWLEDGED" } });
-    const understood = await prisma.announcementRecipient.count({ where: { ...recipientWhere, reaction: "UNDERSTOOD" } });
-    const willAttend = await prisma.announcementRecipient.count({ where: { ...recipientWhere, reaction: "WILL_ATTEND" } });
-    const cannotAttend = await prisma.announcementRecipient.count({ where: { ...recipientWhere, reaction: "CANNOT_ATTEND" } });
-    const needAssistance = await prisma.announcementRecipient.count({ where: { ...recipientWhere, reaction: "NEED_ASSISTANCE" } });
+    const reactionCounts = Object.fromEntries(reactionRows.map((row) => [row.reaction, Number(row.count)]));
+    const totalRecipients = Number(totalRows[0]?.count || 0);
+    const reads = Number(readRows[0]?.count || 0);
+    const acknowledged = reactionCounts.ACKNOWLEDGED || 0;
+    const understood = reactionCounts.UNDERSTOOD || 0;
+    const willAttend = reactionCounts.WILL_ATTEND || 0;
+    const cannotAttend = reactionCounts.CANNOT_ATTEND || 0;
+    const needAssistance = reactionCounts.NEED_ASSISTANCE || 0;
     const notResponded = totalRecipients - (acknowledged + understood + willAttend + cannotAttend + needAssistance);
 
     return {
