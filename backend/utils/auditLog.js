@@ -15,38 +15,42 @@ const cleanDetails = (details) => {
 };
 
 export const logAudit = async ({ userId = null, schoolId = null, action, entity = null, resourceId = null, details = null, severity = "INFO" }) => {
-  const safeDetails = cleanDetails({ ...(typeof details === "object" && details ? details : {}), ...(resourceId ? { resourceId } : {}), ...(severity ? { severity } : {}) });
+  const safeDetails = cleanDetails(details);
   logger.info("audit event", { userId, schoolId, action, entity, resourceId, severity });
 
-  if (userId) {
-    try {
-      const userExists = await prisma.user.findUnique({
-        where: { id: String(userId) },
-        select: { id: true },
-      });
-      if (!userExists) {
-        return null;
+  // Audit logging must never prevent authentication or another successful
+  // business operation from completing. It is observability, not a gate.
+  try {
+    const auditData = {
+      actionType: String(action || "unknown").slice(0, 120),
+      oldData: {
+        userId: userId ? String(userId) : null,
+        performedBy: userId ? String(userId) : "system",
+        schoolId: schoolId ? Number(schoolId) : null,
+        entity: entity ? String(entity).slice(0, 120) : "System",
+        entityId: resourceId ? String(resourceId) : "unknown",
+        severity: String(severity || "INFO").slice(0, 32),
+      },
+      newData: safeDetails ? {
+        details: safeDetails,
+      } : null,
+    };
+
+    if (schoolId) {
+      const resolvedSchoolId = Number(schoolId);
+      if (Number.isInteger(resolvedSchoolId) && resolvedSchoolId > 0) {
+        auditData.school = { connect: { id: resolvedSchoolId } };
       }
-    } catch {
-      return null;
     }
+
+    return await prisma.auditLog.create({ data: auditData });
+  } catch (error) {
+    logger.warn("audit log persistence failed", {
+      action,
+      userId,
+      schoolId,
+      error: error?.message || String(error),
+    });
+    return null;
   }
-
-  const data = {
-    schoolId: schoolId ? Number(schoolId) : null,
-    action: String(action || "unknown").slice(0, 120),
-    entity: entity ? String(entity).slice(0, 120) : "System",
-    entityId: resourceId ? String(resourceId) : "unknown",
-    performedBy: userId ? String(userId) : "system",
-    details: safeDetails,
-    severity: String(severity || "INFO").slice(0, 32),
-  };
-
-  // Use the User relation instead of the userId scalar so audit logging also
-  // works with generated Prisma clients that expose `user` as the create input.
-  if (userId) {
-    data.user = { connect: { id: String(userId) } };
-  }
-
-  return prisma.auditLog.create({ data });
 };
