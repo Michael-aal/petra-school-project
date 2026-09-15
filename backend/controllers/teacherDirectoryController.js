@@ -14,54 +14,37 @@ const resolveSchoolId = (user) => {
 export const listTeacherDirectory = async (req, res, next) => {
   try {
     const schoolId = resolveSchoolId(req.user);
-    if (!schoolId) {
-      return res.status(403).json({ success: false, message: "School context missing" });
-    }
+    if (!schoolId) return res.status(403).json({ success: false, message: "School context missing" });
 
     const search = String(req.query.search || "").trim();
     const parsedLimit = Number(req.query.limit || 50);
     const limit = Math.min(Math.max(Number.isInteger(parsedLimit) ? parsedLimit : 50, 1), 200);
 
-    const where = {
-      schoolId,
-      user: {
-        role: "teacher",
-        ...(search
-          ? {
-              OR: [
-                { fullName: { contains: search, mode: "insensitive" } },
-                { firstName: { contains: search, mode: "insensitive" } },
-                { lastName: { contains: search, mode: "insensitive" } },
-                { email: { contains: search, mode: "insensitive" } },
-                { username: { contains: search, mode: "insensitive" } },
-              ],
-            }
-          : {}),
-      },
-    };
-
     const teachers = await prisma.teacher.findMany({
-      where,
+      where: {
+        schoolId,
+        user: {
+          role: "teacher",
+          ...(search ? { OR: [
+            { fullName: { contains: search, mode: "insensitive" } },
+            { firstName: { contains: search, mode: "insensitive" } },
+            { lastName: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+            { username: { contains: search, mode: "insensitive" } },
+            { staffRegistrationCode: { contains: search, mode: "insensitive" } },
+          ] } : {}),
+        },
+      },
       include: {
         user: {
           select: {
-            id: true,
-            fullName: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            username: true,
-            role: true,
-            accountStatus: true,
-            staffRole: true,
-            staffDepartment: true,
-            staffClassAssigned: true,
-            staffSubjectsAssigned: true,
+            id: true, fullName: true, firstName: true, lastName: true, email: true,
+            username: true, role: true, accountStatus: true, staffRole: true,
+            staffDepartment: true, staffClassAssigned: true, staffSubjectsAssigned: true,
+            staffRegistrationCode: true, staffRegistrationCodeUsed: true,
           },
         },
-        department: {
-          select: { id: true, name: true },
-        },
+        department: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -78,6 +61,8 @@ export const listTeacherDirectory = async (req, res, next) => {
         isActive: teacher.isActive,
         createdAt: teacher.createdAt,
         department: teacher.department || null,
+        registrationCode: teacher.user?.staffRegistrationCode || null,
+        registrationCodeUsed: Boolean(teacher.user?.staffRegistrationCodeUsed),
       })),
     });
   } catch (error) {
