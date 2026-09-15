@@ -134,5 +134,6 @@ export const authApi = {
   deleteAccount: (payload) =>
     request("/api/auth/account", {
       method: "DELETE",
+      body: JSON.stringify(payload),
     }),
 };
