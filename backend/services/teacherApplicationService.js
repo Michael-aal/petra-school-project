@@ -126,11 +126,15 @@ const createApprovedTeacher = async (tx, application) => {
   return { teacher, user, invitation };
 };
 
-const reviewFields = `
-  ta.*,
-  (SELECT si."registrationCode" FROM "StaffInvitation" si
-    WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
-  (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
+const selectReviewRows = (whereSql) => `
+  SELECT ta.*,
+    (SELECT si."registrationCode" FROM "StaffInvitation" si
+      WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+    (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
+  FROM "TeacherApplication" ta
+  LEFT JOIN "User" u ON lower(u.email) = lower(ta.email)
+    AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+  ${whereSql}
 `;
 
 export const teacherApplicationService = {
@@ -187,7 +191,9 @@ export const teacherApplicationService = {
     const normalizedStatus = clean(status)?.toLowerCase();
     const search = clean(query)?.toLowerCase();
     const rows = await prisma.$queryRaw`
-      SELECT ${prisma.raw(reviewFields)}
+      SELECT ta.*,
+        (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+        (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
       FROM "TeacherApplication" ta
       LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
       WHERE (${normalizedStatus || null}::text IS NULL OR lower(ta."status") = ${normalizedStatus || null})
@@ -202,7 +208,9 @@ export const teacherApplicationService = {
 
   getById: async ({ id }) => {
     const rows = await prisma.$queryRaw`
-      SELECT ${prisma.raw(reviewFields)}
+      SELECT ta.*,
+        (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+        (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
       FROM "TeacherApplication" ta
       LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
       WHERE ta."id" = ${String(id)} LIMIT 1
@@ -234,7 +242,9 @@ export const teacherApplicationService = {
       await tx.$executeRaw`UPDATE "TeacherApplication" SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${String(id)}`;
 
       const updatedRows = await tx.$queryRaw`
-        SELECT ${prisma.raw(reviewFields)}
+        SELECT ta.*,
+          (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+          (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
         FROM "TeacherApplication" ta
         LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
         WHERE ta."id" = ${String(id)} LIMIT 1
