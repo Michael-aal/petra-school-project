@@ -90,7 +90,7 @@ export const authApi = {
   revokeStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations/revoke", payload),
   regenerateStaffInvitationCode: (payload) => authRequest("/api/auth/staff/invitations/regenerate", payload),
   managedTeachers: () =>
-    request("/api/auth/staff/teachers", {
+    request("/api/auth/staff/teachers?includeSensitive=1", {
       method: "GET",
       cache: "no-store",
     }),
