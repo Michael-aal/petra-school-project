@@ -40,6 +40,32 @@ export default function TopNavbar({ onToggle }) {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  const showIncoming = (notification) => {
+    if (!notification?.id) return;
+    const key = `${notification.id}:${getTime(notification)}`;
+    if (key === latestKeyRef.current) return;
+    latestKeyRef.current = key;
+    setIncoming(notification);
+    setShowNotifications(true);
+    info(notification.title || "New notification", notification.body || "You have a new notification.");
+  };
+
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return undefined;
+    const handleServiceWorkerMessage = (event) => {
+      if (event.data?.type !== "PETRA_NOTIFICATION") return;
+      const payload = event.data.payload || {};
+      showIncoming({
+        id: payload.notificationId || payload.tag,
+        createdAt: new Date().toISOString(),
+        title: payload.title,
+        body: payload.body,
+      });
+    };
+    navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+    return () => navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+  }, []);
+
   useEffect(() => {
     let active = true;
     const checkNotifications = async () => {
@@ -56,12 +82,7 @@ export default function TopNavbar({ onToggle }) {
           latestKeyRef.current = key;
           return;
         }
-        if (key !== latestKeyRef.current) {
-          latestKeyRef.current = key;
-          setIncoming(latest);
-          setShowNotifications(true);
-          info(latest.title || "New notification", latest.body || "You have a new notification.");
-        }
+        if (key !== latestKeyRef.current) showIncoming(latest);
       } catch {
         // Notification polling is non-blocking.
       }
