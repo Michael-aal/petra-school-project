@@ -6,7 +6,9 @@ import crypto from "node:crypto";
 import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
 import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/redis.js";
 
-const RATE_LIMIT_VERSION = "v3";
+// Bump this whenever authentication limiter semantics change so stale Redis
+// buckets from an older configuration cannot lock legitimate users out.
+const RATE_LIMIT_VERSION = "v4";
 const localLimiters = new Map();
 const testHits = new Map();
 
@@ -102,10 +104,11 @@ export const createRateLimiter = ({
 };
 
 // Password/credential attempts are isolated by account AND browser tab.
-// A second tab signing into another account cannot consume this tab's bucket.
+// Keep enough headroom for normal retries, autofill retries and multiple
+// legitimate login sessions while retaining protection against brute force.
 export const authRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 20,
   scope: "auth",
   keyGenerator: (req) => {
     const body = req.body || {};
@@ -113,7 +116,7 @@ export const authRateLimiter = createRateLimiter({
     const tabId = tabIdKey(req);
     return `${req.ip || "unknown"}:${credential}:tab:${tabId || "unidentified"}`;
   },
-  message: "Too many authentication attempts. Please try again after 15 minutes.",
+  message: "Too many authentication attempts. Please try again later.",
 });
 
 // A separate IP guard prevents unlimited credential attempts while still
