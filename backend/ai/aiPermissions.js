@@ -42,6 +42,12 @@ export const canUseAITool = async (user, toolName) => {
   const canonicalName = normalizeToolName(toolName);
   if (!allowedTools.has(toolName) && !allowedTools.has(canonicalName)) return false;
   if (["parent", "guardian", "student"].includes(userRole) && ["finance.summary", "attendance.summary"].includes(toolName)) return false;
+
+  // The directory exposes only non-sensitive identity fields and is already
+  // restricted to the authenticated user's school, so it does not require
+  // creating a separate stored permission before it can be used.
+  if (canonicalName === "getUserDirectory") return true;
+
   const explicitPermission = `ai.${canonicalName}`;
   const hasStoredPermissions = Boolean(user?.roleId);
   return !hasStoredPermissions || (await hasPermission(user, explicitPermission));
