@@ -8,12 +8,6 @@ import {
   Copy,
   CheckCircle2,
   AlertCircle,
-  TrendingUp,
-  Users,
-  CreditCard,
-  GraduationCap,
-  Calendar,
-  BookOpen,
 } from "lucide-react";
 import { UserContext } from "../../../context/UserContext";
 import { aiApi } from "../../../services/aiApi";
@@ -116,7 +110,7 @@ export default function AskNuvoraPage() {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      setError(err.message || "Failed to get an answer from Nuvora AI. Please try again.");
+      setError(err.message || "Failed to get an answer from Nuvora. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -150,11 +144,10 @@ export default function AskNuvoraPage() {
   return (
     <div className="ask-nuvora-page">
       <div className="ask-nuvora-context">
-        <p className="ask-nuvora-context-label">Workspace assistant</p>
+        <p className="ask-nuvora-context-label">Nuvora assistant</p>
         <h1 className="ask-nuvora-context-title">Get clarity from your school data.</h1>
       </div>
 
-      {/* Header */}
       <header className="ask-nuvora-header">
         <div className="ask-nuvora-header-left">
           <div className="ask-nuvora-icon-badge">
@@ -162,7 +155,7 @@ export default function AskNuvoraPage() {
           </div>
           <div>
             <h1 className="ask-nuvora-title">
-              Ask Nuvora
+              Nuvora
               <span className="ask-nuvora-tag">{role}</span>
             </h1>
             <p className="ask-nuvora-subtitle">
@@ -186,7 +179,6 @@ export default function AskNuvoraPage() {
         )}
       </header>
 
-      {/* Messages Container */}
       <div className="ask-nuvora-messages-container">
         {messages.length === 0 ? (
           <div className="ask-nuvora-empty-state">
@@ -196,7 +188,7 @@ export default function AskNuvoraPage() {
             <h2 className="ask-nuvora-empty-title">What would you like to know?</h2>
             <p className="ask-nuvora-empty-desc">
               Ask questions in plain language about attendance, academic results, school operations,
-              or fee summaries. Nuvora AI only accesses data you are authorized to see.
+              or fee summaries. Nuvora only accesses data you are authorized to see.
             </p>
 
             <div className="ask-nuvora-suggestions">
@@ -223,7 +215,6 @@ export default function AskNuvoraPage() {
               <div className="ask-nuvora-bubble">
                 <div className="whitespace-pre-wrap">{msg.content}</div>
 
-                {/* Structured Data Highlights */}
                 {msg.data && (
                   <div className="ask-nuvora-data-card">
                     <div className="font-semibold text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
@@ -311,7 +302,7 @@ export default function AskNuvoraPage() {
               <Bot size={18} />
             </div>
             <div className="ask-nuvora-bubble ask-nuvora-loading">
-              <span>Checking school records</span>
+              <span>Nuvora is checking school records</span>
               <div className="ask-nuvora-typing-dots">
                 <div className="ask-nuvora-typing-dot" />
                 <div className="ask-nuvora-typing-dot" />
@@ -333,14 +324,13 @@ export default function AskNuvoraPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Form */}
       <div className="ask-nuvora-input-card">
         <form onSubmit={handleSubmit} className="ask-nuvora-form">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask about attendance, results, fees, or school overview..."
+            placeholder="Ask Nuvora about attendance, results, fees, or school activity..."
             className="ask-nuvora-textarea"
             rows={1}
             disabled={loading}
