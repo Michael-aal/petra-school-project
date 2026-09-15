@@ -19,9 +19,6 @@ const resolveApiBaseUrl = () => {
 
 export const API_BASE_URL = resolveApiBaseUrl();
 
-// A tab session is intentionally isolated with sessionStorage. TAB_MODE_KEY
-// stays present even if an access token expires, so the browser tab can never
-// silently fall back to another tab's shared HttpOnly cookie.
 const TAB_ACCESS_KEY = "petra_tab_access";
 const TAB_REFRESH_KEY = "petra_tab_refresh";
 const TAB_MODE_KEY = "petra_tab_auth_mode";
@@ -31,7 +28,7 @@ const getTabStorage = () => {
   try { return window.sessionStorage; } catch { return null; }
 };
 
-const isTabAuthMode = () => getTabStorage()?.getItem(TAB_MODE_KEY) === "1";
+export const isTabAuthMode = () => getTabStorage()?.getItem(TAB_MODE_KEY) === "1";
 
 export const readAuthToken = () => getTabStorage()?.getItem(TAB_ACCESS_KEY) || null;
 
@@ -90,11 +87,9 @@ async function request(path, options = {}, { tabCredential = true } = {}) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    // Do not clear TAB_MODE_KEY on 401. Keeping tab mode active prevents the
-    // next request from falling back to another account's browser cookie.
-    if (response.status === 401) {
-      getTabStorage()?.removeItem(TAB_ACCESS_KEY);
-    }
+    // Keep tab mode on 401 so this tab cannot fall back to another account's
+    // shared cookie on a later request.
+    if (response.status === 401) getTabStorage()?.removeItem(TAB_ACCESS_KEY);
     const error = new Error(data.message || "Request failed");
     error.status = response.status;
     error.data = data;
