@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   CheckCircle2,
   Clock3,
+  Copy,
   Eye,
   GraduationCap,
   Search,
@@ -27,6 +28,7 @@ export default function TeacherApplicationsPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState(null);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [error, setError] = useState("");
 
   const load = async () => {
@@ -75,6 +77,7 @@ export default function TeacherApplicationsPage() {
   const updateStatus = async (application, nextStatus) => {
     setSavingId(application.id);
     setError("");
+    setCopiedCode(false);
     try {
       const response = await teacherApplicationApi.updateStatus(application.id, nextStatus);
       const updated = response.application;
@@ -84,6 +87,17 @@ export default function TeacherApplicationsPage() {
       setError(requestError?.data?.message || requestError?.message || "Unable to update application.");
     } finally {
       setSavingId(null);
+    }
+  };
+
+  const copyRegistrationCode = async () => {
+    if (!selected?.registrationCode) return;
+    try {
+      await navigator.clipboard.writeText(selected.registrationCode);
+      setCopiedCode(true);
+      window.setTimeout(() => setCopiedCode(false), 1800);
+    } catch {
+      setError("Unable to copy the registration code. Copy it manually instead.");
     }
   };
 
@@ -135,7 +149,7 @@ export default function TeacherApplicationsPage() {
                 </div>
                 <div className="teacher-app-qualification"><GraduationCap size={16} /><span>{application.qualification || "Qualification not provided"}</span></div>
                 <span className={`teacher-app-status status-${application.status || "pending"}`}>{STATUS_LABELS[application.status] || application.status}</span>
-                <button type="button" className="teacher-app-view" onClick={() => setSelected(application)}><Eye size={16} /> View</button>
+                <button type="button" className="teacher-app-view" onClick={() => { setSelected(application); setCopiedCode(false); }}><Eye size={16} /> View</button>
               </article>
             ))}
           </div>
@@ -159,6 +173,18 @@ export default function TeacherApplicationsPage() {
               {selected.status !== "approved" ? <button disabled={savingId === selected.id} onClick={() => updateStatus(selected, "approved")} className="primary">Approve</button> : null}
               {selected.status !== "rejected" ? <button disabled={savingId === selected.id} onClick={() => updateStatus(selected, "rejected")} className="danger">Reject</button> : null}
             </div>
+
+            {selected.status === "approved" && selected.registrationCode ? (
+              <section className="teacher-registration-code-card">
+                <div>
+                  <span>Teacher Registration Code</span>
+                  <strong>{selected.registrationCode}</strong>
+                  <small>Give this code to the approved teacher. It activates the existing Teacher record and can only be used once.</small>
+                </div>
+                <button type="button" onClick={copyRegistrationCode} title="Copy registration code"><Copy size={17} />{copiedCode ? "Copied" : "Copy"}</button>
+                <small className="teacher-registration-link">Registration: {window.location.origin}/register/staff?token={encodeURIComponent(selected.registrationCode)}</small>
+              </section>
+            ) : null}
 
             <DetailSection title="Personal Information" items={[
               ["Email", selected.email], ["Phone", selected.phone], ["Gender", selected.gender], ["Date of birth", formatDate(selected.dateOfBirth)],
