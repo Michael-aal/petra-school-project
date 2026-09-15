@@ -1,4 +1,4 @@
-const SW_VERSION = "petra-push-v5";
+const SW_VERSION = "petra-push-v6";
 
 const postDiagnostic = async (payload) => {
   const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
@@ -38,15 +38,9 @@ self.addEventListener("push", (event) => {
       tag: String(payload.tag || `${SW_VERSION}-${Date.now()}`),
     };
 
-    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    const visibleClient = clients.find((client) => client.visibilityState === "visible");
-
-    if (visibleClient && payload.forceExternal !== true) {
-      visibleClient.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
-      await postDiagnostic({ phase: "in-app", ok: true, notificationId: notificationPayload.notificationId });
-      return;
-    }
-
+    // Always create a real system notification. This is intentional even when
+    // Petra is the active tab: users opted into device alerts and should get
+    // the same external notification regardless of tab visibility.
     try {
       if (typeof self.registration.showNotification !== "function") {
         throw new Error("Service worker showNotification() is unavailable in this browser.");
@@ -75,6 +69,13 @@ self.addEventListener("push", (event) => {
         error: String(error?.message || error || "showNotification() failed").slice(0, 300),
       });
       throw error;
+    }
+
+    // Keep the existing in-app experience too. The page can display its
+    // persistent popup without replacing or deleting the notification above.
+    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of clients) {
+      client.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
     }
   })());
 });
