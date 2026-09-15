@@ -12,8 +12,17 @@ const isDevelopmentLocalOrigin = (origin) => {
   return isLocalDevelopmentOrigin(origin) && process.env.NODE_ENV !== "production";
 };
 
+const isLocalLoadTestRequest = (req) => {
+  if (process.env.NODE_ENV === "production") return false;
+  if (String(process.env.LOAD_TEST_MODE || "").toLowerCase() !== "true") return false;
+  const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
+  return isLocalDevelopmentOrigin(origin) && req.get("x-petra-load-test") === "1";
+};
+
 export const originLock = (req, res, next) => {
   if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
+
+  if (isLocalLoadTestRequest(req)) return next();
 
   const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
   if (isDevelopmentLocalOrigin(origin)) return next();
