@@ -16,9 +16,9 @@ const ROLE_CONFIG = {
 export const options = {
   setupTimeout: '2m',
   scenarios: {
-    admin_users: { executor: 'ramping-vus', exec: 'adminWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 75 }, { duration: '1m', target: 250 }, { duration: '1m', target: 500 }, { duration: '1m', target: 750 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
-    parent_users: { executor: 'ramping-vus', exec: 'parentWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 150 }, { duration: '1m', target: 500 }, { duration: '1m', target: 1000 }, { duration: '1m', target: 1500 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
-    staff_users: { executor: 'ramping-vus', exec: 'staffWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 75 }, { duration: '1m', target: 250 }, { duration: '1m', target: 500 }, { duration: '1m', target: 750 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
+    admin_users: { executor: 'ramping-vus', exec: 'adminWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 250 }, { duration: '1m', target: 1000 }, { duration: '1m', target: 1750 }, { duration: '1m', target: 2500 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
+    parent_users: { executor: 'ramping-vus', exec: 'parentWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 500 }, { duration: '1m', target: 2000 }, { duration: '1m', target: 3500 }, { duration: '1m', target: 5000 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
+    staff_users: { executor: 'ramping-vus', exec: 'staffWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 250 }, { duration: '1m', target: 1000 }, { duration: '1m', target: 1750 }, { duration: '1m', target: 2500 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
   },
   thresholds: {
     http_req_failed: [{ threshold: 'rate<0.01', abortOnFail: false }],
