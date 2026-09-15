@@ -10,9 +10,19 @@ const urlBase64ToUint8Array = (value) => {
 const getRegistration = async () => {
   if (!("serviceWorker" in navigator)) throw new Error("This browser does not support service workers.");
   if (!window.isSecureContext) throw new Error("Device notifications require HTTPS or localhost.");
+
   const registration = await navigator.serviceWorker.register("/petra-push-sw.js", { scope: "/" });
   await registration.update();
-  return registration;
+
+  // registration.update() only checks for a newer worker; it does not guarantee
+  // that the new worker is active yet. Push subscriptions must be read from the
+  // active registration so the browser and the installed SW stay on the same path.
+  const activeRegistration = await navigator.serviceWorker.ready;
+  if (!activeRegistration.active) {
+    throw new Error("Petra's notification service worker is not active yet. Refresh the page and try again.");
+  }
+
+  return activeRegistration;
 };
 
 const getPermissionError = (permission) => {
@@ -42,7 +52,6 @@ export const pushNotificationService = {
     if (permission !== "granted") throw new Error(getPermissionError(permission));
 
     const registration = await getRegistration();
-    await navigator.serviceWorker.ready;
 
     const { publicKey } = await request("/api/notifications/push/public-key");
     if (!publicKey) throw new Error("Petra device notifications are not configured yet.");
@@ -74,6 +83,7 @@ export const pushNotificationService = {
       permission,
       serviceWorkerRegistered: false,
       serviceWorkerActive: false,
+      serviceWorkerVersion: null,
       subscription: false,
       endpoint: null,
       backendConfigured: false,
@@ -92,6 +102,7 @@ export const pushNotificationService = {
       const registration = await getRegistration();
       result.serviceWorkerRegistered = Boolean(registration);
       result.serviceWorkerActive = Boolean(registration.active);
+      result.serviceWorkerVersion = registration.active?.scriptURL || null;
 
       if (permission !== "granted") return result;
 
