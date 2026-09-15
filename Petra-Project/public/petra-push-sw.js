@@ -1,4 +1,4 @@
-const SW_VERSION = "petra-push-v2";
+const SW_VERSION = "petra-push-v3";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -20,22 +20,35 @@ self.addEventListener("push", (event) => {
       };
     }
 
-    const title = String(payload.title || "Petra School");
-    const options = {
+    const notificationPayload = {
+      title: String(payload.title || "Petra School"),
       body: String(payload.body || "You have a new notification."),
+      url: payload.url || "/dashboard/communication/notifications",
+      notificationId: payload.notificationId || null,
       tag: String(payload.tag || `${SW_VERSION}-${Date.now()}`),
+    };
+
+    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const visibleClient = clients.find((client) => client.visibilityState === "visible");
+
+    if (visibleClient) {
+      visibleClient.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
+      return;
+    }
+
+    await self.registration.showNotification(notificationPayload.title, {
+      body: notificationPayload.body,
+      tag: notificationPayload.tag,
       renotify: true,
       requireInteraction: true,
       silent: false,
       icon: "/favicon.ico",
       badge: "/favicon.ico",
       data: {
-        url: payload.url || "/dashboard/communication/notifications",
-        notificationId: payload.notificationId || null,
+        url: notificationPayload.url,
+        notificationId: notificationPayload.notificationId,
       },
-    };
-
-    await self.registration.showNotification(title, options);
+    });
   })());
 });
 
