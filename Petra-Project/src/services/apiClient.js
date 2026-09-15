@@ -13,10 +13,17 @@ export const request = async (path, options = {}) => {
     headers["x-school-id"] = selectedSchoolId;
   }
 
+  const body = options.body;
+  const serializedBody =
+    body !== undefined && body !== null && typeof body === "object" && !(body instanceof FormData)
+      ? JSON.stringify(body)
+      : body;
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     credentials: "include",
     headers,
+    body: serializedBody,
   });
 
   const data = await response.json().catch(() => ({}));
