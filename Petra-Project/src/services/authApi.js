@@ -90,7 +90,7 @@ export const authApi = {
   revokeStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations/revoke", payload),
   regenerateStaffInvitationCode: (payload) => authRequest("/api/auth/staff/invitations/regenerate", payload),
   managedTeachers: () =>
-    request("/api/auth/staff/teachers?includeSensitive=1", {
+    request("/api/auth/staff/teachers", {
       method: "GET",
       cache: "no-store",
     }),
@@ -134,6 +134,5 @@ export const authApi = {
   deleteAccount: (payload) =>
     request("/api/auth/account", {
       method: "DELETE",
-      body: JSON.stringify(payload),
     }),
 };
