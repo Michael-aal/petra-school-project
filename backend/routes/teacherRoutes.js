@@ -1,7 +1,5 @@
 import { Router } from "express";
 import { protect, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
-import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
-import { createTeacherApplication } from "../controllers/teacherApplicationController.js";
 import {
   createTeacherAnnouncement,
   createTeacherAssessment,
@@ -24,9 +22,6 @@ import {
 } from "../controllers/teacherController.js";
 
 const router = Router();
-
-// Public recruitment application. The school is supplied by the school's application link.
-router.post("/applications", requirePublicSchoolContext("body"), createTeacherApplication);
 
 const teacherOrAdmin = requireRole(["teacher", "principal"]);
 
