@@ -9,21 +9,24 @@ import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/red
 // Bump this whenever authentication limiter semantics change so stale Redis
 // buckets from an older configuration cannot lock legitimate users out.
 const RATE_LIMIT_VERSION = "v4";
+const LOAD_TEST_MODE = process.env.LOAD_TEST_MODE === "true" && process.env.NODE_ENV !== "production";
+const LOAD_TEST_MAX = 100000;
 const localLimiters = new Map();
 const testHits = new Map();
 
 const createLimiter = ({ keyPrefix, windowMs, max }) => {
+  const effectiveMax = LOAD_TEST_MODE ? Math.max(max, LOAD_TEST_MAX) : max;
   if (process.env.NODE_ENV === "test") {
-    return new RateLimiterMemory({ keyPrefix, points: max, duration: Math.ceil(windowMs / 1000) });
+    return new RateLimiterMemory({ keyPrefix, points: effectiveMax, duration: Math.ceil(windowMs / 1000) });
   }
   if (!redisClient) return null;
   return new RateLimiterRedis({
     storeClient: redisClient,
     keyPrefix,
-    points: max,
+    points: effectiveMax,
     duration: Math.ceil(windowMs / 1000),
     blockDuration: Math.ceil(windowMs / 1000),
-    inmemoryBlockOnConsumed: max + 1,
+    inmemoryBlockOnConsumed: effectiveMax + 1,
     inmemoryBlockDuration: Math.ceil(windowMs / 1000),
   });
 };
@@ -35,7 +38,8 @@ const lockAndConsume = async (limiter, key, scope) => {
     : limiter.consume(key);
 
   if (!redlock || !redisClient) return consume();
-  const resource = `petra:rate-limit-lock:${RATE_LIMIT_VERSION}:${scope}:${key}`;
+  const mode = LOAD_TEST_MODE ? "load" : "normal";
+  const resource = `petra:rate-limit-lock:${RATE_LIMIT_VERSION}:${mode}:${scope}:${key}`;
   const lock = await measureRedis("rate_limit_lock", () => redlock.acquire([resource], 1000));
   try {
     return await consume();
@@ -66,7 +70,9 @@ export const createRateLimiter = ({
   keyGenerator = (req) => `${req.ip || "unknown"}_${req.originalUrl}`,
   scope = "api",
 } = {}) => {
-  const limiter = createLimiter({ keyPrefix: `petra:rate-limit:${RATE_LIMIT_VERSION}:${scope}`, windowMs, max });
+  const effectiveMax = LOAD_TEST_MODE ? Math.max(max, LOAD_TEST_MAX) : max;
+  const mode = LOAD_TEST_MODE ? "load" : "normal";
+  const limiter = createLimiter({ keyPrefix: `petra:rate-limit:${RATE_LIMIT_VERSION}:${mode}:${scope}`, windowMs, max: effectiveMax });
   if (limiter) localLimiters.set(scope, limiter);
 
   return async (req, res, next) => {
@@ -74,7 +80,7 @@ export const createRateLimiter = ({
     if (process.env.NODE_ENV === "test") {
       const now = Date.now();
       const timestamps = (testHits.get(`${scope}:${key}`) || []).filter((time) => now - time < windowMs);
-      if (timestamps.length >= max) {
+      if (timestamps.length >= effectiveMax) {
         rateLimitHits.inc({ scope });
         const retryAfterSeconds = Math.max(1, Math.ceil((timestamps[0] + windowMs - now) / 1000));
         res.setHeader("Retry-After", retryAfterSeconds);
