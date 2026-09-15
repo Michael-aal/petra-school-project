@@ -14,9 +14,6 @@ const getRegistration = async () => {
   const registration = await navigator.serviceWorker.register("/petra-push-sw.js", { scope: "/" });
   await registration.update();
 
-  // registration.update() only checks for a newer worker; it does not guarantee
-  // that the new worker is active yet. Push subscriptions must be read from the
-  // active registration so the browser and the installed SW stay on the same path.
   const activeRegistration = await navigator.serviceWorker.ready;
   if (!activeRegistration.active) {
     throw new Error("Petra's notification service worker is not active yet. Refresh the page and try again.");
@@ -132,6 +129,32 @@ export const pushNotificationService = {
   },
 
   sendTest: async () => request("/api/notifications/push/test", { method: "POST" }),
+
+  // This deliberately bypasses the Web Push network path. It proves whether
+  // Chrome + the service worker + the operating system can display a notification.
+  // If this appears but the push test does not, the failure is upstream of the OS UI.
+  testSystemNotification: async () => {
+    if (!pushNotificationService.isSupported()) {
+      throw new Error("System notification testing is not supported in this browser/context.");
+    }
+    if (Notification.permission !== "granted") {
+      throw new Error(getPermissionError(Notification.permission));
+    }
+
+    const registration = await getRegistration();
+    await registration.showNotification("Petra School system test", {
+      body: "Chrome successfully displayed a local system notification from Petra.",
+      tag: `petra-system-test-${Date.now()}`,
+      renotify: true,
+      requireInteraction: true,
+      silent: false,
+      icon: "/favicon.ico",
+      badge: "/favicon.ico",
+      data: { url: "/dashboard/communication/notifications", systemTest: true },
+    });
+
+    return { sent: true };
+  },
 
   disable: async () => {
     if (!pushNotificationService.isSupported()) return { removed: 0 };
