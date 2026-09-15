@@ -7,3 +7,7 @@ ALTER TABLE "Announcement"
   ADD COLUMN "isDraft" BOOLEAN NOT NULL DEFAULT false,
   ADD COLUMN "publishAt" TIMESTAMP(3),
   ADD COLUMN "expiryAt" TIMESTAMP(3);
+
+-- Draft announcements are intentionally allowed to have no publication timestamp.
+ALTER TABLE "Announcement"
+  ALTER COLUMN "publishedAt" DROP NOT NULL;
