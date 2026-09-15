@@ -89,6 +89,19 @@ export const authApi = {
   createStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations", payload),
   revokeStaffInvitation: (payload) => authRequest("/api/auth/staff/invitations/revoke", payload),
   regenerateStaffInvitationCode: (payload) => authRequest("/api/auth/staff/invitations/regenerate", payload),
+  managedTeachers: () =>
+    request("/api/auth/staff/teachers", {
+      method: "GET",
+      cache: "no-store",
+    }),
+  deactivateTeacher: (teacherUserId) =>
+    request(`/api/auth/staff/teachers/${encodeURIComponent(teacherUserId)}/deactivate`, {
+      method: "PATCH",
+    }),
+  reactivateTeacher: (teacherUserId) =>
+    request(`/api/auth/staff/teachers/${encodeURIComponent(teacherUserId)}/reactivate`, {
+      method: "PATCH",
+    }),
   parentRegister: (payload) => authRequest("/api/auth/parent/register", payload).then(persistToken),
   linkChild: (payload) => authRequest("/api/auth/parent/link-child", payload),
   login: (payload) => authRequest("/api/auth/login", payload).then(persistToken),
@@ -124,4 +137,3 @@ export const authApi = {
       body: JSON.stringify(payload),
     }),
 };
-
