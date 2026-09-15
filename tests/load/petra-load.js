@@ -16,9 +16,31 @@ const ROLE_CONFIG = {
 export const options = {
   setupTimeout: '2m',
   scenarios: {
+    // Full authenticated role load test: maximum 10,000 VUs.
     admin_users: { executor: 'ramping-vus', exec: 'adminWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 250 }, { duration: '1m', target: 1000 }, { duration: '1m', target: 1750 }, { duration: '1m', target: 2500 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
     parent_users: { executor: 'ramping-vus', exec: 'parentWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 500 }, { duration: '1m', target: 2000 }, { duration: '1m', target: 3500 }, { duration: '1m', target: 5000 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
     staff_users: { executor: 'ramping-vus', exec: 'staffWorkflow', startVUs: 0, stages: [{ duration: '30s', target: 250 }, { duration: '1m', target: 1000 }, { duration: '1m', target: 1750 }, { duration: '1m', target: 2500 }, { duration: '30s', target: 0 }], gracefulRampDown: '10s' },
+
+    // Diagnostic: isolates the authenticated /api/auth/me path.
+    // Maximum 1,000 VUs with plateaus at 100, 250, 500 and 1,000.
+    // Disabled by default; run with DIAGNOSTIC_AUTH_ME=true.
+    auth_me_diagnostic: {
+      executor: 'ramping-vus',
+      exec: 'authMeDiagnostic',
+      startVUs: 0,
+      stages: [
+        { duration: '30s', target: 100 },
+        { duration: '45s', target: 100 },
+        { duration: '30s', target: 250 },
+        { duration: '45s', target: 250 },
+        { duration: '30s', target: 500 },
+        { duration: '45s', target: 500 },
+        { duration: '30s', target: 1000 },
+        { duration: '45s', target: 1000 },
+        { duration: '30s', target: 0 },
+      ],
+      gracefulRampDown: '10s',
+    },
   },
   thresholds: {
     http_req_failed: [{ threshold: 'rate<0.01', abortOnFail: false }],
@@ -45,7 +67,9 @@ function login(role) {
 }
 
 export function setup() {
-  return { adminToken: login('admin'), parentToken: login('parent'), staffToken: login('staff') };
+  const data = { adminToken: login('admin'), parentToken: login('parent'), staffToken: login('staff') };
+  if (__ENV.DIAGNOSTIC_AUTH_ME === 'true') data.diagnosticToken = data.adminToken;
+  return data;
 }
 
 function request(path, role, token, operation) {
@@ -62,3 +86,8 @@ function authenticatedWorkflow(role, token) {
 export function adminWorkflow(data) { authenticatedWorkflow('admin', data.adminToken); }
 export function parentWorkflow(data) { authenticatedWorkflow('parent', data.parentToken); }
 export function staffWorkflow(data) { authenticatedWorkflow('staff', data.staffToken); }
+
+export function authMeDiagnostic(data) {
+  request('/api/auth/me', 'auth_me_diagnostic', data.diagnosticToken || data.adminToken, 'api_auth_me');
+  sleep(1);
+}
