@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { pushNotificationService } from "./pushNotificationService.js";
 
 const normalizeSchoolId = (user) => {
   if (!user || user.schoolId === undefined || user.schoolId === null) {
@@ -156,7 +157,7 @@ export const messageService = {
       },
     });
 
-    await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         schoolId,
         userId: recipient.id,
@@ -164,6 +165,14 @@ export const messageService = {
         body: payload.subject ? String(payload.subject).trim() : "You received a new message.",
       },
     });
+
+    void pushNotificationService.sendToUser(recipient.id, {
+      title: "New message",
+      body: payload.subject ? String(payload.subject).trim() : "You received a new message.",
+      notificationId: notification.id,
+      url: "/messages",
+      tag: `message-${notification.id}`,
+    }).catch(() => {});
 
     return message;
   },
