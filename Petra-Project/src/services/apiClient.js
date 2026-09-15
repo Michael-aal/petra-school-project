@@ -1,6 +1,6 @@
-import { API_BASE_URL, clearAuthToken, isTabAuthMode, readAuthToken } from "./authApi";
+import { API_BASE_URL, authApi, clearAuthToken, isTabAuthMode, readAuthToken } from "./authApi";
 
-export const request = async (path, options = {}) => {
+export const request = async (path, options = {}, retryAuth = true) => {
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
@@ -39,9 +39,21 @@ export const request = async (path, options = {}) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    // A dashboard request can hit a normal 15-minute access-token expiry.
+    // Refresh the credentials belonging ONLY to this browser tab, then retry
+    // the original request once. Never clear the tab's refresh credential here.
+    if (response.status === 401 && retryAuth && isTabAuthMode() && !path.includes("/api/auth/refresh")) {
+      try {
+        await authApi.refresh();
+        return request(path, options, false);
+      } catch {
+        // The refresh token is invalid/revoked; surface the original 401 below.
+      }
+    }
+
     if (response.status === 401) {
-      // Clear only the access token. Keep tab-auth mode so a failed/expired
-      // tab session can never fall through to another tab's cookie.
+      // Clear only the access token. Keep tab-auth mode and the refresh token
+      // so another request cannot fall through to a different tab's cookie.
       try {
         window.sessionStorage.removeItem("petra_tab_access");
       } catch {
