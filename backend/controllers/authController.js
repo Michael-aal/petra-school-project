@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import crypto from "node:crypto";
+import jwt from "jsonwebtoken";
 import { authService } from "../services/authService.js";
 import { teacherInvitationService } from "../services/teacherInvitationService.js";
 import { teacherManagementService } from "../services/teacherManagementService.js";
@@ -26,8 +27,12 @@ const issueSession = async (req, res, result) => {
   const currentUser = await userModel.findById(user.id);
   if (!currentUser) return result;
 
-  const { token: accessToken } = await sessionService.create({ user: currentUser, req });
-  const refreshToken = crypto.randomBytes(48).toString("base64url");
+  const { session, token: accessToken } = await sessionService.create({ user: currentUser, req });
+  // Bind the refresh credential to the exact session that created it. This
+  // lets a tab refresh rotate only its own session instead of accumulating
+  // new sessions or revoking another tab's session.
+  const refreshTokenSecret = crypto.randomBytes(48).toString("base64url");
+  const refreshToken = `${session.id}.${refreshTokenSecret}`;
   const now = Date.now();
   await sessionModel.createRefreshToken({
     userId: user.id,
@@ -187,6 +192,23 @@ const readCookie = (req, name) => {
   return item ? decodeURIComponent(item.slice(name.length + 1)) : "";
 };
 
+const readBearerSessionId = (req) => {
+  const header = String(req.get("authorization") || "");
+  if (!header.toLowerCase().startsWith("bearer ")) return null;
+  const token = header.slice(7).trim();
+  if (!token) return null;
+  try {
+    return jwt.decode(token)?.sid || jwt.decode(token)?.sessionId || null;
+  } catch {
+    return null;
+  }
+};
+
+const readRefreshSessionId = (refreshToken) => {
+  const candidate = String(refreshToken || "").split(".")[0];
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(candidate) ? candidate : null;
+};
+
 export const refreshSession = async (req, res, next) => {
   try {
     const tabRefreshToken = req.get("x-petra-tab-refresh");
@@ -198,7 +220,15 @@ export const refreshSession = async (req, res, next) => {
     if (!storedToken) return res.status(401).json({ success: false, message: "Refresh token expired or revoked" });
 
     await sessionModel.revokeRefreshToken(storedToken.id);
-    if (!tabRequest) await sessionService.revokeAll(storedToken.userId);
+
+    // Tab refreshes must rotate only the session that owns this refresh
+    // credential. Never revoke all sessions for a tab refresh.
+    if (tabRequest) {
+      const oldSessionId = readBearerSessionId(req) || readRefreshSessionId(refreshToken);
+      if (oldSessionId) await sessionService.revoke({ id: oldSessionId, userId: storedToken.userId });
+    } else {
+      await sessionService.revokeAll(storedToken.userId);
+    }
 
     const user = await authService.profile(storedToken.userId);
     if (tabRequest) req.headers["x-petra-tab-auth"] = "1";
