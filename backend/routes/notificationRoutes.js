@@ -11,6 +11,7 @@ import {
   getPushPublicKey,
   subscribeToPush,
   unsubscribeFromPush,
+  sendPushTest,
 } from "../controllers/pushNotificationController.js";
 
 const router = Router();
@@ -20,6 +21,7 @@ router.get("/unread-summary", protect, unreadNotificationSummary);
 router.get("/push/public-key", protect, getPushPublicKey);
 router.post("/push/subscribe", protect, subscribeToPush);
 router.post("/push/unsubscribe", protect, unsubscribeFromPush);
+router.post("/push/test", protect, sendPushTest);
 router.post("/section/:section/read", protect, markNotificationSectionRead);
 router.post("/read-all", protect, markAllNotificationsRead);
 router.post("/:id/read", protect, markNotificationRead);
