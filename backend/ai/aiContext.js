@@ -28,8 +28,7 @@ export const toolSchemas = {
   getStudentResults: z.object({
     schoolId: z.coerce.number().int().positive().optional(),
     studentId: z.string().trim().min(1).optional(),
-    termId: z.string().trim().optional(),
-    academicYearId: z.string().trim().optional(),
+    limit: z.coerce.number().int().min(1).max(25).optional(),
   }),
   getFeeSummary: z.object({
     schoolId: z.coerce.number().int().positive().optional(),
@@ -69,14 +68,12 @@ export const buildAIContext = async (user, request = {}) => {
       className: c.className,
       admissionNumber: c.admissionNumber,
     }));
-    // If request contains a preferred studentId or parent has exactly 1 child, set default
     if (request.selectedStudentId && context.linkedChildren.some((c) => c.id === request.selectedStudentId)) {
       context.defaultStudentId = request.selectedStudentId;
     } else if (context.linkedChildren.length === 1) {
       context.defaultStudentId = context.linkedChildren[0].id;
     }
   } else if (role === "student") {
-    // Resolve student record for authenticated student
     const studentRecord = await prisma.student.findFirst({
       where: {
         OR: [{ userId: user.id }, { id: user.linkedStudentId || undefined }],
