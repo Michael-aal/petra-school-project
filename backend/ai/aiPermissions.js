@@ -1,7 +1,6 @@
 import { normalizeRole } from "../utils/roleUtils.js";
 import { hasPermission } from "../utils/authorization.js";
 
-// Canonical mapping of tool aliases to primary tool names
 export const normalizeToolName = (toolName = "") => {
   const normalized = String(toolName || "").trim();
   const aliasMap = {
@@ -20,35 +19,25 @@ export const normalizeToolName = (toolName = "") => {
   return aliasMap[normalized] || normalized;
 };
 
+const SCHOOL_ADMIN_TOOLS = [
+  "getSchoolOverview",
+  "getAttendanceSummary",
+  "getStudentAttendance",
+  "getStudentResults",
+  "getFeeSummary",
+  "school.overview",
+  "attendance.summary",
+  "student.attendance",
+  "student.results",
+  "fees.outstanding",
+  "finance.summary",
+  "admissions.pending",
+];
+
 const roleToolDefaults = {
-  super_admin: new Set([
-    "getSchoolOverview",
-    "getAttendanceSummary",
-    "getStudentAttendance",
-    "getStudentResults",
-    "getFeeSummary",
-    "school.overview",
-    "attendance.summary",
-    "student.attendance",
-    "student.results",
-    "fees.outstanding",
-    "finance.summary",
-    "admissions.pending",
-  ]),
-  principal: new Set([
-    "getSchoolOverview",
-    "getAttendanceSummary",
-    "getStudentAttendance",
-    "getStudentResults",
-    "getFeeSummary",
-    "school.overview",
-    "attendance.summary",
-    "student.attendance",
-    "student.results",
-    "fees.outstanding",
-    "finance.summary",
-    "admissions.pending",
-  ]),
+  super_admin: new Set(SCHOOL_ADMIN_TOOLS),
+  superadmin: new Set(SCHOOL_ADMIN_TOOLS),
+  principal: new Set(SCHOOL_ADMIN_TOOLS),
   teacher: new Set([
     "getAttendanceSummary",
     "getStudentAttendance",
@@ -84,22 +73,19 @@ const roleToolDefaults = {
 };
 
 export const canUseAITool = async (user, toolName) => {
-  const role = normalizeRole(user?.role);
+  const userRole = normalizeRole(user?.role);
+  const allowedTools = roleToolDefaults[userRole];
+  if (!allowedTools) return false;
 
-  // Check specific tool name first against role permissions
-  if (!roleToolDefaults[role]?.has(toolName)) {
-    // If not directly present, also check canonical name only if specific name wasn't explicitly configured differently
-    const canonicalName = normalizeToolName(toolName);
-    // Explicit exclusions for narrow role scopes:
-    if (["parent", "guardian", "student"].includes(role) && (toolName === "finance.summary" || toolName === "attendance.summary")) {
-      return false;
-    }
-    if (!roleToolDefaults[role]?.has(canonicalName)) {
-      return false;
-    }
+  const canonicalName = normalizeToolName(toolName);
+  if (!allowedTools.has(toolName) && !allowedTools.has(canonicalName)) return false;
+
+  // Parents/guardians/students must never inherit school-wide attendance/finance aliases.
+  if (["parent", "guardian", "student"].includes(userRole) && ["finance.summary", "attendance.summary"].includes(toolName)) {
+    return false;
   }
 
-  const explicitPermission = `ai.${toolName}`;
+  const explicitPermission = `ai.${canonicalName}`;
   const hasStoredPermissions = Boolean(user?.roleId);
   return !hasStoredPermissions || (await hasPermission(user, explicitPermission));
 };
