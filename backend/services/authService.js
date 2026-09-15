@@ -50,7 +50,7 @@ const getNameParts = (fullName = "") => {
 const safeUser = (user) => {
   const { firstName, lastName } = getNameParts(user.fullName || "");
   const fallbackSchoolId = user.schoolId || user.principalProfile?.schoolId || user.adminProfile?.schoolId || user.teacherProfile?.schoolId || user.staffProfile?.schoolId || user.parentProfile?.schoolId || user.guardianProfile?.schoolId || user.studentProfile?.schoolId || null;
-  return { id: user.id, firstName: user.firstName || firstName, middleName: user.middleName || "", lastName: user.lastName || lastName, username: user.username || "", fullName: user.fullName || "", email: user.email, role: normalizeRole(user.role), phone: user.phone || "", institution: user.institution || "", institutionType: user.institutionType || "", state: user.state || "", city: user.city || "", hearAbout: user.hearAbout || "", staffRole: user.staffRole || "", staffDepartment: user.staffDepartment || "", staffClassAssigned: user.staffClassAssigned || "", staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [], accountStatus: user.accountStatus || "active", schoolId: fallbackSchoolId, profilePicture: user.profilePicture || "", profileImage: user.profileImage || user.profilePicture || "", linkedStudentId: user.linkedStudentId || null };
+  return { id: user.id, firstName: user.firstName || firstName, middleName: user.middleName || "", lastName: user.lastName || lastName, username: user.username || "", fullName: user.fullName || "", email: user.email, role: normalizeRole(user.role), phone: user.phone || "", institution: user.institution || "", institutionType: user.institutionType || "", state: user.state || "", city: user.city || "", hearAbout: user.hearAbout || "", staffRole: user.staffRole || "", staffDepartment: user.staffDepartment || "", staffClassAssigned: user.staffClassAssigned || "", staffSubjectsAssigned: Array.isArray(user.staffSubjectsAssigned) ? user.staffSubjectsAssigned : [], accountStatus: user.accountStatus || "active", schoolId: fallbackSchoolId, selectedSchoolId: user.selectedSchoolId || null, profilePicture: user.profilePicture || "", profileImage: user.profileImage || user.profilePicture || "", linkedStudentId: user.linkedStudentId || null };
 };
 const mapChild = (student) => ({ id: student.id, name: student.name || student.user?.fullName || [student.user?.firstName, student.user?.lastName].filter(Boolean).join(" ") || student.admissionNumber || "Unnamed learner", className: student.className || "", admissionNumber: student.admissionNumber || "", gender: student.gender || "", status: student.profile?.status || "active", parentId: student.parentId || "" });
 const makeCode = (prefix) => `${prefix}-${crypto.randomBytes(4).toString("hex").slice(0, 6).toUpperCase()}`;
@@ -99,6 +99,87 @@ export const authService = {
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }) };
   },
 
+  registerParent: async ({ firstName, middleName, lastName, fullName, username, email, password, phone, schoolId, institution, city, state } = {}) => {
+    const normalizedEmail = normalizeParentEmail(email);
+    const normalizedPhone = String(phone || "").trim() || null;
+    const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
+    const nameParts = splitNameParts({ firstName, middleName, lastName, fullName });
+    const fallbackParts = getNameParts(nameParts.fullName);
+    const finalFirstName = nameParts.firstName || fallbackParts.firstName;
+    const finalLastName = nameParts.lastName || fallbackParts.lastName;
+    const finalFullName = nameParts.fullName || [finalFirstName, nameParts.middleName, finalLastName].filter(Boolean).join(" ");
+
+    if (!normalizedEmail) throw buildPasswordError("Email is required");
+    if (!password) throw buildPasswordError("Password is required");
+    validatePasswordStrength(password);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
+    if (!finalFirstName || !finalLastName) throw buildPasswordError("First name and last name are required");
+
+    const school = await prisma.school.findUnique({ where: { id: resolvedSchoolId }, select: { id: true } });
+    if (!school) throw buildPasswordError("School not found");
+
+    const normalizedUsername = normalizeUsername(username || normalizedEmail.split("@")[0]);
+    if (!normalizedUsername) throw buildPasswordError("Username is required");
+
+    const [existingEmail, existingUsername, existingPhone] = await Promise.all([
+      userModel.findByEmail(normalizedEmail),
+      userModel.findByUsername(normalizedUsername),
+      normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null),
+    ]);
+    if (existingEmail) { const error = new Error("Email already in use"); error.statusCode = 409; throw error; }
+    if (existingUsername) { const error = new Error("Username already in use"); error.statusCode = 409; throw error; }
+    if (existingPhone) { const error = new Error("Phone number already in use"); error.statusCode = 409; throw error; }
+
+    const hashed = await hashPassword(password);
+    const parentCode = makeCode("PAR");
+    const user = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          firstName: finalFirstName,
+          middleName: nameParts.middleName || null,
+          lastName: finalLastName,
+          fullName: finalFullName,
+          username: normalizedUsername,
+          email: normalizedEmail,
+          password: hashed,
+          phone: normalizedPhone,
+          institution: institution || null,
+          city: city || null,
+          state: state || null,
+          role: "parent",
+          schoolId: resolvedSchoolId,
+          parentAccessCode: parentCode,
+          parentAccessCodeUsed: false,
+          accountStatus: "active",
+        },
+      });
+
+      await tx.parent.create({
+        data: {
+          userId: createdUser.id,
+          schoolId: resolvedSchoolId,
+          name: finalFullName,
+          phone: normalizedPhone,
+          email: normalizedEmail,
+        },
+      });
+
+      return createdUser;
+    });
+
+    return {
+      user: safeUser(user),
+      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: resolvedSchoolId, sessionVersion: user.sessionVersion }),
+      parentAccessCode: parentCode,
+    };
+  },
+
+  listStaffInvitations: async (schoolId) => {
+    const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
+    return userModel.listStaffInvitations(resolvedSchoolId);
+  },
+
   login: async ({ email, password }) => {
     const normalizedEmail = String(email || "").trim().toLowerCase();
     const normalizedPassword = String(password || "");
@@ -111,6 +192,65 @@ export const authService = {
     logger.info("authService.login: user authenticated", { userId: user.id, role: user.role });
     await logAudit({ userId: user.id, schoolId: user.schoolId, action: "auth.login", entity: "User" });
     return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: user.schoolId || null, sessionVersion: user.sessionVersion }) };
+  },
+
+  selectSchool: async ({ userId, schoolId }) => {
+    const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) {
+      throw buildPasswordError("A valid school is required");
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true },
+    });
+
+    if (!user || normalizeRole(user.role) !== "super_admin") {
+      const error = new Error("Only Super Admin can select a school");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const school = await prisma.school.findUnique({
+      where: { id: resolvedSchoolId },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        email: true,
+        phone: true,
+        website: true,
+        country: true,
+        state: true,
+        city: true,
+        timezone: true,
+        logo: true,
+        isActive: true,
+      },
+    });
+
+    if (!school) {
+      const error = new Error("School not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (!school.isActive) {
+      const error = new Error("Cannot select an inactive school");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { selectedSchoolId: school.id },
+      select: { id: true, selectedSchoolId: true },
+    });
+
+    return {
+      selectedSchool: school,
+      selectedSchoolId: updatedUser.selectedSchoolId,
+    };
   },
 
   profile: async (userId) => {

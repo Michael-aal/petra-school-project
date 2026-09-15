@@ -18,7 +18,6 @@ export const queryAI = async (req, res, next) => {
       });
     }
 
-    // Limit conversation history to latest 10 messages for cost and token control
     const safeHistory = Array.isArray(conversationHistory)
       ? conversationHistory.slice(-10).map((m) => ({
           role: m.role === "assistant" || m.role === "model" ? "assistant" : "user",
@@ -35,10 +34,16 @@ export const queryAI = async (req, res, next) => {
     });
 
     if (result.statusCode && result.statusCode !== 200) {
-      return res.status(result.statusCode).json(result);
+      return res.status(result.statusCode).json({
+        ...result,
+        message: result.message || result.answer,
+      });
     }
 
-    return res.status(200).json(result);
+    return res.status(200).json({
+      ...result,
+      message: result.message || result.answer,
+    });
   } catch (error) {
     next(error);
   }

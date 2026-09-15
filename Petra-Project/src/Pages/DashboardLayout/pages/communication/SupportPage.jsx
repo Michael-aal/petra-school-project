@@ -1,245 +1,186 @@
-import '../page-styles/SupportPage.css';
- import { useState } from "react";
-import { 
-  HelpCircle, MessageSquare, Mail, Phone, BookOpen, ChevronDown, 
-  Send, AlertCircle, CheckCircle2, Clock, LifeBuoy 
-} from "lucide-react";
+import "../page-styles/SupportPage.css";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { AlertCircle, CheckCircle2, Clock, HelpCircle, LifeBuoy, MessageSquare, Search, Send, UserRound } from "lucide-react";
+import { UserContext } from "../../../../context/UserContext";
+import { supportApi } from "../../../../services/supportApi";
 
-// Mock FAQ Data
-const faqData = [
-  {
-    id: 1,
-    question: "How do I add a new student to the system?",
-    answer: "Navigate to the 'Students' module from the sidebar, click the '+ Add Student' button at the top right, fill in the required details (Name, Class, Parent Info), and click 'Save'. The student will instantly appear in your dashboard."
-  },
-  {
-    id: 2,
-    question: "How can I generate end-of-term report cards?",
-    answer: "Go to 'Examination' > 'Report Cards'. Select the current academic session and term, choose the target class, and click 'Generate Reports'. You can then download them as PDF or print them directly."
-  },
-  {
-    id: 3,
-    question: "What happens if a parent's payment fails?",
-    answer: "If a payment fails, the student's fee status will remain 'Unpaid'. You can view the failed transaction in 'Finance' > 'Payments'. The parent can retry the payment, or you can manually update the status if they paid via bank transfer."
-  },
-  {
-    id: 4,
-    question: "How do I change the active academic session?",
-    answer: "Go to 'Settings' > 'Academic Defaults'. Here you can update the Active Session and Active Term. Remember to click 'Save Academic Defaults' at the bottom of the card."
-  },
-];
+const statuses = ["Open", "In Progress", "Resolved", "Closed"];
+const categories = ["General", "Technical", "Billing", "Feature", "Account", "Other"];
+const priorities = ["Low", "Medium", "High", "Urgent"];
 
-// Mock Recent Tickets Data
-const initialTickets = [
-  { id: 1, subject: "Cannot upload school logo", category: "Technical", priority: "High", status: "In Progress", date: "2 days ago" },
-  { id: 2, subject: "Question about bulk student import", category: "General", priority: "Low", status: "Resolved", date: "1 week ago" },
-];
+const formatDate = (value) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+};
 
-export default function  SupportPage() {
-  const [activeFaq, setActiveFaq] = useState(null);
-  const [tickets, setTickets] = useState(initialTickets);
-  const [successMsg, setSuccessMsg] = useState("");
-  
-  const [ticketForm, setTicketForm] = useState({
-    subject: "",
-    category: "General",
-    priority: "Medium",
-    message: "",
-  });
+const normalizeRole = (role) => String(role || "").trim().toLowerCase().replace(/\s+/g, "_");
+const isPlatformRole = (role) => ["super_admin", "superadmin", "developer"].includes(normalizeRole(role));
 
-  const handleFaqToggle = (id) => {
-    setActiveFaq(activeFaq === id ? null : id);
+const requesterGroup = (role) => {
+  const normalized = normalizeRole(role);
+  if (normalized === "parent") return "Parents";
+  if (["staff", "teacher", "non_teaching_staff"].includes(normalized)) return "Staff";
+  if (["admin", "principal", "school_admin"].includes(normalized)) return "Admins";
+  return "Staff";
+};
+
+const groupTickets = (tickets) => ({
+  Parents: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Parents"),
+  Staff: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Staff"),
+  Admins: tickets.filter((ticket) => requesterGroup(ticket.createdBy?.role) === "Admins"),
+});
+
+const statusClass = (status) => `support-status support-status-${normalizeRole(status)}`;
+const priorityClass = (priority) => `support-priority support-priority-${normalizeRole(priority)}`;
+
+export default function SupportPage() {
+  const { userInfo } = useContext(UserContext);
+  const isPlatform = isPlatformRole(userInfo?.role);
+  const isSchoolAdmin = ["admin", "principal"].includes(normalizeRole(userInfo?.role));
+  const [tickets, setTickets] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reply, setReply] = useState("");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [form, setForm] = useState({ subject: "", category: "General", priority: "Medium", description: "" });
+
+  const load = async () => {
+    setLoading(true); setError("");
+    try {
+      const response = await supportApi.list({ limit: 50 });
+      setTickets(response.data?.tickets || []);
+    } catch (e) { setError(e.data?.message || e.message || "Unable to load support tickets"); }
+    finally { setLoading(false); }
   };
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setTicketForm((prev) => ({ ...prev, [name]: value }));
+  useEffect(() => { load(); }, []);
+
+  const openTicket = async (id) => {
+    try {
+      const response = await supportApi.get(id);
+      setSelected(response.data);
+      setError("");
+    } catch (e) { setError(e.data?.message || e.message || "Unable to open ticket"); }
   };
 
-  const handleSubmitTicket = (e) => {
-    e.preventDefault();
-    if (!ticketForm.subject || !ticketForm.message) return;
-
-    const newTicket = {
-      id: Date.now(),
-      subject: ticketForm.subject,
-      category: ticketForm.category,
-      priority: ticketForm.priority,
-      status: "Open",
-      date: "Just now",
-    };
-
-    setTickets((prev) => [newTicket, ...prev]);
-    setTicketForm({ subject: "", category: "General", priority: "Medium", message: "" });
-    setSuccessMsg("Ticket submitted successfully! We will get back to you soon.");
-    
-    setTimeout(() => setSuccessMsg(""), 4000);
+  const submit = async (event) => {
+    event.preventDefault();
+    setError("");
+    try {
+      await supportApi.create(form);
+      setForm({ subject: "", category: "General", priority: "Medium", description: "" });
+      await load();
+    } catch (e) { setError(e.data?.message || e.message || "Unable to submit ticket"); }
   };
+
+  const sendReply = async (event) => {
+    event.preventDefault();
+    if (!selected?.ticket?.id || !reply.trim()) return;
+    try {
+      const response = await supportApi.reply(selected.ticket.id, { body: reply.trim() });
+      setSelected(response.data); setReply(""); await load();
+    } catch (e) { setError(e.data?.message || e.message || "Unable to send reply"); }
+  };
+
+  const update = async (payload) => {
+    if (!selected?.ticket?.id) return;
+    try {
+      const response = await supportApi.update(selected.ticket.id, payload);
+      setSelected(response.data); await load();
+    } catch (e) { setError(e.data?.message || e.message || "Unable to update ticket"); }
+  };
+
+  const filteredTickets = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return tickets.filter((ticket) => {
+      const matchesStatus = statusFilter === "All" || ticket.status === statusFilter;
+      if (!matchesStatus) return false;
+      if (!term) return true;
+      return [ticket.subject, ticket.category, ticket.createdBy?.fullName, ticket.createdBy?.email, ticket.createdBy?.role]
+        .filter(Boolean).some((value) => String(value).toLowerCase().includes(term));
+    });
+  }, [tickets, search, statusFilter]);
+
+  const groupedTickets = useMemo(() => groupTickets(filteredTickets), [filteredTickets]);
+
+  const renderTicket = (ticket) => (
+    <button key={ticket.id} type="button" className={`ticket-item support-requester-item ${selected?.ticket?.id === ticket.id ? "is-selected" : ""}`} onClick={() => openTicket(ticket.id)}>
+      <div className="ticket-person-row">
+        <div className="support-person-avatar">{String(ticket.createdBy?.fullName || "U").trim().charAt(0).toUpperCase()}</div>
+        <div className="support-person-info">
+          <strong>{ticket.createdBy?.fullName || "Unknown user"}</strong>
+          <span>{ticket.createdBy?.role || "User"}{ticket.createdBy?.email ? ` • ${ticket.createdBy.email}` : ""}</span>
+        </div>
+        <span className={statusClass(ticket.status)}>{ticket.status}</span>
+      </div>
+      <div className="ticket-subject-line">{ticket.subject}</div>
+      <div className="ticket-bottom"><span>{ticket.category} · <span className={priorityClass(ticket.priority)}>{ticket.priority}</span></span><span>{formatDate(ticket.updatedAt)}</span></div>
+    </button>
+  );
+
+  const renderGroup = (label, items) => (
+    <section className="support-role-group" key={label}>
+      <div className="support-role-heading"><div><h4>{label}</h4><span>{items.length} request{items.length === 1 ? "" : "s"}</span></div></div>
+      {items.length ? <div className="tickets-list">{items.map(renderTicket)}</div> : <div className="support-role-empty">No {label.toLowerCase()} support requests.</div>}
+    </section>
+  );
 
   return (
     <div className="support-page">
-      {/* Header */}
       <div className="support-header">
         <div className="support-header-left">
-          <div className="support-icon-box">
-            <LifeBuoy size={24} />
-          </div>
-          <div>
-            <h2>Help & Support</h2>
-            <p>Find answers, submit a ticket, or contact our team directly.</p>
-          </div>
+          <div className="support-icon-box"><LifeBuoy size={23} /></div>
+          <div><h2>{isPlatform ? "Support Center" : "Help & Support"}</h2><p>{isPlatform ? "Review requests, talk to users, and manage support cases in one place." : "Report a problem or ask the Petra support team for help."}</p></div>
         </div>
+        {isPlatform && <div className="support-header-note"><UserRound size={16} /> Human support</div>}
       </div>
 
-      {/* Quick Contact Cards */}
-      <div className="support-quick-links">
-        <div className="quick-link-card">
-          <BookOpen size={20} className="ql-icon blue" />
-          <div>
-            <h4>Documentation</h4>
-            <p>Read our comprehensive guides.</p>
+      {error ? <div className="support-alert"><AlertCircle size={17} /> <span>{error}</span></div> : null}
+
+      {!isPlatform && (
+        <section className="support-card submit-card">
+          <div className="card-header"><div><h3><MessageSquare size={18} /> Submit a Support Ticket</h3><p>Tell the support team what happened and where it happened.</p></div></div>
+          <form className="ticket-form" onSubmit={submit}>
+            <div className="form-row"><div className="form-group"><label>Subject</label><input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="e.g. I cannot open my results" required /></div><div className="form-group"><label>Category</label><select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>{categories.map((x) => <option key={x}>{x}</option>)}</select></div></div>
+            <div className="form-row"><div className="form-group"><label>Priority</label><select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}>{priorities.map((x) => <option key={x}>{x}</option>)}</select></div><div className="form-group" style={{ flex: 2 }}><label>Describe the issue</label><textarea rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Include the page, action you took, and what went wrong..." required /></div></div>
+            <button type="submit" className="submit-ticket-btn"><Send size={16} /> Submit Ticket</button>
+          </form>
+        </section>
+      )}
+
+      <div className={`support-workspace ${isPlatform ? "developer-workspace" : ""}`}>
+        <section className="support-card inbox-card">
+          <div className="inbox-header">
+            <div><h3><Clock size={18} /> {isPlatform ? "Support Inbox" : "My Support Requests"}</h3><span>{filteredTickets.length} of {tickets.length} request{tickets.length === 1 ? "" : "s"}</span></div>
+            <button type="button" className="refresh-support-btn" onClick={load} title="Refresh">↻</button>
           </div>
-        </div>
-        <div className="quick-link-card">
-          <Mail size={20} className="ql-icon green" />
-          <div>
-            <h4>Email Support</h4>
-            <p>support@acceede.com</p>
+          <div className="support-filters">
+            <div className="support-search"><Search size={16} /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={isPlatform ? "Search people or requests..." : "Search requests..."} /></div>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label="Filter by status"><option>All</option>{statuses.map((x) => <option key={x}>{x}</option>)}</select>
           </div>
-        </div>
-        <div className="quick-link-card">
-          <Phone size={20} className="ql-icon orange" />
-          <div>
-            <h4>Call Us</h4>
-            <p>+234 800 000 0000</p>
-          </div>
-        </div>
+          {loading ? <div className="support-loading">Loading support requests…</div> : filteredTickets.length === 0 ? <div className="empty-tickets"><HelpCircle size={24} /><strong>{tickets.length ? "No matching requests" : "No support tickets yet"}</strong><p>{tickets.length ? "Try another search or status filter." : "New requests will appear here."}</p></div> : isPlatform ? <div className="support-role-groups">{renderGroup("Parents", groupedTickets.Parents)}{renderGroup("Staff", groupedTickets.Staff)}{renderGroup("Admins", groupedTickets.Admins)}</div> : <div className="tickets-list">{filteredTickets.map(renderTicket)}</div>}
+        </section>
+
+        <section className="support-card conversation-card">
+          {!selected ? (
+            <div className="conversation-empty"><div className="conversation-empty-icon"><MessageSquare size={26} /></div><h3>Select a support request</h3><p>Choose a request from the inbox to read the conversation and reply.</p></div>
+          ) : (
+            <>
+              <div className="conversation-header">
+                <div className="conversation-title"><div className="support-person-avatar large">{String(selected.ticket.createdBy?.fullName || "U").trim().charAt(0).toUpperCase()}</div><div><div className="conversation-kicker">{selected.ticket.createdBy?.role || "User"} · {selected.ticket.category}</div><h3>{selected.ticket.subject}</h3><p>{selected.ticket.createdBy?.fullName || "User"}{selected.ticket.createdBy?.email ? ` · ${selected.ticket.createdBy.email}` : ""}</p></div></div>
+                <div className="conversation-controls">{isPlatform || isSchoolAdmin ? <><select value={selected.ticket.status} onChange={(e) => update({ status: e.target.value })} aria-label="Ticket status">{statuses.map((x) => <option key={x}>{x}</option>)}</select><select value={selected.ticket.priority} onChange={(e) => update({ priority: e.target.value })} aria-label="Ticket priority">{priorities.map((x) => <option key={x}>{x}</option>)}</select></> : <span className={statusClass(selected.ticket.status)}>{selected.ticket.status}</span>}</div>
+              </div>
+              <div className="conversation-body"><div className="original-request"><span className="message-label">Original request</span><p>{selected.ticket.description}</p><small>Submitted {formatDate(selected.ticket.createdAt)}</small></div>{(selected.messages || []).map((message) => <div key={message.id} className={`conversation-message ${message.isInternal ? "internal-message" : ""}`}><div className="message-meta"><strong>{message.authorName || "User"}</strong><span>{message.authorRole || ""} · {formatDate(message.createdAt)}</span></div><p>{message.body}</p>{message.isInternal && <small>Internal note</small>}</div>)}</div>
+              <form className="reply-box" onSubmit={sendReply}><textarea rows={3} value={reply} onChange={(e) => setReply(e.target.value)} placeholder={isPlatform ? "Write a clear response to this user..." : "Write a reply..."} required /><div className="reply-actions"><span>Replies are saved to this support conversation.</span><button type="submit" className="submit-ticket-btn"><Send size={16} /> Send Reply</button></div></form>
+            </>
+          )}
+        </section>
       </div>
 
-      <div className="support-grid">
-        {/* Left Column: FAQ & Ticket Form */}
-        <div className="support-main-col">
-          
-          {/* FAQ Section */}
-          <section className="support-card">
-            <div className="card-header">
-              <h3><HelpCircle size={18} /> Frequently Asked Questions</h3>
-            </div>
-            <div className="faq-list">
-              {faqData.map((faq) => (
-                <div key={faq.id} className={`faq-item ${activeFaq === faq.id ? "active" : ""}`}>
-                  <button className="faq-question" onClick={() => handleFaqToggle(faq.id)}>
-                    <span>{faq.question}</span>
-                    <ChevronDown size={18} className={`faq-chevron ${activeFaq === faq.id ? "rotated" : ""}`} />
-                  </button>
-                  {activeFaq === faq.id && (
-                    <div className="faq-answer">
-                      <p>{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Submit Ticket Section */}
-          <section className="support-card">
-            <div className="card-header">
-              <h3><MessageSquare size={18} /> Submit a Support Ticket</h3>
-            </div>
-            
-            {successMsg && (
-              <div className="success-banner">
-                <CheckCircle2 size={16} /> {successMsg}
-              </div>
-            )}
-
-            <form className="ticket-form" onSubmit={handleSubmitTicket}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Subject</label>
-                  <input 
-                    type="text" 
-                    name="subject" 
-                    placeholder="Brief description of the issue" 
-                    value={ticketForm.subject} 
-                    onChange={handleFormChange} 
-                    required 
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Category</label>
-                  <select name="category" value={ticketForm.category} onChange={handleFormChange}>
-                    <option value="General">General Inquiry</option>
-                    <option value="Technical">Technical Issue</option>
-                    <option value="Billing">Billing & Payments</option>
-                    <option value="Feature">Feature Request</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Priority</label>
-                  <select name="priority" value={ticketForm.priority} onChange={handleFormChange}>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                    <option value="Urgent">Urgent</option>
-                  </select>
-                </div>
-                <div className="form-group" style={{flex: 2}}>
-                  <label>Describe the issue</label>
-                  <textarea 
-                    name="message" 
-                    rows={4} 
-                    placeholder="Please provide as much detail as possible..." 
-                    value={ticketForm.message} 
-                    onChange={handleFormChange} 
-                    required 
-                  />
-                </div>
-              </div>
-
-              <button type="submit" className="submit-ticket-btn">
-                <Send size={16} /> Submit Ticket
-              </button>
-            </form>
-          </section>
-        </div>
-
-        {/* Right Column: Recent Tickets */}
-        <div className="support-side-col">
-          <section className="support-card tickets-card">
-            <div className="card-header">
-              <h3><Clock size={18} /> Recent Tickets</h3>
-            </div>
-            <div className="tickets-list">
-              {tickets.length > 0 ? (
-                tickets.map((ticket) => (
-                  <div key={ticket.id} className="ticket-item">
-                    <div className="ticket-top">
-                      <span className="ticket-subject">{ticket.subject}</span>
-                      <span className={`ticket-status status-${ticket.status.toLowerCase().replace(" ", "-")}`}>
-                        {ticket.status}
-                      </span>
-                    </div>
-                    <div className="ticket-bottom">
-                      <span className="ticket-meta">{ticket.category} • {ticket.priority}</span>
-                      <span className="ticket-date">{ticket.date}</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="empty-tickets">
-                  <AlertCircle size={20} />
-                  <p>No recent tickets.</p>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      </div>
+      {isPlatform && <div className="support-footer-note"><CheckCircle2 size={16} /> Support is handled by the Petra team. Each request stays attached to the person who submitted it.</div>}
     </div>
   );
 }

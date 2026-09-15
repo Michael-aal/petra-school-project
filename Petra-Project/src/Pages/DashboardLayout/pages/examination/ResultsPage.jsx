@@ -17,10 +17,7 @@ const formatDateTime = (value) => {
 };
 
 const formatNumber = (value) => {
-  if (value === null || value === undefined || value === "") {
-    return "N/A";
-  }
-
+  if (value === null || value === undefined || value === "") return "N/A";
   const num = Number(value);
   return Number.isFinite(num) ? num.toLocaleString() : "N/A";
 };
@@ -29,27 +26,15 @@ const ResultCard = ({ item }) => {
   const isPending = item?.resultState === "pending" || item?.passStatus === "pending";
   const isPass = !isPending && item?.passStatus === "pass";
   const isFail = !isPending && item?.passStatus === "fail";
-  const statusLabel = isPending
-    ? "Result Pending"
-    : isPass
-      ? "Passed"
-      : isFail
-        ? "Failed"
-        : item?.grade || "Recorded";
+  const statusLabel = isPending ? "Result Pending" : isPass ? "Passed" : isFail ? "Failed" : item?.grade || "Recorded";
   const statusClass = isPending ? "pending" : isPass ? "pass" : isFail ? "fail" : "neutral";
 
   return (
     <article className="results-card">
       <div className="results-card-top">
-        <div>
-          <p className="results-card-label">Student</p>
-          <strong>{item.studentName || "Unknown Student"}</strong>
-        </div>
-        <span className={`results-pill ${statusClass}`}>
-          {statusLabel}
-        </span>
+        <div><p className="results-card-label">Student</p><strong>{item.studentName || "Unknown Student"}</strong></div>
+        <span className={`results-pill ${statusClass}`}>{statusLabel}</span>
       </div>
-
       <div className="results-grid">
         <div><span>Exam Title</span><strong>{item.examTitle || "Untitled Exam"}</strong></div>
         <div><span>Subject</span><strong>{item.subject || "Unknown Subject"}</strong></div>
@@ -81,6 +66,7 @@ export default function ResultsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [refreshNonce, setRefreshNonce] = useState(0);
+  const [syncRequested, setSyncRequested] = useState(false);
 
   const totalCount = useMemo(() => pagination?.total ?? results.length, [pagination, results.length]);
 
@@ -89,28 +75,29 @@ export default function ResultsPage() {
 
     const loadResults = async () => {
       try {
-        if (refreshNonce > 0) setRefreshing(true);
+        if (syncRequested) setRefreshing(true);
         else setLoading(true);
         setError("");
 
-        // QuizLab does not redirect back to Petra after completion. Sync first,
-        // then read the canonical ExamResult/Result records from Petra.
-        await adminApi.syncResults();
+        // Only an explicit sync action talks to QuizLab and triggers result-email processing.
+        // Normal page loads only read already-synced results, preventing React development
+        // re-renders/StrictMode from initiating the sync twice.
+        if (syncRequested) {
+          await adminApi.syncResults();
+        }
 
-        const response = await adminApi.results({
-          page: pagination.page,
-          limit: pagination.limit,
-        });
-
+        const response = await adminApi.results({ page: pagination.page, limit: pagination.limit });
         if (!mounted) return;
 
         const data = response?.data || {};
         setResults(Array.isArray(data.results) ? data.results : []);
         setPagination((current) => ({ ...current, ...(data.pagination || {}) }));
+        if (syncRequested) setSyncRequested(false);
       } catch (err) {
         if (!mounted) return;
         setError(err?.message || "Unable to load results.");
         setResults([]);
+        if (syncRequested) setSyncRequested(false);
       } finally {
         if (mounted) {
           setLoading(false);
@@ -121,45 +108,44 @@ export default function ResultsPage() {
 
     loadResults();
 
-    return () => {
-      mounted = false;
-    };
-  }, [pagination.page, pagination.limit, refreshNonce]);
+    return () => { mounted = false; };
+  }, [pagination.page, pagination.limit, refreshNonce, syncRequested]);
 
   const goToPage = (nextPage) => {
-    setPagination((current) => ({
-      ...current,
-      page: Math.min(Math.max(1, nextPage), current.totalPages || 1),
-    }));
+    setPagination((current) => ({ ...current, page: Math.min(Math.max(1, nextPage), current.totalPages || 1) }));
   };
 
-  const refreshResults = () => setRefreshNonce((current) => current + 1);
+  const refreshResults = () => {
+    setPagination((current) => ({ ...current, page: 1 }));
+    setRefreshNonce((current) => current + 1);
+  };
+
+  const syncResultsAndSendEmails = () => {
+    if (loading || refreshing || syncRequested) return;
+    setPagination((current) => ({ ...current, page: 1 }));
+    setSyncRequested(true);
+  };
 
   return (
     <div className="dashboard-page results-page">
       <section className="results-hero">
-        <div>
-          <p className="results-kicker">Examination</p>
-          <h1>Results</h1>
-          <p>Review synced assessment outcomes and admission-ready records.</p>
-        </div>
+        <div><p className="results-kicker">Examination</p><h1>Results</h1><p>Review synced assessment outcomes and admission-ready records.</p></div>
         <div className="results-hero-chip">{totalCount} {totalCount === 1 ? "record" : "records"}</div>
       </section>
 
       <div className="results-actions">
-        <button type="button" className="results-page-button" onClick={refreshResults} disabled={loading || refreshing}>
-          {refreshing ? "Refreshing..." : "Refresh results"}
+        <button type="button" className="results-page-button" onClick={syncResultsAndSendEmails} disabled={loading || refreshing || syncRequested}>
+          {refreshing || syncRequested ? "Syncing & sending..." : "Sync Results & Send Emails"}
+        </button>
+        <button type="button" className="results-page-button" onClick={refreshResults} disabled={loading || refreshing || syncRequested}>
+          Refresh Results
         </button>
       </div>
 
-      {loading && <div className="results-state">Syncing exam results...</div>}
+      {loading && <div className="results-state">Loading exam results...</div>}
       {!loading && error && <div className="results-state results-state-error">{error}</div>}
       {!loading && !error && results.length === 0 && <div className="results-state">No assessment attempts or results are available yet.</div>}
-      {!loading && !error && results.length > 0 && (
-        <div className="results-list">
-          {results.map((item) => <ResultCard key={item.resultId || item.attemptId || item.id} item={item} />)}
-        </div>
-      )}
+      {!loading && !error && results.length > 0 && <div className="results-list">{results.map((item) => <ResultCard key={item.resultId || item.attemptId || item.id} item={item} />)}</div>}
 
       {!loading && !error && pagination.totalPages > 1 && (
         <div className="results-pagination">

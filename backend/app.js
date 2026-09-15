@@ -14,8 +14,10 @@ import paystackRoutes from "./routes/paystackRoutes.js";
 import parentRoutes from "./routes/parentRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import teacherApplicationRoutes from "./routes/teacherApplicationRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import schoolRoutes from "./routes/schoolRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
@@ -51,8 +53,6 @@ const isCodespacesDevOrigin = (origin) => {
   if (process.env.NODE_ENV === "production") return false;
   try {
     const { protocol, hostname } = new URL(origin);
-    // GitHub Codespaces forwards Vite/Express ports through *.github.dev.
-    // This is intentionally development-only; production remains allow-list based.
     return protocol === "https:" && hostname.endsWith(".github.dev");
   } catch {
     return false;
@@ -118,9 +118,6 @@ app.get("/health", async (_req, res) => {
     return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
   }
 });
-// CORS is an explicit browser policy, not an authentication boundary.  Requiring
-// a secret header from browsers both leaks that secret and blocks payment providers.
-// Protected routes authenticate with JWTs; webhooks authenticate their signatures.
 app.use("/api", process.env.NODE_ENV === "production" ? distributedApiRateLimiter() : apiRateLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
@@ -132,11 +129,13 @@ app.use("/api/parent", parentRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
 app.use("/api/admissions", admissionRoutes);
 app.use("/api/teacher", teacherRoutes);
+app.use("/api/teacher/applications", teacherApplicationRoutes);
 app.use("/api/classmarker", classmarkerRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/assessments", assessmentsRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/schools", schoolRoutes);
 app.use("/api/superadmin", superAdminRoutes);

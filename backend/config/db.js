@@ -116,39 +116,75 @@ export const scopeTenantData = (data, tenant) => {
   return { ...data, schoolId: tenant };
 };
 
-const createTenantScopedClient = (client) => client.$extends({
-  query: {
-    $allModels: {
-      async $allOperations({ model, operation, args, query }) {
-        const store = schoolContext.getStore();
-        if (store?.skipTenant) return query(args);
+const scopeOperationArgs = (model, operation, args, tenant) => {
+  if (!tenant || !modelHasSchoolId(model)) return args;
 
-        const tenant = store?.schoolId;
-        if (!tenant || !modelHasSchoolId(model)) return query(args);
+  const nextArgs = args ? { ...args } : {};
+  if (WHERE_SCOPED_OPERATIONS.has(operation)) {
+    nextArgs.where = scopeWhere(nextArgs.where, tenant);
+  }
 
-        const nextArgs = args ? { ...args } : {};
-        if (WHERE_SCOPED_OPERATIONS.has(operation)) {
-          nextArgs.where = scopeWhere(nextArgs.where, tenant);
-        }
+  if ((operation === "create" || operation === "update") && nextArgs.data && !Array.isArray(nextArgs.data)) {
+    nextArgs.data = scopeTenantData(nextArgs.data, tenant);
+  }
 
-        if ((operation === "create" || operation === "update") && nextArgs.data && !Array.isArray(nextArgs.data)) {
-          nextArgs.data = scopeTenantData(nextArgs.data, tenant);
-        }
+  if ((operation === "createMany" || operation === "createManyAndReturn") && Array.isArray(nextArgs.data)) {
+    nextArgs.data = nextArgs.data.map((item) => scopeTenantData(item, tenant));
+  }
 
-        if ((operation === "createMany" || operation === "createManyAndReturn") && Array.isArray(nextArgs.data)) {
-          nextArgs.data = nextArgs.data.map((item) => scopeTenantData(item, tenant));
-        }
+  if (operation === "upsert" && nextArgs.create) {
+    nextArgs.create = scopeTenantData(nextArgs.create, tenant);
+    if (nextArgs.update) nextArgs.update = scopeTenantData(nextArgs.update, tenant);
+  }
 
-        if (operation === "upsert" && nextArgs.create) {
-          nextArgs.create = scopeTenantData(nextArgs.create, tenant);
-          if (nextArgs.update) nextArgs.update = scopeTenantData(nextArgs.update, tenant);
-        }
+  return nextArgs;
+};
 
-        return query(nextArgs);
+// Prisma 7 interactive transaction clients do not expose `$extends`.
+// Use an extension for normal Prisma clients and a lightweight proxy for
+// transaction clients so tenant scoping works in both cases.
+const createTenantScopedClient = (client) => {
+  if (typeof client?.$extends === "function") {
+    return client.$extends({
+      query: {
+        $allModels: {
+          async $allOperations({ model, operation, args, query }) {
+            const store = schoolContext.getStore();
+            if (store?.skipTenant) return query(args);
+
+            const tenant = store?.schoolId;
+            return query(scopeOperationArgs(model, operation, args, tenant));
+          },
+        },
       },
+    });
+  }
+
+  return new Proxy(client, {
+    get(target, property, receiver) {
+      const value = Reflect.get(target, property, receiver);
+      if (typeof property !== "string" || !modelHasSchoolId(property) || !value || typeof value !== "object") {
+        return value;
+      }
+
+      return new Proxy(value, {
+        get(delegate, operation, delegateReceiver) {
+          const method = Reflect.get(delegate, operation, delegateReceiver);
+          if (typeof method !== "function") return method;
+
+          return (...args) => {
+            const store = schoolContext.getStore();
+            if (store?.skipTenant) return method(...args);
+
+            const tenant = store?.schoolId;
+            const nextArgs = scopeOperationArgs(property, operation, args[0], tenant);
+            return method(nextArgs);
+          };
+        },
+      });
     },
-  },
-});
+  });
+};
 
 const globalPrisma = createTenantScopedClient(basePrisma);
 const TENANT_RAW_OPERATIONS = new Set(["$queryRaw", "$queryRawUnsafe", "$executeRaw", "$executeRawUnsafe"]);

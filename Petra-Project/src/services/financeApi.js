@@ -1,16 +1,45 @@
 import { request } from "./apiClient";
 
+const createIdempotencyKey = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `payment-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+};
+
+const getPaymentIdempotencyKey = (payload = {}, explicitKey) =>
+  String(explicitKey || payload?.idempotencyKey || "").trim() || createIdempotencyKey();
+
 export const financeApi = {
   payments: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/api/finance/payments${query ? `?${query}` : ""}`);
   },
   payment: (id) => request(`/api/finance/payments/${id}`),
-  createPayment: (payload) => request("/api/finance/payments", { method: "POST", body: JSON.stringify(payload) }),
-  createPublicPayment: (payload) => request("/api/finance/public/payments", { method: "POST", body: JSON.stringify(payload) }),
+  createPayment: (payload, idempotencyKey) => request("/api/finance/payments", {
+    method: "POST",
+    headers: {
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
+    },
+    body: JSON.stringify(payload),
+  }),
+  createPublicPayment: (payload, idempotencyKey) => request("/api/finance/public/payments", {
+    method: "POST",
+    headers: {
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
+    },
+    body: JSON.stringify(payload),
+  }),
   publicStudentLookup: (studentCode, schoolId) => request(`/api/finance/public/lookup?studentCode=${encodeURIComponent(studentCode)}&schoolId=${encodeURIComponent(schoolId)}`),
   schoolStudentLookup: (studentCode) => request(`/api/finance/payments/lookup?studentCode=${encodeURIComponent(studentCode)}`),
-  createSchoolPayment: (payload) => request("/api/finance/payments/checkout", { method: "POST", body: JSON.stringify(payload) }),
+  createSchoolPayment: (payload, idempotencyKey) => request("/api/finance/payments/checkout", {
+    method: "POST",
+    headers: {
+      "X-Idempotency-Key": getPaymentIdempotencyKey(payload, idempotencyKey),
+    },
+    body: JSON.stringify(payload),
+  }),
   updatePayment: (id, payload) => request(`/api/finance/payments/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   deletePayment: (id) => request(`/api/finance/payments/${id}`, { method: "DELETE" }),
   invoices: () => request("/api/finance/invoices"),
@@ -26,6 +55,6 @@ export const financeApi = {
   assignFee: (payload) => request("/api/finance/fees/assign", { method: "POST", body: JSON.stringify(payload) }),
   flexpay: () => request("/api/finance/flexpay"),
   cashflow: (query = {}) => request(`/api/finance/cashflow${new URLSearchParams(query).toString() ? `?${new URLSearchParams(query).toString()}` : ""}`),
-  expenseCategories: () => request("/api/finance/expenses/categories"),
+  expenseCategories: () => request("/api/finance/expenses/categories", { method: "GET" }),
   createExpense: (payload) => request("/api/finance/expenses", { method: "POST", body: JSON.stringify(payload) }),
 };

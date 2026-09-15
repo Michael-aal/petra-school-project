@@ -7,6 +7,226 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const sqlPath = path.resolve(__dirname, "../prisma/migration-repair.sql");
 
+function splitSqlStatements(sql) {
+  return sql
+    .split(/;\s*(?:\r?\n|$)/)
+    .map((statement) => statement.trim())
+    .filter(Boolean);
+}
+
+function isSafeDuplicateError(error) {
+  return ["42P07", "42701", "42710"].includes(error?.code);
+}
+
+function isMissingIndexColumnError(error, statement) {
+  return error?.code === "42703" && /\bCREATE\s+(?:UNIQUE\s+)?INDEX\b/i.test(statement);
+}
+
+function isMissingForeignKeyColumnError(error, statement) {
+  return (
+    error?.code === "42703" &&
+    /\bALTER\s+TABLE\b[\s\S]*\bADD\s+CONSTRAINT\b[\s\S]*\bFOREIGN\s+KEY\b/i.test(statement)
+  );
+}
+
+function isResultTeacherForeignKeyDataError(error, statement) {
+  return error?.code === "23503" && /Result_teacherId_fkey/i.test(statement);
+}
+
+async function repairResultTeacherForeignKey(client) {
+  // Legacy Result rows can reference teachers/schools/subjects that no longer
+  // exist. Preserve those historical rows instead of deleting or rewriting them.
+  // NOT VALID enforces each FK for new INSERT/UPDATE operations while allowing
+  // the existing legacy rows to remain untouched.
+  const repairSavepoint = "repair_result_fks";
+  await client.query(`SAVEPOINT ${repairSavepoint}`);
+
+  try {
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_teacherId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_schoolId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        DROP CONSTRAINT IF EXISTS "Result_subjectId_fkey"
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_teacherId_fkey"
+        FOREIGN KEY ("teacherId") REFERENCES "Teacher"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_schoolId_fkey"
+        FOREIGN KEY ("schoolId") REFERENCES "School"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`
+      ALTER TABLE "Result"
+        ADD CONSTRAINT "Result_subjectId_fkey"
+        FOREIGN KEY ("subjectId") REFERENCES "Subject"("id")
+        ON DELETE NO ACTION ON UPDATE CASCADE
+        NOT VALID
+    `);
+
+    await client.query(`RELEASE SAVEPOINT ${repairSavepoint}`);
+  } catch (error) {
+    await client.query(`ROLLBACK TO SAVEPOINT ${repairSavepoint}`);
+    await client.query(`RELEASE SAVEPOINT ${repairSavepoint}`);
+    throw error;
+  }
+}
+
+async function applyRepairSql(client, sql) {
+  const statements = splitSqlStatements(sql);
+  let applied = 0;
+  let skipped = 0;
+  let skippedIndexes = 0;
+  let skippedForeignKeys = 0;
+  let repairedResultForeignKey = false;
+
+  for (let index = 0; index < statements.length; index += 1) {
+    const statement = statements[index];
+    const savepoint = `repair_stmt_${index}`;
+
+    await client.query(`SAVEPOINT ${savepoint}`);
+
+    try {
+      await client.query(statement);
+      await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+      applied += 1;
+    } catch (error) {
+      if (isSafeDuplicateError(error)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        skipped += 1;
+        console.log(`Skipping existing database object: ${error.message}`);
+        continue;
+      }
+
+      if (isMissingIndexColumnError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        skippedIndexes += 1;
+        console.log(`Skipping incompatible index because its column is absent: ${error.message}`);
+        continue;
+      }
+
+      if (isMissingForeignKeyColumnError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        skippedForeignKeys += 1;
+        console.log(`Skipping incompatible foreign key because a referenced/local column is absent: ${error.message}`);
+        continue;
+      }
+
+      if (isResultTeacherForeignKeyDataError(error, statement)) {
+        await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+        await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+        await repairResultTeacherForeignKey(client);
+        repairedResultForeignKey = true;
+        console.log("Repaired Result foreign keys as NOT VALID to preserve legacy orphaned rows.");
+        continue;
+      }
+
+      await client.query(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+      await client.query(`RELEASE SAVEPOINT ${savepoint}`);
+      throw error;
+    }
+  }
+
+  return { applied, skipped, skippedIndexes, skippedForeignKeys, repairedResultForeignKey, total: statements.length };
+}
+
+async function backfillAcademicCalendar(client) {
+  // Older installations created AcademicSession records without creating the
+  // normalized AcademicYear + Term records used by attendance/finance.
+  // Backfill only missing canonical records; never delete or rewrite history.
+  const years = await client.query(`
+    INSERT INTO "AcademicYear" (
+      "id", "schoolId", "name", "startsAt", "endsAt", "isActive", "createdAt", "updatedAt"
+    )
+    SELECT
+      md5('academic-year:' || s."schoolId"::text || ':' || s."name") AS "id",
+      s."schoolId",
+      s."name",
+      MIN(s."startsAt"),
+      MAX(s."endsAt"),
+      BOOL_OR(s."isActive"),
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    GROUP BY s."schoolId", s."name"
+    ON CONFLICT ("schoolId", "name") DO NOTHING
+    RETURNING "id"
+  `);
+
+  const terms = await client.query(`
+    INSERT INTO "Term" (
+      "id", "schoolId", "academicYearId", "name", "startsAt", "endsAt", "isActive", "createdAt", "updatedAt"
+    )
+    SELECT
+      md5('term:' || s."schoolId"::text || ':' || s."name" || ':' || s."term") AS "id",
+      s."schoolId",
+      ay."id",
+      CASE
+        WHEN s."term" ~* '\\mterm$' THEN s."term"
+        ELSE s."term" || ' Term'
+      END,
+      MIN(s."startsAt"),
+      MAX(s."endsAt"),
+      BOOL_OR(s."isActive"),
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    JOIN "AcademicYear" ay
+      ON ay."schoolId" = s."schoolId"
+     AND ay."name" = s."name"
+    GROUP BY s."schoolId", s."name", s."term", ay."id"
+    ON CONFLICT ("academicYearId", "name") DO NOTHING
+    RETURNING "id"
+  `);
+
+  await client.query(`
+    UPDATE "AcademicYear" ay
+    SET "isActive" = TRUE, "updatedAt" = CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    WHERE s."schoolId" = ay."schoolId"
+      AND s."name" = ay."name"
+      AND s."isActive" = TRUE
+  `);
+
+  await client.query(`
+    UPDATE "Term" t
+    SET "isActive" = TRUE, "updatedAt" = CURRENT_TIMESTAMP
+    FROM "AcademicSession" s
+    JOIN "AcademicYear" ay
+      ON ay."schoolId" = s."schoolId"
+     AND ay."name" = s."name"
+    WHERE t."academicYearId" = ay."id"
+      AND t."schoolId" = s."schoolId"
+      AND t."name" = CASE
+        WHEN s."term" ~* '\\mterm$' THEN s."term"
+        ELSE s."term" || ' Term'
+      END
+      AND s."isActive" = TRUE
+  `);
+
+  return { yearsCreated: years.rowCount, termsCreated: terms.rowCount };
+}
+
 async function main() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not loaded. Check backend/.env.");
@@ -47,7 +267,14 @@ async function main() {
     await client.query("BEGIN");
 
     try {
-      await client.query(sql);
+      const result = await applyRepairSql(client, sql);
+      const calendar = await backfillAcademicCalendar(client);
+      console.log(
+        `Repair SQL processed: ${result.applied} applied, ${result.skipped} existing objects skipped, ${result.skippedIndexes} incompatible indexes skipped, ${result.skippedForeignKeys} incompatible foreign keys skipped, ${result.repairedResultForeignKey ? 1 : 0} Result teacher foreign keys repaired, ${result.total} total statements.`
+      );
+      console.log(
+        `Academic calendar backfill: ${calendar.yearsCreated} years created, ${calendar.termsCreated} terms created.`
+      );
       await client.query("COMMIT");
     } catch (error) {
       await client.query("ROLLBACK");
@@ -55,41 +282,43 @@ async function main() {
     }
 
     const requiredChecks = [
-      ["Session", null],
-      ["RefreshToken", null],
-      ["Campus", null],
-      ["Department", null],
-      ["Section", null],
-      ["Classroom", null],
-      ["StudentDocument", null],
-      ["TeacherAttendance", null],
-      ["Assignment", null],
-      ["GradeScale", null],
-      ["Grade", null],
-      ["ReportCard", null],
-      ["Scholarship", null],
-      ["Discount", null],
-      ["Fine", null],
-      ["BookCategory", null],
-      ["Book", null],
-      ["BorrowRecord", null],
-      ["Vehicle", null],
-      ["Route", null],
-      ["Driver", null],
-      ["StudentTransport", null],
-      ["Announcement", null],
-      ["Notification", null],
-      ["Message", null],
-      ["Timetable", null],
-      ["Hostel", null],
-      ["Room", null],
-      ["RoomAllocation", null],
-      ["ActivityLog", null],
-      ["Settings", null],
-      ["_RolePermission", null],
+      "Session",
+      "RefreshToken",
+      "Campus",
+      "Department",
+      "Section",
+      "Classroom",
+      "StudentDocument",
+      "TeacherAttendance",
+      "AssessmentItem",
+      "Assignment",
+      "AssignmentSubmission",
+      "GradeScale",
+      "Grade",
+      "ReportCard",
+      "Scholarship",
+      "Discount",
+      "Fine",
+      "BookCategory",
+      "Book",
+      "BorrowRecord",
+      "Vehicle",
+      "Route",
+      "Driver",
+      "StudentTransport",
+      "Announcement",
+      "Notification",
+      "Message",
+      "Timetable",
+      "Hostel",
+      "Room",
+      "RoomAllocation",
+      "ActivityLog",
+      "Settings",
+      "_RolePermission",
     ];
 
-    for (const [table] of requiredChecks) {
+    for (const table of requiredChecks) {
       const result = await client.query(
         `SELECT to_regclass($1) AS table_name`,
         [`public."${table}"`]
@@ -113,10 +342,19 @@ async function main() {
       );
     }
 
+    const academicCalendarTables = await client.query(`
+      SELECT
+        (SELECT COUNT(*) FROM "AcademicYear") AS "academicYears",
+        (SELECT COUNT(*) FROM "Term") AS "terms"
+    `);
+
     console.log("Schema repair committed successfully.");
     console.log("Payment.paymentMethodId is still present.");
     console.log("Required missing tables are present.");
-    console.log("Next step: repair Prisma migration history with migrate resolve --applied.");
+    console.log(
+      `Academic calendar verified: ${academicCalendarTables.rows[0].academicYears} years, ${academicCalendarTables.rows[0].terms} terms.`
+    );
+    console.log("Next step: run `npx prisma generate` and restart the backend.");
   } finally {
     await client.end().catch(() => {});
   }

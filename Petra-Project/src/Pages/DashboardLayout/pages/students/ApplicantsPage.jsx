@@ -3,6 +3,8 @@ import { Search, UserPlus, Users, Clock3, CheckCircle2, X } from "lucide-react";
 import { admissionApi } from "../../../../services/admissionApi";
 import "../page-styles/ApplicantsPage.css";
 
+const ENROLLABLE_STATUSES = new Set(["approved", "admission_offered", "passed"]);
+
 export default function ApplicantsPage() {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,6 +112,10 @@ export default function ApplicantsPage() {
     });
   }, [applicants, query]);
 
+  const pendingCount = applicants.filter((item) => item.status === "pending").length;
+  const approvedCount = applicants.filter((item) => item.status === "approved").length;
+  const enrolledCount = applicants.filter((item) => item.status === "enrolled").length;
+
   return (
     <div className="dashboard-page applicants-page">
       <header className="applicants-hero">
@@ -117,8 +123,7 @@ export default function ApplicantsPage() {
           <p className="dashboard-page-label">Students / Admissions</p>
           <h1>Applicants</h1>
           <p>
-            Review submitted admission records and prepare the next enrollment
-            step.
+            Review submitted admission records and enroll approved applicants without re-entering their details.
           </p>
         </div>
         <button type="button" className="applicants-primary-action" onClick={() => setShowForm(true)}>
@@ -137,15 +142,15 @@ export default function ApplicantsPage() {
         <article>
           <Clock3 size={18} />
           <div>
-            <strong>{applicants.length}</strong>
+            <strong>{pendingCount}</strong>
             <span>Awaiting review</span>
           </div>
         </article>
         <article>
           <CheckCircle2 size={18} />
           <div>
-            <strong>0</strong>
-            <span>Approved this cycle</span>
+            <strong>{approvedCount + enrolledCount}</strong>
+            <span>Approved / enrolled</span>
           </div>
         </article>
       </section>
@@ -238,6 +243,7 @@ export default function ApplicantsPage() {
                 applicant.admissionCode ||
                 applicant.applicationCode ||
                 applicant.id;
+              const canEnroll = ENROLLABLE_STATUSES.has(String(applicant.status || "").toLowerCase());
               return (
                 <article className="applicant-row" key={applicant.id}>
                   <div className="applicant-avatar">
@@ -281,8 +287,7 @@ export default function ApplicantsPage() {
                         </button>
                       </>
                     ) : null}
-                    {applicant.status === "approved" ||
-                    applicant.admissionCode ? (
+                    {canEnroll ? (
                       <button
                         type="button"
                         className="applicant-more"

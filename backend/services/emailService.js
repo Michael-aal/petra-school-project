@@ -18,6 +18,26 @@ if (transportConfigAvailable) {
 }
 
 const resend = resendConfigAvailable ? new Resend(process.env.RESEND_API_KEY) : null;
+const EMAIL_ADDRESS_RE = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+
+const normalizeEmailAddress = (value) => {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  const namedMatch = raw.match(/^\s*(?:[^<>]+?)\s*<([^<>\s]+)>\s*$/);
+  const address = (namedMatch ? namedMatch[1] : raw).trim().toLowerCase();
+  return EMAIL_ADDRESS_RE.test(address) ? address : null;
+};
+
+const getAdmissionRecipients = (admission) => [...new Set([admission?.parentEmail, admission?.fatherEmail, admission?.motherEmail].map(normalizeEmailAddress).filter(Boolean))];
+const getInvalidAdmissionRecipients = (admission) => [...new Set([admission?.parentEmail, admission?.fatherEmail, admission?.motherEmail].filter((value) => String(value || "").trim() && !normalizeEmailAddress(value)).map((value) => String(value).trim()))];
+
+const getEmailRecipients = (admission) => {
+  const parentRecipients = getAdmissionRecipients(admission);
+  const testEmail = normalizeEmailAddress(process.env.TEST_EMAIL);
+  const testMode = String(process.env.EMAIL_TEST_MODE || "false").trim().toLowerCase() === "true";
+  if (testMode && testEmail) return { recipients: [testEmail], invalidRecipients: [] };
+  return { recipients: parentRecipients, invalidRecipients: getInvalidAdmissionRecipients(admission) };
+};
 
 const sendEmailProvider = async ({ from, to, subject, html, text }) => {
   if (resend) {
@@ -26,7 +46,7 @@ const sendEmailProvider = async ({ from, to, subject, html, text }) => {
     return data;
   }
   if (!transporter) throw new Error("No email provider is configured");
-  return transporter.sendMail({ from, to, subject, html, text });
+  return transporter.sendMail({ from, to: to.join(", "), subject, html, text });
 };
 
 const safeHtml = (s) => String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -37,24 +57,6 @@ export const buildAdmissionPaymentUrl = (base = "") => {
   return `${normalizedBase}/payment`;
 };
 
-const getAdmissionRecipients = (admission) =>
-  [...new Set([
-    admission?.parentEmail,
-    admission?.fatherEmail,
-    admission?.motherEmail,
-  ].filter(Boolean).map((value) => String(value).trim().toLowerCase()))];
-
-const getEmailRecipients = (admission) => {
-  const parentRecipients = getAdmissionRecipients(admission);
-  const testEmail = String(process.env.TEST_EMAIL || "").trim().toLowerCase();
-  const testMode = String(process.env.EMAIL_TEST_MODE || "false").trim().toLowerCase() === "true";
-
-  // Never redirect real admission emails merely because NODE_ENV is development.
-  // Test delivery must be explicitly enabled with EMAIL_TEST_MODE=true.
-  if (testMode && testEmail) return [testEmail];
-  return parentRecipients;
-};
-
 const getFromEmail = (school, fromEmail) => {
   const configured = String(fromEmail || process.env.FROM_EMAIL || "").trim();
   if (configured) return configured;
@@ -63,13 +65,7 @@ const getFromEmail = (school, fromEmail) => {
   return website ? `no-reply@${website}` : "no-reply@example.com";
 };
 
-export const getEmailProviderStatus = () => ({
-  provider: emailProvider,
-  configured: emailProviderAvailable,
-  smtpConfigured: transportConfigAvailable,
-  resendConfigured: resendConfigAvailable,
-  fromEmailConfigured: Boolean(process.env.FROM_EMAIL),
-});
+export const getEmailProviderStatus = () => ({ provider: emailProvider, configured: emailProviderAvailable, smtpConfigured: transportConfigAvailable, resendConfigured: resendConfigAvailable, fromEmailConfigured: Boolean(process.env.FROM_EMAIL) });
 
 export const buildAdmissionEmailPayload = ({ school, studentName, admissionCode, paymentUrl, score, percentage }) => {
   const subject = `${school?.name || "School"}: Congratulations - ${studentName} has passed`;
@@ -95,7 +91,7 @@ const createEmailLog = async ({ school, admission, subject, text, sendTo, dedupe
   const schoolId = school?.id || admission?.schoolId || 1;
   const logData = {
     schoolId,
-    recipient: sendTo,
+    recipient: sendTo.join(", "),
     subject,
     body: text,
     status: emailProviderAvailable ? "pending" : "skipped",
@@ -103,21 +99,48 @@ const createEmailLog = async ({ school, admission, subject, text, sendTo, dedupe
     attempts: 1,
     lastAttemptAt: new Date(),
   };
-  if (dedupeKey) {
-    const existing = await prisma.emailLog.findUnique({ where: { dedupeKey } });
-    if (existing?.status === "sent") return { log: existing, deduped: true };
-    if (existing) {
-      await prisma.emailLog.update({ where: { id: existing.id }, data: { recipient: sendTo, subject, body: text, status: emailProviderAvailable ? "pending" : "skipped", attempts: { increment: 1 }, lastAttemptAt: new Date(), errorMessage: null } });
-    } else {
-      await prisma.emailLog.create({ data: logData });
-    }
-  } else {
-    await prisma.emailLog.create({ data: logData });
+
+  if (!dedupeKey) {
+    const log = await prisma.emailLog.create({ data: logData });
+    return { log, deduped: false };
   }
-  const log = dedupeKey
-    ? await prisma.emailLog.findUnique({ where: { dedupeKey } })
-    : await prisma.emailLog.findFirst({ where: { schoolId, recipient: sendTo, subject, createdAt: { gte: new Date(Date.now() - 5 * 60 * 1000) } }, orderBy: { createdAt: "desc" } });
-  return { log, deduped: false };
+
+  const existing = await prisma.emailLog.findUnique({ where: { dedupeKey } });
+  if (existing) {
+    // A concurrent request can arrive while the first request is delivering.
+    // Treat an existing pending/sent log as already claimed so only one email
+    // delivery is performed for the same logical result.
+    if (existing.status === "sent" || existing.status === "pending") {
+      return { log: existing, deduped: true };
+    }
+
+    const log = await prisma.emailLog.update({
+      where: { id: existing.id },
+      data: {
+        recipient: sendTo.join(", "),
+        subject,
+        body: text,
+        status: emailProviderAvailable ? "pending" : "skipped",
+        attempts: { increment: 1 },
+        lastAttemptAt: new Date(),
+        errorMessage: null,
+      },
+    });
+    return { log, deduped: false };
+  }
+
+  // Claim the unique dedupe key atomically. If another request wins the race,
+  // the unique constraint makes this create fail and we reuse its log instead
+  // of sending a second message.
+  try {
+    const log = await prisma.emailLog.create({ data: logData });
+    return { log, deduped: false };
+  } catch (error) {
+    if (error?.code !== "P2002") throw error;
+    const raced = await prisma.emailLog.findUnique({ where: { dedupeKey } });
+    if (raced) return { log: raced, deduped: true };
+    throw error;
+  }
 };
 
 const deliverAdmissionEmail = async ({ school, admission, subject, html, text, sendTo, fromEmail, dedupeKey }) => {
@@ -135,18 +158,20 @@ const deliverAdmissionEmail = async ({ school, admission, subject, html, text, s
   }
 };
 
+const recipientValidationFailure = ({ school, admission, subject, text, invalidRecipients, dedupeKey }) => ({ success: false, reason: "invalid_recipient", invalidRecipients, provider: emailProvider, schoolId: school?.id || admission?.schoolId || 1, subject, body: text, dedupeKey: dedupeKey || null });
+
 export const sendAdmissionEmail = async ({ school, admission, studentName, admissionCode, paymentUrl, score, percentage, fromEmail, dedupeKey }) => {
-  const recipients = getEmailRecipients(admission);
-  if (!recipients.length) return { success: false, reason: "no_recipient", provider: emailProvider };
+  const { recipients, invalidRecipients } = getEmailRecipients(admission);
   const { subject, html, text } = buildAdmissionEmailPayload({ school, studentName, admissionCode, paymentUrl, score, percentage });
-  return deliverAdmissionEmail({ school, admission, subject, html, text, sendTo: recipients.join(", "), fromEmail, dedupeKey });
+  if (!recipients.length) return recipientValidationFailure({ school, admission, subject, text, invalidRecipients, dedupeKey });
+  return deliverAdmissionEmail({ school, admission, subject, html, text, sendTo: recipients, fromEmail, dedupeKey });
 };
 
 export const sendAdmissionFailureEmail = async ({ school, admission, studentName, score, percentage, fromEmail, dedupeKey }) => {
-  const recipients = getEmailRecipients(admission);
-  if (!recipients.length) return { success: false, reason: "no_recipient", provider: emailProvider };
+  const { recipients, invalidRecipients } = getEmailRecipients(admission);
   const { subject, html, text } = buildAdmissionFailureEmailPayload({ school, studentName, score, percentage });
-  return deliverAdmissionEmail({ school, admission, subject, html, text, sendTo: recipients.join(", "), fromEmail, dedupeKey });
+  if (!recipients.length) return recipientValidationFailure({ school, admission, subject, text, invalidRecipients, dedupeKey });
+  return deliverAdmissionEmail({ school, admission, subject, html, text, sendTo: recipients, fromEmail, dedupeKey });
 };
 
 export default { buildAdmissionEmailPayload, buildAdmissionFailureEmailPayload, sendAdmissionEmail, sendAdmissionFailureEmail, getEmailProviderStatus };

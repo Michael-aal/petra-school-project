@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Payment.css";
 import { financeApi } from "./services/financeApi";
@@ -15,6 +15,7 @@ function Payment() {
   const [processingPayment, setProcessingPayment] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const paymentRequestLock = useRef(false);
 
   const selectedFeeItems = useMemo(
     () => feeStructures.filter((fee) => selectedFees[fee.id]).map((fee) => ({
@@ -51,9 +52,7 @@ function Payment() {
       const response = await financeApi.schoolStudentLookup(code);
       const student = response?.student;
       const fees = Array.isArray(response?.feeStructures) ? response.feeStructures : [];
-
       if (!student) throw new Error("Student could not be verified.");
-
       setVerifiedStudent(student);
       setFeeStructures(fees);
       setSuccess(`${student.name || "Student"} has been verified successfully.`);
@@ -87,13 +86,16 @@ function Payment() {
   };
 
   const continuePayment = async () => {
+    if (paymentRequestLock.current) return;
+    paymentRequestLock.current = true;
+    setProcessingPayment(true);
     setError("");
     setSuccess("");
-    if (!verifiedStudent) return setError("Please verify the Student Verification Code first.");
-    if (!selectedFeeItems.length) return setError("Please select at least one payment item.");
 
-    setProcessingPayment(true);
     try {
+      if (!verifiedStudent) throw new Error("Please verify the Student Verification Code first.");
+      if (!selectedFeeItems.length) throw new Error("Please select at least one payment item.");
+
       const response = await financeApi.createSchoolPayment({
         studentId: verifiedStudent.id,
         amount: totalAmount,
@@ -104,6 +106,7 @@ function Payment() {
       const checkoutUrl = response?.session?.authorization_url || response?.session?.data?.authorization_url || response?.authorization_url || response?.data?.authorization_url;
       if (!checkoutUrl) {
         setSuccess("Payment was initialized, but no Paystack checkout link was returned.");
+        paymentRequestLock.current = false;
         return;
       }
       window.location.assign(checkoutUrl);
@@ -113,6 +116,7 @@ function Payment() {
         return;
       }
       setError(requestError.data?.message || requestError.message || "Unable to initialize payment.");
+      paymentRequestLock.current = false;
     } finally {
       setProcessingPayment(false);
     }
@@ -122,16 +126,11 @@ function Payment() {
     <main className="payment-page">
       <div className="payment-wrapper">
         <header className="payment-topbar">
-          <div className="payment-brand">
-            <div className="payment-brand-mark">P</div>
-            <div><div className="payment-brand-name">PETRA</div><div className="payment-brand-subtitle">School Portal</div></div>
-          </div>
+          <div className="payment-brand"><div className="payment-brand-mark">P</div><div><div className="payment-brand-name">PETRA</div><div className="payment-brand-subtitle">School Portal</div></div></div>
           <div className="secure-payment"><span className="secure-icon">✓</span> Secure payment</div>
         </header>
 
-        <section className="payment-heading">
-          <div><span className="payment-eyebrow">FINANCE</span><h1>Make a payment</h1><p>Verify the student and select the payment items you want to pay for.</p></div>
-        </section>
+        <section className="payment-heading"><div><span className="payment-eyebrow">FINANCE</span><h1>Make a payment</h1><p>Verify the student and select the payment items you want to pay for.</p></div></section>
 
         {error && <div className="payment-alert payment-alert-error"><span className="alert-icon">!</span><div><strong>Payment error</strong><p>{error}</p></div></div>}
         {success && <div className="payment-alert payment-alert-success"><span className="alert-icon">✓</span><div><strong>{verifiedStudent ? "Student verified" : "Payment initialized"}</strong><p>{success}</p></div></div>}
@@ -157,10 +156,10 @@ function Payment() {
                 {feeStructures.map((fee) => {
                   const selected = Boolean(selectedFees[fee.id]);
                   const quantity = fee.quantityRequired ? Number(selectedFees[fee.id]) || 1 : 1;
-                  return <div key={fee.id} className={`fee-card ${selected ? "fee-card-selected" : ""}`} onClick={() => toggleFee(fee)}>
+                  return <div key={fee.id} className={`fee-card ${selected ? "fee-card-selected" : ""}`} style={fee.quantityRequired && selected ? { flexWrap: "wrap" } : undefined} onClick={() => toggleFee(fee)}>
                     <div className="fee-card-left"><div className={`custom-checkbox ${selected ? "checked" : ""}`}>{selected && "✓"}</div><div className="fee-info"><div className="fee-name">{fee.name || fee.category || "School fee"}</div><div className="fee-meta">{fee.className || "School fee"}{fee.term ? ` • ${fee.term}` : ""}</div></div></div>
                     <div className="fee-card-right"><strong>{formatMoney(fee.amount)}</strong>{fee.quantityRequired && <span className="quantity-label">per item</span>}</div>
-                    {selected && fee.quantityRequired && <div className="quantity-control" onClick={(event) => event.stopPropagation()}><label htmlFor={`quantity-${fee.id}`}>Quantity</label><div className="quantity-input"><button type="button" onClick={() => changeQuantity(fee.id, quantity - 1)} disabled={quantity <= 1}>−</button><input id={`quantity-${fee.id}`} type="number" min="1" value={quantity} onChange={(event) => changeQuantity(fee.id, event.target.value)} /><button type="button" onClick={() => changeQuantity(fee.id, quantity + 1)}>+</button></div></div>}
+                    {selected && fee.quantityRequired && <div className="quantity-control" style={{ flex: "1 0 100%", width: "100%", marginTop: 0 }} onClick={(event) => event.stopPropagation()}><label htmlFor={`quantity-${fee.id}`}>Quantity</label><div className="quantity-input"><button type="button" onClick={() => changeQuantity(fee.id, quantity - 1)} disabled={quantity <= 1}>−</button><input id={`quantity-${fee.id}`} type="number" min="1" value={quantity} onChange={(event) => changeQuantity(fee.id, event.target.value)} /><button type="button" onClick={() => changeQuantity(fee.id, quantity + 1)}>+</button></div></div>}
                   </div>;
                 })}
               </div> : <div className="empty-state"><div className="empty-icon">₦</div><h3>No payment items available</h3><p>There are currently no active fees available for payment.</p></div>}
@@ -173,7 +172,7 @@ function Payment() {
             {verifiedStudent && <div className="summary-student"><span>Student</span><strong>{verifiedStudent.name || "Student"}</strong><small>{verifiedStudent.className || "Class not assigned"}</small></div>}
             <div className="summary-items">{selectedFeeItems.length ? feeStructures.filter((fee) => selectedFees[fee.id]).map((fee) => { const quantity = fee.quantityRequired ? Number(selectedFees[fee.id]) || 1 : 1; return <div className="summary-item" key={fee.id}><div><span>{fee.name || fee.category || "School fee"}</span>{quantity > 1 && <small>{quantity} × {formatMoney(fee.amount)}</small>}</div><strong>{formatMoney(Number(fee.amount) * quantity)}</strong></div>; }) : <div className="summary-empty"><span>No items selected</span><small>Select a fee to see it here.</small></div>}</div>
             <div className="summary-total"><span>Total amount</span><strong>{formatMoney(totalAmount)}</strong></div>
-            <button type="button" className="pay-button" onClick={continuePayment} disabled={processingPayment || !verifiedStudent || !selectedFeeItems.length}>{processingPayment ? <><span className="button-spinner" />Processing...</> : <>Pay {formatMoney(totalAmount)}<span>→</span></>}</button>
+            <button type="button" className="pay-button" onClick={continuePayment} disabled={processingPayment || paymentRequestLock.current || !verifiedStudent || !selectedFeeItems.length}>{processingPayment ? <><span className="button-spinner" />Processing...</> : <>Pay {formatMoney(totalAmount)}<span>→</span></>}</button>
             <div className="paystack-note"><span className="paystack-dot" />Secured by Paystack</div>
           </div></aside>
         </div>

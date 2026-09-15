@@ -38,7 +38,7 @@ export const announcementService = {
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
-      include: { announcement: { include: { attachments: true } } },
+      include: { announcement: true },
     });
 
     const total = await prisma.announcementRecipient.count({ where: recipientWhere });
@@ -85,10 +85,9 @@ export const announcementService = {
       prisma.announcement.count({ where }),
       prisma.announcement.findMany({
         where,
-        orderBy: [{ publishAt: "desc" }, { createdAt: "desc" }],
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * limit,
         take: limit,
-        include: { attachments: true },
       }),
     ]);
 
@@ -111,22 +110,10 @@ export const announcementService = {
         priority: payload.priority || "NORMAL",
         audience: payload.audience || "TEACHERS_AND_PARENTS",
         isDraft: payload.isDraft === true || payload.isDraft === "true",
-        publishAt: payload.publishAt ? new Date(payload.publishAt) : payload.isDraft ? null : new Date(),
+        publishedAt: payload.publishAt ? new Date(payload.publishAt) : payload.isDraft ? null : new Date(),
         expiryAt: payload.expiryAt ? new Date(payload.expiryAt) : null,
       },
     });
-
-    if (Array.isArray(payload.attachments) && payload.attachments.length) {
-      const attachments = payload.attachments.map((attachment) => ({
-        announcementId: announcement.id,
-        schoolId,
-        filename: attachment.filename,
-        url: attachment.url,
-        contentType: attachment.contentType || null,
-        size: attachment.size || null,
-      }));
-      await prisma.announcementAttachment.createMany({ data: attachments });
-    }
 
     const recipientFilter = buildAudienceFilter(announcement.audience);
     const recipients = await prisma.user.findMany({ where: { schoolId, ...recipientFilter }, select: { id: true, role: true } });
