@@ -22,37 +22,23 @@ const ensureRedis = async () => {
 
 const normalizeSubscription = (subscription) => ({
   endpoint: String(subscription?.endpoint || "").trim(),
-  keys: {
-    p256dh: String(subscription?.keys?.p256dh || "").trim(),
-    auth: String(subscription?.keys?.auth || "").trim(),
-  },
+  keys: { p256dh: String(subscription?.keys?.p256dh || "").trim(), auth: String(subscription?.keys?.auth || "").trim() },
 });
 
 export const pushNotificationService = {
   isConfigured: () => Boolean(publicKey && privateKey && redisClient),
 
   getPublicKey: () => {
-    if (!publicKey) {
-      const error = new Error("Web Push is not configured");
-      error.statusCode = 503;
-      throw error;
-    }
+    if (!publicKey) { const error = new Error("Web Push is not configured"); error.statusCode = 503; throw error; }
     return publicKey;
   },
 
   saveSubscription: async (userId, subscription, metadata = {}) => {
     const normalized = normalizeSubscription(subscription);
     if (!userId || !normalized.endpoint || !normalized.keys.p256dh || !normalized.keys.auth) {
-      const error = new Error("A valid push subscription is required");
-      error.statusCode = 400;
-      throw error;
+      const error = new Error("A valid push subscription is required"); error.statusCode = 400; throw error;
     }
-    if (!redisClient) {
-      const error = new Error("Push storage is unavailable");
-      error.statusCode = 503;
-      throw error;
-    }
-
+    if (!redisClient) { const error = new Error("Push storage is unavailable"); error.statusCode = 503; throw error; }
     await ensureRedis();
     const record = {
       endpoint: normalized.endpoint,
@@ -81,9 +67,7 @@ export const pushNotificationService = {
     const body = JSON.stringify({
       title: String(payload?.title || "Petra School"),
       body: String(payload?.body || "You have a new notification."),
-      url: String(payload?.url || "/notifications"),
-      icon: "/pwa-192x192.png",
-      badge: "/pwa-192x192.png",
+      url: String(payload?.url || "/dashboard/communication/notifications"),
       notificationId: payload?.notificationId || null,
       tag: String(payload?.tag || "petra-notification"),
       timestamp: Date.now(),
