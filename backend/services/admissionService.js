@@ -316,7 +316,7 @@ export const admissionService = {
           parentEmail,
           parentPhone,
           guardianName,
-          status: "active",
+          status: "pending",
         },
       });
 
@@ -404,7 +404,7 @@ export const admissionService = {
             sectionId: payload.sectionId || enrollment.sectionId || null,
             academicYearId: lockedAdmission.academicYearId || enrollment.academicYearId || null,
             termId: lockedAdmission.termId || enrollment.termId || null,
-            status: "active",
+            status: "pending",
           },
         });
       } else {
@@ -416,7 +416,7 @@ export const admissionService = {
             sectionId: payload.sectionId || null,
             academicYearId: lockedAdmission.academicYearId || null,
             termId: lockedAdmission.termId || null,
-            status: "active",
+            status: "pending",
           },
         });
       }
@@ -425,7 +425,7 @@ export const admissionService = {
         where: { id: lockedAdmission.id },
         data: {
           studentId: student.id,
-          status: "enrolled",
+          status: "pending_payment",
           admissionDate: lockedAdmission.admissionDate || new Date(),
         },
       });

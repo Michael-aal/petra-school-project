@@ -104,6 +104,7 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
         { status: "admission_offered" },
         { status: "passed" },
         { status: "paid" },
+        { status: "pending_payment" },
         { status: "enrolled" },
       ],
     },
