@@ -34,6 +34,12 @@ export const toolSchemas = {
     schoolId: z.coerce.number().int().positive().optional(),
     studentId: z.string().trim().min(1).optional(),
   }),
+  getUserDirectory: z.object({
+    schoolId: z.coerce.number().int().positive().optional(),
+    search: z.string().trim().min(1).max(100).optional(),
+    role: z.string().trim().min(1).max(50).optional(),
+    limit: z.coerce.number().int().min(1).max(100).optional(),
+  }),
 };
 
 // Aliases
@@ -44,7 +50,7 @@ toolSchemas["student.results"] = toolSchemas.getStudentResults;
 toolSchemas["fees.outstanding"] = toolSchemas.getFeeSummary;
 toolSchemas["finance.summary"] = toolSchemas.getFeeSummary;
 
-export const buildAIContext = async (user, request = {}) => {
+aexport const buildAIContext = async (user, request = {}) => {
   if (!isAuthenticated(user)) {
     throw Object.assign(new Error("Authentication required"), { statusCode: 401 });
   }
@@ -52,12 +58,24 @@ export const buildAIContext = async (user, request = {}) => {
   const schoolId = request.schoolId ?? getSchoolId(user);
   const role = normalizeRole(user.role);
 
+  // Only expose the non-sensitive identity fields the model actually needs.
+  const publicUser = {
+    id: user.id,
+    name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.username,
+    firstName: user.firstName || null,
+    lastName: user.lastName || null,
+    username: user.username || null,
+    role,
+    schoolId,
+  };
+
   const context = {
-    user,
+    user: publicUser,
+    publicUser,
     schoolId,
     role,
     userId: user.id,
-    userName: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.username,
+    userName: publicUser.name,
   };
 
   if (role === "parent" || role === "guardian") {
