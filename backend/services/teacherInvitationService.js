@@ -82,52 +82,110 @@ export const teacherInvitationService = {
 
     const invitation = await prisma.staffInvitation.findUnique({ where: { registrationCode: normalizedCode } });
     if (!invitation) throw Object.assign(new Error("Invalid registration code"), { statusCode: 400 });
+    if (invitation.role && String(invitation.role).toLowerCase() !== "teacher") {
+      throw Object.assign(new Error("This registration code is not for a teacher."), { statusCode: 400 });
+    }
     if (invitation.status === "revoked") throw Object.assign(new Error("Registration code has been revoked"), { statusCode: 400 });
     if (invitation.status === "used") throw Object.assign(new Error("Registration code has already been used"), { statusCode: 400 });
     if (!invitation.schoolId) throw Object.assign(new Error("This invitation is not linked to a school"), { statusCode: 400 });
 
-    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-    if (existingUser) throw Object.assign(new Error("Email already in use"), { statusCode: 409 });
-
-    const usernameBase = normalizeUsername(normalizedEmail.split("@")[0]);
-    let username = usernameBase || `teacher${crypto.randomBytes(3).toString("hex")}`;
-    if (await prisma.user.findUnique({ where: { username } })) {
-      username = `${username}-${crypto.randomBytes(2).toString("hex")}`;
-    }
-
-    const { firstName, lastName } = getNameParts(invitation.staffName);
     const hashedPassword = await hashPassword(password);
 
-    const created = await prisma.$transaction(async (tx) => {
-      const createdUser = await tx.user.create({
-        data: {
-          firstName,
-          middleName: null,
-          lastName,
-          fullName: invitation.staffName,
-          username,
-          email: normalizedEmail,
-          password: hashedPassword,
-          role: "teacher",
-          accountStatus: invitation.employmentStatus === "inactive" ? "inactive" : "active",
-          staffRegistrationCode: invitation.registrationCode,
-          staffRegistrationCodeUsed: true,
-          staffRole: invitation.role || "Teacher",
-          staffDepartment: invitation.department || "",
-          staffClassAssigned: invitation.assignedClass || null,
-          staffSubjectsAssigned: invitation.assignedSubjects || [],
-          schoolId: invitation.schoolId,
-        },
-      });
+    const result = await prisma.$transaction(async (tx) => {
+      let user = invitation.staffUserId
+        ? await tx.user.findUnique({ where: { id: invitation.staffUserId } })
+        : null;
 
-      await tx.teacher.create({
-        data: {
-          userId: createdUser.id,
-          schoolId: invitation.schoolId,
-          designation: invitation.role || "Teacher",
-          isActive: invitation.employmentStatus !== "inactive",
-        },
-      });
+      // New approved teacher applications already have a pending User + Teacher.
+      // Activate that existing identity instead of creating a duplicate Teacher.
+      if (user) {
+        if (Number(user.schoolId) !== Number(invitation.schoolId)) {
+          throw Object.assign(new Error("Teacher registration code belongs to a different school."), { statusCode: 403 });
+        }
+        if (String(user.role || "").toLowerCase() !== "teacher") {
+          throw Object.assign(new Error("This registration code is not linked to a teacher account."), { statusCode: 400 });
+        }
+        if (normalizedEmail !== String(user.email || "").toLowerCase()) {
+          throw Object.assign(new Error("Use the email address attached to this teacher registration code."), { statusCode: 400 });
+        }
+
+        user = await tx.user.update({
+          where: { id: user.id },
+          data: {
+            password: hashedPassword,
+            accountStatus: invitation.employmentStatus === "inactive" ? "inactive" : "active",
+            staffRegistrationCode: invitation.registrationCode,
+            staffRegistrationCodeUsed: true,
+            staffRole: invitation.role || "Teacher",
+            staffDepartment: invitation.department || "",
+            staffClassAssigned: invitation.assignedClass || null,
+            staffSubjectsAssigned: invitation.assignedSubjects || [],
+          },
+        });
+
+        const teacher = await tx.teacher.findUnique({ where: { userId: user.id } });
+        if (teacher) {
+          await tx.teacher.update({
+            where: { id: teacher.id },
+            data: {
+              schoolId: invitation.schoolId,
+              designation: invitation.role || "Teacher",
+              isActive: invitation.employmentStatus !== "inactive",
+            },
+          });
+        } else {
+          await tx.teacher.create({
+            data: {
+              userId: user.id,
+              schoolId: invitation.schoolId,
+              designation: invitation.role || "Teacher",
+              isActive: invitation.employmentStatus !== "inactive",
+            },
+          });
+        }
+      } else {
+        // Backwards compatibility for older staff invitations created before
+        // approved teacher applications started creating the Teacher record.
+        const existingUser = await tx.user.findUnique({ where: { email: normalizedEmail } });
+        if (existingUser) throw Object.assign(new Error("Email already in use"), { statusCode: 409 });
+
+        const usernameBase = normalizeUsername(normalizedEmail.split("@")[0]);
+        let username = usernameBase || `teacher${crypto.randomBytes(3).toString("hex")}`;
+        if (await tx.user.findUnique({ where: { username } })) {
+          username = `${username}-${crypto.randomBytes(2).toString("hex")}`;
+        }
+
+        const { firstName, lastName } = getNameParts(invitation.staffName);
+        user = await tx.user.create({
+          data: {
+            firstName,
+            middleName: null,
+            lastName,
+            fullName: invitation.staffName,
+            username,
+            email: normalizedEmail,
+            password: hashedPassword,
+            role: "teacher",
+            accountStatus: invitation.employmentStatus === "inactive" ? "inactive" : "active",
+            staffRegistrationCode: invitation.registrationCode,
+            staffRegistrationCodeUsed: true,
+            staffRole: invitation.role || "Teacher",
+            staffDepartment: invitation.department || "",
+            staffClassAssigned: invitation.assignedClass || null,
+            staffSubjectsAssigned: invitation.assignedSubjects || [],
+            schoolId: invitation.schoolId,
+          },
+        });
+
+        await tx.teacher.create({
+          data: {
+            userId: user.id,
+            schoolId: invitation.schoolId,
+            designation: invitation.role || "Teacher",
+            isActive: invitation.employmentStatus !== "inactive",
+          },
+        });
+      }
 
       await tx.staffInvitation.update({
         where: { id: invitation.id },
@@ -135,16 +193,16 @@ export const teacherInvitationService = {
           email: normalizedEmail,
           status: "used",
           usedAt: new Date(),
-          staffUserId: createdUser.id,
+          staffUserId: user.id,
         },
       });
 
-      return createdUser;
+      return user;
     });
 
     return {
-      user: safeUser(created),
-      token: generateToken({ id: created.id, email: created.email, role: created.role, schoolId: created.schoolId, sessionVersion: created.sessionVersion }),
+      user: safeUser(result),
+      token: generateToken({ id: result.id, email: result.email, role: result.role, schoolId: result.schoolId, sessionVersion: result.sessionVersion }),
     };
   },
 };
