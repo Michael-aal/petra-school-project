@@ -16,6 +16,7 @@ export const handleAIQuery = async ({
 }) => {
   const startTime = Date.now();
   const toolsUsed = [];
+  const toolErrors = [];
   let primaryData = null;
 
   try {
@@ -49,18 +50,54 @@ export const handleAIQuery = async ({
           toolArgs.studentId = context.defaultStudentId;
         }
 
-        const toolOutput = toolCall.name === "getRecentActivity"
-          ? await executeExtraAITool({ user, toolName: toolCall.name, input: toolArgs })
-          : await executeAITool({ user, toolName: toolCall.name, input: toolArgs });
+        try {
+          const toolOutput = toolCall.name === "getRecentActivity"
+            ? await executeExtraAITool({ user, toolName: toolCall.name, input: toolArgs })
+            : await executeAITool({ user, toolName: toolCall.name, input: toolArgs });
 
-        toolsUsed.push(toolCall.name);
-        if (!primaryData) primaryData = toolOutput;
+          toolsUsed.push(toolCall.name);
+          if (!primaryData) primaryData = toolOutput;
 
-        toolResults.push({
-          name: toolCall.name,
-          args: toolArgs,
-          output: toolOutput,
-        });
+          toolResults.push({
+            name: toolCall.name,
+            args: toolArgs,
+            output: toolOutput,
+          });
+        } catch (toolError) {
+          const statusCode = toolError?.statusCode || 500;
+          logger.warn("Nuvora tool call failed", {
+            toolName: toolCall.name,
+            statusCode,
+            error: toolError?.message,
+            userId: user.id,
+          });
+
+          toolErrors.push({
+            toolName: toolCall.name,
+            statusCode,
+          });
+
+          // Expected lookup/validation/permission failures should be returned to
+          // the model as tool output instead of turning the entire AI request into
+          // an HTTP 404/400. The model can then explain the limitation naturally.
+          const safeMessage = statusCode === 403
+            ? "The requested information is not available to this user because of access permissions."
+            : statusCode === 404
+              ? "The requested record could not be found or is not linked to this account."
+              : statusCode === 400
+                ? "The requested tool could not run because its parameters were invalid."
+                : "The requested tool could not complete.";
+
+          toolResults.push({
+            name: toolCall.name,
+            args: toolArgs,
+            output: {
+              success: false,
+              error: safeMessage,
+              statusCode,
+            },
+          });
+        }
       }
 
       const followUpResponse = await provider.generateWithTools({
@@ -71,7 +108,7 @@ export const handleAIQuery = async ({
         toolResults,
       });
 
-      finalAnswer = followUpResponse.text || "Here is the authorized school information requested.";
+      finalAnswer = followUpResponse.text || "I could not retrieve the requested information from the authorized school records.";
     }
 
     const durationMs = Date.now() - startTime;
@@ -90,6 +127,7 @@ export const handleAIQuery = async ({
       answer: finalAnswer,
       data: primaryData,
       toolsUsed,
+      toolErrors,
       provider: initialResponse.provider,
     };
   } catch (error) {
