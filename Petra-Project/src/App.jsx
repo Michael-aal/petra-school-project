@@ -23,7 +23,6 @@ import AskNuvoraPage from "./Pages/DashboardLayout/pages/AskNuvoraPage";
 import DeleteAccountButton from "./components/DeleteAccountButton";
 import StaffManagementPage from "./Pages/DashboardLayout/pages/staff/StaffManagementPage";
 import TeacherWorkspacePage from "./Pages/DashboardLayout/pages/staff/TeacherWorkspacePage";
-import SchoolSetupPage from "./Pages/DashboardLayout/pages/SchoolSetupPage";
 import StudentsListPage from "./Pages/DashboardLayout/pages/students/StudentsListPage";
 import AcademicsPage from "./Pages/DashboardLayout/pages/AcademicsPage";
 import ExaminationPage from "./Pages/DashboardLayout/pages/ExaminationPage";
@@ -68,7 +67,7 @@ import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
 import { UserContext } from "./context/UserContext";
 import { applyTheme } from "./utils/theme.js";
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
-import { Bell, BookOpen, CalendarDays, CheckCircle2, CreditCard, Download, FileText, MessageSquare, School, UserCircle2, Wallet } from "lucide-react";
+import { Bell, BookOpen, CalendarDays, CheckCircle2, Download, FileText, MessageSquare, School } from "lucide-react";
 import "./Styles/DashBoardLayout/SidebarNav.css";
 import "./components/dashboard/dashboard.css";
 import "../src/utils/theme";
@@ -91,10 +90,7 @@ import PortalLinksPage from "./Pages/DashboardLayout/pages/PortailLinks/PortalLi
 import SuperAdminDashboard from "./Pages/DashboardLayout/pages/dev/SuperAdminDashboard";
 import AdmissionForm from "./Pages/DashboardLayout/AdmissionForm/AdmissionForm";
 import SchoolFeesPaymentPage from "./Pages/DashboardLayout/SchoolFeesPaymentPage/SchoolFeesPaymentPage";
-import AdmissionPassScreen from "./Pages/DashboardLayout/AdmissionPassScreen/AdmissionPassScreen";
-import ApplicationStatusPage from "./Pages/DashboardLayout/ApplicationStatusPage/ApplicationStatusPage";
 import StudentPaymentPage from "./Pages/DashboardLayout/StudentPaymentPage/StudentPaymentPage";
-import AdminPaymentSettings from "./Pages/DashboardLayout/AdminPaymentSettings/AdminPaymentSettings";
 import Payment from "./Payment";
 
 function PublicLayout() { return <><Navbar /><Outlet /><Footer /></>; }
@@ -102,7 +98,7 @@ function PublicLayout() { return <><Navbar /><Outlet /><Footer /></>; }
 function DashboardLay() {
   const { userInfo, authReady } = useContext(UserContext);
   const sidebarStorageKey = `petra-dashboard-sidebar-${userInfo?.id || "guest"}`;
-  const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem(`petra-dashboard-sidebar-${userInfo?.id || "guest"}`) === "collapsed"; } catch { return false; } });
+  const [collapsed, setCollapsed] = useState(() => { try { return window.localStorage.getItem(sidebarStorageKey) === "collapsed"; } catch { return false; } });
   const [mobileOpen, setMobileOpen] = useState(false);
   useEffect(() => { applyTheme("light"); }, []);
   useEffect(() => { if (!userInfo?.id) return; try { setCollapsed(window.localStorage.getItem(sidebarStorageKey) === "collapsed"); } catch {} }, [sidebarStorageKey, userInfo?.id]);
@@ -111,7 +107,7 @@ function DashboardLay() {
   const closeSidebar = () => setMobileOpen(false);
   if (!authReady) return null;
   if (!userInfo?.email) return <Navigate to="/signin" replace />;
-  return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" /> }<div className="dashboard-main"><TopNavbar onToggle={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
+  return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onToggle={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
 }
 
 function DynamicParentSection(props) {
@@ -121,6 +117,8 @@ function DynamicParentSection(props) {
   const dynamicSections = [{ title: "Current learner status", items: myChildren.map((child) => ({ title: child.name, meta: [child.className || child.class, child.teacher || "Assigned Teacher"].filter(Boolean).join(" • "), value: child.status || "On Track" })) }];
   return <ParentSectionPage {...props} summaryCards={dynamicSummaryCards} sections={dynamicSections} />;
 }
+
+function parentSection(props) { return <ParentSectionPage {...props} />; }
 
 function App() {
   return (
@@ -141,7 +139,17 @@ function App() {
 
           <Route path="/staff" element={<Navigate to="/staff/dashboard" replace />} /><Route path="/staff/dashboard" element={<TeacherWorkspacePage />} /><Route path="/staff/classes" element={<TeacherWorkspacePage activeView="classes" />} /><Route path="/staff/classes/:classId" element={<TeacherWorkspacePage activeView="classDetails" />} /><Route path="/staff/students" element={<TeacherWorkspacePage activeView="students" />} /><Route path="/staff/attendance" element={<TeacherWorkspacePage activeView="attendance" />} /><Route path="/staff/assessments" element={<TeacherWorkspacePage activeView="assessments" />} /><Route path="/staff/results" element={<TeacherWorkspacePage activeView="results" />} /><Route path="/staff/announcements" element={<TeacherWorkspacePage activeView="announcements" />} /><Route path="/staff/notifications" element={<NotificationsPage />} /><Route path="/staff/messages" element={<MessagesPage />} /><Route path="/staff/profile" element={<TeacherWorkspacePage activeView="profile" />} /><Route path="/staff/settings" element={<TeacherWorkspacePage activeView="settings" />} /><Route path="/staff/ask-nuvora" element={<AskNuvoraPage />} />
 
-          <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} /><Route path="/portal/ask-nuvora" element={<AskNuvoraPage />} /><Route path="/portal/dashboard" element={<ParentDashboard />} /><Route path="/portal/children" element={<DynamicParentSection title="Children" />} /><Route path="/portal/fees" element={<ParentFeesPage />} />
+          <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} /><Route path="/portal/ask-nuvora" element={<AskNuvoraPage />} /><Route path="/portal/dashboard" element={<ParentDashboard />} />
+          <Route path="/portal/children" element={<DynamicParentSection title="Children Overview" description="A calm snapshot of each child’s class, teacher, and current progress." heroTitle="Your children at a glance" heroDescription="Keep track of performance, wellbeing, and next steps." icons={{ children: School }} />} />
+          <Route path="/portal/attendance" element={parentSection({ title:"Attendance Summary", description:"See how each child is doing in terms of punctuality and school presence.", heroTitle:"Attendance at a glance", heroDescription:"A healthy attendance record is visible right away for both children.", heroChips:["92% so far","2 late arrivals","3 absences"], summaryCards:[{icon:CalendarDays,label:"Present",value:"92%",meta:"This term",tone:"tone-blue"},{icon:CheckCircle2,label:"Late",value:"2",meta:"This week",tone:"tone-teal"},{icon:FileText,label:"Absence",value:"3",meta:"Recorded this month",tone:"tone-rose"}], sections:[{title:"Attendance record",items:[{title:"Ayo Ogunleye",meta:"Present on 18 of 20 days",value:"90%"},{title:"Tolu Ogunleye",meta:"Present on 17 of 20 days",value:"85%"}]}], actions:[{icon:FileText,title:"Download attendance",meta:"Save a printable overview"},{icon:Bell,title:"Set reminder",meta:"Get a weekly attendance note"}] })} />
+          <Route path="/portal/results" element={parentSection({ title:"Latest Results", description:"Track the most recent assessment outcomes and academic growth.", heroTitle:"Academic updates", heroDescription:"Review recent scores before the next parent-teacher conversation.", heroChips:["English 81%","Math 74%","Biology 79%"], summaryCards:[{icon:FileText,label:"English",value:"81%",meta:"Excellent comprehension",tone:"tone-blue"},{icon:BookOpen,label:"Mathematics",value:"74%",meta:"Needs revision",tone:"tone-teal"},{icon:School,label:"Biology",value:"79%",meta:"Strong practical work",tone:"tone-rose"}], sections:[{title:"Recent scores",items:[{title:"English",meta:"Ayo improved in comprehension",value:"81%"},{title:"Science",meta:"Tolu completed practicals",value:"76%"}]}], actions:[{icon:Download,title:"Download report card",meta:"Keep a copy for your records"},{icon:MessageSquare,title:"Talk to teacher",meta:"Ask for support tips"}] })} />
+          <Route path="/portal/assignments" element={parentSection({ title:"Assignments and Homework", description:"Homework for the selected linked child will appear here once it is published by the school.", heroTitle:"Stay prepared", heroDescription:"Assignments are loaded from the authenticated child’s school records.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/fees" element={<ParentFeesPage />} />
+          <Route path="/portal/announcements" element={parentSection({ title:"School Announcements", description:"School notices for the linked child will appear here once they are published.", heroTitle:"Latest notices", heroDescription:"Announcements are loaded from the authenticated parent’s school and linked students.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/messages" element={parentSection({ title:"Messages from Teachers", description:"Teacher notes and school updates will appear here for your linked children once they are sent.", heroTitle:"Stay connected", heroDescription:"Messages are loaded only for the authenticated parent and their linked students.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/downloads" element={parentSection({ title:"Downloads and Documents", description:"Published school documents for the selected child will appear here automatically.", heroTitle:"Useful documents", heroDescription:"No demo files are shown; only authorized records are loaded from the backend.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/profile" element={parentSection({ title:"Parent Profile", description:"Your authenticated account details are shown in the settings area, not from demo data.", heroTitle:"Account overview", heroDescription:"Profile information is loaded from the signed-in parent record only.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/settings" element={<SettingsPage role="parent" />} />
         </Route>
       </Routes>
       <DeleteAccountButton />
