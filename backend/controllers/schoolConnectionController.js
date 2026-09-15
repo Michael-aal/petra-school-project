@@ -9,6 +9,9 @@ const run = (handler) => async (req, res, next) => {
   }
 };
 
+export const listTeacherAssignmentOptions = run((req) =>
+  schoolConnectionService.listTeacherAssignmentOptions(req.user),
+);
 export const listTeacherAssignments = run((req) =>
   schoolConnectionService.listTeacherAssignments(req.user),
 );
