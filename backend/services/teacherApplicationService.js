@@ -109,15 +109,17 @@ export const teacherApplicationService = {
     };
   },
 
-  list: async ({ schoolId, status, query, limit = 100 }) => {
-    const safeLimit = Math.min(Math.max(Number(limit) || 100, 1), 200);
+  // Authorized admin review is global: do not require the current school context
+  // to match the application's schoolId. This lets the admin retrieve every
+  // teacher application stored in the database.
+  list: async ({ status, query, limit = 200 }) => {
+    const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 200);
     const normalizedStatus = clean(status)?.toLowerCase();
     const search = clean(query)?.toLowerCase();
 
     const rows = await prisma.$queryRaw`
       SELECT * FROM "TeacherApplication"
-      WHERE "schoolId" = ${Number(schoolId)}
-        AND (${normalizedStatus || null}::text IS NULL OR lower("status") = ${normalizedStatus || null})
+      WHERE (${normalizedStatus || null}::text IS NULL OR lower("status") = ${normalizedStatus || null})
         AND (${search || null}::text IS NULL OR
           lower(concat_ws(' ', "firstName", "middleName", "lastName")) LIKE ${search ? `%${search}%` : null} OR
           lower("email") LIKE ${search ? `%${search}%` : null} OR
@@ -130,10 +132,10 @@ export const teacherApplicationService = {
     return rows.map(normalizeRow);
   },
 
-  getById: async ({ schoolId, id }) => {
+  getById: async ({ id }) => {
     const rows = await prisma.$queryRaw`
       SELECT * FROM "TeacherApplication"
-      WHERE "schoolId" = ${Number(schoolId)} AND "id" = ${String(id)}
+      WHERE "id" = ${String(id)}
       LIMIT 1
     `;
     if (!rows.length) {
@@ -144,7 +146,7 @@ export const teacherApplicationService = {
     return normalizeRow(rows[0]);
   },
 
-  updateStatus: async ({ schoolId, id, status }) => {
+  updateStatus: async ({ id, status }) => {
     const allowed = new Set(["pending", "shortlisted", "rejected", "approved"]);
     const nextStatus = clean(status)?.toLowerCase();
     if (!allowed.has(nextStatus)) {
@@ -156,7 +158,7 @@ export const teacherApplicationService = {
     const rows = await prisma.$queryRaw`
       UPDATE "TeacherApplication"
       SET "status" = ${nextStatus}, "updatedAt" = CURRENT_TIMESTAMP
-      WHERE "schoolId" = ${Number(schoolId)} AND "id" = ${String(id)}
+      WHERE "id" = ${String(id)}
       RETURNING *
     `;
     if (!rows.length) {
