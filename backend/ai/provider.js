@@ -1,33 +1,14 @@
 import { logger } from "../utils/logger.js";
 
-const DEFAULT_GEMINI_MODEL = process.env.AI_MODEL || "gemini-2.0-flash";
-const DEFAULT_OPENAI_MODEL = process.env.AI_MODEL || "gpt-4o-mini";
+const DEFAULT_OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || process.env.AI_MODEL || "openai/gpt-4o-mini";
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 /**
- * Format tools for Google Gemini format
+ * OpenAI-compatible tool format used by OpenRouter.
  */
-const formatGeminiTools = (tools = []) => {
+const formatTools = (tools = []) => {
   if (!tools.length) return undefined;
-  return [
-    {
-      functionDeclarations: tools.map((tool) => ({
-        name: tool.name,
-        description: tool.description,
-        parameters: {
-          type: "OBJECT",
-          properties: tool.parameters?.properties || {},
-          required: tool.parameters?.required || [],
-        },
-      })),
-    },
-  ];
-};
 
-/**
- * Format tools for OpenAI format
- */
-const formatOpenAITools = (tools = []) => {
-  if (!tools.length) return undefined;
   return tools.map((tool) => ({
     type: "function",
     function: {
@@ -39,29 +20,32 @@ const formatOpenAITools = (tools = []) => {
 };
 
 /**
- * Deterministic Mock AI Provider for testing and offline development
+ * Deterministic Mock AI Provider for tests and offline development.
+ * This remains intentionally provider-free; production requests use OpenRouter.
  */
 class MockAIProvider {
   constructor(name = "mock") {
     this.name = name;
   }
 
-  async generateResponse({ prompt, systemPrompt }) {
+  async generateResponse({ prompt }) {
     logger.info("MockAIProvider generateResponse invoked");
     return {
-      text: `Nuvora Assistant: I received your request: "${prompt}". Please note that no live AI provider key is configured, so I am operating in development/test mode.`,
+      text: `Nuvora Assistant: I received your request: "${prompt}". No live AI provider is configured, so I am operating in development/test mode.`,
       finishReason: "STOP",
       toolCalls: [],
       provider: this.name,
     };
   }
 
-  async generateWithTools({ prompt, systemPrompt, tools = [], conversationHistory = [], toolResults = [] }) {
-    logger.info("MockAIProvider generateWithTools invoked", { prompt, toolResultsCount: toolResults.length });
+  async generateWithTools({ prompt, tools = [], toolResults = [] }) {
+    logger.info("MockAIProvider generateWithTools invoked", {
+      prompt,
+      toolResultsCount: toolResults.length,
+    });
 
-    // If tool results are already provided from a previous round, format a helpful final natural-language response!
     if (toolResults.length > 0) {
-      const toolOutput = toolResults[0].output;
+      const toolOutput = toolResults[0].output || {};
       const toolName = toolResults[0].name;
 
       if (toolName === "getSchoolOverview" || toolName === "school.overview") {
@@ -75,7 +59,7 @@ class MockAIProvider {
 
       if (toolName === "getAttendanceSummary" || toolName === "attendance.summary") {
         return {
-          text: `Attendance Summary: Out of ${toolOutput.total} recorded session(s), ${toolOutput.present} present and ${toolOutput.absent} absent (${toolOutput.percentage}% attendance rate).`,
+          text: `Attendance Summary: Out of ${toolOutput.total ?? 0} recorded session(s), ${toolOutput.present ?? 0} present and ${toolOutput.absent ?? 0} absent (${toolOutput.percentage ?? 0}% attendance rate).`,
           finishReason: "STOP",
           toolCalls: [],
           provider: this.name,
@@ -83,9 +67,11 @@ class MockAIProvider {
       }
 
       if (toolName === "getStudentAttendance" || toolName === "student.attendance") {
-        const studentLabel = toolOutput.studentName ? `${toolOutput.studentName} (${toolOutput.studentId})` : `Student ${toolOutput.studentId || ""}`;
+        const studentLabel = toolOutput.studentName
+          ? `${toolOutput.studentName} (${toolOutput.studentId})`
+          : `Student ${toolOutput.studentId || ""}`;
         return {
-          text: `Attendance for ${studentLabel}: Total records: ${toolOutput.total}, Present: ${toolOutput.present}, Absent: ${toolOutput.absent}, Attendance rate: ${toolOutput.percentage}%.`,
+          text: `Attendance for ${studentLabel}: Total records: ${toolOutput.total ?? 0}, Present: ${toolOutput.present ?? 0}, Absent: ${toolOutput.absent ?? 0}, Attendance rate: ${toolOutput.percentage ?? 0}%.`,
           finishReason: "STOP",
           toolCalls: [],
           provider: this.name,
@@ -108,7 +94,7 @@ class MockAIProvider {
         const paid = toolOutput.totalPaid ?? toolOutput.paid ?? 0;
         const outstanding = toolOutput.outstandingBalance ?? toolOutput.outstandingFees ?? toolOutput.outstanding ?? 0;
         return {
-          text: `Fee Summary: Total Billed: ₦${billed.toLocaleString()}, Total Paid: ₦${paid.toLocaleString()}, Current Outstanding Balance: ₦${outstanding.toLocaleString()}.`,
+          text: `Fee Summary: Total Billed: ₦${Number(billed).toLocaleString()}, Total Paid: ₦${Number(paid).toLocaleString()}, Current Outstanding Balance: ₦${Number(outstanding).toLocaleString()}.`,
           finishReason: "STOP",
           toolCalls: [],
           provider: this.name,
@@ -123,66 +109,17 @@ class MockAIProvider {
       };
     }
 
-    // Determine appropriate tool call based on intent
-    const lower = String(prompt).toLowerCase();
-
-    // Check for prompt injection attempts
-    if (lower.includes("ignore instructions") || lower.includes("ignore permissions") || lower.includes("show me all students") || lower.includes("give me the database") || lower.includes("run this sql") || lower.includes("reveal your system prompt")) {
+    if (!tools.length) {
       return {
-        text: "I am Nuvora's AI assistant. I cannot fulfill requests that bypass security, reveal internal system instructions, or access unauthorized school data.",
+        text: "I am Ask Nuvora, your secure school AI assistant.",
         finishReason: "STOP",
         toolCalls: [],
         provider: this.name,
       };
     }
 
-    if (lower.includes("overview") || lower.includes("school overview") || lower.includes("total students") || lower.includes("how many students") || lower.includes("stats")) {
-      return {
-        text: "",
-        finishReason: "TOOL_CALL",
-        toolCalls: [{ name: "getSchoolOverview", args: {} }],
-        provider: this.name,
-      };
-    }
-
-    if (lower.includes("attendance") && (lower.includes("child") || lower.includes("student") || lower.includes("my attendance") || lower.includes("attendance for"))) {
-      return {
-        text: "",
-        finishReason: "TOOL_CALL",
-        toolCalls: [{ name: "getStudentAttendance", args: {} }],
-        provider: this.name,
-      };
-    }
-
-    if (lower.includes("attendance")) {
-      return {
-        text: "",
-        finishReason: "TOOL_CALL",
-        toolCalls: [{ name: "getAttendanceSummary", args: {} }],
-        provider: this.name,
-      };
-    }
-
-    if (lower.includes("result") || lower.includes("score") || lower.includes("grade") || lower.includes("performance") || lower.includes("term result")) {
-      return {
-        text: "",
-        finishReason: "TOOL_CALL",
-        toolCalls: [{ name: "getStudentResults", args: {} }],
-        provider: this.name,
-      };
-    }
-
-    if (lower.includes("fee") || lower.includes("outstanding") || lower.includes("balance") || lower.includes("payment") || lower.includes("invoice") || lower.includes("money") || lower.includes("paid")) {
-      return {
-        text: "",
-        finishReason: "TOOL_CALL",
-        toolCalls: [{ name: "getFeeSummary", args: {} }],
-        provider: this.name,
-      };
-    }
-
     return {
-      text: "I am Ask Nuvora, your secure school AI assistant. You can ask me about school overview, attendance summaries, student attendance, academic results, or outstanding fees.",
+      text: "I am Ask Nuvora, your secure school AI assistant. Live AI is disabled in the current test mode.",
       finishReason: "STOP",
       toolCalls: [],
       provider: this.name,
@@ -191,159 +128,55 @@ class MockAIProvider {
 }
 
 /**
- * Google Gemini Provider
+ * OpenRouter provider.
+ * OpenRouter exposes an OpenAI-compatible Chat Completions interface, so the
+ * existing Nuvora orchestrator and tool-permission system can remain unchanged.
  */
-class GeminiProvider {
-  constructor(apiKey, model = DEFAULT_GEMINI_MODEL) {
+class OpenRouterProvider {
+  constructor(apiKey, model = DEFAULT_OPENROUTER_MODEL) {
     this.apiKey = apiKey;
     this.model = model;
-    this.name = "gemini";
+    this.name = "openrouter";
   }
 
   async generateWithTools({ prompt, systemPrompt, tools = [], conversationHistory = [], toolResults = [] }) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.model)}:generateContent?key=${encodeURIComponent(this.apiKey)}`;
-
-    const contents = [];
-
-    for (const msg of conversationHistory) {
-      if (msg.role === "user") {
-        contents.push({ role: "user", parts: [{ text: msg.content }] });
-      } else if (msg.role === "assistant") {
-        contents.push({ role: "model", parts: [{ text: msg.content }] });
-      }
-    }
-
-    contents.push({ role: "user", parts: [{ text: prompt }] });
-
-    if (toolResults.length > 0) {
-      for (const res of toolResults) {
-        contents.push({
-          role: "model",
-          parts: [{ functionCall: { name: res.name, args: res.args || {} } }],
-        });
-        contents.push({
-          role: "function",
-          parts: [
-            {
-              functionResponse: {
-                name: res.name,
-                response: { output: res.output },
-              },
-            },
-          ],
-        });
-      }
-    }
-
-    const payload = {
-      contents,
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 1024,
-      },
-    };
-
-    if (systemPrompt) {
-      payload.system_instruction = {
-        parts: [{ text: systemPrompt }],
-      };
-    }
-
-    const geminiTools = formatGeminiTools(tools);
-    if (geminiTools) {
-      payload.tools = geminiTools;
-      payload.tool_config = {
-        function_calling_config: {
-          mode: "AUTO",
-        },
-      };
-    }
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      logger.error("Gemini API error", { status: res.status, errText });
-      throw Object.assign(new Error(`AI provider error (${res.status})`), { statusCode: 502 });
-    }
-
-    const data = await res.json();
-    const candidate = data.candidates?.[0];
-    const parts = candidate?.content?.parts || [];
-
-    const toolCalls = [];
-    let text = "";
-
-    for (const part of parts) {
-      if (part.functionCall) {
-        toolCalls.push({
-          name: part.functionCall.name,
-          args: part.functionCall.args || {},
-        });
-      }
-      if (part.text) {
-        text += part.text;
-      }
-    }
-
-    return {
-      text: text.trim(),
-      toolCalls,
-      finishReason: toolCalls.length > 0 ? "TOOL_CALL" : candidate?.finishReason || "STOP",
-      provider: this.name,
-    };
-  }
-
-  async generateResponse({ prompt, systemPrompt, conversationHistory = [] }) {
-    return this.generateWithTools({ prompt, systemPrompt, tools: [], conversationHistory });
-  }
-}
-
-/**
- * OpenAI Provider
- */
-class OpenAIProvider {
-  constructor(apiKey, model = DEFAULT_OPENAI_MODEL) {
-    this.apiKey = apiKey;
-    this.model = model;
-    this.name = "openai";
-  }
-
-  async generateWithTools({ prompt, systemPrompt, tools = [], conversationHistory = [], toolResults = [] }) {
-    const url = "https://api.openai.com/v1/chat/completions";
-
     const messages = [];
+
     if (systemPrompt) {
       messages.push({ role: "system", content: systemPrompt });
     }
 
     for (const msg of conversationHistory) {
-      messages.push({ role: msg.role === "model" ? "assistant" : msg.role, content: msg.content });
+      const role = msg.role === "model" ? "assistant" : msg.role;
+      if (["system", "user", "assistant"].includes(role)) {
+        messages.push({ role, content: msg.content });
+      }
     }
 
     messages.push({ role: "user", content: prompt });
 
     if (toolResults.length > 0) {
-      for (const res of toolResults) {
-        const callId = `call_${res.name}`;
+      for (const result of toolResults) {
+        const callId = `call_${result.name}`;
+
         messages.push({
           role: "assistant",
           tool_calls: [
             {
               id: callId,
               type: "function",
-              function: { name: res.name, arguments: JSON.stringify(res.args || {}) },
+              function: {
+                name: result.name,
+                arguments: JSON.stringify(result.args || {}),
+              },
             },
           ],
         });
+
         messages.push({
           role: "tool",
           tool_call_id: callId,
-          content: JSON.stringify(res.output),
+          content: JSON.stringify(result.output ?? {}),
         });
       }
     }
@@ -352,70 +185,105 @@ class OpenAIProvider {
       model: this.model,
       messages,
       temperature: 0.1,
+      max_tokens: 1024,
     };
 
-    const openAITools = formatOpenAITools(tools);
-    if (openAITools) {
-      payload.tools = openAITools;
+    const openRouterTools = formatTools(tools);
+    if (openRouterTools) {
+      payload.tools = openRouterTools;
+      payload.tool_choice = "auto";
     }
 
-    const res = await fetch(url, {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${this.apiKey}`,
+    };
+
+    // Optional OpenRouter metadata; neither value is required for the request.
+    if (process.env.OPENROUTER_HTTP_REFERER) {
+      headers["HTTP-Referer"] = process.env.OPENROUTER_HTTP_REFERER;
+    }
+    if (process.env.OPENROUTER_APP_NAME) {
+      headers["X-Title"] = process.env.OPENROUTER_APP_NAME;
+    }
+
+    const response = await fetch(OPENROUTER_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
+      headers,
       body: JSON.stringify(payload),
     });
 
-    if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      logger.error("OpenAI API error", { status: res.status, errText });
-      throw Object.assign(new Error(`AI provider error (${res.status})`), { statusCode: 502 });
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "");
+      logger.error("OpenRouter API error", {
+        status: response.status,
+        model: this.model,
+        error: errorText,
+      });
+      throw Object.assign(new Error(`AI provider error (${response.status})`), { statusCode: 502 });
     }
 
-    const data = await res.json();
+    const data = await response.json();
     const choice = data.choices?.[0]?.message;
 
-    const toolCalls = (choice?.tool_calls || []).map((tc) => ({
-      name: tc.function?.name,
-      args: typeof tc.function?.arguments === "string" ? JSON.parse(tc.function.arguments || "{}") : tc.function?.arguments || {},
-    }));
+    const toolCalls = (choice?.tool_calls || []).map((toolCall) => {
+      let args = {};
+      const rawArguments = toolCall.function?.arguments;
+
+      if (typeof rawArguments === "string" && rawArguments.trim()) {
+        try {
+          args = JSON.parse(rawArguments);
+        } catch (error) {
+          logger.error("OpenRouter returned invalid tool arguments", {
+            toolName: toolCall.function?.name,
+            error: error.message,
+          });
+          throw Object.assign(new Error("AI returned invalid tool arguments"), { statusCode: 502 });
+        }
+      } else if (rawArguments && typeof rawArguments === "object") {
+        args = rawArguments;
+      }
+
+      return {
+        name: toolCall.function?.name,
+        args,
+      };
+    });
 
     return {
       text: choice?.content || "",
       toolCalls,
       finishReason: toolCalls.length > 0 ? "TOOL_CALL" : "STOP",
       provider: this.name,
+      model: this.model,
     };
   }
 
   async generateResponse({ prompt, systemPrompt, conversationHistory = [] }) {
-    return this.generateWithTools({ prompt, systemPrompt, tools: [], conversationHistory });
+    return this.generateWithTools({
+      prompt,
+      systemPrompt,
+      tools: [],
+      conversationHistory,
+    });
   }
 }
 
 /**
- * Factory for creating the active AI Provider based on environment configuration
+ * Factory for the single production Nuvora provider.
  */
 export const getAIProvider = () => {
-  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  const openAIKey = process.env.OPENAI_API_KEY;
-
   if (process.env.NODE_ENV === "test" && !process.env.FORCE_LIVE_AI) {
     return new MockAIProvider("mock-test");
   }
 
-  if (geminiKey) {
-    return new GeminiProvider(geminiKey);
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
+
+  if (!openRouterKey) {
+    return new MockAIProvider("mock-fallback");
   }
 
-  if (openAIKey) {
-    return new OpenAIProvider(openAIKey);
-  }
-
-  // Fallback to deterministic mock if no key is configured
-  return new MockAIProvider("mock-fallback");
+  return new OpenRouterProvider(openRouterKey);
 };
 
-export { MockAIProvider, GeminiProvider, OpenAIProvider };
+export { MockAIProvider, OpenRouterProvider };
