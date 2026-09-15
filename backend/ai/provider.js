@@ -111,7 +111,7 @@ class MockAIProvider {
 
     if (!tools.length) {
       return {
-        text: "I am Ask Nuvora, your secure school AI assistant.",
+        text: "I am Nuvora, your secure school AI assistant.",
         finishReason: "STOP",
         toolCalls: [],
         provider: this.name,
@@ -119,7 +119,7 @@ class MockAIProvider {
     }
 
     return {
-      text: "I am Ask Nuvora, your secure school AI assistant. Live AI is disabled in the current test mode.",
+      text: "I am Nuvora, your secure school AI assistant. Live AI is disabled in the current test mode.",
       finishReason: "STOP",
       toolCalls: [],
       provider: this.name,
