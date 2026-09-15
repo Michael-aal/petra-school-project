@@ -50,5 +50,16 @@ export const logAudit = async ({ userId = null, schoolId = null, action, actionT
     data.school = { connect: { id: resolvedSchoolId } };
   }
 
-  return prisma.auditLog.create({ data });
+  // Audit logging must never break authentication or another business operation.
+  try {
+    return await prisma.auditLog.create({ data });
+  } catch (error) {
+    logger.error("Audit log persistence failed; continuing without blocking the operation", {
+      action,
+      userId,
+      schoolId,
+      error: error?.message || String(error),
+    });
+    return null;
+  }
 };
