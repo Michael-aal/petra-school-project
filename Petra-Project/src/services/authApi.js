@@ -1,7 +1,5 @@
 const configuredApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "" : "http://localhost:5000");
-
 if (!configuredApiUrl) throw new Error("VITE_API_URL must be configured for production builds.");
-
 const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, "");
 const resolveApiBaseUrl = () => {
   if (typeof window === "undefined") return normalizedApiUrl;
@@ -15,47 +13,39 @@ const resolveApiBaseUrl = () => {
   }
   return configured.toString().replace(/\/+$/, "");
 };
-
 export const API_BASE_URL = resolveApiBaseUrl();
+
 const TAB_ACCESS_KEY = "petra_tab_access";
 const TAB_REFRESH_KEY = "petra_tab_refresh";
 const TAB_ID_KEY = "petra_tab_id";
-
 const getTabStorage = () => {
   if (typeof window === "undefined") return null;
   try { return window.sessionStorage; } catch { return null; }
 };
-
 const ensureTabId = () => {
   const storage = getTabStorage();
   if (!storage) return "server";
   try {
     const existing = storage.getItem(TAB_ID_KEY);
     if (existing) return existing;
-    const generated = typeof crypto?.randomUUID === "function"
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const generated = typeof crypto?.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     storage.setItem(TAB_ID_KEY, generated);
     return generated;
   } catch { return "unavailable"; }
 };
-
 export const isTabAuthMode = () => Boolean(getTabStorage());
 export const readAuthToken = () => getTabStorage()?.getItem(TAB_ACCESS_KEY) || null;
 export const writeAuthToken = (token) => {
   const storage = getTabStorage();
   if (!storage) return;
-  if (token) storage.setItem(TAB_ACCESS_KEY, token);
-  else storage.removeItem(TAB_ACCESS_KEY);
+  if (token) storage.setItem(TAB_ACCESS_KEY, token); else storage.removeItem(TAB_ACCESS_KEY);
 };
 const readTabRefreshToken = () => getTabStorage()?.getItem(TAB_REFRESH_KEY) || null;
 const persistTabCredentials = (response) => {
   const storage = getTabStorage();
   if (!storage) return response;
-  const accessToken = response?.tabSession?.accessToken;
-  const refreshToken = response?.tabSession?.refreshToken;
-  if (accessToken) storage.setItem(TAB_ACCESS_KEY, accessToken);
-  if (refreshToken) storage.setItem(TAB_REFRESH_KEY, refreshToken);
+  if (response?.tabSession?.accessToken) storage.setItem(TAB_ACCESS_KEY, response.tabSession.accessToken);
+  if (response?.tabSession?.refreshToken) storage.setItem(TAB_REFRESH_KEY, response.tabSession.refreshToken);
   return response;
 };
 const clearTabCredentials = () => {
@@ -66,7 +56,32 @@ const clearTabCredentials = () => {
 };
 export const clearAuthToken = clearTabCredentials;
 
-async function request(path, options = {}, { tabCredential = true } = {}) {
+let refreshPromise = null;
+const refreshTabAccess = async () => {
+  const refreshToken = readTabRefreshToken();
+  if (!refreshToken) throw Object.assign(new Error("Refresh token missing"), { status: 401 });
+  if (refreshPromise) return refreshPromise;
+  refreshPromise = (async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Petra-Tab-Auth": "1",
+      "X-Petra-Tab-Id": ensureTabId(),
+      "X-Petra-Tab-Refresh": refreshToken,
+    };
+    const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, { method: "POST", credentials: "include", headers });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.message || "Unable to refresh session");
+      error.status = response.status;
+      error.data = data;
+      throw error;
+    }
+    return persistTabCredentials(data);
+  })().finally(() => { refreshPromise = null; });
+  return refreshPromise;
+};
+
+async function request(path, options = {}, { tabCredential = true, retryAuth = true } = {}) {
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
   const token = tabCredential ? readAuthToken() : null;
   if (token && !headers.Authorization && !headers.authorization) headers.Authorization = `Bearer ${token}`;
@@ -76,9 +91,15 @@ async function request(path, options = {}, { tabCredential = true } = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, { ...options, credentials: "include", headers });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (response.status === 401 && tabCredential && retryAuth && !path.includes("/api/auth/refresh")) {
+      try {
+        await refreshTabAccess();
+        return request(path, options, { tabCredential: true, retryAuth: false });
+      } catch {
+        // Fall through with the original authentication error below.
+      }
+    }
     if (response.status === 401) {
-      // Never destroy the refresh credential on an access-token failure.
-      // The caller can refresh this tab and obtain a new access token.
       try { getTabStorage()?.removeItem(TAB_ACCESS_KEY); } catch {}
     }
     const error = new Error(data.message || "Request failed");
@@ -90,14 +111,9 @@ async function request(path, options = {}, { tabCredential = true } = {}) {
 }
 
 const publicAuthRequest = async (path, payload) => {
-  const response = await request(path, {
-    method: "POST",
-    headers: { "X-Petra-Tab-Auth": "1" },
-    body: JSON.stringify(payload),
-  }, { tabCredential: false });
+  const response = await request(path, { method: "POST", headers: { "X-Petra-Tab-Auth": "1" }, body: JSON.stringify(payload) }, { tabCredential: false });
   return persistTabCredentials(response);
 };
-
 const protectedPost = (path, payload) => request(path, { method: "POST", body: JSON.stringify(payload) });
 
 export const authApi = {
@@ -116,15 +132,7 @@ export const authApi = {
   login: (payload) => publicAuthRequest("/api/auth/login", payload),
   me: () => request("/api/auth/me", { method: "GET", cache: "no-store" }),
   logout: () => request("/api/auth/revoke", { method: "POST", headers: { "X-Petra-Tab-Auth": "1" } }).finally(clearTabCredentials),
-  refresh: async () => {
-    const refreshToken = readTabRefreshToken();
-    if (!refreshToken) throw Object.assign(new Error("Refresh token missing"), { status: 401 });
-    const response = await request("/api/auth/refresh", {
-      method: "POST",
-      headers: { "X-Petra-Tab-Refresh": refreshToken, "X-Petra-Tab-Auth": "1" },
-    }, { tabCredential: false });
-    return persistTabCredentials(response);
-  },
+  refresh: () => refreshTabAccess(),
   updateProfile: (payload) => request("/api/auth/profile", { method: "PUT", body: JSON.stringify(payload) }),
   selectSchool: (payload) => request("/api/auth/select-school", { method: "POST", body: JSON.stringify(payload) }),
   changePassword: (payload) => request("/api/auth/change-password", { method: "POST", body: JSON.stringify(payload) }),
