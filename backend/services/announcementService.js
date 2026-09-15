@@ -176,22 +176,33 @@ export const announcementService = {
         ON CONFLICT ("announcementId", "userId") DO NOTHING
       `;
 
+      // Give every notification its own stable id so push delivery can be
+      // marked per recipient and the background watcher can safely recover.
       const notifications = recipients.map((recipient) => ({
+        id: randomUUID(),
         schoolId,
         userId: recipient.id,
         title: `New announcement: ${announcement.title}`,
         body: announcement.body,
+        isRead: false,
       }));
       await prisma.notification.createMany({ data: notifications });
 
-      // Deliver immediately as part of the same announcement workflow.
-      // The sender was excluded above, so the sender can never receive this push.
-      await pushNotificationService.sendToUsers(recipients, {
-        title: `New announcement: ${announcement.title}`,
-        body: announcement.body,
-        url: "/dashboard/communication/notifications",
-        tag: `announcement-${announcement.id}`,
-      });
+      // Deliver immediately from the publish workflow. The sender was excluded
+      // above, and forceExternal makes this a real browser/OS notification even
+      // when Petra is currently visible. The watcher remains a recovery path.
+      await Promise.allSettled(
+        notifications.map((notification) =>
+          pushNotificationService.sendToUser(notification.userId, {
+            title: notification.title,
+            body: notification.body,
+            url: "/dashboard/communication/notifications",
+            tag: `notification-${notification.id}`,
+            notificationId: notification.id,
+            forceExternal: true,
+          }),
+        ),
+      );
     }
 
     return announcement;
