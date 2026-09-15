@@ -1,4 +1,4 @@
-import { Bell, Search, CheckCheck, Smartphone, Send } from "lucide-react";
+import { Bell, Search, CheckCheck, Smartphone, Send, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import "../page-styles/NotificationsPage.css";
 import { notificationApi } from "../../../../services/notificationApi";
@@ -11,6 +11,23 @@ const formatDate = (value) => {
   return date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 };
 
+const statusLabel = (value) => value ? "Ready" : "Not ready";
+
+function DiagnosticRow({ label, value, detail }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "10px 0", borderBottom: "1px solid rgba(148, 163, 184, 0.14)" }}>
+      <div style={{ minWidth: 0 }}>
+        <strong style={{ display: "block", fontSize: 14 }}>{label}</strong>
+        {detail ? <span style={{ display: "block", marginTop: 3, fontSize: 12, opacity: 0.7, overflowWrap: "anywhere" }}>{detail}</span> : null}
+      </div>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" }}>
+        {value ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+        {statusLabel(value)}
+      </span>
+    </div>
+  );
+}
+
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(0);
@@ -20,6 +37,8 @@ export default function NotificationsPage() {
   const [pushEnabled, setPushEnabled] = useState(false);
   const [pushBusy, setPushBusy] = useState(false);
   const [pushMessage, setPushMessage] = useState("");
+  const [diagnostics, setDiagnostics] = useState(null);
+  const [diagnosticsBusy, setDiagnosticsBusy] = useState(false);
 
   const loadNotifications = useCallback(async () => {
     setLoading(true);
@@ -35,17 +54,27 @@ export default function NotificationsPage() {
     }
   }, [search]);
 
+  const inspectDeviceNotifications = useCallback(async () => {
+    setDiagnosticsBusy(true);
+    try {
+      const result = await pushNotificationService.diagnostics();
+      setDiagnostics(result);
+      setPushEnabled(Boolean(result?.permission === "granted" && result?.subscription && result?.backendSubscribed));
+    } catch (err) {
+      setDiagnostics({ error: err?.message || "Unable to inspect device notification status." });
+    } finally {
+      setDiagnosticsBusy(false);
+    }
+  }, []);
+
   useEffect(() => {
     const timer = window.setTimeout(loadNotifications, 250);
     return () => window.clearTimeout(timer);
   }, [loadNotifications]);
 
   useEffect(() => {
-    if (!pushNotificationService.isSupported()) return;
-    void pushNotificationService.syncIfGranted()
-      .then((result) => setPushEnabled(Boolean(result?.enabled)))
-      .catch(() => setPushEnabled(false));
-  }, []);
+    void inspectDeviceNotifications();
+  }, [inspectDeviceNotifications]);
 
   const enableDeviceNotifications = async () => {
     setPushBusy(true);
@@ -53,8 +82,8 @@ export default function NotificationsPage() {
     setError("");
     try {
       await pushNotificationService.enable();
-      setPushEnabled(true);
       setPushMessage("Device notifications are enabled. You can now test a real system notification.");
+      await inspectDeviceNotifications();
     } catch (err) {
       setPushMessage(err?.message || "Unable to enable device notifications.");
     } finally {
@@ -69,8 +98,8 @@ export default function NotificationsPage() {
     try {
       if (!pushEnabled) await pushNotificationService.enable();
       const result = await pushNotificationService.sendTest();
-      setPushEnabled(true);
       setPushMessage(result?.message || "Test device notification sent. Check your system notification area.");
+      await inspectDeviceNotifications();
     } catch (err) {
       setPushMessage(err?.message || "Unable to send the test device notification.");
     } finally {
@@ -97,6 +126,16 @@ export default function NotificationsPage() {
       setError(err?.message || "Unable to update notifications.");
     }
   };
+
+  const permissionGranted = diagnostics?.permission === "granted";
+  const diagnosticsReady = Boolean(
+    diagnostics?.supported &&
+    permissionGranted &&
+    diagnostics?.serviceWorkerRegistered &&
+    diagnostics?.serviceWorkerActive &&
+    diagnostics?.subscription &&
+    diagnostics?.backendSubscribed,
+  );
 
   return (
     <div className="notifications-page dashboard-page">
@@ -143,6 +182,39 @@ export default function NotificationsPage() {
             <CheckCheck size={16} />
             <span>Mark all read</span>
           </button>
+        </div>
+      </section>
+
+      <section className="notification-card" style={{ marginBottom: 16 }} aria-label="Device notification status">
+        <div className="notification-card-body">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <div>
+              <h2 style={{ marginBottom: 4 }}>Device Notifications</h2>
+              <p style={{ margin: 0 }}>
+                {diagnosticsReady ? "Everything needed for Petra device alerts is connected." : "Check each layer below to see exactly where device alerts are stopping."}
+              </p>
+            </div>
+            <button type="button" className="notifications-send-button" onClick={inspectDeviceNotifications} disabled={diagnosticsBusy}>
+              <RefreshCw size={16} />
+              <span>{diagnosticsBusy ? "Checking..." : "Refresh status"}</span>
+            </button>
+          </div>
+
+          {diagnostics ? (
+            <div style={{ marginTop: 14 }}>
+              <DiagnosticRow label="Browser support" value={diagnostics.supported} detail={diagnostics.error && !diagnostics.supported ? diagnostics.error : "Secure context, Service Worker, Push API, and Notifications API"} />
+              <DiagnosticRow label="Notification permission" value={permissionGranted} detail={`Browser permission: ${diagnostics.permission || "unknown"}`} />
+              <DiagnosticRow label="Service worker registered" value={diagnostics.serviceWorkerRegistered} />
+              <DiagnosticRow label="Service worker active" value={diagnostics.serviceWorkerActive} />
+              <DiagnosticRow label="Push subscription" value={diagnostics.subscription} detail={diagnostics.endpoint ? `Endpoint: ${diagnostics.endpoint}` : "No browser push subscription found"} />
+              <DiagnosticRow label="Backend configured" value={diagnostics.backendConfigured} detail="VAPID keys and push configuration" />
+              <DiagnosticRow label="Backend storage" value={diagnostics.backendStorageAvailable} detail={`Redis subscription records: ${diagnostics.backendSubscriptionCount || 0}`} />
+              <DiagnosticRow label="This device registered with Petra" value={diagnostics.backendSubscribed} />
+              {diagnostics.error ? <p style={{ margin: "12px 0 0", fontSize: 13 }}>{diagnostics.error}</p> : null}
+            </div>
+          ) : (
+            <p style={{ marginTop: 14 }}>Checking device notification status...</p>
+          )}
         </div>
       </section>
 
