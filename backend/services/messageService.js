@@ -36,6 +36,41 @@ const userSelect = {
 };
 
 export const messageService = {
+  listContacts: async (user, query = {}) => {
+    const schoolId = normalizeSchoolId(user);
+    const senderRole = normalizeRole(user.role);
+    const search = query.search ? String(query.search).trim() : "";
+    const limit = Math.max(1, Math.min(100, toNumber(query.limit, 50)));
+
+    const allSchoolRoles = ["principal", "admin", "super_admin", "superadmin", "teacher", "staff", "parent"];
+    const recipientRoles = ["principal", "admin", "super_admin", "superadmin", "teacher", "staff", "parent"].filter((role) =>
+      canMessage(senderRole, role),
+    );
+
+    const where = {
+      schoolId,
+      id: { not: user.id },
+      role: { in: recipientRoles.length ? recipientRoles : allSchoolRoles },
+      ...(search
+        ? {
+            OR: [
+              { fullName: { contains: search, mode: "insensitive" } },
+              { email: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    };
+
+    const contacts = await prisma.user.findMany({
+      where,
+      select: userSelect,
+      orderBy: [{ fullName: "asc" }, { email: "asc" }],
+      take: limit,
+    });
+
+    return { contacts };
+  },
+
   listMessages: async (user, query = {}) => {
     const schoolId = normalizeSchoolId(user);
     const page = Math.max(1, toNumber(query.page, 1));
