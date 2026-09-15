@@ -25,11 +25,9 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
         select: { id: true },
       });
       if (!userExists) {
-        logger.warn("Skipping audit log for unknown user", { userId, action, entity });
         return null;
       }
-    } catch (err) {
-      logger.warn("Failed to validate audit user", { userId, error: err.message });
+    } catch {
       return null;
     }
   }
