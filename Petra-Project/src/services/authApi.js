@@ -84,6 +84,26 @@ const refreshTabAccess = async () => {
 async function request(path, options = {}, { tabCredential = true, retryAuth = true } = {}) {
   const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
   const token = tabCredential ? readAuthToken() : null;
+  const refreshToken = tabCredential ? readTabRefreshToken() : null;
+
+  // Never send a protected browser request with an empty Authorization value.
+  // If this tab has a refresh credential, rotate it first. Otherwise fail
+  // locally instead of asking the API to authenticate an empty tab request.
+  if (tabCredential && !token && !path.includes("/api/auth/refresh")) {
+    if (retryAuth && refreshToken) {
+      try {
+        await refreshTabAccess();
+        return request(path, options, { tabCredential: true, retryAuth: false });
+      } catch {
+        // Fall through to a local authentication error without a network call.
+      }
+    }
+    const error = new Error("Authentication required");
+    error.status = 401;
+    error.data = { success: false, message: "Authentication required" };
+    throw error;
+  }
+
   if (token && !headers.Authorization && !headers.authorization) headers.Authorization = `Bearer ${token}`;
   if (tabCredential && !headers["X-Petra-Tab-Auth"] && !headers["x-petra-tab-auth"]) headers["X-Petra-Tab-Auth"] = "1";
   if (!headers["X-Petra-Tab-Id"] && !headers["x-petra-tab-id"]) headers["X-Petra-Tab-Id"] = ensureTabId();
