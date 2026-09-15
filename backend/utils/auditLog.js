@@ -24,16 +24,13 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
         where: { id: String(userId) },
         select: { id: true },
       });
-      if (!userExists) {
-        return null;
-      }
+      if (!userExists) return null;
     } catch {
       return null;
     }
   }
 
   const data = {
-    schoolId: schoolId ? Number(schoolId) : null,
     action: String(action || "unknown").slice(0, 120),
     entity: entity ? String(entity).slice(0, 120) : "System",
     entityId: resourceId ? String(resourceId) : "unknown",
@@ -42,10 +39,14 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
     severity: String(severity || "INFO").slice(0, 32),
   };
 
-  // Use the User relation instead of the userId scalar so audit logging also
-  // works with generated Prisma clients that expose `user` as the create input.
+  // AuditLog exposes User and School as Prisma relations, not scalar create fields.
   if (userId) {
     data.user = { connect: { id: String(userId) } };
+  }
+
+  const resolvedSchoolId = Number(schoolId);
+  if (Number.isInteger(resolvedSchoolId) && resolvedSchoolId > 0) {
+    data.school = { connect: { id: resolvedSchoolId } };
   }
 
   return prisma.auditLog.create({ data });
