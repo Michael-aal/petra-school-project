@@ -10,7 +10,9 @@ const urlBase64ToUint8Array = (value) => {
 const getRegistration = async () => {
   if (!("serviceWorker" in navigator)) throw new Error("This browser does not support service workers.");
   if (!window.isSecureContext) throw new Error("Device notifications require HTTPS or localhost.");
-  return navigator.serviceWorker.register("/petra-push-sw.js", { scope: "/" });
+  const registration = await navigator.serviceWorker.register("/petra-push-sw.js", { scope: "/" });
+  await registration.update();
+  return registration;
 };
 
 const getPermissionError = (permission) => {
@@ -62,6 +64,55 @@ export const pushNotificationService = {
     });
 
     return { enabled: true, permission };
+  },
+
+  diagnostics: async () => {
+    const supported = pushNotificationService.isSupported();
+    const permission = "Notification" in window ? Notification.permission : "unsupported";
+    const result = {
+      supported,
+      permission,
+      serviceWorkerRegistered: false,
+      serviceWorkerActive: false,
+      subscription: false,
+      endpoint: null,
+      backendConfigured: false,
+      backendStorageAvailable: false,
+      backendSubscribed: false,
+      backendSubscriptionCount: 0,
+      error: null,
+    };
+
+    if (!supported) {
+      result.error = "This browser or connection does not support device notifications.";
+      return result;
+    }
+
+    try {
+      const registration = await getRegistration();
+      result.serviceWorkerRegistered = Boolean(registration);
+      result.serviceWorkerActive = Boolean(registration.active);
+
+      if (permission !== "granted") return result;
+
+      const subscription = await registration.pushManager.getSubscription();
+      result.subscription = Boolean(subscription);
+      result.endpoint = subscription?.endpoint || null;
+
+      const status = await request(
+        result.endpoint
+          ? `/api/notifications/push/status?endpoint=${encodeURIComponent(result.endpoint)}`
+          : "/api/notifications/push/status",
+      );
+      result.backendConfigured = Boolean(status?.configured);
+      result.backendStorageAvailable = Boolean(status?.storageAvailable);
+      result.backendSubscribed = Boolean(status?.subscribed);
+      result.backendSubscriptionCount = Number(status?.subscriptionCount || 0);
+    } catch (error) {
+      result.error = error?.message || "Unable to inspect device notification status.";
+    }
+
+    return result;
   },
 
   syncIfGranted: async () => {
