@@ -43,6 +43,15 @@ const assertSchoolRecords = async (schoolId, ids) => {
 };
 
 export const schoolConnectionService = {
+  listTeacherAssignmentOptions: async (user) => {
+    const schoolId = schoolIdOf(user);
+    const [classes, subjects] = await Promise.all([
+      prisma.class.findMany({ where: { schoolId }, orderBy: { name: "asc" } }),
+      prisma.subject.findMany({ where: { schoolId }, orderBy: { name: "asc" } }),
+    ]);
+    return { classes, subjects };
+  },
+
   listTeacherAssignments: async (user) => {
     const schoolId = schoolIdOf(user);
     return prisma.teacherClass.findMany({
