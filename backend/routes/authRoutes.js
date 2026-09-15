@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, revokeSession, revokeAllSessions, refreshSession, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
-import { authRateLimiter, refreshRateLimiter } from "../middleware/rateLimiter.js";
+import { authIpRateLimiter, authRateLimiter, refreshRateLimiter } from "../middleware/rateLimiter.js";
 import crypto from "node:crypto";
 
 const router = Router();
@@ -21,9 +21,9 @@ export const jwksHandler = (_req, res, next) => {
   }
 };
 
-router.post("/register", authRateLimiter, registerValidator, registerUser);
+router.post("/register", authIpRateLimiter, authRateLimiter, registerValidator, registerUser);
 router.post("/staff/pending", protect, schoolGuard, requirePrincipal, createPendingStaff);
-router.post("/staff/activate", authRateLimiter, staffActivationValidator, activateStaff);
+router.post("/staff/activate", authIpRateLimiter, authRateLimiter, staffActivationValidator, activateStaff);
 router.get("/staff/invitations", protect, schoolGuard, requirePrincipal, listStaffInvitations);
 router.get("/staff/invitations/:token", getStaffInvitation);
 router.post("/staff/invitations", protect, schoolGuard, requirePrincipal, staffInvitationValidator, createStaffInvitation);
@@ -32,7 +32,7 @@ router.post("/staff/invitations/regenerate", protect, schoolGuard, requirePrinci
 router.get("/staff/teachers", protect, schoolGuard, requirePrincipal, listManagedTeachers);
 router.patch("/staff/teachers/:teacherUserId/deactivate", protect, schoolGuard, requirePrincipal, deactivateManagedTeacher);
 router.patch("/staff/teachers/:teacherUserId/reactivate", protect, schoolGuard, requirePrincipal, reactivateManagedTeacher);
-router.post("/parent/register", authRateLimiter, registerParent);
+router.post("/parent/register", authIpRateLimiter, authRateLimiter, registerParent);
 router.post("/parent/link-child", protect, requireParent, body("accessCode").notEmpty().withMessage("Parent access code is required"), linkChild);
 router.post(
   "/select-school",
@@ -41,7 +41,7 @@ router.post(
   body("schoolId").notEmpty().withMessage("School ID is required"),
   selectSchool,
 );
-router.post("/login", authRateLimiter, loginValidator, loginUser);
+router.post("/login", authIpRateLimiter, authRateLimiter, loginValidator, loginUser);
 router.post("/refresh", refreshRateLimiter, refreshSession);
 router.get("/me", protect, getMe);
 router.put(
