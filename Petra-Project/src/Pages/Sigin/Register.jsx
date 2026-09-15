@@ -41,11 +41,6 @@ export default function Register({ rolePreset = "" }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!readAuthToken()) {
-      setCheckingSession(false);
-      return;
-    }
-
     authApi
       .me()
       .then((response) => {

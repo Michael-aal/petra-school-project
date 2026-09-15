@@ -3,17 +3,58 @@ import { authService } from "../services/authService.js";
 import { teacherInvitationService } from "../services/teacherInvitationService.js";
 import { teacherManagementService } from "../services/teacherManagementService.js";
 import { linkParentToMatchingChildren } from "../utils/parentLinking.js";
+import crypto from "node:crypto";
+import { generateToken } from "../utils/generateToken.js";
+import { sessionModel } from "../models/sessionModel.js";
+import { userModel } from "../models/userModel.js";
 
 const authCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
-  maxAge: 8 * 60 * 60 * 1000,
+  sameSite: "strict",
+  maxAge: 15 * 60 * 1000,
+  path: "/",
+};
+const refreshCookieOptions = { ...authCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000 };
+
+const issueSession = async (req, res, result) => {
+  const user = result?.user;
+  if (!user?.id) return result;
+  const currentUser = await userModel.findById(user.id);
+  if (!currentUser) return result;
+
+  const sessionId = crypto.randomUUID();
+  const refreshToken = crypto.randomBytes(48).toString("base64url");
+  const accessToken = generateToken({
+    id: user.id,
+    email: currentUser.email,
+    role: currentUser.role,
+    schoolId: currentUser.schoolId || null,
+    sessionVersion: currentUser.sessionVersion,
+    sessionId,
+  });
+  const now = Date.now();
+  await sessionModel.create({
+    id: sessionId,
+    userId: user.id,
+    accessToken,
+    ipAddress: req.ip,
+    userAgent: req.get("user-agent"),
+    expiresAt: new Date(now + authCookieOptions.maxAge),
+  });
+  await sessionModel.createRefreshToken({
+    userId: user.id,
+    token: refreshToken,
+    expiresAt: new Date(now + refreshCookieOptions.maxAge),
+  });
+  res.cookie("petra_session", accessToken, authCookieOptions);
+  res.cookie("petra_refresh", refreshToken, refreshCookieOptions);
+  return { ...result, token: undefined };
 };
 
-const sendAuthenticated = (res, status, message, result) => {
-  const { token, ...data } = result || {};
-  if (token) res.cookie("petra_token", token, authCookieOptions);
+const sendAuthenticated = async (req, res, status, message, result) => {
+  const authenticated = await issueSession(req, res, result);
+  const { token: _token, ...data } = authenticated || {};
   return res.status(status).json({ success: true, message, ...data });
 };
 
@@ -33,7 +74,7 @@ export const registerUser = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.register(req.body);
-    return sendAuthenticated(res, 201, "User registered successfully", result);
+    return sendAuthenticated(req, res, 201, "User registered successfully", result);
   } catch (error) {
     next(error);
   }
@@ -145,7 +186,7 @@ export const activateStaff = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await teacherInvitationService.activate(req.body);
-    return sendAuthenticated(res, 200, "Teacher account activated", result);
+    return sendAuthenticated(req, res, 200, "Teacher account activated", result);
   } catch (error) {
     next(error);
   }
@@ -161,7 +202,7 @@ export const registerParent = async (req, res, next) => {
       schoolId: result?.user?.schoolId || req.body?.schoolId,
       email: req.body?.email,
     });
-    return sendAuthenticated(res, 201, "Parent registered successfully", { ...result, linkedChildren: linked.linkedChildren });
+    return sendAuthenticated(req, res, 201, "Parent registered successfully", { ...result, linkedChildren: linked.linkedChildren });
   } catch (error) {
     next(error);
   }
@@ -183,9 +224,34 @@ export const loginUser = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.login(req.body);
-    return sendAuthenticated(res, 200, "Login successful", result);
+    return sendAuthenticated(req, res, 200, "Login successful", result);
   } catch (error) {
     next(error);
+  }
+};
+
+const readCookie = (req, name) => {
+  const item = String(req.get("cookie") || "")
+    .split(";")
+    .map((value) => value.trim())
+    .find((value) => value.startsWith(`${name}=`));
+  return item ? decodeURIComponent(item.slice(name.length + 1)) : "";
+};
+
+export const refreshSession = async (req, res, next) => {
+  try {
+    const refreshToken = readCookie(req, "petra_refresh");
+    if (!refreshToken) return res.status(401).json({ success: false, message: "Refresh token missing" });
+    const storedToken = await sessionModel.findActiveRefreshToken(refreshToken);
+    if (!storedToken) return res.status(401).json({ success: false, message: "Refresh token expired or revoked" });
+
+    await sessionModel.revokeRefreshToken(storedToken.id);
+    await sessionModel.revokeAll(storedToken.userId);
+    const user = await authService.profile(storedToken.userId);
+    await issueSession(req, res, { user });
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    return next(error);
   }
 };
 
@@ -198,15 +264,19 @@ export const getMe = async (req, res, next) => {
   }
 };
 
-export const logoutUser = async (req, res, next) => {
+export const revokeSession = async (req, res, next) => {
   try {
-    await authService.revokeSessions(req.user.id);
+    if (req.auth?.sessionId) await sessionModel.revoke(req.auth.sessionId, req.user.id);
+    await sessionModel.revokeAllRefreshTokens(req.user.id);
   } catch (error) {
     return next(error);
   }
-  res.clearCookie("petra_token", { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
+  res.clearCookie("petra_session", authCookieOptions);
+  res.clearCookie("petra_refresh", refreshCookieOptions);
   return res.status(200).json({ success: true, message: "Logout successful" });
 };
+
+export const logoutUser = revokeSession;
 
 export const updateUserProfile = async (req, res, next) => {
   try {
@@ -224,6 +294,10 @@ export const changeUserPassword = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.changePassword({ userId: req.user.id, currentPassword: req.body.currentPassword, newPassword: req.body.newPassword });
+    await sessionModel.revoke(req.auth.sessionId, req.user.id);
+    await sessionModel.revokeAllRefreshTokens(req.user.id);
+    const user = await authService.profile(req.user.id);
+    await issueSession(req, res, { user });
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     next(error);
@@ -235,7 +309,8 @@ export const deleteUserAccount = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.deleteAccount({ userId: req.user.id, password: req.body.password });
-    res.clearCookie("petra_token", { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
+    res.clearCookie("petra_session", authCookieOptions);
+    res.clearCookie("petra_refresh", refreshCookieOptions);
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     next(error);

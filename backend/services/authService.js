@@ -272,5 +272,21 @@ export const authService = {
     }
     const base = safeUser(user);
     return { ...base, school: school ? { id: school.id, name: school.name } : null, selectedSchool: selectedSchool ? { id: selectedSchool.id, name: selectedSchool.name } : null, children, linkedStudentId: user.linkedStudentId || null, primaryChildId: children[0]?.id || user.linkedStudentId || null, childCount: children.length };
-  }
+  },
+
+  changePassword: async ({ userId, currentPassword, newPassword }) => {
+    const user = await userModel.findByIdGlobal(userId);
+    if (!user || !(await comparePassword(currentPassword, user.password))) {
+      const error = new Error("Current password is incorrect");
+      error.statusCode = 401;
+      throw error;
+    }
+    validatePasswordStrength(newPassword);
+    const password = await hashPassword(newPassword);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password, sessionVersion: { increment: 1 } },
+    });
+    return { message: "Password changed successfully" };
+  },
 };

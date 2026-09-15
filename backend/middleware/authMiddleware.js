@@ -4,20 +4,16 @@ import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
 import { prisma, runWithSchoolContext, runWithoutSchoolContext } from "../config/db.js";
 import { getJwtPublicKey } from "../utils/jwtKeys.js";
 import { tenantGuard } from "./tenantGuard.js";
+import { sessionModel } from "../models/sessionModel.js";
 
 const extractToken = (req) => {
-  const authHeader = req.get("authorization") || "";
   const cookieHeader = req.get("cookie") || "";
-
-  if (authHeader.startsWith("Bearer ")) {
-    return authHeader.slice(7).trim();
-  }
 
   if (cookieHeader) {
     const cookieValue = cookieHeader
       .split(";")
       .map((item) => item.trim())
-      .find((item) => item.startsWith("petra_token="));
+      .find((item) => item.startsWith("petra_session="));
 
     if (cookieValue) {
       return decodeURIComponent(cookieValue.split("=")[1] || "");
@@ -118,6 +114,15 @@ const populateAuthContext = async (req, res, token) => {
       });
     }
 
+    const sessionId = normalizeId(decoded?.sid || decoded?.sessionId);
+    if (!sessionId) {
+      return res.status(401).json({ success: false, message: "Not authorized, session missing" });
+    }
+    const activeSession = await sessionModel.findActive({ id: sessionId, userId: resolvedUserId });
+    if (!activeSession) {
+      return res.status(401).json({ success: false, message: "Session has expired or been revoked" });
+    }
+
     // A server-side version counter makes logout and password changes revoke
     // every previously issued access cookie without storing JWTs in the browser.
     if (!Number.isInteger(decoded?.sv) || Number(decoded.sv) !== Number(user.sessionVersion || 1)) {
@@ -136,6 +141,7 @@ const populateAuthContext = async (req, res, token) => {
       decoded,
       userId: resolvedUserId,
       email: resolvedEmail,
+      sessionId,
     };
     req.user = user;
     const normalizedRole = normalizeRole(user?.role);

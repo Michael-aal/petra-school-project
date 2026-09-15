@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
+import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, revokeSession, refreshSession, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
@@ -42,6 +42,7 @@ router.post(
   selectSchool,
 );
 router.post("/login", authRateLimiter, loginValidator, loginUser);
+router.post("/refresh", authRateLimiter, refreshSession);
 router.get("/me", protect, getMe);
 router.put(
   "/profile",
@@ -61,6 +62,7 @@ router.post(
   body("newPassword").isLength({ min: 8 }).withMessage("New password must be at least 8 characters long"),
   changeUserPassword,
 );
+router.post("/revoke", protect, revokeSession);
 router.post("/logout", protect, logoutUser);
 router.delete(
   "/account",

@@ -33,24 +33,7 @@ export default function SignIn() {
 
   const navigate = useNavigate();
 
-  /*
-   * Check for an existing authenticated session.
-   *
-   * IMPORTANT:
-   * Do not call /api/auth/me when there is no token.
-   * Otherwise the backend protect middleware correctly returns:
-   * "Not authorized, token missing"
-   */
   useEffect(() => {
-    const token = readAuthToken();
-
-    // No token means this is a normal login session.
-    if (!token) {
-      setCheckingSession(false);
-      return;
-    }
-
-    // A token exists, so it is safe to check the current user.
     authApi
       .me()
       .then((response) => {
@@ -122,10 +105,7 @@ export default function SignIn() {
 
     try {
       /*
-       * Login.
-       *
-       * authApi.login() already stores the returned token
-       * through persistToken().
+      * Login establishes the HttpOnly session and refresh cookies.
        */
       const response = await authApi.login({
         email: form.email,
@@ -134,13 +114,10 @@ export default function SignIn() {
 
       const loggedInUser = response?.user || {};
 
-      /*
-       * Keep this for compatibility with the existing flow.
-       */
       writeAuthToken(response?.token);
 
       /*
-       * Now that the token exists, it is safe to call /me.
+      * Read the authenticated profile through the cookie-backed session.
        */
       const profileResponse = await authApi.me();
 
@@ -154,9 +131,7 @@ export default function SignIn() {
       setUserInfo(normalizeUser(profileUser));
 
       /*
-       * Remember email only.
-       * The authentication token remains in sessionStorage,
-       * as defined by authApi.js.
+      * Remember email only.
        */
       if (form.rememberMe) {
         window.localStorage.setItem(

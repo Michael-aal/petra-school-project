@@ -33,11 +33,6 @@ export default function StaffRegister() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!readAuthToken()) {
-      setCheckingSession(false);
-      return;
-    }
-
     authApi.me().then((response) => {
       const role = normalizeRole(response?.user?.role);
       navigate(getDashboardPathForRole(role), { replace: true });

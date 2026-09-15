@@ -23,17 +23,11 @@ const resolveApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = resolveApiBaseUrl();
-export const AUTH_TOKEN_KEY = "petra_auth_token";
-
-// Authentication lives in the HttpOnly petra_token cookie. Keep these exports
-// during the transition so callers cannot reintroduce script-readable tokens.
+// Authentication lives exclusively in HttpOnly cookies. These no-op exports
+// preserve the existing component API without exposing or storing tokens.
 export const readAuthToken = () => null;
-export const writeAuthToken = () => {
-  window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
-};
-export const clearAuthToken = () => {
-  window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
-};
+export const writeAuthToken = () => undefined;
+export const clearAuthToken = () => undefined;
 
 async function request(path, options = {}) {
   const requestUrl = `${API_BASE_URL}${path}`;
@@ -111,11 +105,12 @@ export const authApi = {
       cache: "no-store",
     }),
   logout: () =>
-    request("/api/auth/logout", {
+    request("/api/auth/revoke", {
       method: "POST",
     }).finally(() => {
       clearAuthToken();
     }),
+  refresh: () => request("/api/auth/refresh", { method: "POST" }),
   updateProfile: (payload) =>
     request("/api/auth/profile", {
       method: "PUT",

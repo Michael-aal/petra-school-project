@@ -8,11 +8,12 @@ export const generateToken = (payload = {}) => {
     userId: payload?.userId ?? payload?.id ?? payload?.sub,
     sub: payload?.sub ?? payload?.id ?? payload?.userId,
     sv: Number.isInteger(Number(payload?.sessionVersion)) ? Number(payload.sessionVersion) : 1,
+    sid: payload?.sessionId ?? payload?.sid,
   };
 
   return jwt.sign(normalizedPayload, getJwtPrivateKey(), {
     algorithm: "RS256",
     keyid: process.env.JWT_KEY_ID || "petra-2026",
-    expiresIn: process.env.JWT_EXPIRES_IN || "8h",
+    expiresIn: process.env.JWT_EXPIRES_IN || "15m",
   });
 };
