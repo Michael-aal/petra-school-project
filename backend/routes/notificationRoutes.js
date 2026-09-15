@@ -5,6 +5,7 @@ import {
   unreadNotificationSummary,
   markNotificationSectionRead,
   markNotificationRead,
+  deleteNotification,
   markAllNotificationsRead,
 } from "../controllers/notificationController.js";
 import {
@@ -27,5 +28,6 @@ router.post("/push/test", protect, sendPushTest);
 router.post("/section/:section/read", protect, markNotificationSectionRead);
 router.post("/read-all", protect, markAllNotificationsRead);
 router.post("/:id/read", protect, markNotificationRead);
+router.delete("/:id", protect, deleteNotification);
 
 export default router;
