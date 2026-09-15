@@ -91,6 +91,7 @@ export const notificationService = {
     return {
       notifications: notifications.map(({ userId, ...notification }) => ({
         ...notification,
+        recipientUserId: userId,
         canDelete: userId === user.id,
       })),
       unread,
