@@ -74,9 +74,7 @@ const createApprovedTeacher = async (tx, application) => {
         where: { staffUserId: existingUser.id },
         orderBy: { generatedAt: "desc" },
       });
-      if (invitation) {
-        return { teacher: existingTeacher, user: existingUser, invitation };
-      }
+      if (invitation) return { teacher: existingTeacher, user: existingUser, invitation };
     }
     throw Object.assign(new Error("A user with this teacher's email already exists."), { statusCode: 409 });
   }
@@ -156,28 +154,15 @@ export const teacherApplicationService = {
       throw error;
     }
 
-    const school = await prisma.school.findFirst({
-      where: { id: Number(schoolId), isActive: true },
-      select: { id: true },
-    });
-    if (!school) {
-      const error = new Error("The selected school is not available.");
-      error.statusCode = 404;
-      throw error;
-    }
+    const school = await prisma.school.findFirst({ where: { id: Number(schoolId), isActive: true }, select: { id: true } });
+    if (!school) throw Object.assign(new Error("The selected school is not available."), { statusCode: 404 });
 
     const duplicate = await prisma.$queryRaw`
       SELECT "id" FROM "TeacherApplication"
-      WHERE "schoolId" = ${Number(schoolId)}
-        AND lower("email") = lower(${email})
-        AND "status" IN ('pending', 'shortlisted', 'approved')
-      LIMIT 1
+      WHERE "schoolId" = ${Number(schoolId)} AND lower("email") = lower(${email})
+        AND "status" IN ('pending', 'shortlisted', 'approved') LIMIT 1
     `;
-    if (duplicate.length) {
-      const error = new Error("An active teacher application already exists for this email address.");
-      error.statusCode = 409;
-      throw error;
-    }
+    if (duplicate.length) throw Object.assign(new Error("An active teacher application already exists for this email address."), { statusCode: 409 });
 
     const submissionData = JSON.stringify(payload);
     const supportingDocuments = JSON.stringify(payload.supportingDocuments || []);
@@ -204,104 +189,59 @@ export const teacherApplicationService = {
       )
     `;
 
-    return {
-      id,
-      status: "pending",
-      applicationNumber: id.replace(/^ta_/, "TA-").toUpperCase(),
-      message: "Teacher application submitted successfully. The school will review your application.",
-    };
+    return { id, status: "pending", applicationNumber: id.replace(/^ta_/, "TA-").toUpperCase(), message: "Teacher application submitted successfully. The school will review your application." };
   },
 
   list: async ({ status, query, limit = 200 }) => {
     const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 200);
     const normalizedStatus = clean(status)?.toLowerCase();
     const search = clean(query)?.toLowerCase();
-
     const rows = await prisma.$queryRaw`
       SELECT * FROM "TeacherApplication"
       WHERE (${normalizedStatus || null}::text IS NULL OR lower("status") = ${normalizedStatus || null})
         AND (${search || null}::text IS NULL OR
           lower(concat_ws(' ', "firstName", "middleName", "lastName")) LIKE ${search ? `%${search}%` : null} OR
-          lower("email") LIKE ${search ? `%${search}%` : null} OR
-          lower("id") LIKE ${search ? `%${search}%` : null} OR
+          lower("email") LIKE ${search ? `%${search}%` : null} OR lower("id") LIKE ${search ? `%${search}%` : null} OR
           lower("positionApplied") LIKE ${search ? `%${search}%` : null})
-      ORDER BY "createdAt" DESC
-      LIMIT ${safeLimit}
+      ORDER BY "createdAt" DESC LIMIT ${safeLimit}
     `;
-
     return rows.map(normalizeRow);
   },
 
   getById: async ({ id }) => {
-    const rows = await prisma.$queryRaw`
-      SELECT * FROM "TeacherApplication"
-      WHERE "id" = ${String(id)}
-      LIMIT 1
-    `;
-    if (!rows.length) {
-      const error = new Error("Teacher application not found.");
-      error.statusCode = 404;
-      throw error;
-    }
+    const rows = await prisma.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} LIMIT 1`;
+    if (!rows.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
     return normalizeRow(rows[0]);
   },
 
   updateStatus: async ({ id, status }) => {
     const allowed = new Set(["pending", "shortlisted", "rejected", "approved"]);
     const nextStatus = clean(status)?.toLowerCase();
-    if (!allowed.has(nextStatus)) {
-      const error = new Error("Invalid teacher application status.");
-      error.statusCode = 400;
-      throw error;
-    }
+    if (!allowed.has(nextStatus)) throw Object.assign(new Error("Invalid teacher application status."), { statusCode: 400 });
 
     if (nextStatus !== "approved") {
       const rows = await prisma.$queryRaw`
-        UPDATE "TeacherApplication"
-        SET "status" = ${nextStatus}, "updatedAt" = CURRENT_TIMESTAMP
-        WHERE "id" = ${String(id)}
-        RETURNING *
+        UPDATE "TeacherApplication" SET "status" = ${nextStatus}, "updatedAt" = CURRENT_TIMESTAMP
+        WHERE "id" = ${String(id)} RETURNING *
       `;
-      if (!rows.length) {
-        const error = new Error("Teacher application not found.");
-        error.statusCode = 404;
-        throw error;
-      }
+      if (!rows.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
       return normalizeRow(rows[0]);
     }
 
     return prisma.$transaction(async (tx) => {
-      const locked = await tx.$queryRaw`
-        SELECT * FROM "TeacherApplication"
-        WHERE "id" = ${String(id)}
-        FOR UPDATE
-      `;
-      if (!locked.length) {
-        const error = new Error("Teacher application not found.");
-        error.statusCode = 404;
-        throw error;
-      }
+      const locked = await tx.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} FOR UPDATE`;
+      if (!locked.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
 
       const application = locked[0];
       const { teacher, invitation } = await createApprovedTeacher(tx, application);
-
-      await tx.$executeRaw`
-        UPDATE "TeacherApplication"
-        SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP
-        WHERE "id" = ${String(id)}
-      `;
-
-      const updatedRows = await tx.$queryRaw`
-        SELECT * FROM "TeacherApplication"
-        WHERE "id" = ${String(id)}
-        LIMIT 1
-      `;
+      await tx.$executeRaw`UPDATE "TeacherApplication" SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${String(id)}`;
+      const updatedRows = await tx.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} LIMIT 1`;
 
       return {
         ...normalizeRow(updatedRows[0]),
         teacherId: teacher.id,
         registrationCode: invitation.registrationCode,
-        registrationPath: `/register/teacher-account?code=${encodeURIComponent(invitation.registrationCode)}`,
+        registrationPath: `/register/staff?token=${encodeURIComponent(invitation.registrationCode)}`,
       };
     });
   },
