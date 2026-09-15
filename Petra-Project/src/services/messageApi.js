@@ -9,6 +9,7 @@ const buildQuery = (params = {}) => {
 };
 
 export const messageApi = {
+  contacts: (params = {}) => request(`/api/messages/contacts${buildQuery(params) ? `?${buildQuery(params)}` : ""}`),
   inbox: (params = {}) => request(`/api/messages${buildQuery(params) ? `?${buildQuery(params)}` : ""}`),
   sent: (params = {}) => request(`/api/messages${buildQuery({ ...params, folder: "sent" }) ? `?${buildQuery({ ...params, folder: "sent" })}` : ""}`),
   conversation: (userId) => request(`/api/messages/conversation/${userId}`),
