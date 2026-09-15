@@ -12,6 +12,12 @@ const extractToken = (req) => {
     return authorization.replace(/^Bearer\s+/i, "").trim();
   }
 
+  // Once a browser tab has opted into tab-scoped authentication, never fall
+  // back to the browser-wide HttpOnly cookie. Without this guard, an expired
+  // tab token could accidentally authenticate the tab as whichever account
+  // most recently replaced the shared cookie in another tab.
+  if (req.get("x-petra-tab-auth") === "1") return "";
+
   const cookieHeader = req.get("cookie") || "";
   if (cookieHeader) {
     const cookieValue = cookieHeader
