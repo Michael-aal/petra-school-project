@@ -29,6 +29,8 @@ const mapTeacher = (teacher) => ({
   accountStatus: teacher.user?.accountStatus || "active",
   isActive: teacher.isActive,
   createdAt: teacher.createdAt,
+  registrationCode: teacher.user?.staffRegistrationCode || null,
+  registrationCodeUsed: Boolean(teacher.user?.staffRegistrationCodeUsed),
 });
 
 export const teacherManagementService = {
@@ -52,6 +54,8 @@ export const teacherManagementService = {
             accountStatus: true,
             staffRole: true,
             staffDepartment: true,
+            staffRegistrationCode: true,
+            staffRegistrationCodeUsed: true,
           },
         },
       },
@@ -111,6 +115,8 @@ export const teacherManagementService = {
           accountStatus: true,
           staffRole: true,
           staffDepartment: true,
+          staffRegistrationCode: true,
+          staffRegistrationCodeUsed: true,
         },
       });
     });
@@ -124,6 +130,8 @@ export const teacherManagementService = {
       isActive: false,
       designation: updated.staffRole || "Teacher",
       department: updated.staffDepartment || "",
+      registrationCode: updated.staffRegistrationCode || null,
+      registrationCodeUsed: Boolean(updated.staffRegistrationCodeUsed),
     };
   },
 
