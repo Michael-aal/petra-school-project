@@ -45,6 +45,8 @@ export const adminApi = {
       `/api/admin/audit-logs${buildQuery(params) ? `?${buildQuery(params)}` : ""}`,
     ),
   teacherAssignments: () => request("/api/admin/teacher-assignments"),
+  teacherAssignmentOptions: () =>
+    request("/api/admin/teacher-assignments/options"),
   assignTeacherClass: (payload) =>
     request("/api/admin/teacher-assignments/classes", {
       method: "POST",
