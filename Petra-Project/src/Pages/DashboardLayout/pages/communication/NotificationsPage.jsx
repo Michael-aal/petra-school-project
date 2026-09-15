@@ -1,7 +1,8 @@
-import { Bell, Search, CheckCheck } from "lucide-react";
+import { Bell, Search, CheckCheck, Smartphone } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import "../page-styles/NotificationsPage.css";
 import { notificationApi } from "../../../../services/notificationApi";
+import { pushNotificationService } from "../../../../services/pushNotificationService";
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -16,6 +17,9 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushMessage, setPushMessage] = useState("");
 
   const loadNotifications = useCallback(async () => {
     setLoading(true);
@@ -35,6 +39,27 @@ export default function NotificationsPage() {
     const timer = window.setTimeout(loadNotifications, 250);
     return () => window.clearTimeout(timer);
   }, [loadNotifications]);
+
+  useEffect(() => {
+    if (!pushNotificationService.isSupported()) return;
+    void pushNotificationService.syncIfGranted()
+      .then((result) => setPushEnabled(Boolean(result?.enabled)))
+      .catch(() => setPushEnabled(false));
+  }, []);
+
+  const enableDeviceNotifications = async () => {
+    setPushBusy(true);
+    setPushMessage("");
+    try {
+      await pushNotificationService.enable();
+      setPushEnabled(true);
+      setPushMessage("Device notifications are enabled on this device.");
+    } catch (err) {
+      setPushMessage(err?.message || "Unable to enable device notifications.");
+    } finally {
+      setPushBusy(false);
+    }
+  };
 
   const markRead = async (id) => {
     try {
@@ -84,12 +109,21 @@ export default function NotificationsPage() {
             <p>Automatic updates from payments, messages, announcements, and school activity</p>
           </div>
         </div>
-        <button type="button" className="notifications-send-button" onClick={markAllRead} disabled={!unread}>
-          <CheckCheck size={16} />
-          <span>Mark all read</span>
-        </button>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          {pushNotificationService.isSupported() && !pushEnabled ? (
+            <button type="button" className="notifications-send-button" onClick={enableDeviceNotifications} disabled={pushBusy}>
+              <Smartphone size={16} />
+              <span>{pushBusy ? "Enabling..." : "Enable device alerts"}</span>
+            </button>
+          ) : null}
+          <button type="button" className="notifications-send-button" onClick={markAllRead} disabled={!unread}>
+            <CheckCheck size={16} />
+            <span>Mark all read</span>
+          </button>
+        </div>
       </section>
 
+      {pushMessage ? <div className="notification-empty-state notification-card"><div className="notification-card-body"><p>{pushMessage}</p></div></div> : null}
       {error ? <div className="notification-empty-state notification-card"><div className="notification-card-body"><p>{error}</p></div></div> : null}
 
       <section className="notifications-list" aria-label="Notification list">
