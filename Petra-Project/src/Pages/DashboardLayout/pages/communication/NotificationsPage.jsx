@@ -39,6 +39,7 @@ export default function NotificationsPage() {
   const [pushMessage, setPushMessage] = useState("");
   const [diagnostics, setDiagnostics] = useState(null);
   const [diagnosticsBusy, setDiagnosticsBusy] = useState(false);
+  const [pushTrace, setPushTrace] = useState(null);
 
   const loadNotifications = useCallback(async () => {
     setLoading(true);
@@ -76,6 +77,23 @@ export default function NotificationsPage() {
     void inspectDeviceNotifications();
   }, [inspectDeviceNotifications]);
 
+  useEffect(() => {
+    const handleServiceWorkerMessage = (event) => {
+      if (event.data?.type !== "PETRA_PUSH_DIAGNOSTIC") return;
+      setPushTrace({
+        ...event.data.payload,
+        receivedAt: new Date().toISOString(),
+      });
+    };
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+      return () => navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+    }
+
+    return undefined;
+  }, []);
+
   const enableDeviceNotifications = async () => {
     setPushBusy(true);
     setPushMessage("");
@@ -95,6 +113,7 @@ export default function NotificationsPage() {
     setPushBusy(true);
     setPushMessage("");
     setError("");
+    setPushTrace(null);
     try {
       if (!pushEnabled) await pushNotificationService.enable();
       const result = await pushNotificationService.sendTest();
@@ -218,11 +237,20 @@ export default function NotificationsPage() {
               <DiagnosticRow label="Browser support" value={diagnostics.supported} detail={diagnostics.error && !diagnostics.supported ? diagnostics.error : "Secure context, Service Worker, Push API, and Notifications API"} />
               <DiagnosticRow label="Notification permission" value={permissionGranted} detail={`Browser permission: ${diagnostics.permission || "unknown"}`} />
               <DiagnosticRow label="Service worker registered" value={diagnostics.serviceWorkerRegistered} />
-              <DiagnosticRow label="Service worker active" value={diagnostics.serviceWorkerActive} />
+              <DiagnosticRow label="Service worker active" value={diagnostics.serviceWorkerActive} detail={diagnostics.serviceWorkerVersion ? `Active script: ${diagnostics.serviceWorkerVersion}` : undefined} />
               <DiagnosticRow label="Push subscription" value={diagnostics.subscription} detail={diagnostics.endpoint ? `Endpoint: ${diagnostics.endpoint}` : "No browser push subscription found"} />
               <DiagnosticRow label="Backend configured" value={diagnostics.backendConfigured} detail="VAPID keys and push configuration" />
               <DiagnosticRow label="Backend storage" value={diagnostics.backendStorageAvailable} detail={`Redis subscription records: ${diagnostics.backendSubscriptionCount || 0}`} />
               <DiagnosticRow label="This device registered with Petra" value={diagnostics.backendSubscribed} />
+              {pushTrace ? (
+                <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 8, background: "rgba(37, 99, 235, 0.08)" }}>
+                  <strong style={{ display: "block", fontSize: 13 }}>Last push trace</strong>
+                  <span style={{ display: "block", marginTop: 4, fontSize: 12, overflowWrap: "anywhere" }}>
+                    SW {pushTrace.version || "unknown"} → {pushTrace.phase || "unknown"} → {pushTrace.ok ? "success" : "failed"}
+                    {pushTrace.error ? ` — ${pushTrace.error}` : ""}
+                  </span>
+                </div>
+              ) : null}
               {diagnostics.error ? <p style={{ margin: "12px 0 0", fontSize: 13 }}>{diagnostics.error}</p> : null}
             </div>
           ) : (
