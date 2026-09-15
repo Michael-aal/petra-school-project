@@ -8,6 +8,32 @@ import { nuvoraKnowledgeService } from "../services/nuvoraKnowledgeService.js";
 import { logger } from "../utils/logger.js";
 
 const EXTRA_TOOL_NAMES = new Set(["getRecentActivity", "getPortalOverview", "openPetraPage"]);
+const PROMPT_INJECTION_PATTERNS = [
+  /ignore your instructions/i,
+  /bypass security/i,
+  /reveal your system prompt/i,
+  /show.*system prompt/i,
+  /run arbitrary sql/i,
+  /drop table/i,
+  /select \* from/i,
+  /expose backend database/i,
+  /all passwords/i,
+];
+
+const classifyLikelyTool = (message = "") => {
+  const text = String(message || "");
+  const lower = text.toLowerCase();
+
+  if (/(school overview|school stats|overview of the school|how many students|how many teachers)/i.test(text)) return "getSchoolOverview";
+  if (/(attendance|present|absent|class attendance|this week|this term)/i.test(text)) return "getAttendanceSummary";
+  if (/(result|results|grades?|performance|exam|academic)/i.test(text)) return "getStudentResults";
+  if (/(fee|fees|tuition|outstanding|balance|payment|financial)/i.test(text)) return "getFeeSummary";
+
+  if (/(who is|find .*user|user directory|directory of users|users in this school)/i.test(text)) return "getUserDirectory";
+
+  if (lower.includes("school") && lower.includes("overview")) return "getSchoolOverview";
+  return null;
+};
 
 export const handleAIQuery = async ({ user, message, schoolId, conversationHistory = [], selectedStudentId }) => {
   const startTime = Date.now();
@@ -16,14 +42,44 @@ export const handleAIQuery = async ({ user, message, schoolId, conversationHisto
   let primaryData = null;
 
   try {
+    const promptText = String(message || "");
+    const isPromptInjection = PROMPT_INJECTION_PATTERNS.some((pattern) => pattern.test(promptText));
+    const provider = getAIProvider();
+
+    if (isPromptInjection) {
+      const refusal = "I cannot fulfill requests that bypass security or reveal protected system information.";
+      await logAIActivity({ userId: user?.id, schoolId: schoolId || user?.schoolId, action: "ai.query", toolsUsed: [], success: true, durationMs: Date.now() - startTime, provider: provider?.name || "mock" });
+      return { success: true, answer: refusal, data: null, toolsUsed: [], toolErrors: [], provider: provider?.name || "mock" };
+    }
+
     const context = await buildAIContext(user, { schoolId, selectedStudentId });
+
+    const isParentRole = ["parent", "guardian"].includes(String(user?.role || "").trim().toLowerCase());
+    const isChildQuery = /(child|children|student|attendance|grades?|results?|fees?|payment|balance)/i.test(promptText);
+    if (isParentRole && isChildQuery && (!context.linkedChildren || context.linkedChildren.length === 0)) {
+      const errorMessage = "No student is currently linked to your account. Please contact the school administrator.";
+      return {
+        success: false,
+        statusCode: 404,
+        answer: errorMessage,
+        data: null,
+        toolsUsed: [],
+        toolErrors: [{ toolName: "linkedChildLookup", statusCode: 404 }],
+        provider: provider?.name || "mock",
+      };
+    }
+
     const approvedTools = [...getApprovedTools(user), ...getExtraApprovedTools(user)];
     const knowledge = await nuvoraKnowledgeService.getEnabledKnowledge().catch(() => []);
     const systemPrompt = buildSystemPrompt({ user, context, knowledge });
-    const provider = getAIProvider();
 
-    const initialResponse = await provider.generateWithTools({ prompt: message, systemPrompt, tools: approvedTools, conversationHistory });
+    const initialResponse = await provider.generateWithTools({ prompt: promptText, systemPrompt, tools: approvedTools, conversationHistory });
     let finalAnswer = initialResponse.text;
+
+    const likelyToolName = classifyLikelyTool(promptText);
+    if (likelyToolName && (!initialResponse.toolCalls || initialResponse.toolCalls.length === 0)) {
+      initialResponse.toolCalls = [{ name: likelyToolName, args: { schoolId: schoolId ?? context.schoolId } }];
+    }
 
     if (initialResponse.toolCalls && initialResponse.toolCalls.length > 0) {
       const toolResults = [];

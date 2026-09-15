@@ -17,6 +17,23 @@ const cleanDetails = (details) => {
 export const logAudit = async ({ userId = null, schoolId = null, action, entity = null, resourceId = null, details = null }) => {
   const safeDetails = cleanDetails({ ...(typeof details === "object" && details ? details : {}), ...(resourceId ? { resourceId } : {}) });
   logger.info("audit event", { userId, schoolId, action, entity, resourceId });
+
+  if (userId) {
+    try {
+      const userExists = await prisma.user.findUnique({
+        where: { id: String(userId) },
+        select: { id: true },
+      });
+      if (!userExists) {
+        logger.warn("Skipping audit log for unknown user", { userId, action, entity });
+        return null;
+      }
+    } catch (err) {
+      logger.warn("Failed to validate audit user", { userId, error: err.message });
+      return null;
+    }
+  }
+
   return prisma.auditLog.create({
     data: {
       userId,

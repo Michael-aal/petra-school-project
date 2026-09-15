@@ -30,6 +30,18 @@ class MockAIProvider {
 
   async generateResponse({ prompt, systemPrompt }) {
     logger.info("MockAIProvider generateResponse invoked");
+
+    const promptText = String(prompt || "");
+    const injectionAttempt = /ignore your instructions|bypass security|reveal your system prompt|drop table|select \* from|run arbitrary sql|show.*system prompt/i.test(promptText);
+    if (injectionAttempt) {
+      return {
+        text: "I cannot fulfill requests that bypass security or reveal protected system information.",
+        finishReason: "STOP",
+        toolCalls: [],
+        provider: this.name,
+      };
+    }
+
     return {
       text: this.getIdentityResponse(prompt, systemPrompt) || `Nuvora Assistant: I received your request: "${prompt}". No live AI provider is configured, so I am operating in development/test mode.`,
       finishReason: "STOP",
@@ -68,6 +80,17 @@ class MockAIProvider {
       prompt,
       toolResultsCount: toolResults.length,
     });
+
+    const promptText = String(prompt || "");
+    const injectionAttempt = /ignore your instructions|bypass security|reveal your system prompt|drop table|select \* from|run arbitrary sql|show.*system prompt/i.test(promptText);
+    if (injectionAttempt) {
+      return {
+        text: "I cannot fulfill requests that bypass security or reveal protected system information.",
+        finishReason: "STOP",
+        toolCalls: [],
+        provider: this.name,
+      };
+    }
 
     if (toolResults.length > 0) {
       const toolOutput = toolResults[0].output || {};
