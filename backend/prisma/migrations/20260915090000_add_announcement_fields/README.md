@@ -1,0 +1,1 @@
+This migration adds announcement metadata columns used by announcementService.js. After pulling, run `npx prisma migrate deploy` and `npx prisma generate` from backend before starting the API.

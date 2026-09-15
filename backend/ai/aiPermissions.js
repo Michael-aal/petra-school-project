@@ -15,75 +15,38 @@ export const normalizeToolName = (toolName = "") => {
     "fees.outstanding": "getFeeSummary",
     "finance.summary": "getFeeSummary",
     "getFeeSummary": "getFeeSummary",
+    "getUserDirectory": "getUserDirectory",
   };
   return aliasMap[normalized] || normalized;
 };
 
 const SCHOOL_ADMIN_TOOLS = [
-  "getSchoolOverview",
-  "getAttendanceSummary",
-  "getStudentAttendance",
-  "getStudentResults",
-  "getFeeSummary",
-  "school.overview",
-  "attendance.summary",
-  "student.attendance",
-  "student.results",
-  "fees.outstanding",
-  "finance.summary",
-  "admissions.pending",
+  "getSchoolOverview", "getAttendanceSummary", "getStudentAttendance", "getStudentResults", "getFeeSummary", "getUserDirectory",
+  "school.overview", "attendance.summary", "student.attendance", "student.results", "fees.outstanding", "finance.summary", "admissions.pending",
 ];
 
 const roleToolDefaults = {
   super_admin: new Set(SCHOOL_ADMIN_TOOLS),
   superadmin: new Set(SCHOOL_ADMIN_TOOLS),
   principal: new Set(SCHOOL_ADMIN_TOOLS),
-  teacher: new Set([
-    "getAttendanceSummary",
-    "getStudentAttendance",
-    "getStudentResults",
-    "attendance.summary",
-    "student.attendance",
-    "student.results",
-  ]),
-  parent: new Set([
-    "getStudentAttendance",
-    "getStudentResults",
-    "getFeeSummary",
-    "student.attendance",
-    "student.results",
-    "fees.outstanding",
-  ]),
-  guardian: new Set([
-    "getStudentAttendance",
-    "getStudentResults",
-    "getFeeSummary",
-    "student.attendance",
-    "student.results",
-    "fees.outstanding",
-  ]),
-  student: new Set([
-    "getStudentAttendance",
-    "getStudentResults",
-    "getFeeSummary",
-    "student.attendance",
-    "student.results",
-    "fees.outstanding",
-  ]),
+  teacher: new Set(["getAttendanceSummary", "getStudentAttendance", "getStudentResults", "getUserDirectory", "attendance.summary", "student.attendance", "student.results"]),
+  parent: new Set(["getStudentAttendance", "getStudentResults", "getFeeSummary", "getUserDirectory", "student.attendance", "student.results", "fees.outstanding"]),
+  guardian: new Set(["getStudentAttendance", "getStudentResults", "getFeeSummary", "getUserDirectory", "student.attendance", "student.results", "fees.outstanding"]),
+  student: new Set(["getStudentAttendance", "getStudentResults", "getFeeSummary", "getUserDirectory", "student.attendance", "student.results", "fees.outstanding"]),
 };
 
 export const canUseAITool = async (user, toolName) => {
   const userRole = normalizeRole(user?.role);
   const allowedTools = roleToolDefaults[userRole];
   if (!allowedTools) return false;
-
   const canonicalName = normalizeToolName(toolName);
   if (!allowedTools.has(toolName) && !allowedTools.has(canonicalName)) return false;
+  if (["parent", "guardian", "student"].includes(userRole) && ["finance.summary", "attendance.summary"].includes(toolName)) return false;
 
-  // Parents/guardians/students must never inherit school-wide attendance/finance aliases.
-  if (["parent", "guardian", "student"].includes(userRole) && ["finance.summary", "attendance.summary"].includes(toolName)) {
-    return false;
-  }
+  // The directory exposes only non-sensitive identity fields and is already
+  // restricted to the authenticated user's school, so it does not require
+  // creating a separate stored permission before it can be used.
+  if (canonicalName === "getUserDirectory") return true;
 
   const explicitPermission = `ai.${canonicalName}`;
   const hasStoredPermissions = Boolean(user?.roleId);
@@ -91,7 +54,5 @@ export const canUseAITool = async (user, toolName) => {
 };
 
 export const assertAIToolPermission = async (user, toolName) => {
-  if (!(await canUseAITool(user, toolName))) {
-    throw Object.assign(new Error("You are not authorized to use this AI data tool"), { statusCode: 403 });
-  }
+  if (!(await canUseAITool(user, toolName))) throw Object.assign(new Error("You are not authorized to use this AI data tool"), { statusCode: 403 });
 };

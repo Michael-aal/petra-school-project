@@ -1,0 +1,2 @@
+-- Keep audience values extensible while the existing service uses string audience filters.
+-- The Prisma schema should represent Announcement.audience as String for compatibility with existing data/service values.
