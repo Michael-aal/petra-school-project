@@ -28,3 +28,24 @@ export const unsubscribeFromPush = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const sendPushTest = async (req, res, next) => {
+  try {
+    const result = await pushNotificationService.sendToUser(req.user.id, {
+      title: "Petra School test",
+      body: "Device notifications are working. This is a test alert from Petra.",
+      url: "/dashboard/communication/notifications",
+      tag: `petra-push-test-${Date.now()}`,
+    });
+
+    if (!result?.sent) {
+      const error = new Error("No active device subscription was found. Enable device alerts first.");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    return res.json({ sent: result.sent, message: "Test device notification sent." });
+  } catch (error) {
+    return next(error);
+  }
+};
