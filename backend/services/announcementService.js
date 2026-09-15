@@ -156,8 +156,9 @@ export const announcementService = {
     `;
 
     const recipientFilter = buildAudienceFilter(audience);
+    // Strict invariant: the actor who publishes the announcement is never a recipient.
     const recipients = await prisma.user.findMany({
-      where: { schoolId, ...recipientFilter },
+      where: { schoolId, id: { not: user.id }, ...recipientFilter },
       select: { id: true, role: true },
     });
 
@@ -185,6 +186,7 @@ export const announcementService = {
       void pushNotificationService.sendToUsers(recipients, {
         title: `New announcement: ${announcement.title}`,
         body: announcement.body,
+        notificationId: announcement.id,
         url: "/announcements",
         tag: `announcement-${announcement.id}`,
       }).catch(() => {});
