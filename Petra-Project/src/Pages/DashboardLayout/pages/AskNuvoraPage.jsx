@@ -62,15 +62,11 @@ export default function AskNuvoraPage() {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const messagesEndRef = useRef(null);
 
-  // Chat history belongs to the authenticated account + selected school.
-  // Never use one global storage key: otherwise another account on the same
-  // browser/session can see the previous user's conversation.
   useEffect(() => {
     if (!historyKey) {
       setMessages([]);
       return;
     }
-
     try {
       const saved = sessionStorage.getItem(historyKey);
       setMessages(saved ? JSON.parse(saved) : []);
@@ -94,26 +90,15 @@ export default function AskNuvoraPage() {
     e?.preventDefault();
     const query = input.trim();
     if (!query || loading) return;
-
     setInput("");
     setError(null);
-
     const userMessage = { role: "user", content: query, timestamp: new Date().toISOString() };
     const updatedHistory = [...messages, userMessage];
     setMessages(updatedHistory);
     setLoading(true);
-
     try {
-      const historyPayload = messages.slice(-6).map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      const res = await aiApi.query({
-        message: query,
-        conversationHistory: historyPayload,
-      });
-
+      const historyPayload = messages.slice(-6).map((m) => ({ role: m.role, content: m.content }));
+      const res = await aiApi.query({ message: query, conversationHistory: historyPayload });
       const botMessage = {
         role: "assistant",
         content: res.answer || "Here is the information from your school records.",
@@ -121,7 +106,6 @@ export default function AskNuvoraPage() {
         toolsUsed: res.toolsUsed || [],
         timestamp: new Date().toISOString(),
       };
-
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       setError(err.message || "Failed to get an answer from Nuvora. Please try again.");
@@ -142,10 +126,14 @@ export default function AskNuvoraPage() {
     }
   };
 
-  const handleCopy = (text, idx) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIndex(idx);
-    setTimeout(() => setCopiedIndex(null), 2000);
+  const handleCopy = async (text, idx) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(idx);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch {
+      setError("Unable to copy the answer. Please try again.");
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -188,7 +176,7 @@ export default function AskNuvoraPage() {
             <div className="ask-nuvora-suggestions">
               {suggestions.map((s, idx) => (
                 <button key={idx} type="button" className="ask-nuvora-suggestion-btn" onClick={() => handleSuggestionClick(s.text)}>
-                  <span>{s.text}</span><Sparkles size={14} className="opacity-60" />
+                  <span>{s.text}</span><Sparkles size={14} />
                 </button>
               ))}
             </div>
@@ -215,8 +203,14 @@ export default function AskNuvoraPage() {
                   </div>
                 )}
                 {msg.role === "assistant" && (
-                  <button type="button" onClick={() => handleCopy(msg.content, idx)} className="mt-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                    {copiedIndex === idx ? <><CheckCircle2 size={12} className="text-emerald-600" /><span>Copied</span></> : <><Copy size={12} /><span>Copy answer</span></>}
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(msg.content, idx)}
+                    className={`ask-nuvora-copy-btn ${copiedIndex === idx ? "copied" : ""}`}
+                    aria-label={copiedIndex === idx ? "Answer copied" : "Copy answer"}
+                  >
+                    {copiedIndex === idx ? <CheckCircle2 size={13} /> : <Copy size={13} />}
+                    <span>{copiedIndex === idx ? "Copied" : "Copy"}</span>
                   </button>
                 )}
               </div>
