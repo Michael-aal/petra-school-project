@@ -30,7 +30,7 @@ export default function TopNavbar({ onToggle }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleAskNuvoraClick = () => {
+  const handleNuvoraClick = () => {
     if (location.pathname.startsWith("/staff")) {
       navigate("/staff/ask-nuvora");
     } else if (location.pathname.startsWith("/portal")) {
@@ -101,9 +101,9 @@ export default function TopNavbar({ onToggle }) {
         <button
           type="button"
           className="ask-nuvora-btn icon-btn"
-          onClick={handleAskNuvoraClick}
-          title="Ask Nuvora AI"
-          aria-label="Ask Nuvora"
+          onClick={handleNuvoraClick}
+          title="Nuvora AI"
+          aria-label="Nuvora"
         >
           <span className="ask-nuvora-icon-wrap">
             <Sparkles size={14} />
