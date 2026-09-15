@@ -1,3 +1,4 @@
+
 -- Restore the EmailLog table required by the existing email service.
 CREATE TABLE IF NOT EXISTS "EmailLog" (
     "id" TEXT NOT NULL,
