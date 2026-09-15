@@ -12,7 +12,6 @@ export const recordAuditMutation = async ({ user, schoolId, entity, entityId, ac
   const performedBy = String(user?.id || "system");
 
   const auditData = {
-    userId: user?.id || null,
     entity,
     entityId: String(entityId),
     action,
@@ -22,11 +21,21 @@ export const recordAuditMutation = async ({ user, schoolId, entity, entityId, ac
     newData: toJsonSnapshot(after),
   };
 
-  // AuditLog uses a Prisma relation to School, not a scalar schoolId field.
+  // AuditLog exposes User and School as Prisma relations, not scalar create fields.
+  if (user?.id) {
+    auditData.user = { connect: { id: String(user.id) } };
+  }
+
   const resolvedSchoolId = Number(schoolId);
   if (Number.isInteger(resolvedSchoolId) && resolvedSchoolId > 0) {
     auditData.school = { connect: { id: resolvedSchoolId } };
   }
 
-  return prisma.auditLog.create({ data: auditData });
+  // Audit logging must never break the business operation that triggered it.
+  try {
+    return await prisma.auditLog.create({ data: auditData });
+  } catch (error) {
+    console.error("Audit log persistence failed; continuing without blocking the operation:", error);
+    return null;
+  }
 };
