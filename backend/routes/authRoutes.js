@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, getMe, getStaffInvitation, linkChild, listStaffInvitations, loginUser, logoutUser, activateStaff, registerParent, registerUser, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
+import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
@@ -29,6 +29,9 @@ router.get("/staff/invitations/:token", getStaffInvitation);
 router.post("/staff/invitations", protect, schoolGuard, requirePrincipal, staffInvitationValidator, createStaffInvitation);
 router.post("/staff/invitations/revoke", protect, schoolGuard, requirePrincipal, body("registrationCode").notEmpty().withMessage("Registration code is required"), revokeStaffInvitation);
 router.post("/staff/invitations/regenerate", protect, schoolGuard, requirePrincipal, body("registrationCode").notEmpty().withMessage("Registration code is required"), regenerateStaffInvitationCode);
+router.get("/staff/teachers", protect, schoolGuard, requirePrincipal, listManagedTeachers);
+router.patch("/staff/teachers/:teacherUserId/deactivate", protect, schoolGuard, requirePrincipal, deactivateManagedTeacher);
+router.patch("/staff/teachers/:teacherUserId/reactivate", protect, schoolGuard, requirePrincipal, reactivateManagedTeacher);
 router.post("/parent/register", authRateLimiter, registerParent);
 router.post("/parent/link-child", protect, requireParent, body("accessCode").notEmpty().withMessage("Parent access code is required"), linkChild);
 router.post(
