@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db.js";
 
 const normalizeSchoolId = (user) => {
@@ -19,6 +20,25 @@ const buildAudienceFilter = (audience) => {
   if (audience === "PARENTS") return { role: "parent" };
   return {};
 };
+
+const loadAnnouncementMetadata = async (ids) => {
+  if (!ids.length) return new Map();
+  const rows = await prisma.$queryRaw`
+    SELECT "id", "priority", "audience", "isDraft", "publishAt", "expiryAt"
+    FROM "Announcement"
+    WHERE "id" IN (${Prisma.join(ids)})
+  `;
+  return new Map(rows.map((row) => [row.id, row]));
+};
+
+const withMetadata = (announcement, metadata) => ({
+  ...announcement,
+  priority: metadata?.priority ?? "NORMAL",
+  audience: metadata?.audience ?? "TEACHERS_AND_PARENTS",
+  isDraft: metadata?.isDraft ?? false,
+  publishAt: metadata?.publishAt ?? null,
+  expiryAt: metadata?.expiryAt ?? null,
+});
 
 export const announcementService = {
   listForUser: async (user, query = {}) => {
@@ -42,6 +62,7 @@ export const announcementService = {
     });
 
     const total = await prisma.announcementRecipient.count({ where: recipientWhere });
+    const metadata = await loadAnnouncementMetadata(recipients.map((recipient) => recipient.announcement.id));
 
     const announcements = recipients
       .filter((recipient) => {
@@ -50,7 +71,7 @@ export const announcementService = {
         return content.includes(search.toLowerCase());
       })
       .map((recipient) => ({
-        ...recipient.announcement,
+        ...withMetadata(recipient.announcement, metadata.get(recipient.announcement.id)),
         recipient: {
           id: recipient.id,
           isRead: recipient.isRead,
@@ -70,28 +91,38 @@ export const announcementService = {
     const page = Math.max(1, toNumber(query.page, 1));
     const limit = Math.max(1, Math.min(50, toNumber(query.limit, 20)));
     const search = query.search ? String(query.search).trim() : "";
-    const where = { schoolId };
+    const conditions = [Prisma.sql`"schoolId" = ${schoolId}`];
 
-    if (query.onlyDrafts === "true") where.isDraft = true;
-    if (query.published === "true") where.isDraft = false;
+    if (query.onlyDrafts === "true") conditions.push(Prisma.sql`"isDraft" = true`);
+    if (query.published === "true") conditions.push(Prisma.sql`"isDraft" = false`);
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { body: { contains: search, mode: "insensitive" } },
-      ];
+      const pattern = `%${search}%`;
+      conditions.push(Prisma.sql`("title" ILIKE ${pattern} OR "body" ILIKE ${pattern})`);
     }
 
-    const [total, announcements] = await Promise.all([
-      prisma.announcement.count({ where }),
-      prisma.announcement.findMany({
-        where,
-        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
+    const whereSql = Prisma.join(conditions, " AND ");
+    const offset = (page - 1) * limit;
+    const [countRows, announcements] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT COUNT(*)::int AS "count"
+        FROM "Announcement"
+        WHERE ${whereSql}
+      `,
+      prisma.$queryRaw`
+        SELECT *
+        FROM "Announcement"
+        WHERE ${whereSql}
+        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `,
     ]);
 
-    return { announcements, pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) } };
+    const total = Number(countRows[0]?.count || 0);
+    return {
+      announcements,
+      pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
+    };
   },
 
   createAnnouncement: async (user, payload) => {
@@ -102,21 +133,28 @@ export const announcementService = {
       throw err;
     }
 
-    const announcement = await prisma.announcement.create({
-      data: {
-        schoolId,
-        title: String(payload.title).trim(),
-        body: String(payload.body).trim(),
-        priority: payload.priority || "NORMAL",
-        audience: payload.audience || "TEACHERS_AND_PARENTS",
-        isDraft: payload.isDraft === true || payload.isDraft === "true",
-        publishedAt: payload.publishAt ? new Date(payload.publishAt) : payload.isDraft ? null : new Date(),
-        expiryAt: payload.expiryAt ? new Date(payload.expiryAt) : null,
-      },
-    });
+    const title = String(payload.title).trim();
+    const body = String(payload.body).trim();
+    const priority = payload.priority || "NORMAL";
+    const audience = payload.audience || "TEACHERS_AND_PARENTS";
+    const isDraft = payload.isDraft === true || payload.isDraft === "true";
+    const publishedAt = payload.publishAt ? new Date(payload.publishAt) : isDraft ? null : new Date();
+    const publishAt = payload.publishAt ? new Date(payload.publishAt) : null;
+    const expiryAt = payload.expiryAt ? new Date(payload.expiryAt) : null;
 
-    const recipientFilter = buildAudienceFilter(announcement.audience);
-    const recipients = await prisma.user.findMany({ where: { schoolId, ...recipientFilter }, select: { id: true, role: true } });
+    const [announcement] = await prisma.$queryRaw`
+      INSERT INTO "Announcement"
+        ("schoolId", "title", "body", "priority", "audience", "isDraft", "publishAt", "publishedAt", "expiryAt", "createdAt", "updatedAt")
+      VALUES
+        (${schoolId}, ${title}, ${body}, ${priority}::"AnnouncementPriority", ${audience}, ${isDraft}, ${publishAt}, ${publishedAt}, ${expiryAt}, NOW(), NOW())
+      RETURNING *
+    `;
+
+    const recipientFilter = buildAudienceFilter(audience);
+    const recipients = await prisma.user.findMany({
+      where: { schoolId, ...recipientFilter },
+      select: { id: true, role: true },
+    });
 
     if (recipients.length) {
       const recipientRecords = recipients.map((recipient) => ({
@@ -176,6 +214,9 @@ export const announcementService = {
       throw err;
     }
 
+    const metadata = await loadAnnouncementMetadata([announcementId]);
+    const enrichedAnnouncement = withMetadata(announcement, metadata.get(announcementId));
+
     const recipientWhere = { announcementId, schoolId, ...(roleFilter ? { role: roleFilter } : {}) };
     const totalRecipients = await prisma.announcementRecipient.count({ where: recipientWhere });
     const reads = await prisma.announcementRecipient.count({ where: { ...recipientWhere, isRead: true } });
@@ -187,7 +228,7 @@ export const announcementService = {
     const notResponded = totalRecipients - (acknowledged + understood + willAttend + cannotAttend + needAssistance);
 
     return {
-      announcement,
+      announcement: enrichedAnnouncement,
       analytics: {
         totalRecipients,
         totalReads: reads,
