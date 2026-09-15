@@ -2,6 +2,7 @@ import { prisma } from "../config/db.js";
 
 const roleOf = (user) => String(user?.role || "").trim().toLowerCase().replace(/\s+/g, "_");
 const isPlatform = (user) => ["super_admin", "developer"].includes(roleOf(user));
+const isSchoolAdmin = (user) => ["admin", "principal"].includes(roleOf(user));
 
 const normalizeSchoolId = (user, { allowPlatformWithoutSchool = false } = {}) => {
   if (isPlatform(user) && allowPlatformWithoutSchool && (user.schoolId === undefined || user.schoolId === null)) return null;
@@ -33,25 +34,34 @@ const notificationSection = (notification) => {
   return "notifications";
 };
 
+const userNotificationWhere = (user, schoolId, unreadOnly = false) => {
+  const readFilter = unreadOnly ? { isRead: false } : {};
+  if (isPlatform(user)) return { userId: user.id, ...readFilter };
+  if (isSchoolAdmin(user)) {
+    return {
+      schoolId,
+      ...readFilter,
+      OR: [{ userId: user.id }, { userId: null }],
+    };
+  }
+  return { schoolId, userId: user.id, ...readFilter };
+};
+
 const sectionMatches = (notification, section) => notificationSection(notification) === section;
 
 export const notificationService = {
   listForUser: async (user, query = {}) => {
-    const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
     const page = Math.max(1, toNumber(query.page, 1));
     const limit = Math.max(1, Math.min(50, toNumber(query.limit, 20)));
     const search = query.search ? String(query.search).trim() : "";
 
-    const where = platformUser
-      ? { userId: user.id }
-      : { schoolId, userId: user.id };
-
+    const where = userNotificationWhere(user, schoolId);
     if (search) {
-      where.OR = [
+      where.AND = [{ OR: [
         { title: { contains: search, mode: "insensitive" } },
         { body: { contains: search, mode: "insensitive" } },
-      ];
+      ] }];
     }
 
     const [total, unread, notifications] = await Promise.all([
@@ -62,40 +72,21 @@ export const notificationService = {
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
-        select: {
-          id: true,
-          title: true,
-          body: true,
-          isRead: true,
-          createdAt: true,
-          updatedAt: true,
-        },
+        select: { id: true, title: true, body: true, isRead: true, createdAt: true, updatedAt: true },
       }),
     ]);
 
     return {
       notifications,
       unread,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.max(1, Math.ceil(total / limit)),
-      },
+      pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
     };
   },
 
   unreadSummary: async (user) => {
-    const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
-    const where = platformUser
-      ? { userId: user.id, isRead: false }
-      : { schoolId, userId: user.id, isRead: false };
-
-    const notifications = await prisma.notification.findMany({
-      where,
-      select: { id: true, title: true, body: true },
-    });
+    const where = userNotificationWhere(user, schoolId, true);
+    const notifications = await prisma.notification.findMany({ where, select: { id: true, title: true, body: true } });
 
     const bySection = {
       dashboard: false,
@@ -134,9 +125,8 @@ export const notificationService = {
       throw err;
     }
 
-    const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
-    const where = platformUser ? { userId: user.id, isRead: false } : { schoolId, userId: user.id, isRead: false };
+    const where = userNotificationWhere(user, schoolId, true);
     const unread = await prisma.notification.findMany({ where, select: { id: true, title: true, body: true } });
     const ids = unread.filter((item) => sectionMatches(item, normalizedSection)).map((item) => item.id);
 
@@ -146,11 +136,12 @@ export const notificationService = {
   },
 
   markRead: async (user, notificationId) => {
-    const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
-    const where = platformUser
+    const where = isPlatform(user)
       ? { id: notificationId, userId: user.id }
-      : { id: notificationId, schoolId, userId: user.id };
+      : isSchoolAdmin(user)
+        ? { id: notificationId, schoolId, OR: [{ userId: user.id }, { userId: null }] }
+        : { id: notificationId, schoolId, userId: user.id };
     const existing = await prisma.notification.findFirst({ where });
     if (!existing) {
       const err = new Error("Notification not found");
@@ -161,11 +152,8 @@ export const notificationService = {
   },
 
   markAllRead: async (user) => {
-    const platformUser = isPlatform(user);
     const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
-    const where = platformUser
-      ? { userId: user.id, isRead: false }
-      : { schoolId, userId: user.id, isRead: false };
+    const where = userNotificationWhere(user, schoolId, true);
     const result = await prisma.notification.updateMany({ where, data: { isRead: true } });
     return { updated: result.count };
   },
