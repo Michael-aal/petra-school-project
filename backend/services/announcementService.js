@@ -91,32 +91,36 @@ export const announcementService = {
     const page = Math.max(1, toNumber(query.page, 1));
     const limit = Math.max(1, Math.min(50, toNumber(query.limit, 20)));
     const search = query.search ? String(query.search).trim() : "";
-    const where = { schoolId };
+    const conditions = [Prisma.sql`"schoolId" = ${schoolId}`];
 
-    if (query.onlyDrafts === "true") where.isDraft = true;
-    if (query.published === "true") where.isDraft = false;
+    if (query.onlyDrafts === "true") conditions.push(Prisma.sql`"isDraft" = true`);
+    if (query.published === "true") conditions.push(Prisma.sql`"isDraft" = false`);
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { body: { contains: search, mode: "insensitive" } },
-      ];
+      const pattern = `%${search}%`;
+      conditions.push(Prisma.sql`("title" ILIKE ${pattern} OR "body" ILIKE ${pattern})`);
     }
 
-    const [total, announcements] = await Promise.all([
-      prisma.announcement.count({ where }),
-      prisma.announcement.findMany({
-        where,
-        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
+    const whereSql = Prisma.join(conditions, " AND ");
+    const offset = (page - 1) * limit;
+    const [countRows, announcements] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT COUNT(*)::int AS "count"
+        FROM "Announcement"
+        WHERE ${whereSql}
+      `,
+      prisma.$queryRaw`
+        SELECT *
+        FROM "Announcement"
+        WHERE ${whereSql}
+        ORDER BY "publishedAt" DESC NULLS LAST, "createdAt" DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `,
     ]);
 
-    const metadata = await loadAnnouncementMetadata(announcements.map((announcement) => announcement.id));
-    const enriched = announcements.map((announcement) => withMetadata(announcement, metadata.get(announcement.id)));
-
+    const total = Number(countRows[0]?.count || 0);
     return {
-      announcements: enriched,
+      announcements,
       pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
     };
   },
