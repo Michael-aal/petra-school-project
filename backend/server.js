@@ -6,12 +6,14 @@ import { closeQueues } from "./jobs/queue.js";
 import { closeRateLimiter } from "./middleware/rateLimiter.js";
 import { closeRedis } from "./config/redis.js";
 import { sessionService } from "./services/sessionService.js";
+import { startNotificationPushWatcher, stopNotificationPushWatcher } from "./services/notificationPushWatcher.js";
 
 let server;
 let isShuttingDown = false;
 
 const start = async () => {
   await connectDB();
+  startNotificationPushWatcher();
   server = app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
   });
@@ -28,6 +30,7 @@ const shutdown = async (signal) => {
   forceExit.unref();
 
   try {
+    stopNotificationPushWatcher();
     if (server) {
       await new Promise((resolve, reject) => {
         server.close((error) => (error ? reject(error) : resolve()));
