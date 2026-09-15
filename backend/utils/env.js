@@ -8,7 +8,10 @@ const environmentSchema = z.object({
   JWT_PUBLIC_KEY: z.string().min(1),
   JWT_KEY_ID: z.string().min(1).default("petra-2026"),
   CORS_ORIGIN: z.string().min(1).default("http://localhost:5173"),
-  REDIS_URL: z.string().url().default("redis://127.0.0.1:6379"),
+  REDIS_URL: z.string().url().optional(),
+  REDIS_MODE: z.enum(["single", "cluster", "sentinel"]).default("single"),
+  REDIS_NODES: z.string().optional(),
+  REDIS_SENTINEL_NAME: z.string().optional(),
   PAYSTACK_SECRET_KEY: z.string().min(1).optional(),
   QUIZLAB_WEBHOOK_SECRET: z.string().min(32).optional(),
 }).superRefine((values, context) => {
@@ -21,6 +24,9 @@ const environmentSchema = z.object({
       path: ["JWT_PRIVATE_KEY"],
       message: "JWT_PRIVATE_KEY must be configured in production.",
     });
+  }
+  if (values.NODE_ENV === "production" && !values.REDIS_URL) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["REDIS_URL"], message: "REDIS_URL must be configured in production." });
   }
 });
 

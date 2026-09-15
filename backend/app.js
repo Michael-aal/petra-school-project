@@ -27,7 +27,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import assessmentsRoutes from "./routes/assessmentsRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import { apiRateLimiter } from "./middleware/rateLimiter.js";
-import { distributedApiRateLimiter } from "./middleware/distributedRateLimiter.js";
+import { metricsRegistry } from "./config/redis.js";
 import { prisma } from "./config/db.js";
 import { checkQueueHealth } from "./jobs/queue.js";
 
@@ -120,7 +120,11 @@ app.get("/health", async (_req, res) => {
     return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
   }
 });
-app.use("/api", process.env.NODE_ENV === "production" ? distributedApiRateLimiter() : apiRateLimiter);
+app.get("/metrics", async (_req, res) => {
+  res.setHeader("Content-Type", metricsRegistry.contentType);
+  return res.send(await metricsRegistry.metrics());
+});
+app.use("/api", apiRateLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/academic", academicRoutes);

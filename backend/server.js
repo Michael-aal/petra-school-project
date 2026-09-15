@@ -3,7 +3,8 @@ import { env } from "./utils/env.js";
 import app from "./app.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import { closeQueues } from "./jobs/queue.js";
-import { closeRateLimiter } from "./middleware/distributedRateLimiter.js";
+import { closeRateLimiter } from "./middleware/rateLimiter.js";
+import { closeRedis } from "./config/redis.js";
 import { sessionService } from "./services/sessionService.js";
 
 let server;
@@ -34,6 +35,7 @@ const shutdown = async (signal) => {
     }
     await closeQueues();
     await closeRateLimiter();
+    await closeRedis();
     await sessionService.close();
     await disconnectDB();
     clearTimeout(forceExit);
