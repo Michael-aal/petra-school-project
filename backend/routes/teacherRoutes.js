@@ -20,11 +20,14 @@ import {
   updateTeacherProfile,
   updateTeacherResult,
 } from "../controllers/teacherController.js";
+import { listTeacherDirectory } from "../controllers/teacherDirectoryController.js";
 
 const router = Router();
 
 const teacherOrAdmin = requireRole(["teacher", "principal"]);
+const schoolAdmin = requireRole(["principal", "super_admin", "superadmin"]);
 
+router.get("/directory", protect, schoolGuard, schoolAdmin, listTeacherDirectory);
 router.get("/dashboard", protect, schoolGuard, teacherOrAdmin, getTeacherDashboard);
 router.get("/classes", protect, schoolGuard, teacherOrAdmin, getTeacherClasses);
 router.get("/classes/:id", protect, schoolGuard, teacherOrAdmin, getTeacherClassById);
