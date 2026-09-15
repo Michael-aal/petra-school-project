@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BarChart3, CheckCircle2, FileText, Flag, Users, Wallet } from "lucide-react";
+import { Activity, BarChart3, CheckCircle2, FileText, Flag, LogIn, Sparkles, Users, Wallet } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import { academicApi } from "../../../../services/academicApi";
 import { admissionApi } from "../../../../services/admissionApi";
@@ -9,6 +9,76 @@ import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
 import StatCard from "../../../../components/dashboard/StatCard";
 import DashboardWidget from "../../../../components/dashboard/DashboardWidget";
 import "../page-styles/OverviewPage.css";
+
+const formatActivityLabel = (action = "") =>
+  String(action)
+    .replace(/[._-]+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase()) || "Activity";
+
+const parseActivityDetails = (details) => {
+  if (!details) return null;
+  if (typeof details === "object") return details;
+
+  try {
+    const parsed = JSON.parse(details);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+const formatDuration = (durationMs) => {
+  const duration = Number(durationMs);
+  if (!Number.isFinite(duration)) return "";
+  if (duration < 1000) return `${Math.round(duration)}ms`;
+  return `${(duration / 1000).toFixed(1)}s`;
+};
+
+const getActivityPresentation = (item) => {
+  const action = String(item?.action || "").toLowerCase();
+  const details = parseActivityDetails(item?.details);
+
+  if (action === "ai.query") {
+    const metadata = [];
+    if (details?.provider) metadata.push(String(details.provider));
+    const duration = formatDuration(details?.durationMs);
+    if (duration) metadata.push(duration);
+
+    return {
+      title: "AI Query",
+      description: details?.success === false ? "AI request failed" : "AI request completed successfully",
+      metadata: metadata.join(" · "),
+      Icon: Sparkles,
+    };
+  }
+
+  if (action === "auth.login") {
+    return {
+      title: "User Login",
+      description: "User successfully signed in",
+      metadata: "",
+      Icon: LogIn,
+    };
+  }
+
+  const readableDetails = typeof item?.details === "string" && item.details.trim() && !details
+    ? item.details.trim()
+    : "Activity recorded successfully";
+
+  return {
+    title: formatActivityLabel(item?.action),
+    description: item?.entity ? `${item.entity} · ${readableDetails}` : readableDetails,
+    metadata: "",
+    Icon: Activity,
+  };
+};
+
+const formatActivityTime = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+};
 
 export default function LiveOverviewPage() {
   const [loading, setLoading] = useState(true);
@@ -79,7 +149,24 @@ export default function LiveOverviewPage() {
       <section className="overview-section overview-flex-grid">
         <DashboardWidget title="Recent activity" subtitle="Administration" actionLabel="Refresh" onClick={loadOverview}>
           <div className="overview-list">
-            {loading ? <div className="overview-empty">Loading recent activity…</div> : recentActivity.length ? recentActivity.map((item) => <div key={item.id} className="overview-list-item"><strong>{item.action}</strong><p>{item.entity ? `${item.entity} • ` : ""}{item.details}</p><span>{new Date(item.createdAt).toLocaleString()}</span></div>) : <div className="overview-empty">No recent activity found.</div>}
+            {loading ? <div className="overview-empty">Loading recent activity…</div> : recentActivity.length ? recentActivity.map((item) => {
+              const presentation = getActivityPresentation(item);
+              const ActorIcon = presentation.Icon;
+              const actorName = item.user?.fullName || item.user?.email || "";
+
+              return (
+                <div key={item.id} className="overview-list-item overview-activity-item">
+                  <div className="overview-activity-icon" aria-hidden="true"><ActorIcon size={17} /></div>
+                  <div className="overview-activity-content">
+                    <strong>{presentation.title}</strong>
+                    <p>{presentation.description}</p>
+                    {presentation.metadata ? <span className="overview-activity-meta">{presentation.metadata}</span> : null}
+                    {actorName ? <span className="overview-activity-actor">{actorName}</span> : null}
+                  </div>
+                  <time dateTime={item.createdAt}>{formatActivityTime(item.createdAt)}</time>
+                </div>
+              );
+            }) : <div className="overview-empty">No recent activity found.</div>}
           </div>
         </DashboardWidget>
         <DashboardWidget title="Latest attendance" subtitle="Recent records">
