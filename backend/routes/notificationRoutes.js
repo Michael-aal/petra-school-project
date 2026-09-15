@@ -9,6 +9,7 @@ import {
 } from "../controllers/notificationController.js";
 import {
   getPushPublicKey,
+  getPushStatus,
   subscribeToPush,
   unsubscribeFromPush,
   sendPushTest,
@@ -19,6 +20,7 @@ const router = Router();
 router.get("/", protect, listNotifications);
 router.get("/unread-summary", protect, unreadNotificationSummary);
 router.get("/push/public-key", protect, getPushPublicKey);
+router.get("/push/status", protect, getPushStatus);
 router.post("/push/subscribe", protect, subscribeToPush);
 router.post("/push/unsubscribe", protect, unsubscribeFromPush);
 router.post("/push/test", protect, sendPushTest);
