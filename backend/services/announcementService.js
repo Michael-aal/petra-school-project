@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db.js";
+import { pushNotificationService } from "./pushNotificationService.js";
 
 const normalizeSchoolId = (user) => {
   if (!user || user.schoolId === undefined || user.schoolId === null) {
@@ -181,6 +182,12 @@ export const announcementService = {
         body: announcement.body,
       }));
       await prisma.notification.createMany({ data: notifications });
+      void pushNotificationService.sendToUsers(recipients, {
+        title: `New announcement: ${announcement.title}`,
+        body: announcement.body,
+        url: "/announcements",
+        tag: `announcement-${announcement.id}`,
+      }).catch(() => {});
     }
 
     return announcement;
