@@ -1,4 +1,4 @@
-import { Bell, Search, CheckCheck, Smartphone, Send, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
+import { Bell, Search, CheckCheck, Smartphone, Send, RefreshCw, CheckCircle2, XCircle, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import "../page-styles/NotificationsPage.css";
 import { notificationApi } from "../../../../services/notificationApi";
@@ -82,7 +82,7 @@ export default function NotificationsPage() {
     setError("");
     try {
       await pushNotificationService.enable();
-      setPushMessage("Device notifications are enabled. You can now test a real system notification.");
+      setPushMessage("Device notifications are enabled. The test button now forces a real external system notification.");
       await inspectDeviceNotifications();
     } catch (err) {
       setPushMessage(err?.message || "Unable to enable device notifications.");
@@ -98,10 +98,12 @@ export default function NotificationsPage() {
     try {
       if (!pushEnabled) await pushNotificationService.enable();
       const result = await pushNotificationService.sendTest();
-      setPushMessage(result?.message || "Test device notification sent. Check your system notification area.");
+      setPushMessage(result?.message || "External test sent. Check your system notification area.");
       await inspectDeviceNotifications();
     } catch (err) {
-      setPushMessage(err?.message || "Unable to send the test device notification.");
+      const deliveryErrors = err?.details?.deliveryErrors || err?.deliveryErrors || [];
+      const firstDeliveryError = Array.isArray(deliveryErrors) && deliveryErrors[0]?.message;
+      setPushMessage(firstDeliveryError ? `Push delivery failed: ${firstDeliveryError}` : (err?.message || "Unable to send the external device notification."));
     } finally {
       setPushBusy(false);
     }
@@ -114,6 +116,17 @@ export default function NotificationsPage() {
       setUnread((count) => Math.max(0, count - 1));
     } catch (err) {
       setError(err?.message || "Unable to update notification.");
+    }
+  };
+
+  const deleteNotification = async (item) => {
+    if (!item?.canDelete) return;
+    try {
+      await notificationApi.delete(item.id);
+      setNotifications((items) => items.filter((notification) => notification.id !== item.id));
+      if (!item.isRead) setUnread((count) => Math.max(0, count - 1));
+    } catch (err) {
+      setError(err?.message || "Unable to delete notification.");
     }
   };
 
@@ -175,7 +188,7 @@ export default function NotificationsPage() {
           {pushNotificationService.isSupported() && pushEnabled ? (
             <button type="button" className="notifications-send-button" onClick={sendTestNotification} disabled={pushBusy}>
               <Send size={16} />
-              <span>{pushBusy ? "Sending..." : "Send test alert"}</span>
+              <span>{pushBusy ? "Sending..." : "Send external test"}</span>
             </button>
           ) : null}
           <button type="button" className="notifications-send-button" onClick={markAllRead} disabled={!unread}>
@@ -243,11 +256,25 @@ export default function NotificationsPage() {
                   <p>{item.body}</p>
                   <div className="notification-card-meta"><span>{formatDate(item.createdAt)}</span></div>
                 </div>
-                {!item.isRead ? (
-                  <button type="button" className="notification-tag tone-blue" onClick={() => markRead(item.id)}>
-                    Mark read
-                  </button>
-                ) : null}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  {!item.isRead ? (
+                    <button type="button" className="notification-tag tone-blue" onClick={() => markRead(item.id)}>
+                      Mark read
+                    </button>
+                  ) : null}
+                  {item.canDelete ? (
+                    <button
+                      type="button"
+                      className="notification-tag"
+                      onClick={() => deleteNotification(item)}
+                      aria-label={`Delete notification: ${item.title}`}
+                      title="Delete notification"
+                    >
+                      <Trash2 size={15} />
+                      Delete
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </div>
           </article>
