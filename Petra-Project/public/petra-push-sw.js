@@ -1,4 +1,4 @@
-const SW_VERSION = "petra-push-v3";
+const SW_VERSION = "petra-push-v4";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -31,7 +31,7 @@ self.addEventListener("push", (event) => {
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     const visibleClient = clients.find((client) => client.visibilityState === "visible");
 
-    if (visibleClient) {
+    if (visibleClient && payload.forceExternal !== true) {
       visibleClient.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
       return;
     }
