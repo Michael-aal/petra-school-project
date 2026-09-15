@@ -40,6 +40,8 @@ export default function TopNavbar({ onToggle }) {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  const dismissIncoming = () => setIncoming(null);
+
   const showIncoming = (notification) => {
     if (!notification?.id && !notification?.tag) return;
     const key = String(notification.id || notification.tag);
@@ -93,8 +95,9 @@ export default function TopNavbar({ onToggle }) {
 
   useEffect(() => {
     if (!incoming) return undefined;
-    const timer = window.setTimeout(() => setIncoming(null), 8000);
-    return () => window.clearTimeout(timer);
+    const handlePetraClick = () => dismissIncoming();
+    document.addEventListener("click", handlePetraClick, true);
+    return () => document.removeEventListener("click", handlePetraClick, true);
   }, [incoming]);
 
   const handleLogout = async () => {
@@ -112,13 +115,13 @@ export default function TopNavbar({ onToggle }) {
   return (
     <header className="top-navbar">
       {incoming ? (
-        <div role="alert" aria-live="polite" style={{ position: "fixed", top: 18, right: 18, zIndex: 100000, width: "min(390px, calc(100vw - 36px))", padding: "16px 18px", borderRadius: 14, background: "#0f172a", color: "#fff", boxShadow: "0 18px 45px rgba(0,0,0,.3)", display: "flex", gap: 12, alignItems: "flex-start" }}>
+        <div role="alert" aria-live="polite" style={{ position: "fixed", top: 18, right: 18, zIndex: 100000, width: "min(390px, calc(100vw - 36px))", padding: "16px 18px", borderRadius: 14, background: "#0f172a", color: "#fff", boxShadow: "0 18px 45px rgba(0,0,0,.3)", display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer" }} onClick={dismissIncoming}>
           <Bell size={21} style={{ flexShrink: 0, marginTop: 2 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontWeight: 700, marginBottom: 4 }}>{incoming.title || "New notification"}</div>
             <div style={{ fontSize: 14, lineHeight: 1.45, opacity: .9 }}>{incoming.body || "You have a new notification."}</div>
           </div>
-          <button type="button" aria-label="Close notification" onClick={() => setIncoming(null)} style={{ border: 0, background: "transparent", color: "#fff", cursor: "pointer", padding: 2 }}><X size={18} /></button>
+          <button type="button" aria-label="Close notification" onClick={(event) => { event.stopPropagation(); dismissIncoming(); }} style={{ border: 0, background: "transparent", color: "#fff", cursor: "pointer", padding: 2 }}><X size={18} /></button>
         </div>
       ) : null}
 
