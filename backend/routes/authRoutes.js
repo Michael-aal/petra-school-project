@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, revokeSession, revokeAllSessions, refreshSession, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
-import { authRateLimiter } from "../middleware/rateLimiter.js";
+import { authRateLimiter, refreshRateLimiter } from "../middleware/rateLimiter.js";
 import crypto from "node:crypto";
 
 const router = Router();
@@ -42,7 +42,7 @@ router.post(
   selectSchool,
 );
 router.post("/login", authRateLimiter, loginValidator, loginUser);
-router.post("/refresh", authRateLimiter, refreshSession);
+router.post("/refresh", refreshRateLimiter, refreshSession);
 router.get("/me", protect, getMe);
 router.put(
   "/profile",
