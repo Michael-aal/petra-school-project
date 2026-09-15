@@ -1,10 +1,35 @@
-const SW_VERSION = "petra-push-v6";
+const SW_VERSION = "petra-push-v7";
 
 const postDiagnostic = async (payload) => {
   const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
   for (const client of clients) {
     client.postMessage({ type: "PETRA_PUSH_DIAGNOSTIC", payload: { version: SW_VERSION, ...payload } });
   }
+};
+
+const getVisibleUserIds = async () => {
+  const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  const ids = [];
+  for (const client of clients) {
+    try {
+      const channel = new MessageChannel();
+      const id = await new Promise((resolve) => {
+        let settled = false;
+        const finish = (value) => {
+          if (settled) return;
+          settled = true;
+          resolve(value || null);
+        };
+        channel.port1.onmessage = (event) => finish(event.data?.userId);
+        client.postMessage({ type: "PETRA_GET_CURRENT_USER" }, [channel.port2]);
+        setTimeout(() => finish(null), 750);
+      });
+      if (id) ids.push(String(id));
+    } catch {
+      // A client that cannot answer does not identify the active account.
+    }
+  }
+  return [...new Set(ids)];
 };
 
 self.addEventListener("install", () => {
@@ -35,12 +60,26 @@ self.addEventListener("push", (event) => {
       body: String(payload.body || "You have a new notification."),
       url: payload.url || "/dashboard/communication/notifications",
       notificationId: payload.notificationId || null,
+      recipientUserId: payload.recipientUserId ? String(payload.recipientUserId) : null,
       tag: String(payload.tag || `${SW_VERSION}-${Date.now()}`),
     };
 
-    // Always create a real system notification. This is intentional even when
-    // Petra is the active tab: users opted into device alerts and should get
-    // the same external notification regardless of tab visibility.
+    // Private notifications must never be surfaced to a browser client
+    // logged into a different Petra account. This also protects the external
+    // system notification when sender and recipient share one browser/device.
+    if (notificationPayload.recipientUserId) {
+      const activeUserIds = await getVisibleUserIds();
+      if (activeUserIds.length && !activeUserIds.includes(notificationPayload.recipientUserId)) {
+        await postDiagnostic({
+          phase: "recipient-filtered",
+          ok: true,
+          notificationId: notificationPayload.notificationId,
+          recipientUserId: notificationPayload.recipientUserId,
+        });
+        return;
+      }
+    }
+
     try {
       if (typeof self.registration.showNotification !== "function") {
         throw new Error("Service worker showNotification() is unavailable in this browser.");
@@ -57,6 +96,7 @@ self.addEventListener("push", (event) => {
         data: {
           url: notificationPayload.url,
           notificationId: notificationPayload.notificationId,
+          recipientUserId: notificationPayload.recipientUserId,
         },
       });
 
@@ -71,8 +111,6 @@ self.addEventListener("push", (event) => {
       throw error;
     }
 
-    // Keep the existing in-app experience too. The page can display its
-    // persistent popup without replacing or deleting the notification above.
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clients) {
       client.postMessage({ type: "PETRA_NOTIFICATION", payload: notificationPayload });
