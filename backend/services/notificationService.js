@@ -84,12 +84,15 @@ export const notificationService = {
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
-        select: { id: true, title: true, body: true, isRead: true, createdAt: true, updatedAt: true },
+        select: { id: true, title: true, body: true, isRead: true, createdAt: true, updatedAt: true, userId: true },
       }),
     ]);
 
     return {
-      notifications,
+      notifications: notifications.map(({ userId, ...notification }) => ({
+        ...notification,
+        canDelete: userId === user.id,
+      })),
       unread,
       pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
     };
@@ -161,6 +164,21 @@ export const notificationService = {
       throw err;
     }
     return prisma.notification.update({ where: { id: existing.id }, data: { isRead: true } });
+  },
+
+  deleteNotification: async (user, notificationId) => {
+    const schoolId = normalizeSchoolId(user, { allowPlatformWithoutSchool: true });
+    const where = isPlatform(user)
+      ? { id: notificationId, userId: user.id }
+      : { id: notificationId, schoolId, userId: user.id };
+    const existing = await prisma.notification.findFirst({ where, select: { id: true } });
+    if (!existing) {
+      const err = new Error("Notification not found or cannot be deleted");
+      err.statusCode = 404;
+      throw err;
+    }
+    await prisma.notification.delete({ where: { id: existing.id } });
+    return { deleted: true, id: existing.id };
   },
 
   markAllRead: async (user) => {
