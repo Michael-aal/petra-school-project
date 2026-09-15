@@ -1,16 +1,12 @@
 import { createHmac, timingSafeEqual, randomBytes } from "crypto";
+import { createResilientProviderClient } from "../utils/axiosWithRetry.js";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE = "https://api.paystack.co";
-const PROVIDER_TIMEOUT_MS = Number(process.env.PAYSTACK_TIMEOUT_MS || 10_000);
-
-const providerFetch = (url, options) => fetch(url, {
-  ...options,
-  signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-}).catch((error) => {
-  const wrapped = new Error("Paystack request timed out or could not be completed", { cause: error });
-  wrapped.statusCode = 502;
-  throw wrapped;
+const paystackClient = createResilientProviderClient({
+  provider: "paystack",
+  baseURL: PAYSTACK_BASE,
+  timeoutEnv: process.env.PAYSTACK_TIMEOUT_MS,
 });
 
 const resolveCallbackUrl = (callbackUrl) => {
@@ -60,19 +56,15 @@ export const paystackService = {
       throw error;
     }
 
-    const response = await providerFetch(`${PAYSTACK_BASE}/transaction/initialize`, {
-      method: "POST",
-      headers: getPaystackHeaders(),
-      body: JSON.stringify({
+    const response = await paystackClient.post("/transaction/initialize", {
         email,
         amount: Math.round(parsedAmount * 100),
         reference: reference || buildReference(),
         metadata: { userId, ...metadata },
         callback_url: resolveCallbackUrl(callbackUrl),
-      }),
-    });
+      }, { headers: getPaystackHeaders(), retryable: false });
 
-    const data = await response.json();
+    const data = response.data;
     if (!data?.status) {
       const error = new Error(data?.message || "Paystack initialization failed");
       error.statusCode = 502;
@@ -105,12 +97,9 @@ export const paystackService = {
   },
 
   verifyTransaction: async (reference) => {
-    const response = await providerFetch(`${PAYSTACK_BASE}/transaction/verify/${encodeURIComponent(reference)}`, {
-      method: "GET",
-      headers: getPaystackHeaders(),
-    });
+    const response = await paystackClient.get(`/transaction/verify/${encodeURIComponent(reference)}`, { headers: getPaystackHeaders() });
 
-    const data = await response.json();
+    const data = response.data;
     if (!data?.status) {
       const error = new Error(data?.message || "Failed to verify Paystack transaction");
       error.statusCode = 502;

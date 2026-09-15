@@ -6,6 +6,7 @@ import { buildSystemPrompt } from "./prompts.js";
 import { logAIActivity } from "./aiAudit.js";
 import { nuvoraKnowledgeService } from "../services/nuvoraKnowledgeService.js";
 import { logger } from "../utils/logger.js";
+import { logAudit } from "../utils/auditLog.js";
 
 const EXTRA_TOOL_NAMES = new Set(["getRecentActivity", "getPortalOverview", "openPetraPage"]);
 const PROMPT_INJECTION_PATTERNS = [
@@ -19,6 +20,23 @@ const PROMPT_INJECTION_PATTERNS = [
   /expose backend database/i,
   /all passwords/i,
 ];
+const AI_REQUEST_LIMIT = 10;
+const AI_WINDOW_MS = 60_000;
+const AI_TIMEOUT_MS = 30_000;
+const aiRequestWindows = new Map();
+
+const enforceAIRateLimit = (userId) => {
+  const key = String(userId || "anonymous");
+  const now = Date.now();
+  const timestamps = (aiRequestWindows.get(key) || []).filter((timestamp) => now - timestamp < AI_WINDOW_MS);
+  if (timestamps.length >= AI_REQUEST_LIMIT) {
+    const error = new Error("AI request rate limit exceeded. Please try again shortly.");
+    error.statusCode = 429;
+    throw error;
+  }
+  timestamps.push(now);
+  aiRequestWindows.set(key, timestamps);
+};
 
 const classifyLikelyTool = (message = "") => {
   const text = String(message || "");
@@ -35,7 +53,7 @@ const classifyLikelyTool = (message = "") => {
   return null;
 };
 
-export const handleAIQuery = async ({ user, message, schoolId, conversationHistory = [], selectedStudentId }) => {
+const executeAIQuery = async ({ user, message, schoolId, conversationHistory = [], selectedStudentId }) => {
   const startTime = Date.now();
   const toolsUsed = [];
   const toolErrors = [];
@@ -121,9 +139,51 @@ export const handleAIQuery = async ({ user, message, schoolId, conversationHisto
     const durationMs = Date.now() - startTime;
     logger.error("AI query execution failed", { error: error.message, statusCode: error.statusCode, userId: user?.id });
     await logAIActivity({ userId: user?.id, schoolId: schoolId || user?.schoolId, action: "ai.query.error", toolsUsed, success: false, durationMs });
+    await logAudit({
+      userId: user?.id,
+      schoolId: schoolId || user?.schoolId,
+      action: "external_api.failure",
+      actionType: "EXTERNAL_API_ERROR",
+      entity: "AIProvider",
+      details: { metadata: { provider: "ai", endpoint: "generateWithTools", error: error.message, retryCount: 0 } },
+    }).catch(() => null);
     if (error.statusCode === 403) return { success: false, statusCode: 403, answer: error.message || "You are not authorized to access this information.", data: null, toolsUsed };
     if (error.statusCode === 404) return { success: false, statusCode: 404, answer: error.message || "The requested student or record could not be found.", data: null, toolsUsed };
     if (error.statusCode === 400) return { success: false, statusCode: 400, answer: error.message || "Invalid query parameters.", data: null, toolsUsed };
     return { success: false, statusCode: 500, answer: "We encountered an issue processing your question with Nuvora AI. Please try again or contact support.", data: null, toolsUsed };
+  }
+};
+
+export const handleAIQuery = async (args) => {
+  try {
+    enforceAIRateLimit(args?.user?.id);
+    let timeoutHandle;
+    const timeout = new Promise((_, reject) => {
+      timeoutHandle = setTimeout(() => {
+        const error = new Error("AI provider request timed out");
+        error.statusCode = 504;
+        reject(error);
+      }, AI_TIMEOUT_MS);
+      timeoutHandle.unref?.();
+    });
+    const result = await Promise.race([executeAIQuery(args), timeout]);
+    clearTimeout(timeoutHandle);
+    return result;
+  } catch (error) {
+    await logAudit({
+      userId: args?.user?.id,
+      schoolId: args?.schoolId || args?.user?.schoolId,
+      action: "external_api.failure",
+      actionType: "EXTERNAL_API_ERROR",
+      entity: "AIProvider",
+      details: { metadata: { provider: "ai", endpoint: "generateWithTools", error: error.message, retryCount: 0 } },
+    }).catch(() => null);
+    return {
+      success: false,
+      statusCode: error.statusCode || 500,
+      answer: error.statusCode === 429 ? error.message : "The AI provider is temporarily unavailable. Please try again.",
+      data: null,
+      toolsUsed: [],
+    };
   }
 };

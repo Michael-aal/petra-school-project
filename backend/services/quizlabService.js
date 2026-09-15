@@ -1,18 +1,13 @@
 import "../config/loadEnv.js";
-import fetch from 'node-fetch';
+import { createResilientProviderClient } from "../utils/axiosWithRetry.js";
 
 const QUIZLAB_MCP_URL = process.env.QUIZLAB_MCP_URL || 'https://quizlab.in/mcp';
 const API_KEY = process.env.QUIZLAB_API_KEY || '';
 const ATS_API_KEY = process.env.QUIZLAB_ATS_API_KEY || process.env.ATS_API_KEY || '';
-const PROVIDER_TIMEOUT_MS = Number(process.env.QUIZLAB_TIMEOUT_MS || 10_000);
-
-const providerFetch = (url, options) => fetch(url, {
-  ...options,
-  signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-}).catch((error) => {
-  const wrapped = new Error('QuizLab request timed out or could not be completed', { cause: error });
-  wrapped.status = 502;
-  throw wrapped;
+const quizlabClient = createResilientProviderClient({
+  provider: "classmarker",
+  baseURL: "https://quizlab.in",
+  timeoutEnv: process.env.QUIZLAB_TIMEOUT_MS,
 });
 
 let mcpSessionId = null;
@@ -27,17 +22,18 @@ const ensureSession = async () => {
     method: 'initialize',
     params: {},
   };
-  const res = await providerFetch(QUIZLAB_MCP_URL, {
+  const res = await quizlabClient.request({
     method: 'POST',
+    url: new URL(QUIZLAB_MCP_URL).pathname,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${API_KEY}`,
     },
-    body: JSON.stringify(payload),
+    data: payload,
+    retryable: false,
   });
-  if (!res.ok) throw new Error(`QuizLab init failed status=${res.status}`);
-  const data = await res.json();
-  const sid = res.headers.get('Mcp-Session-Id') || data?.result?.sessionId || data?.result?.session_id || data?.result?.mcp_session_id || null;
+  const data = res.data;
+  const sid = res.headers?.get?.('Mcp-Session-Id') || res.headers?.['mcp-session-id'] || data?.result?.sessionId || data?.result?.session_id || data?.result?.mcp_session_id || null;
   if (!sid) throw new Error('QuizLab did not return a session id');
   mcpSessionId = sid;
   // default TTL 30 minutes
@@ -54,19 +50,17 @@ const callMcp = async (method, params = {}) => {
     method: 'tools/call',
     params: { name: method, arguments: params },
   };
-  const res = await providerFetch(QUIZLAB_MCP_URL, {
+  const res = await quizlabClient.request({
     method: 'POST',
+    url: new URL(QUIZLAB_MCP_URL).pathname,
     headers: {
       'Content-Type': 'application/json',
       'Mcp-Session-Id': session,
     },
-    body: JSON.stringify(payload),
+    data: payload,
+    retryable: false,
   });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`QuizLab ${method} failed status=${res.status} ${text}`);
-  }
-  const data = await res.json();
+  const data = res.data;
   if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
   const result = data.result ?? data;
 
@@ -97,33 +91,18 @@ const callMcp = async (method, params = {}) => {
 
 const callAts = async (path, { method = 'GET', body } = {}) => {
   if (!ATS_API_KEY) throw new Error('ATS_API_KEY not configured');
-  const res = await providerFetch(`https://quizlab.in${path}`, {
+  const res = await quizlabClient.request({
     method,
+    url: path,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${ATS_API_KEY}`,
     },
-    body: body ? JSON.stringify(body) : undefined,
+    data: body,
+    retryable: false,
   });
 
-  const text = await res.text().catch(() => '');
-  let data = {};
-  if (text) {
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = { rawText: text };
-    }
-  }
-
-  if (!res.ok) {
-    const error = new Error(data.message || data.error || `QuizLab ATS request failed status=${res.status}`);
-    error.status = res.status;
-    error.response = data;
-    throw error;
-  }
-
-  return data;
+  return res.data;
 };
 
 export const quizlabService = {
