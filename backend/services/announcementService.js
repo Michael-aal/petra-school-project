@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db.js";
-import { pushNotificationService } from "./pushNotificationService.js";
 
 const normalizeSchoolId = (user) => {
   if (!user || user.schoolId === undefined || user.schoolId === null) {
@@ -176,6 +175,9 @@ export const announcementService = {
         ON CONFLICT ("announcementId", "userId") DO NOTHING
       `;
 
+      // Notification rows are the single source of truth for push delivery.
+      // The watcher sends them to background/closed devices and forwards them
+      // to the active Petra tab, so we do not send a second direct push here.
       const notifications = recipients.map((recipient) => ({
         schoolId,
         userId: recipient.id,
@@ -183,13 +185,6 @@ export const announcementService = {
         body: announcement.body,
       }));
       await prisma.notification.createMany({ data: notifications });
-      void pushNotificationService.sendToUsers(recipients, {
-        title: `New announcement: ${announcement.title}`,
-        body: announcement.body,
-        notificationId: announcement.id,
-        url: "/announcements",
-        tag: `announcement-${announcement.id}`,
-      }).catch(() => {});
     }
 
     return announcement;
