@@ -1,11 +1,12 @@
 /**
- * In-memory sliding window rate limiter middleware for Express
- * Prevents brute force and credential stuffing attacks on sensitive endpoints.
+ * Redis-backed sliding-window rate limiters for Express.
+ * Authentication limits are deliberately separated from normal API traffic.
  */
 import crypto from "node:crypto";
 import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
 import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/redis.js";
 
+const RATE_LIMIT_VERSION = "v3";
 const localLimiters = new Map();
 const testHits = new Map();
 
@@ -32,7 +33,7 @@ const lockAndConsume = async (limiter, key, scope) => {
     : limiter.consume(key);
 
   if (!redlock || !redisClient) return consume();
-  const resource = `petra:rate-limit-lock:${scope}:${key}`;
+  const resource = `petra:rate-limit-lock:${RATE_LIMIT_VERSION}:${scope}:${key}`;
   const lock = await measureRedis("rate_limit_lock", () => redlock.acquire([resource], 1000));
   try {
     return await consume();
@@ -54,6 +55,8 @@ const tabCredentialKey = (req) => {
   return fingerprint(credential);
 };
 
+const tabIdKey = (req) => fingerprint(req.get("x-petra-tab-id") || "");
+
 export const createRateLimiter = ({
   windowMs = 15 * 60 * 1000,
   max = 10,
@@ -61,7 +64,7 @@ export const createRateLimiter = ({
   keyGenerator = (req) => `${req.ip || "unknown"}_${req.originalUrl}`,
   scope = "api",
 } = {}) => {
-  const limiter = createLimiter({ keyPrefix: `petra:rate-limit:${scope}`, windowMs, max });
+  const limiter = createLimiter({ keyPrefix: `petra:rate-limit:${RATE_LIMIT_VERSION}:${scope}`, windowMs, max });
   if (limiter) localLimiters.set(scope, limiter);
 
   return async (req, res, next) => {
@@ -92,13 +95,14 @@ export const createRateLimiter = ({
         return res.status(429).json({ success: false, message, retryAfterSeconds });
       }
 
-      // Security controls fail closed when Redis is unavailable.
       rateLimitHits.inc({ scope });
       return res.status(429).json({ success: false, message: "Rate limiting service is unavailable." });
     }
   };
 };
 
+// Password/credential attempts are isolated by account AND browser tab.
+// A second tab signing into another account cannot consume this tab's bucket.
 export const authRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -106,15 +110,24 @@ export const authRateLimiter = createRateLimiter({
   keyGenerator: (req) => {
     const body = req.body || {};
     const credential = String(body.email || body.username || "anonymous").trim().toLowerCase();
-    return `${req.ip || "unknown"}:${credential}`;
+    const tabId = tabIdKey(req);
+    return `${req.ip || "unknown"}:${credential}:tab:${tabId || "unidentified"}`;
   },
   message: "Too many authentication attempts. Please try again after 15 minutes.",
 });
 
-// Refresh is a normal part of an active session, not a password attempt.
-// It must be isolated per tab refresh token; otherwise two accounts in the
-// same browser/IP consume the same anonymous bucket and one tab can receive
-// 429s, lose its access token, and then cascade into "token missing" errors.
+// A separate IP guard prevents unlimited credential attempts while still
+// allowing legitimate simultaneous accounts/tabs to have independent buckets.
+export const authIpRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  scope: "auth-ip",
+  keyGenerator: (req) => String(req.ip || "unknown"),
+  message: "Too many authentication requests from this network. Please try again later.",
+});
+
+// Refresh is session maintenance, not a password attempt. It is isolated by
+// the tab refresh/access credential so simultaneous tabs never share a bucket.
 export const refreshRateLimiter = createRateLimiter({
   windowMs: 60 * 1000,
   max: 30,
