@@ -14,9 +14,9 @@ const cleanDetails = (details) => {
   }
 };
 
-export const logAudit = async ({ userId = null, schoolId = null, action, entity = null, resourceId = null, details = null }) => {
-  const safeDetails = cleanDetails({ ...(typeof details === "object" && details ? details : {}), ...(resourceId ? { resourceId } : {}) });
-  logger.info("audit event", { userId, schoolId, action, entity, resourceId });
+export const logAudit = async ({ userId = null, schoolId = null, action, entity = null, resourceId = null, details = null, severity = "INFO" }) => {
+  const safeDetails = cleanDetails({ ...(typeof details === "object" && details ? details : {}), ...(resourceId ? { resourceId } : {}), ...(severity ? { severity } : {}) });
+  logger.info("audit event", { userId, schoolId, action, entity, resourceId, severity });
 
   if (userId) {
     try {
@@ -41,6 +41,7 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
       entityId: resourceId ? String(resourceId) : "unknown",
       performedBy: userId ? String(userId) : "system",
       details: safeDetails,
+      severity: String(severity || "INFO").slice(0, 32),
     },
   });
 };

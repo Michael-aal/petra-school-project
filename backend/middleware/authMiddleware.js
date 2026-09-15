@@ -3,6 +3,7 @@ import { userModel } from "../models/userModel.js";
 import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
 import { prisma, runWithSchoolContext, runWithoutSchoolContext } from "../config/db.js";
 import { getJwtPublicKey } from "../utils/jwtKeys.js";
+import { tenantGuard } from "./tenantGuard.js";
 
 const extractToken = (req) => {
   const authHeader = req.get("authorization") || "";
@@ -196,7 +197,7 @@ export const protect = async (req, res, next) => {
     return populated;
   }
 
-  return runWithSchoolContext(req.schoolId, next);
+  return runWithSchoolContext(req.schoolId, () => tenantGuard(req, res, next));
 };
 
 export const protectOptional = async (req, res, next) => {
@@ -211,7 +212,7 @@ export const protectOptional = async (req, res, next) => {
     return populated;
   }
 
-  return runWithSchoolContext(req.schoolId, next);
+  return runWithSchoolContext(req.schoolId, () => tenantGuard(req, res, next));
 };
 
 

@@ -1570,6 +1570,7 @@ model AuditLog {
   entity      String?
   entityId    String   @default("unknown")
   performedBy String   @default("system")
+  severity    String?  @default("INFO")
   oldData     Json?
   newData     Json?
   details     String?

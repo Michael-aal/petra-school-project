@@ -86,55 +86,77 @@ const modelHasSchoolId = (model) => {
   }
 };
 
+const enforceTenantValue = (tenant, context = {}) => {
+  const resolved = Number(tenant);
+  if (!Number.isInteger(resolved) || resolved <= 0) {
+    throw Object.assign(new Error(`Tenant context is required for ${context.model || "this operation"}`), {
+      statusCode: 403,
+    });
+  }
+  return resolved;
+};
+
 // Operations that accept a full `where` filter and must be scoped to the tenant.
 const WHERE_SCOPED_OPERATIONS = new Set([
   "findMany",
+  "findUnique",
   "findFirst",
   "findFirstOrThrow",
   "count",
   "aggregate",
   "groupBy",
+  "update",
   "updateMany",
+  "delete",
   "deleteMany",
 ]);
 
 export const scopeWhere = (where, tenant) => {
-  if (!where) return { schoolId: tenant };
-  if (!Object.prototype.hasOwnProperty.call(where, "schoolId")) {
-    return { AND: [where, { schoolId: tenant }] };
+  const resolvedTenant = enforceTenantValue(tenant, { model: "tenant-query" });
+  if (!where || typeof where !== "object" || Array.isArray(where)) return { schoolId: resolvedTenant };
+  if (Object.prototype.hasOwnProperty.call(where, "schoolId")) {
+    if (Number(where.schoolId) !== resolvedTenant) {
+      throw Object.assign(new Error("Tenant mismatch: requested schoolId does not match the active tenant context."), {
+        statusCode: 403,
+      });
+    }
+    return { ...where, schoolId: resolvedTenant };
   }
-  return { ...where, schoolId: tenant };
+  return { AND: [where, { schoolId: resolvedTenant }] };
 };
 
 export const scopeTenantData = (data, tenant) => {
+  const resolvedTenant = enforceTenantValue(tenant, { model: "tenant-write" });
   if (!data || typeof data !== "object") return data;
   if (Object.prototype.hasOwnProperty.call(data, "school")) {
     throw Object.assign(new Error("Nested school relation writes are not allowed in a tenant context"), {
       statusCode: 403,
     });
   }
-  return { ...data, schoolId: tenant };
+  const { schoolId: _ignoredSchoolId, ...rest } = data;
+  return { ...rest, schoolId: resolvedTenant };
 };
 
 const scopeOperationArgs = (model, operation, args, tenant) => {
   if (!tenant || !modelHasSchoolId(model)) return args;
 
+  const resolvedTenant = enforceTenantValue(tenant, { model });
   const nextArgs = args ? { ...args } : {};
   if (WHERE_SCOPED_OPERATIONS.has(operation)) {
-    nextArgs.where = scopeWhere(nextArgs.where, tenant);
+    nextArgs.where = scopeWhere(nextArgs.where, resolvedTenant);
   }
 
   if ((operation === "create" || operation === "update") && nextArgs.data && !Array.isArray(nextArgs.data)) {
-    nextArgs.data = scopeTenantData(nextArgs.data, tenant);
+    nextArgs.data = scopeTenantData(nextArgs.data, resolvedTenant);
   }
 
   if ((operation === "createMany" || operation === "createManyAndReturn") && Array.isArray(nextArgs.data)) {
-    nextArgs.data = nextArgs.data.map((item) => scopeTenantData(item, tenant));
+    nextArgs.data = nextArgs.data.map((item) => scopeTenantData(item, resolvedTenant));
   }
 
   if (operation === "upsert" && nextArgs.create) {
-    nextArgs.create = scopeTenantData(nextArgs.create, tenant);
-    if (nextArgs.update) nextArgs.update = scopeTenantData(nextArgs.update, tenant);
+    nextArgs.create = scopeTenantData(nextArgs.create, resolvedTenant);
+    if (nextArgs.update) nextArgs.update = scopeTenantData(nextArgs.update, resolvedTenant);
   }
 
   return nextArgs;
