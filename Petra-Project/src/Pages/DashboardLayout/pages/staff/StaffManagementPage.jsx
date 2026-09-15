@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Copy, RotateCw, Ban, UserCog, Filter } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { Search, Plus, Copy, RotateCw, Ban, UserCog, Filter, ClipboardList } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "../../../../services/authApi";
 import TeacherApplicationsPage from "./TeacherApplicationsPage";
 import "../page-styles/DashboardHomePage.css";
@@ -24,6 +24,7 @@ export default function StaffManagementPage() {
 }
 
 function StaffManagementWorkspace() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [showForm, setShowForm] = useState(false);
@@ -94,7 +95,13 @@ function StaffManagementWorkspace() {
 
   return (
     <div className="dashboard-home">
-      <section className="dashboard-home-header"><div><h1>Teacher Management</h1><p>Add teachers with basic school details and generate a registration code for account setup.</p></div><div className="dashboard-home-session-pill">Admin Workspace</div></section>
+      <section className="dashboard-home-header">
+        <div>
+          <h1>Teacher Management</h1>
+          <p>Add teachers with basic school details and generate a registration code for account setup.</p>
+        </div>
+        <div className="dashboard-home-session-pill">Admin Workspace</div>
+      </section>
       <section className="dashboard-home-summary">
         <article className="dashboard-home-summary-card"><div className="dashboard-home-summary-top"><div><span>Total Invitations</span><strong>{summary.total}</strong></div><div className="dashboard-home-summary-icon tone-blue"><UserCog size={18} /></div></div></article>
         <article className="dashboard-home-summary-card"><div className="dashboard-home-summary-top"><div><span>Used</span><strong>{summary.used}</strong></div><div className="dashboard-home-summary-icon tone-teal"><UserCog size={18} /></div></div></article>
@@ -104,6 +111,7 @@ function StaffManagementWorkspace() {
         <div className="dashboard-home-content" style={{ marginBottom: 0, gridTemplateColumns: "1.1fr 0.9fr" }}>
           <div className="dashboard-home-account-row" style={{ marginBottom: 0 }}><div className="dashboard-home-account-icon"><Search size={16} /></div><div className="dashboard-home-account-text"><strong>Search teachers</strong><span>Find by name, role, department, class, or registration code.</span></div></div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <button type="button" className="dashboard-home-summary-action tone-teal" style={{ border: "1px solid currentColor", cursor: "pointer", padding: "0 14px" }} onClick={() => navigate("/dashboard/staff/management?view=applications")}><ClipboardList size={14} /><span>Teacher Applications</span></button>
             <label style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, border: "1px solid var(--app-border)", background: "var(--app-surface)" }}><Filter size={16} /><select value={filter} onChange={(event) => setFilter(event.target.value)} style={{ border: 0, outline: 0, background: "transparent", color: "var(--app-text)" }}><option value="all">All</option><option value="unused">Unused</option><option value="used">Used</option><option value="revoked">Revoked</option></select></label>
             <button className="dashboard-home-summary-action tone-blue" type="button" style={{ border: "1px solid currentColor", cursor: "pointer", padding: "0 14px" }} onClick={() => setShowForm((current) => !current)}><Plus size={14} /><span>Add Teacher</span></button>
           </div>
