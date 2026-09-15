@@ -42,7 +42,14 @@ export default function TopNavbar({ onToggle }) {
 
   const dismissIncoming = () => setIncoming(null);
 
+  const isForCurrentUser = (notification) => {
+    const recipientId = notification?.recipientUserId || notification?.recipientId || notification?.userId;
+    if (!recipientId) return true;
+    return String(recipientId) === String(userInfo?.id);
+  };
+
   const showIncoming = (notification) => {
+    if (!isForCurrentUser(notification)) return;
     if (!notification?.id && !notification?.tag) return;
     const key = String(notification.id || notification.tag);
     if (key === latestKeyRef.current) return;
@@ -55,6 +62,10 @@ export default function TopNavbar({ onToggle }) {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return undefined;
     const handleServiceWorkerMessage = (event) => {
+      if (event.data?.type === "PETRA_GET_CURRENT_USER") {
+        event.ports?.[0]?.postMessage({ userId: userInfo?.id ? String(userInfo.id) : null });
+        return;
+      }
       if (event.data?.type !== "PETRA_NOTIFICATION") return;
       const payload = event.data.payload || {};
       showIncoming({
@@ -62,11 +73,12 @@ export default function TopNavbar({ onToggle }) {
         tag: payload.tag,
         title: payload.title,
         body: payload.body,
+        recipientUserId: payload.recipientUserId,
       });
     };
     navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
     return () => navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
-  }, [info]);
+  }, [info, userInfo?.id]);
 
   useEffect(() => {
     let active = true;
@@ -74,7 +86,7 @@ export default function TopNavbar({ onToggle }) {
       try {
         const result = await notificationApi.list({ page: 1, limit: 10 });
         if (!active) return;
-        const list = Array.isArray(result?.notifications) ? result.notifications : [];
+        const list = Array.isArray(result?.notifications) ? result.notifications.filter(isForCurrentUser) : [];
         if (!list.length) { initializedRef.current = true; return; }
         const latest = [...list].sort((a, b) => getTime(b) - getTime(a))[0];
         if (!latest?.id) return;
@@ -91,7 +103,7 @@ export default function TopNavbar({ onToggle }) {
     checkNotifications();
     const timer = window.setInterval(checkNotifications, POLL_MS);
     return () => { active = false; window.clearInterval(timer); };
-  }, [info]);
+  }, [info, userInfo?.id]);
 
   useEffect(() => {
     if (!incoming) return undefined;
