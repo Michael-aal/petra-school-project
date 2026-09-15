@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { authService } from "../services/authService.js";
 import { teacherInvitationService } from "../services/teacherInvitationService.js";
+import { teacherManagementService } from "../services/teacherManagementService.js";
 import { linkParentToMatchingChildren } from "../utils/parentLinking.js";
 
 const authCookieOptions = {
@@ -99,6 +100,41 @@ export const regenerateStaffInvitationCode = async (req, res, next) => {
     if (validationResponse) return validationResponse;
     const invitation = await authService.regenerateStaffInvitationCode({ registrationCode: req.body.registrationCode, schoolId: req.schoolId });
     return res.status(200).json({ success: true, message: "Registration code regenerated", invitation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listManagedTeachers = async (req, res, next) => {
+  try {
+    const teachers = await teacherManagementService.list({ user: req.user, schoolId: req.schoolId });
+    return res.status(200).json({ success: true, teachers });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deactivateManagedTeacher = async (req, res, next) => {
+  try {
+    const result = await teacherManagementService.deactivate({
+      user: req.user,
+      schoolId: req.schoolId,
+      teacherUserId: req.params.teacherUserId,
+    });
+    return res.status(200).json({ success: true, message: "Teacher deactivated successfully", teacher: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const reactivateManagedTeacher = async (req, res, next) => {
+  try {
+    const result = await teacherManagementService.reactivate({
+      user: req.user,
+      schoolId: req.schoolId,
+      teacherUserId: req.params.teacherUserId,
+    });
+    return res.status(200).json({ success: true, message: "Teacher reactivated successfully", teacher: result });
   } catch (error) {
     next(error);
   }
