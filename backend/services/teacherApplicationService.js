@@ -45,7 +45,6 @@ const makeUsername = async (tx, email) => {
     .toLowerCase()
     .replace(/[^a-z0-9._-]/g, "")
     .slice(0, 32) || "teacher";
-
   let username = base;
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const existing = await tx.user.findUnique({ where: { username }, select: { id: true } });
@@ -70,10 +69,7 @@ const createApprovedTeacher = async (tx, application) => {
   if (existingUser) {
     const existingTeacher = await tx.teacher.findUnique({ where: { userId: existingUser.id } });
     if (existingTeacher && Number(existingTeacher.schoolId) === schoolId) {
-      const invitation = await tx.staffInvitation.findFirst({
-        where: { staffUserId: existingUser.id },
-        orderBy: { generatedAt: "desc" },
-      });
+      const invitation = await tx.staffInvitation.findFirst({ where: { staffUserId: existingUser.id }, orderBy: { generatedAt: "desc" } });
       if (invitation) return { teacher: existingTeacher, user: existingUser, invitation };
     }
     throw Object.assign(new Error("A user with this teacher's email already exists."), { statusCode: 409 });
@@ -107,12 +103,7 @@ const createApprovedTeacher = async (tx, application) => {
   });
 
   const teacher = await tx.teacher.create({
-    data: {
-      userId: user.id,
-      schoolId,
-      designation: application.positionApplied || "Teacher",
-      isActive: true,
-    },
+    data: { userId: user.id, schoolId, designation: application.positionApplied || "Teacher", isActive: true },
   });
 
   const invitation = await tx.staffInvitation.create({
@@ -135,6 +126,13 @@ const createApprovedTeacher = async (tx, application) => {
   return { teacher, user, invitation };
 };
 
+const reviewFields = `
+  ta.*,
+  (SELECT si."registrationCode" FROM "StaffInvitation" si
+    WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+  (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
+`;
+
 export const teacherApplicationService = {
   create: async ({ schoolId, payload }) => {
     const id = `ta_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -143,16 +141,8 @@ export const teacherApplicationService = {
     const email = clean(payload.email)?.toLowerCase();
     const phone = clean(payload.phone);
 
-    if (!firstName || !lastName || !email || !phone) {
-      const error = new Error("First name, last name, email and phone are required.");
-      error.statusCode = 400;
-      throw error;
-    }
-    if (!payload.declarationAccepted) {
-      const error = new Error("You must accept the declaration before submitting.");
-      error.statusCode = 400;
-      throw error;
-    }
+    if (!firstName || !lastName || !email || !phone) throw Object.assign(new Error("First name, last name, email and phone are required."), { statusCode: 400 });
+    if (!payload.declarationAccepted) throw Object.assign(new Error("You must accept the declaration before submitting."), { statusCode: 400 });
 
     const school = await prisma.school.findFirst({ where: { id: Number(schoolId), isActive: true }, select: { id: true } });
     if (!school) throw Object.assign(new Error("The selected school is not available."), { statusCode: 404 });
@@ -197,19 +187,26 @@ export const teacherApplicationService = {
     const normalizedStatus = clean(status)?.toLowerCase();
     const search = clean(query)?.toLowerCase();
     const rows = await prisma.$queryRaw`
-      SELECT * FROM "TeacherApplication"
-      WHERE (${normalizedStatus || null}::text IS NULL OR lower("status") = ${normalizedStatus || null})
+      SELECT ${prisma.raw(reviewFields)}
+      FROM "TeacherApplication" ta
+      LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+      WHERE (${normalizedStatus || null}::text IS NULL OR lower(ta."status") = ${normalizedStatus || null})
         AND (${search || null}::text IS NULL OR
-          lower(concat_ws(' ', "firstName", "middleName", "lastName")) LIKE ${search ? `%${search}%` : null} OR
-          lower("email") LIKE ${search ? `%${search}%` : null} OR lower("id") LIKE ${search ? `%${search}%` : null} OR
-          lower("positionApplied") LIKE ${search ? `%${search}%` : null})
-      ORDER BY "createdAt" DESC LIMIT ${safeLimit}
+          lower(concat_ws(' ', ta."firstName", ta."middleName", ta."lastName")) LIKE ${search ? `%${search}%` : null} OR
+          lower(ta."email") LIKE ${search ? `%${search}%` : null} OR lower(ta."id") LIKE ${search ? `%${search}%` : null} OR
+          lower(ta."positionApplied") LIKE ${search ? `%${search}%` : null})
+      ORDER BY ta."createdAt" DESC LIMIT ${safeLimit}
     `;
     return rows.map(normalizeRow);
   },
 
   getById: async ({ id }) => {
-    const rows = await prisma.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} LIMIT 1`;
+    const rows = await prisma.$queryRaw`
+      SELECT ${prisma.raw(reviewFields)}
+      FROM "TeacherApplication" ta
+      LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+      WHERE ta."id" = ${String(id)} LIMIT 1
+    `;
     if (!rows.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
     return normalizeRow(rows[0]);
   },
@@ -235,7 +232,13 @@ export const teacherApplicationService = {
       const application = locked[0];
       const { teacher, invitation } = await createApprovedTeacher(tx, application);
       await tx.$executeRaw`UPDATE "TeacherApplication" SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${String(id)}`;
-      const updatedRows = await tx.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} LIMIT 1`;
+
+      const updatedRows = await tx.$queryRaw`
+        SELECT ${prisma.raw(reviewFields)}
+        FROM "TeacherApplication" ta
+        LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+        WHERE ta."id" = ${String(id)} LIMIT 1
+      `;
 
       return {
         ...normalizeRow(updatedRows[0]),
