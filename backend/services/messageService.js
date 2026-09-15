@@ -63,6 +63,7 @@ export const messageService = {
     if (!payload.body) { const err = new Error("Message body is required"); err.statusCode = 400; throw err; }
     const recipient = await prisma.user.findUnique({ where: { id: payload.recipientId }, select: { id: true, schoolId: true, role: true } });
     if (!recipient || Number(recipient.schoolId) !== schoolId) { const err = new Error("Recipient not found in your school"); err.statusCode = 404; throw err; }
+    if (recipient.id === user.id) { const err = new Error("You cannot send a message to yourself"); err.statusCode = 400; throw err; }
     if (!canMessage(user.role, recipient.role)) { const err = new Error("You are not allowed to message this role"); err.statusCode = 403; throw err; }
 
     const message = await prisma.message.create({ data: { schoolId, senderId: user.id, recipientId: recipient.id, subject: payload.subject ? String(payload.subject).trim() : "", body: String(payload.body).trim() } });
