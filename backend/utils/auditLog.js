@@ -32,16 +32,21 @@ export const logAudit = async ({ userId = null, schoolId = null, action, entity 
     }
   }
 
-  return prisma.auditLog.create({
-    data: {
-      userId,
-      schoolId: schoolId ? Number(schoolId) : null,
-      action: String(action || "unknown").slice(0, 120),
-      entity: entity ? String(entity).slice(0, 120) : "System",
-      entityId: resourceId ? String(resourceId) : "unknown",
-      performedBy: userId ? String(userId) : "system",
-      details: safeDetails,
-      severity: String(severity || "INFO").slice(0, 32),
-    },
-  });
+  const data = {
+    schoolId: schoolId ? Number(schoolId) : null,
+    action: String(action || "unknown").slice(0, 120),
+    entity: entity ? String(entity).slice(0, 120) : "System",
+    entityId: resourceId ? String(resourceId) : "unknown",
+    performedBy: userId ? String(userId) : "system",
+    details: safeDetails,
+    severity: String(severity || "INFO").slice(0, 32),
+  };
+
+  // Use the User relation instead of the userId scalar so audit logging also
+  // works with generated Prisma clients that expose `user` as the create input.
+  if (userId) {
+    data.user = { connect: { id: String(userId) } };
+  }
+
+  return prisma.auditLog.create({ data });
 };
