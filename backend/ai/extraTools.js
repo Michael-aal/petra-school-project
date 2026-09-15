@@ -63,73 +63,188 @@ const schoolPortalOverview = async (schoolId, portal) => {
 
   switch (portal) {
     case "dashboard": {
-      const [students, teachers, classes, admissions, attendance] = await Promise.all([
+      const [students, teachers, classes, applicants, attendance] = await Promise.all([
         prisma.student.count({ where: { schoolId } }),
         prisma.teacher.count({ where: { schoolId } }),
         prisma.class.count({ where: { schoolId } }),
         prisma.admission.count({ where: { schoolId } }),
-        prisma.studentAttendance.findMany({ where: { schoolId, attendanceDate: { gte: since } }, select: { status: true }, take: 5000 }),
+        prisma.studentAttendance.findMany({
+          where: { schoolId, attendanceDate: { gte: since } },
+          select: { status: true },
+          take: 5000,
+        }),
       ]);
       const present = attendance.filter((x) => String(x.status).toLowerCase() === "present").length;
-      return { portal, students, teachers, classes, applicants: admissions, attendanceRate: attendance.length ? Number((present / attendance.length * 100).toFixed(1)) : 0 };
+      return {
+        portal,
+        students,
+        teachers,
+        classes,
+        applicants,
+        attendanceRate: attendance.length ? Number((present / attendance.length * 100).toFixed(1)) : 0,
+      };
     }
-    case "students":
-      return { portal, total: await prisma.student.count({ where: { schoolId } }), active: await prisma.student.count({ where: { schoolId, status: "active" } }) };
-    case "teachers":
-      return { portal, total: await prisma.teacher.count({ where: { schoolId } }), active: await prisma.teacher.count({ where: { schoolId, isActive: true } }) };
-    case "classes":
-      return { portal, total: await prisma.class.count({ where: { schoolId } }), sections: await prisma.section.count({ where: { schoolId } }) };
+
+    case "students": {
+      const [total, active] = await Promise.all([
+        prisma.student.count({ where: { schoolId } }),
+        prisma.student.count({ where: { schoolId, status: "active" } }),
+      ]);
+      return { portal, total, active };
+    }
+
+    case "teachers": {
+      const [total, active] = await Promise.all([
+        prisma.teacher.count({ where: { schoolId } }),
+        prisma.teacher.count({ where: { schoolId, isActive: true } }),
+      ]);
+      return { portal, total, active };
+    }
+
+    case "classes": {
+      const [total, sections] = await Promise.all([
+        prisma.class.count({ where: { schoolId } }),
+        prisma.section.count({ where: { schoolId } }),
+      ]);
+      return { portal, total, sections };
+    }
+
     case "applicants": {
-      const grouped = await prisma.admission.groupBy({ by: ["status"], where: { schoolId }, _count: { id: true } });
-      return { portal, total: grouped.reduce((n, x) => n + x._count.id, 0), byStatus: Object.fromEntries(grouped.map((x) => [x.status, x._count.id])) };
+      const grouped = await prisma.admission.groupBy({
+        by: ["status"],
+        where: { schoolId },
+        _count: { id: true },
+      });
+      return {
+        portal,
+        total: grouped.reduce((n, x) => n + x._count.id, 0),
+        byStatus: Object.fromEntries(grouped.map((x) => [x.status, x._count.id])),
+      };
     }
+
     case "attendance": {
-      const rows = await prisma.studentAttendance.findMany({ where: { schoolId, attendanceDate: { gte: since } }, select: { status: true }, take: 5000 });
+      const rows = await prisma.studentAttendance.findMany({
+        where: { schoolId, attendanceDate: { gte: since } },
+        select: { status: true },
+        take: 5000,
+      });
       const present = rows.filter((x) => String(x.status).toLowerCase() === "present").length;
-      return { portal, periodDays: 30, records: rows.length, present, absent: rows.length - present, attendanceRate: rows.length ? Number((present / rows.length * 100).toFixed(1)) : 0 };
+      return {
+        portal,
+        periodDays: 30,
+        records: rows.length,
+        present,
+        absent: rows.length - present,
+        attendanceRate: rows.length ? Number((present / rows.length * 100).toFixed(1)) : 0,
+      };
     }
+
     case "results": {
-      const [published, exams] = await Promise.all([
+      const [publishedResults, examResults] = await Promise.all([
         prisma.result.count({ where: { schoolId, published: true } }),
-        prisma.examResult.count({ where: { exam: { schoolId } } }).catch(() => 0),
+        prisma.examResult.count({ where: { exam: { schoolId } } }),
       ]);
-      return { portal, publishedResults: published, examResults: exams };
+      return { portal, publishedResults, examResults };
     }
-    case "exams":
-      return { portal, total: await prisma.exam.count({ where: { schoolId } }), recent: await prisma.exam.count({ where: { schoolId, examDate: { gte: since } } }) };
-    case "payments": {
-      const [count, sum] = await Promise.all([
-        prisma.payment.count({ where: { schoolId, status: "Successful" } }),
-        prisma.payment.aggregate({ where: { schoolId, status: "Successful" }, _sum: { amount: true } }),
-      ]);
-      return { portal, successfulPayments: count, totalPaid: Number(sum._sum.amount || 0), currency: "NGN" };
-    }
-    case "fees": {
-      const [feeStructures, invoices] = await Promise.all([
-        prisma.feeStructure.count({ where: { schoolId } }),
-        prisma.invoice.aggregate({ where: { schoolId }, _sum: { totalAmount: true, outstandingBalance: true }, _count: { id: true } }),
-      ]);
-      return { portal, configuredFeeItems: feeStructures, invoices: invoices._count.id, totalBilled: Number(invoices._sum.totalAmount || 0), outstandingBalance: Number(invoices._sum.outstandingBalance || 0), currency: "NGN" };
-    }
-    case "announcements": {
+
+    case "exams": {
       const [total, recent] = await Promise.all([
-        prisma.announcement.count({ where: { schoolId } }),
-        prisma.announcement.findMany({ where: { schoolId }, orderBy: { createdAt: "desc" }, take: 5, select: { id: true, title: true, status: true, createdAt: true } }),
+        prisma.exam.count({ where: { schoolId } }),
+        prisma.exam.count({ where: { schoolId, examDate: { gte: since } } }),
       ]);
       return { portal, total, recent };
     }
+
+    case "payments": {
+      const [count, sum] = await Promise.all([
+        prisma.payment.count({ where: { schoolId, status: "Successful" } }),
+        prisma.payment.aggregate({
+          where: { schoolId, status: "Successful" },
+          _sum: { amount: true },
+        }),
+      ]);
+      return {
+        portal,
+        successfulPayments: count,
+        totalPaid: Number(sum._sum.amount || 0),
+        currency: "NGN",
+      };
+    }
+
+    case "fees": {
+      const [feeStructures, invoices] = await Promise.all([
+        prisma.feeStructure.count({ where: { schoolId } }),
+        prisma.invoice.aggregate({
+          where: { schoolId },
+          _sum: { totalAmount: true, outstandingBalance: true },
+          _count: { id: true },
+        }),
+      ]);
+      return {
+        portal,
+        configuredFeeItems: feeStructures,
+        invoices: invoices._count.id || 0,
+        totalBilled: Number(invoices._sum.totalAmount || 0),
+        outstandingBalance: Number(invoices._sum.outstandingBalance || 0),
+        currency: "NGN",
+      };
+    }
+
+    case "announcements": {
+      const [total, recent] = await Promise.all([
+        prisma.announcement.count({ where: { schoolId } }),
+        prisma.announcement.findMany({
+          where: { schoolId },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, title: true, status: true, createdAt: true },
+        }),
+      ]);
+      return { portal, total, recent };
+    }
+
     case "messages":
       return { portal, totalMessages: await prisma.message.count({ where: { schoolId } }) };
+
+    case "support": {
+      const rows = await prisma.$queryRaw`
+        SELECT
+          COUNT(*)::int AS "total",
+          COUNT(*) FILTER (WHERE "status" = 'Open')::int AS "open",
+          COUNT(*) FILTER (WHERE "status" = 'In Progress')::int AS "inProgress",
+          COUNT(*) FILTER (WHERE "status" = 'Resolved')::int AS "resolved",
+          COUNT(*) FILTER (WHERE "status" = 'Closed')::int AS "closed"
+        FROM "SupportTicket"
+        WHERE "schoolId" = ${schoolId}
+      `;
+      return { portal, ...(rows[0] || { total: 0, open: 0, inProgress: 0, resolved: 0, closed: 0 }) };
+    }
+
+    case "notifications": {
+      const [total, unread] = await Promise.all([
+        prisma.notification.count({ where: { schoolId } }),
+        prisma.notification.count({ where: { schoolId, read: false } }),
+      ]);
+      return { portal, total, unread };
+    }
+
     default:
-      throw Object.assign(new Error(`Portal "${portal}" is not supported yet`), { statusCode: 400 });
+      throw Object.assign(new Error(`Portal "${portal}" is not supported`), { statusCode: 400 });
   }
 };
 
 const personalPortalOverview = async (user, schoolId, portal) => {
   const r = role(user);
   let studentIds = [];
+
   if (r === "student") {
-    const student = await prisma.student.findFirst({ where: { OR: [{ userId: user.id }, { id: user.linkedStudentId || undefined }], schoolId }, select: { id: true } });
+    const student = await prisma.student.findFirst({
+      where: {
+        OR: [{ userId: user.id }, { id: user.linkedStudentId || undefined }],
+        schoolId,
+      },
+      select: { id: true },
+    });
     if (student) studentIds = [student.id];
   } else if (r === "parent" || r === "guardian") {
     const children = await parentAccessService.listChildren(user.id, schoolId).catch(() => []);
@@ -140,17 +255,167 @@ const personalPortalOverview = async (user, schoolId, portal) => {
     return { portal, message: "No student is currently linked to this account." };
   }
 
-  if (portal === "students") return { portal, linkedStudents: studentIds.length };
-  if (portal === "attendance") return { portal, records: await prisma.studentAttendance.count({ where: { schoolId, studentId: { in: studentIds } } }) };
-  if (portal === "results") return { portal, publishedResults: await prisma.result.count({ where: { schoolId, studentId: { in: studentIds }, published: true } }) };
-  if (portal === "payments" || portal === "fees") {
-    const payments = await prisma.payment.aggregate({ where: { schoolId, studentId: { in: studentIds }, status: "Successful" }, _sum: { amount: true }, _count: { id: true } });
-    return { portal, successfulPayments: payments._count.id, totalPaid: Number(payments._sum.amount || 0), currency: "NGN" };
+  if (portal === "students") {
+    return { portal, linkedStudents: studentIds.length, studentIds };
   }
-  if (portal === "announcements") return { portal, total: await prisma.announcement.count({ where: { schoolId } }) };
-  if (portal === "messages") return { portal, totalMessages: await prisma.message.count({ where: { schoolId, OR: [{ senderId: user.id }, { receiverId: user.id }] } }) };
-  if (portal === "notifications") return { portal, unread: await prisma.notification.count({ where: { userId: user.id, read: false } }) };
-  return { portal, message: "This portal is not available for school-wide data from your role." };
+
+  if (portal === "attendance") {
+    const rows = await prisma.studentAttendance.findMany({
+      where: { schoolId, studentId: { in: studentIds } },
+      select: { attendanceDate: true, status: true },
+      orderBy: { attendanceDate: "desc" },
+      take: 50,
+    });
+    const present = rows.filter((x) => String(x.status).toLowerCase() === "present").length;
+    return {
+      portal,
+      records: rows.length,
+      present,
+      absent: rows.length - present,
+      attendanceRate: rows.length ? Number((present / rows.length * 100).toFixed(1)) : 0,
+      latestDate: rows[0]?.attendanceDate || null,
+    };
+  }
+
+  if (portal === "results") {
+    const [results, exams] = await Promise.all([
+      prisma.result.findMany({
+        where: { schoolId, studentId: { in: studentIds }, published: true },
+        select: { subject: true, score: true, maxScore: true, createdAt: true },
+        orderBy: { createdAt: "desc" },
+        take: 25,
+      }),
+      prisma.examResult.findMany({
+        where: { studentId: { in: studentIds }, exam: { schoolId } },
+        select: {
+          marks: true,
+          percentage: true,
+          grade: true,
+          createdAt: true,
+          exam: { select: { title: true, totalMarks: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 25,
+      }),
+    ]);
+    return {
+      portal,
+      publishedResults: results.length,
+      examResults: exams.length,
+      latestResults: results.map((x) => ({
+        subject: x.subject,
+        score: Number(x.score),
+        maxScore: Number(x.maxScore),
+        percentage: x.maxScore ? Number((Number(x.score) / Number(x.maxScore) * 100).toFixed(1)) : 0,
+        createdAt: x.createdAt,
+      })),
+      latestExams: exams.map((x) => ({
+        title: x.exam?.title || "Exam",
+        marks: Number(x.marks),
+        percentage: x.percentage == null && x.exam?.totalMarks ? Number((Number(x.marks) / Number(x.exam.totalMarks) * 100).toFixed(1)) : Number(x.percentage || 0),
+        grade: x.grade || null,
+        createdAt: x.createdAt,
+      })),
+    };
+  }
+
+  if (portal === "exams") {
+    const exams = await prisma.examResult.findMany({
+      where: { studentId: { in: studentIds }, exam: { schoolId } },
+      select: {
+        marks: true,
+        percentage: true,
+        grade: true,
+        completedAt: true,
+        exam: { select: { title: true, examDate: true, totalMarks: true } },
+      },
+      orderBy: { completedAt: "desc" },
+      take: 25,
+    });
+    return {
+      portal,
+      completedExams: exams.length,
+      exams: exams.map((x) => ({
+        title: x.exam?.title || "Exam",
+        marks: Number(x.marks),
+        totalMarks: Number(x.exam?.totalMarks || 100),
+        percentage: x.percentage == null && x.exam?.totalMarks ? Number((Number(x.marks) / Number(x.exam.totalMarks) * 100).toFixed(1)) : Number(x.percentage || 0),
+        grade: x.grade || null,
+        examDate: x.exam?.examDate || null,
+        completedAt: x.completedAt || null,
+      })),
+    };
+  }
+
+  if (portal === "payments" || portal === "fees") {
+    const [payments, invoices] = await Promise.all([
+      prisma.payment.aggregate({
+        where: { schoolId, studentId: { in: studentIds }, status: "Successful" },
+        _sum: { amount: true },
+        _count: { id: true },
+      }),
+      prisma.invoice.aggregate({
+        where: { schoolId, studentId: { in: studentIds } },
+        _sum: { totalAmount: true, outstandingBalance: true },
+        _count: { id: true },
+      }),
+    ]);
+    return {
+      portal,
+      successfulPayments: payments._count.id || 0,
+      totalPaid: Number(payments._sum.amount || 0),
+      invoices: invoices._count.id || 0,
+      totalBilled: Number(invoices._sum.totalAmount || 0),
+      outstandingBalance: Number(invoices._sum.outstandingBalance || 0),
+      currency: "NGN",
+    };
+  }
+
+  if (portal === "announcements") {
+    const [total, recent] = await Promise.all([
+      prisma.announcement.count({ where: { schoolId } }),
+      prisma.announcement.findMany({
+        where: { schoolId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { title: true, status: true, createdAt: true },
+      }),
+    ]);
+    return { portal, total, recent };
+  }
+
+  if (portal === "messages") {
+    return {
+      portal,
+      totalMessages: await prisma.message.count({
+        where: { schoolId, OR: [{ senderId: user.id }, { receiverId: user.id }] },
+      }),
+    };
+  }
+
+  if (portal === "notifications") {
+    const [total, unread] = await Promise.all([
+      prisma.notification.count({ where: { userId: user.id } }),
+      prisma.notification.count({ where: { userId: user.id, read: false } }),
+    ]);
+    return { portal, total, unread };
+  }
+
+  if (portal === "support") {
+    const rows = await prisma.$queryRaw`
+      SELECT
+        COUNT(*)::int AS "total",
+        COUNT(*) FILTER (WHERE "status" = 'Open')::int AS "open",
+        COUNT(*) FILTER (WHERE "status" = 'In Progress')::int AS "inProgress",
+        COUNT(*) FILTER (WHERE "status" = 'Resolved')::int AS "resolved",
+        COUNT(*) FILTER (WHERE "status" = 'Closed')::int AS "closed"
+      FROM "SupportTicket"
+      WHERE "schoolId" = ${schoolId} AND "createdById" = ${user.id}
+    `;
+    return { portal, ...(rows[0] || { total: 0, open: 0, inProgress: 0, resolved: 0, closed: 0 }) };
+  }
+
+  return { portal, message: "This portal does not expose school-wide data for your role." };
 };
 
 export const executeExtraAITool = async ({ user, toolName, input = {} }) => {
@@ -170,19 +435,20 @@ export const executeExtraAITool = async ({ user, toolName, input = {} }) => {
     const portal = String(input.portal || "").trim().toLowerCase();
     if (!PORTALS.includes(portal)) throw Object.assign(new Error("Invalid Petra portal"), { statusCode: 400 });
     const schoolId = assertSchoolAccess(user, input.schoolId ?? getSchoolId(user));
-    if (portal === "support" || portal === "notifications") {
-      if (portal === "notifications") return { portal, unread: await prisma.notification.count({ where: { userId: user.id, read: false } }) };
-      return { portal, message: isSchoolAdmin(user) ? "Support is available through the Support portal; ticket details require the support service." : "Your support requests are available in the Support portal." };
-    }
+
     if (isSchoolAdmin(user)) return schoolPortalOverview(schoolId, portal);
-    if (["teacher"].includes(role(user))) {
-      if (["dashboard", "attendance", "results", "classes", "exams", "announcements", "messages"].includes(portal)) return schoolPortalOverview(schoolId, portal);
+    if (role(user) === "teacher") {
+      if (["dashboard", "attendance", "results", "classes", "exams", "announcements", "messages", "notifications"].includes(portal)) {
+        return schoolPortalOverview(schoolId, portal);
+      }
       return { portal, message: "Your role does not have access to this portal's school-wide data." };
     }
     return personalPortalOverview(user, schoolId, portal);
   }
 
-  if (toolName !== "getRecentActivity") throw Object.assign(new Error(`AI extra tool "${toolName}" is not registered`), { statusCode: 400 });
+  if (toolName !== "getRecentActivity") {
+    throw Object.assign(new Error(`AI extra tool "${toolName}" is not registered`), { statusCode: 400 });
+  }
   if (!canUseActivity(user)) throw Object.assign(new Error("You are not authorized to view recent school activity"), { statusCode: 403 });
 
   const schoolId = assertSchoolAccess(user, input.schoolId ?? getSchoolId(user));
@@ -198,5 +464,15 @@ export const executeExtraAITool = async ({ user, toolName, input = {} }) => {
     include: { user: { select: { id: true, fullName: true, role: true } } },
   });
 
-  return { schoolId, count: logs.length, activity: logs.map((log) => ({ id: log.id, at: log.createdAt, user: log.user ? { id: log.user.id, name: log.user.fullName, role: log.user.role } : null, action: log.activity, metadata: log.metadata || null })) };
+  return {
+    schoolId,
+    count: logs.length,
+    activity: logs.map((log) => ({
+      id: log.id,
+      at: log.createdAt,
+      user: log.user ? { id: log.user.id, name: log.user.fullName, role: log.user.role } : null,
+      action: log.activity,
+      metadata: log.metadata || null,
+    })),
+  };
 };
