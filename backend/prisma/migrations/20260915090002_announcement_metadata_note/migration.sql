@@ -1,0 +1,2 @@
+-- The application currently stores audience as text so existing audience values remain compatible.
+-- Priority is the only constrained enum at database level.
