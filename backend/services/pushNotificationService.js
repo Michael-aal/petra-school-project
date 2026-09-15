@@ -73,6 +73,15 @@ export const pushNotificationService = {
     }
     if (!redisClient) { const error = new Error("Push storage is unavailable"); error.statusCode = 503; throw error; }
     await ensureRedis();
+
+    // A browser push endpoint belongs to one logged-in Petra account at a time.
+    // This prevents a shared browser/device from receiving another account's
+    // private message notification after the user switches accounts.
+    const keys = await redisClient.keys("petra:push-subscriptions:*");
+    for (const key of keys) {
+      if (key !== redisKey(userId)) await redisClient.hdel(key, normalized.endpoint);
+    }
+
     const record = {
       endpoint: normalized.endpoint,
       keys: normalized.keys,
@@ -102,6 +111,7 @@ export const pushNotificationService = {
       body: String(payload?.body || "You have a new notification."),
       url: String(payload?.url || "/dashboard/communication/notifications"),
       notificationId: payload?.notificationId || null,
+      recipientUserId: String(userId),
       tag: String(payload?.tag || "petra-notification"),
       forceExternal: payload?.forceExternal === true,
       timestamp: Date.now(),
