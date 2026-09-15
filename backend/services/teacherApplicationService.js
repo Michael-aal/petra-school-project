@@ -20,6 +20,20 @@ const nullableDate = (value) => {
   return Number.isNaN(date.getTime()) ? null : date;
 };
 
+const parseJson = (value, fallback = []) => {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value === "object") return value;
+  try { return JSON.parse(value); } catch { return fallback; }
+};
+
+const normalizeRow = (row) => ({
+  ...row,
+  applicationNumber: String(row.id || "").replace(/^ta_/, "TA-").toUpperCase(),
+  supportingDocuments: parseJson(row.supportingDocuments),
+  references: parseJson(row.references),
+  submissionData: parseJson(row.submissionData, {}),
+});
+
 export const teacherApplicationService = {
   create: async ({ schoolId, payload }) => {
     const id = `ta_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -93,5 +107,63 @@ export const teacherApplicationService = {
       applicationNumber: id.replace(/^ta_/, "TA-").toUpperCase(),
       message: "Teacher application submitted successfully. The school will review your application.",
     };
+  },
+
+  list: async ({ schoolId, status, query, limit = 100 }) => {
+    const safeLimit = Math.min(Math.max(Number(limit) || 100, 1), 200);
+    const normalizedStatus = clean(status)?.toLowerCase();
+    const search = clean(query)?.toLowerCase();
+
+    const rows = await prisma.$queryRaw`
+      SELECT * FROM "TeacherApplication"
+      WHERE "schoolId" = ${Number(schoolId)}
+        AND (${normalizedStatus || null}::text IS NULL OR lower("status") = ${normalizedStatus || null})
+        AND (${search || null}::text IS NULL OR
+          lower(concat_ws(' ', "firstName", "middleName", "lastName")) LIKE ${search ? `%${search}%` : null} OR
+          lower("email") LIKE ${search ? `%${search}%` : null} OR
+          lower("id") LIKE ${search ? `%${search}%` : null} OR
+          lower("positionApplied") LIKE ${search ? `%${search}%` : null})
+      ORDER BY "createdAt" DESC
+      LIMIT ${safeLimit}
+    `;
+
+    return rows.map(normalizeRow);
+  },
+
+  getById: async ({ schoolId, id }) => {
+    const rows = await prisma.$queryRaw`
+      SELECT * FROM "TeacherApplication"
+      WHERE "schoolId" = ${Number(schoolId)} AND "id" = ${String(id)}
+      LIMIT 1
+    `;
+    if (!rows.length) {
+      const error = new Error("Teacher application not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+    return normalizeRow(rows[0]);
+  },
+
+  updateStatus: async ({ schoolId, id, status }) => {
+    const allowed = new Set(["pending", "shortlisted", "rejected", "approved"]);
+    const nextStatus = clean(status)?.toLowerCase();
+    if (!allowed.has(nextStatus)) {
+      const error = new Error("Invalid teacher application status.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const rows = await prisma.$queryRaw`
+      UPDATE "TeacherApplication"
+      SET "status" = ${nextStatus}, "updatedAt" = CURRENT_TIMESTAMP
+      WHERE "schoolId" = ${Number(schoolId)} AND "id" = ${String(id)}
+      RETURNING *
+    `;
+    if (!rows.length) {
+      const error = new Error("Teacher application not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+    return normalizeRow(rows[0]);
   },
 };
