@@ -21,15 +21,25 @@ export const sessionModel = {
     where: {
       id: String(id),
       userId: String(userId),
+      revokedAt: null,
       expiresAt: { gt: new Date() },
     },
   }),
 
-  revoke: (id, userId) => prisma.session.deleteMany({
-    where: { id: String(id), userId: String(userId) },
+  revoke: (id, userId) => prisma.session.updateMany({
+    where: { id: String(id), userId: String(userId), revokedAt: null },
+    data: { revokedAt: new Date() },
   }),
 
-  revokeAll: (userId) => prisma.session.deleteMany({ where: { userId: String(userId) } }),
+  revokeAll: (userId) => prisma.session.updateMany({
+    where: { userId: String(userId), revokedAt: null },
+    data: { revokedAt: new Date() },
+  }),
+
+  listActive: (userId) => prisma.session.findMany({
+    where: { userId: String(userId), revokedAt: null, expiresAt: { gt: new Date() } },
+    orderBy: { createdAt: "asc" },
+  }),
 
   createRefreshToken: ({ userId, token, expiresAt }) => prisma.refreshToken.create({
     data: {

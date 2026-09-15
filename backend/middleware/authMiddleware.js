@@ -4,7 +4,7 @@ import { hasRoleAccess, normalizeRole } from "../utils/roleUtils.js";
 import { prisma, runWithSchoolContext, runWithoutSchoolContext } from "../config/db.js";
 import { getJwtPublicKey } from "../utils/jwtKeys.js";
 import { tenantGuard } from "./tenantGuard.js";
-import { sessionModel } from "../models/sessionModel.js";
+import { sessionService } from "../services/sessionService.js";
 
 const extractToken = (req) => {
   const cookieHeader = req.get("cookie") || "";
@@ -118,7 +118,7 @@ const populateAuthContext = async (req, res, token) => {
     if (!sessionId) {
       return res.status(401).json({ success: false, message: "Not authorized, session missing" });
     }
-    const activeSession = await sessionModel.findActive({ id: sessionId, userId: resolvedUserId });
+    const activeSession = await sessionService.validate({ id: sessionId, userId: resolvedUserId });
     if (!activeSession) {
       return res.status(401).json({ success: false, message: "Session has expired or been revoked" });
     }

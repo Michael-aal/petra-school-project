@@ -1,12 +1,13 @@
 import { validationResult } from "express-validator";
+import crypto from "node:crypto";
 import { authService } from "../services/authService.js";
 import { teacherInvitationService } from "../services/teacherInvitationService.js";
 import { teacherManagementService } from "../services/teacherManagementService.js";
 import { linkParentToMatchingChildren } from "../utils/parentLinking.js";
-import crypto from "node:crypto";
-import { generateToken } from "../utils/generateToken.js";
 import { sessionModel } from "../models/sessionModel.js";
 import { userModel } from "../models/userModel.js";
+import { sessionService } from "../services/sessionService.js";
+import { logAudit } from "../utils/auditLog.js";
 
 const authCookieOptions = {
   httpOnly: true,
@@ -23,25 +24,9 @@ const issueSession = async (req, res, result) => {
   const currentUser = await userModel.findById(user.id);
   if (!currentUser) return result;
 
-  const sessionId = crypto.randomUUID();
+  const { token: accessToken } = await sessionService.create({ user: currentUser, req });
   const refreshToken = crypto.randomBytes(48).toString("base64url");
-  const accessToken = generateToken({
-    id: user.id,
-    email: currentUser.email,
-    role: currentUser.role,
-    schoolId: currentUser.schoolId || null,
-    sessionVersion: currentUser.sessionVersion,
-    sessionId,
-  });
   const now = Date.now();
-  await sessionModel.create({
-    id: sessionId,
-    userId: user.id,
-    accessToken,
-    ipAddress: req.ip,
-    userAgent: req.get("user-agent"),
-    expiresAt: new Date(now + authCookieOptions.maxAge),
-  });
   await sessionModel.createRefreshToken({
     userId: user.id,
     token: refreshToken,
@@ -246,7 +231,7 @@ export const refreshSession = async (req, res, next) => {
     if (!storedToken) return res.status(401).json({ success: false, message: "Refresh token expired or revoked" });
 
     await sessionModel.revokeRefreshToken(storedToken.id);
-    await sessionModel.revokeAll(storedToken.userId);
+    await sessionService.revokeAll(storedToken.userId);
     const user = await authService.profile(storedToken.userId);
     await issueSession(req, res, { user });
     return res.status(200).json({ success: true, user });
@@ -266,8 +251,9 @@ export const getMe = async (req, res, next) => {
 
 export const revokeSession = async (req, res, next) => {
   try {
-    if (req.auth?.sessionId) await sessionModel.revoke(req.auth.sessionId, req.user.id);
+    if (req.auth?.sessionId) await sessionService.revoke({ id: req.auth.sessionId, userId: req.user.id });
     await sessionModel.revokeAllRefreshTokens(req.user.id);
+    await logAudit({ userId: req.user.id, schoolId: req.schoolId, action: "auth.logout", actionType: "LOGOUT", entity: "Session", resourceId: req.auth?.sessionId });
   } catch (error) {
     return next(error);
   }
@@ -294,7 +280,7 @@ export const changeUserPassword = async (req, res, next) => {
     const validationResponse = handleValidation(req, res);
     if (validationResponse) return validationResponse;
     const result = await authService.changePassword({ userId: req.user.id, currentPassword: req.body.currentPassword, newPassword: req.body.newPassword });
-    await sessionModel.revoke(req.auth.sessionId, req.user.id);
+    await sessionService.revoke({ id: req.auth.sessionId, userId: req.user.id });
     await sessionModel.revokeAllRefreshTokens(req.user.id);
     const user = await authService.profile(req.user.id);
     await issueSession(req, res, { user });
