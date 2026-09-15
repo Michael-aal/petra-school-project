@@ -2,6 +2,7 @@
  * In-memory sliding window rate limiter middleware for Express
  * Prevents brute force and credential stuffing attacks on sensitive endpoints.
  */
+import crypto from "node:crypto";
 import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
 import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/redis.js";
 
@@ -38,6 +39,19 @@ const lockAndConsume = async (limiter, key, scope) => {
   } finally {
     await lock.release().catch(() => undefined);
   }
+};
+
+const fingerprint = (value) => {
+  const normalized = String(value || "").trim();
+  if (!normalized) return "";
+  return crypto.createHash("sha256").update(normalized).digest("hex").slice(0, 32);
+};
+
+const tabCredentialKey = (req) => {
+  const bearer = String(req.get("authorization") || "");
+  const refresh = String(req.get("x-petra-tab-refresh") || "");
+  const credential = bearer || refresh;
+  return fingerprint(credential);
 };
 
 export const createRateLimiter = ({
@@ -97,10 +111,40 @@ export const authRateLimiter = createRateLimiter({
   message: "Too many authentication attempts. Please try again after 15 minutes.",
 });
 
+// Refresh is a normal part of an active session, not a password attempt.
+// It must be isolated per tab refresh token; otherwise two accounts in the
+// same browser/IP consume the same anonymous bucket and one tab can receive
+// 429s, lose its access token, and then cascade into "token missing" errors.
+export const refreshRateLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  max: 30,
+  scope: "auth-refresh",
+  keyGenerator: (req) => {
+    const tabCredential = tabCredentialKey(req);
+    if (tabCredential) return `tab:${tabCredential}`;
+
+    const cookie = String(req.get("cookie") || "");
+    const refreshCookie = cookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("petra_refresh="));
+    const cookieCredential = refreshCookie ? decodeURIComponent(refreshCookie.slice("petra_refresh=".length)) : "";
+    return cookieCredential
+      ? `refresh:${fingerprint(cookieCredential)}`
+      : `ip:${req.ip || "unknown"}`;
+  },
+  message: "Too many session refresh requests. Please slow down briefly.",
+});
+
 export const apiRateLimiter = createRateLimiter({
   windowMs: 60 * 1000,
   max: 100,
   scope: "api",
+  keyGenerator: (req) => {
+    const tabCredential = tabCredentialKey(req);
+    if (tabCredential) return `tab:${tabCredential}:${req.originalUrl}`;
+    return `ip:${req.ip || "unknown"}:${req.originalUrl}`;
+  },
   message: "Rate limit exceeded. Please slow down your requests.",
 });
 
