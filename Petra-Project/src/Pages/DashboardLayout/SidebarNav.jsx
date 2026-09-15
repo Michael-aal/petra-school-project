@@ -22,7 +22,22 @@ const navGroups = [
 ];
 
 const staffNavGroups = [
-  {label:"Nuvora",icon:Sparkles,href:"/staff/ask-nuvora"},{label:"Dashboard",icon:LayoutDashboard,href:"/staff/dashboard"},{label:"My Classes",icon:School,href:"/staff/classes"},{label:"Students",icon:GraduationCap,href:"/staff/students"},{label:"Attendance",icon:ClipboardCheck,href:"/staff/attendance"},{label:"Assessments",icon:ClipboardList,href:"/staff/assessments"},{label:"Results",icon:FileText,href:"/staff/results"},{label:"Announcements",icon:Bell,href:"/staff/announcements"},{label:"Support",icon:HelpCircle,href:"/dashboard/communication/support"},{label:"Profile",icon:UserCog,href:"/staff/profile"},{label:"Settings",icon:Settings,href:"/staff/settings"},{label:"Logout",icon:LogOut,href:"/signin"},
+  {label:"Nuvora",icon:Sparkles,href:"/staff/ask-nuvora"},
+  {label:"Dashboard",icon:LayoutDashboard,href:"/staff/dashboard"},
+  {label:"My Classes",icon:School,href:"/staff/classes"},
+  {label:"Students",icon:GraduationCap,href:"/staff/students"},
+  {label:"Attendance",icon:ClipboardCheck,href:"/staff/attendance"},
+  {label:"Assessments",icon:ClipboardList,href:"/staff/assessments"},
+  {label:"Results",icon:FileText,href:"/staff/results"},
+  {label:"Communication",icon:MessageSquare,children:[
+    {label:"Notifications",icon:Bell,href:"/staff/notifications"},
+    {label:"Announcements",icon:Megaphone,href:"/staff/announcements"},
+    {label:"Messages",icon:MessageSquare,href:"/staff/messages"},
+    {label:"Support",icon:HelpCircle,href:"/dashboard/communication/support"},
+  ]},
+  {label:"Profile",icon:UserCog,href:"/staff/profile"},
+  {label:"Settings",icon:Settings,href:"/staff/settings"},
+  {label:"Logout",icon:LogOut,href:"/signin"},
 ];
 const portalNavGroups = [
   {label:"Nuvora",icon:Sparkles,href:"/portal/ask-nuvora"},{label:"Dashboard",icon:LayoutDashboard,href:"/portal/dashboard"},{label:"Attendance",icon:ClipboardCheck,href:"/portal/attendance"},{label:"Results",icon:FileText,href:"/portal/results"},{label:"Assignments",icon:ClipboardList,href:"/portal/assignments"},{label:"Fees",icon:CreditCard,href:"/portal/fees"},{label:"Announcements",icon:Megaphone,href:"/portal/announcements"},{label:"Messages",icon:MessageSquare,href:"/portal/messages"},{label:"Support",icon:HelpCircle,href:"/dashboard/communication/support"},{label:"Downloads",icon:Download,href:"/portal/downloads"},{label:"Profile",icon:UserCog,href:"/portal/profile"},{label:"Settings",icon:Settings,href:"/portal/settings"},{label:"Logout",icon:LogOut,href:"/signin"},
@@ -51,15 +66,7 @@ const sectionForNav = (label, href = "") => {
   return null;
 };
 
-const attentionDotStyle = {
-  width: 7,
-  height: 7,
-  minWidth: 7,
-  borderRadius: "50%",
-  background: "#ef4444",
-  boxShadow: "0 0 0 2px rgba(239,68,68,.12)",
-  marginLeft: "auto",
-};
+const attentionDotStyle = { width: 7, height: 7, minWidth: 7, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 0 2px rgba(239,68,68,.12)", marginLeft: "auto" };
 
 export function SidebarNav({onNavigate,collapsed=false,onClose}) {
   const location=useLocation(); const {userInfo,setUserInfo}=useContext(UserContext); const navigate=useNavigate();
@@ -74,26 +81,15 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
   const [unreadSummary,setUnreadSummary]=useState({total:0,bySection:{}});
 
   const loadUnreadSummary = async () => {
-    try {
-      const data = await notificationApi.unreadSummary();
-      setUnreadSummary(data || { total: 0, bySection: {} });
-    } catch {
-      // Badge state is non-blocking UI; never break navigation if notifications are unavailable.
-    }
+    try { const data = await notificationApi.unreadSummary(); setUnreadSummary(data || { total: 0, bySection: {} }); } catch { /* Badge state is non-blocking UI. */ }
   };
 
-  useEffect(() => {
-    let active = true;
-    const run = async () => { if (!active) return; await loadUnreadSummary(); };
-    run();
-    const timer = window.setInterval(run, 30000);
-    return () => { active = false; window.clearInterval(timer); };
-  }, [userInfo?.id]);
+  useEffect(() => { let active = true; const run = async () => { if (!active) return; await loadUnreadSummary(); }; run(); const timer = window.setInterval(run, 30000); return () => { active = false; window.clearInterval(timer); }; }, [userInfo?.id]);
 
   useEffect(() => {
     const path = location.pathname;
     let section = null;
-    if (/communication\/notifications|^\/portal\/notifications/.test(path)) section = "notifications";
+    if (/communication\/notifications|^\/staff\/notifications|^\/portal\/notifications/.test(path)) section = "notifications";
     else if (/announcements/.test(path)) section = "announcements";
     else if (/messages/.test(path)) section = "messages";
     else if (/results|report/.test(path)) section = "results";
@@ -110,11 +106,7 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
     return () => { cancelled = true; };
   }, [location.pathname]);
 
-  const badgeFor = (label, href = "") => {
-    const section = sectionForNav(label, href);
-    return section ? Boolean(unreadSummary?.bySection?.[section]) : false;
-  };
-
+  const badgeFor = (label, href = "") => { const section = sectionForNav(label, href); return section ? Boolean(unreadSummary?.bySection?.[section]) : false; };
   const toggleGroup=(label)=>setOpenGroups((prev)=>({...prev,[label]:!prev[label]}));
   const isActive=(href)=>{const path=href.split("?")[0]; return path==="/dashboard"||path==="/"?location.pathname===path:location.pathname.startsWith(path)&&(!href.includes("?")||new URLSearchParams(location.search).toString()===href.split("?")[1]);};
   const handleLogout=async()=>{try{await authApi.logout();}catch{}finally{try{window.sessionStorage.removeItem("petra_user_info");}catch{}try{window.localStorage.removeItem("petra_user_info");}catch{}try{setUserInfo(normalizeUser({}));}catch{}navigate("/signin",{replace:true});}};
