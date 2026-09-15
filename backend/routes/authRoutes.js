@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, revokeSession, refreshSession, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
+import { changeUserPassword, createPendingStaff, createStaffInvitation, deleteUserAccount, deactivateManagedTeacher, getMe, getStaffInvitation, linkChild, listManagedTeachers, listStaffInvitations, loginUser, logoutUser, revokeSession, revokeAllSessions, refreshSession, activateStaff, registerParent, registerUser, reactivateManagedTeacher, regenerateStaffInvitationCode, revokeStaffInvitation, selectSchool, updateUserProfile } from "../controllers/authController.js";
 import { loginValidator, registerValidator, staffInvitationValidator, staffActivationValidator } from "../validators/authValidator.js";
 import { protect, requireParent, requirePrincipal, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
@@ -64,6 +64,7 @@ router.post(
 );
 router.post("/revoke", protect, revokeSession);
 router.post("/logout", protect, logoutUser);
+router.post("/logout-all", protect, revokeAllSessions);
 router.delete(
   "/account",
   protect,

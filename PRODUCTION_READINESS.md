@@ -4,7 +4,7 @@
 
 The current application has useful security foundations: JWT verification with database-backed user lookup, school-aware request context, explicit resource checks in several services, Paystack signature verification, payment row locking, Prisma migrations, request IDs, and sanitized production responses.
 
-It is not yet fully production-ready. This pass fixed several high-confidence deployment and payment risks, but tenant authorization still needs a complete endpoint-by-endpoint review, authentication still uses browser bearer tokens in `sessionStorage`, and external integrations and workers need broader timeout, retry, and idempotency coverage.
+It is not yet fully production-ready. Tenant authorization still needs a complete endpoint-by-endpoint review, and external integrations and workers need broader timeout, retry, and idempotency coverage. Browser authentication uses HttpOnly `petra_session` and `petra_refresh` cookies; tokens are not stored in browser storage.
 
 ## 2. Changes Made
 
@@ -13,7 +13,7 @@ It is not yet fully production-ready. This pass fixed several high-confidence de
 - Production CORS no longer accepts localhost, Codespaces, or other development origins automatically. Local development allowances remain available outside production.
 - Paystack success processing now checks provider status, local payment reference existence, and amount equality before settling financial records.
 - Inactive accounts can no longer obtain a new JWT through password login.
-- Production rate limiting uses atomic Redis counters and fails closed with HTTP 503 if the protection store is unavailable. Non-production tests and development retain the existing in-memory limiter.
+- Production rate limiting uses Redis-backed `rate-limiter-flexible` with Redlock protection and fails closed with HTTP 429 if the protection store is unavailable. Redis Cluster/Sentinel modes and Prometheus metrics are supported.
 - Added regression coverage for Paystack webhook ingress.
 
 ## 3. Verified Results
@@ -33,7 +33,7 @@ The Prisma extension does not automatically scope `findUnique`, `update`, or `de
 
 ### Authentication and sessions
 
-The browser stores bearer JWTs in `sessionStorage`; XSS can expose them. Session and refresh-token models exist, but the active browser flow does not demonstrate a complete rotation, revocation, and logout protocol. Implementing that requires a compatibility plan and should be treated as a separate security project.
+The browser uses HttpOnly `petra_session` and `petra_refresh` cookies. Access sessions are stored in `Session`, checked for expiry/revocation, rotated on password change, and revocable through logout/logout-all. Cookies use `SameSite=Strict`, `Path=/`, no `Domain`, and `Secure` in production. Mutating browser traffic is protected by the production origin lock; Paystack and QuizLab webhook routes bypass the proxy secret and require provider signatures.
 
 ### Payment lifecycle
 

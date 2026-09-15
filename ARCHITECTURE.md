@@ -33,7 +33,7 @@ Routes should describe HTTP endpoints, controllers should translate HTTP to serv
 
 `src/main.jsx` wires the application providers and React Router. `src/App.jsx` owns the route tree and the shared dashboard shell. Public authentication pages live under `src/Pages/Sigin/` (the directory name is historical).
 
-Authentication state is owned by `src/context/UserContext.jsx`. It reads `petra_auth_token` from `sessionStorage`, calls `/api/auth/me` when a token exists, and exposes `authReady`, `userInfo`, and session actions. Dashboard routes are wrapped by `DashboardLay`, which waits for `authReady` and redirects users without an email to `/signin`.
+Authentication state is owned by `src/context/UserContext.jsx`. It calls `/api/auth/me` using the HttpOnly `petra_session` cookie and keeps the profile in memory; no JWT is readable from browser storage. Dashboard routes are wrapped by `DashboardLay`, which waits for `authReady` and redirects users without an email to `/signin`.
 
 The browser API layer is split across `src/services/authApi.js`, `apiClient.js`, and domain-specific clients such as `studentApi.js`, `financeApi.js`, and `teacherApi.js`. They all construct requests from `VITE_API_URL`; `apiClient.js` additionally sends `x-school-id` from `localStorage`.
 
@@ -77,20 +77,20 @@ CORS preserves credentials, localhost development, and controlled HTTPS GitHub C
 1. The frontend submits credentials to `POST /api/auth/login`.
 2. `authRoutes.js` applies the rate limiter and `loginValidator`.
 3. `authController.loginUser` delegates to `authService.login`.
-4. `authService` normalizes email, loads `User`, compares bcrypt password hashes, writes an audit event, and signs a JWT.
-5. `authApi.js` stores the JWT in `sessionStorage` under `petra_auth_token`.
-6. Subsequent API clients send `Authorization: Bearer <token>`.
-7. `authMiddleware.protect` verifies the JWT, reloads the user globally, resolves school context, and calls `runWithSchoolContext`.
+4. `authService` normalizes email, loads `User`, compares bcrypt password hashes, and writes an audit event.
+5. `authController` creates a database-backed session and sets the HttpOnly `petra_session`/`petra_refresh` cookies.
+6. `authMiddleware.protect` verifies the cookie JWT, checks session expiry/revocation and `sessionVersion`, resolves school context, and calls `runWithSchoolContext`.
+7. `/api/auth/logout` revokes the current session; `/api/auth/logout-all` revokes all sessions and refresh tokens.
 8. `requireRole`, `requirePrincipal`, `requireParent`, and `schoolGuard` enforce role and tenant requirements.
 9. `UserContext` calls `/api/auth/me` on refresh and restores the dashboard session.
 
-JWT claims include `id`, `userId`, `sub`, email, role, and school ID. The current schema also contains `Session` and `RefreshToken`, but the browser flow uses bearer JWTs and logout does not revoke already issued bearer tokens.
+JWT claims include `id`, `userId`, `sub`, email, role, school ID, session ID, and session version. Browser requests use HttpOnly cookies with credentials. The live origin lock rejects unapproved browser origins; signed provider webhooks are explicitly exempt from the proxy secret and do not require a user session.
 
 ## Tenant context
 
 Normal users resolve a school from their user/profile relationship. Super admins may select a school with `x-school-id` or persisted `selectedSchoolId`. `backend/config/db.js` uses `AsyncLocalStorage` and a Prisma extension to add school filters to selected operations and school IDs to writes.
 
-This is a defense-in-depth mechanism, not a substitute for explicit service authorization. In particular, `findUnique`, `update`, and `delete` operations are not automatically scoped by the extension, so services must validate ownership before operating on IDs.
+This is a defense-in-depth mechanism, not a substitute for explicit service authorization. The tenant client scopes unique reads and writes through transaction-local ownership checks; services should still use explicit school predicates for resource authorization.
 
 ## Error handling
 

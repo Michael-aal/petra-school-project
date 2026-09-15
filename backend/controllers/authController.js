@@ -9,7 +9,7 @@ import { userModel } from "../models/userModel.js";
 import { sessionService } from "../services/sessionService.js";
 import { logAudit } from "../utils/auditLog.js";
 
-const authCookieOptions = {
+export const authCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict",
@@ -263,6 +263,19 @@ export const revokeSession = async (req, res, next) => {
 };
 
 export const logoutUser = revokeSession;
+
+export const revokeAllSessions = async (req, res, next) => {
+  try {
+    await sessionService.revokeAll(req.user.id);
+    await sessionModel.revokeAllRefreshTokens(req.user.id);
+    await logAudit({ userId: req.user.id, schoolId: req.schoolId, action: "auth.logout_all", actionType: "LOGOUT", entity: "Session" });
+    res.clearCookie("petra_session", authCookieOptions);
+    res.clearCookie("petra_refresh", refreshCookieOptions);
+    return res.status(200).json({ success: true, message: "All sessions revoked" });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 export const updateUserProfile = async (req, res, next) => {
   try {

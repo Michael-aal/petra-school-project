@@ -13,10 +13,19 @@ const isDevelopmentLocalOrigin = (origin) => {
 };
 
 export const originLock = (req, res, next) => {
-  if (req.path === "/healthz" || req.path === "/readyz") return next();
+  if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
 
   const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
   if (isDevelopmentLocalOrigin(origin)) return next();
+
+  if (origin) {
+    const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL]
+      .filter(Boolean)
+      .map((value) => String(value).trim().replace(/\/+$/, ""));
+    if (!allowedOrigins.includes(origin)) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+  }
 
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");

@@ -30,6 +30,7 @@ import { apiRateLimiter } from "./middleware/rateLimiter.js";
 import { metricsRegistry } from "./config/redis.js";
 import { prisma } from "./config/db.js";
 import { checkQueueHealth } from "./jobs/queue.js";
+import { originLock } from "./middleware/originLock.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -124,6 +125,7 @@ app.get("/metrics", async (_req, res) => {
   res.setHeader("Content-Type", metricsRegistry.contentType);
   return res.send(await metricsRegistry.metrics());
 });
+app.use("/api", originLock);
 app.use("/api", apiRateLimiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
