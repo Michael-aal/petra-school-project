@@ -20,6 +20,7 @@ import {
   assignTeacherClass,
   assignTeacherSubject,
   listReportCards,
+  listTeacherAssignmentOptions,
   listTeacherAssignments,
   publishReportCard,
   removeClassSubject,
@@ -68,6 +69,12 @@ router.get(
   protect,
   requirePrincipal,
   listTeacherAssignments,
+);
+router.get(
+  "/teacher-assignments/options",
+  protect,
+  requirePrincipal,
+  listTeacherAssignmentOptions,
 );
 router.post(
   "/teacher-assignments/classes",
