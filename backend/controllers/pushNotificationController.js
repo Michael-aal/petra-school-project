@@ -8,6 +8,15 @@ export const getPushPublicKey = async (req, res, next) => {
   }
 };
 
+export const getPushStatus = async (req, res, next) => {
+  try {
+    const result = await pushNotificationService.getStatus(req.user.id, req.body?.endpoint || req.query?.endpoint);
+    return res.json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const subscribeToPush = async (req, res, next) => {
   try {
     const result = await pushNotificationService.saveSubscription(req.user.id, req.body?.subscription, {
