@@ -1,0 +1,1 @@
+Nuvora developer knowledge is managed through the /api/ai/knowledge API. The Prisma model/migration must be added before enabling these endpoints in production.
