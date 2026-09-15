@@ -42,15 +42,16 @@ export const messageService = {
     const search = query.search ? String(query.search).trim() : "";
     const limit = Math.max(1, Math.min(100, toNumber(query.limit, 50)));
 
-    const allSchoolRoles = ["principal", "admin", "super_admin", "superadmin", "teacher", "staff", "parent"];
     const recipientRoles = ["principal", "admin", "super_admin", "superadmin", "teacher", "staff", "parent"].filter((role) =>
       canMessage(senderRole, role),
     );
 
+    if (!recipientRoles.length) return { contacts: [] };
+
     const where = {
       schoolId,
       id: { not: user.id },
-      role: { in: recipientRoles.length ? recipientRoles : allSchoolRoles },
+      role: { in: recipientRoles },
       ...(search
         ? {
             OR: [
