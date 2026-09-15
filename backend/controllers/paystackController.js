@@ -3,6 +3,8 @@ import { financeService } from "../services/financeService.js";
 import { activateAdmittedStudentAfterFeePayment } from "../services/studentActivationService.js";
 import { paystackService } from "../services/paystackService.js";
 import { webhookEventService } from "../services/webhookEventService.js";
+import { webhookLogModel } from "../models/webhookLogModel.js";
+import { recordAuditMutation } from "../middleware/audit.js";
 
 const assertVerifiedPaymentMatchesRecord = (payment, verified) => {
   const verifiedReference = String(verified?.reference || "").trim();
@@ -45,6 +47,14 @@ export const handlePaystackWebhook = async (req, res, next) => {
   try {
     const rawBody = req.rawBody || req.body;
     const payload = paystackService.parseWebhookPayload(rawBody, req.headers["x-paystack-signature"]);
+    const requestId = String(req.get("Paystack-Request-Id") || "").trim();
+    if (!requestId) {
+      return res.status(400).json({ success: false, message: "Paystack-Request-Id header is required" });
+    }
+
+    const webhookLog = await webhookLogModel.reserve({ provider: "paystack", requestId, rawBody });
+    if (!webhookLog) return res.status(409).json({ success: false, message: "Duplicate Paystack webhook" });
+
     const providerEventId = payload?.data?.id || payload?.data?.reference
       ? `${payload?.event || "unknown"}:${payload.data.id || payload.data.reference}`
       : null;
@@ -53,7 +63,10 @@ export const handlePaystackWebhook = async (req, res, next) => {
       rawBody,
     });
     const reserved = await webhookEventService.reserve({ provider: "paystack", eventKey });
-    if (!reserved) return res.status(200).json({ success: true, duplicate: true });
+    if (!reserved) {
+      await webhookLogModel.complete({ provider: "paystack", requestId });
+      return res.status(409).json({ success: false, message: "Duplicate Paystack webhook" });
+    }
 
     let result;
     try {
@@ -88,8 +101,19 @@ export const handlePaystackWebhook = async (req, res, next) => {
       }
 
       await webhookEventService.complete("paystack", eventKey);
+      await webhookLogModel.complete({ provider: "paystack", requestId });
+      await recordAuditMutation({
+        user: null,
+        schoolId: result?.schoolId || null,
+        entity: "Payment",
+        entityId: result?.id || payload?.data?.reference || requestId,
+        action: `WEBHOOK_${String(payload?.event || "UNKNOWN").toUpperCase()}`,
+        actionType: "PAYMENT",
+        after: result,
+      });
     } catch (error) {
       await webhookEventService.release("paystack", eventKey);
+      await webhookLogModel.release({ provider: "paystack", requestId });
       throw error;
     }
 

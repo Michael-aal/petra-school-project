@@ -4,6 +4,8 @@ import IORedis from "ioredis";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "../config/db.js";
+import { financeService } from "../services/financeService.js";
+import { paymentReconciliationQueue } from "./queue.js";
 
 const connection = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379", {
   maxRetriesPerRequest: null,
@@ -65,8 +67,28 @@ export const reportWorker = new Worker("report-generation", async (job) => {
 
 export const notificationWorker = new Worker("notifications", notificationProcessor, { connection, concurrency: 5 });
 
+export const paymentReconciliationWorker = new Worker("payment-reconciliation", async (job) => {
+  if (job.name === "scan-pending-payments") {
+    const payments = await prisma.payment.findMany({
+      where: { status: { in: ["Pending", "Processing"] }, reference: { not: null } },
+      select: { reference: true },
+      take: 100,
+      orderBy: { updatedAt: "asc" },
+    });
+    for (const payment of payments) await financeService.reconcilePayment(payment.reference);
+    return { reconciled: payments.length };
+  }
+  return financeService.reconcilePayment(job.data.reference);
+}, { connection, concurrency: 2 });
+
+if (process.env.NODE_ENV !== "test") {
+  void paymentReconciliationQueue.add("scan-pending-payments", {}, { repeat: { every: 5 * 60 * 1000 } }).catch((error) =>
+    console.error("Payment reconciliation scheduler failed:", error),
+  );
+}
+
 const shutdown = async () => {
-  await Promise.all([reportWorker.close(), notificationWorker.close(), connection.quit()]);
+  await Promise.all([reportWorker.close(), notificationWorker.close(), paymentReconciliationWorker.close(), connection.quit()]);
 };
 
 process.once("SIGTERM", () => { void shutdown(); });

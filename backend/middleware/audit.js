@@ -8,7 +8,7 @@ const toJsonSnapshot = (value) => {
   }));
 };
 
-export const recordAuditMutation = async ({ user, schoolId, entity, entityId, action, before = null, after = null }) => {
+export const recordAuditMutation = async ({ user, schoolId, entity, entityId, action, actionType = null, before = null, after = null }) => {
   const performedBy = String(user?.id || "system");
   return prisma.auditLog.create({
     data: {
@@ -17,6 +17,7 @@ export const recordAuditMutation = async ({ user, schoolId, entity, entityId, ac
       entity,
       entityId: String(entityId),
       action,
+      actionType,
       performedBy,
       oldData: toJsonSnapshot(before),
       newData: toJsonSnapshot(after),

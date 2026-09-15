@@ -20,11 +20,20 @@ const toNumber = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
+export const normalizeIdempotencyKey = (value) => String(value || "").trim() || null;
+export const reconcilePaystackStatus = (value) => {
+  const status = String(value || "").trim().toLowerCase();
+  if (status === "success") return "Successful";
+  if (["failed", "abandoned", "reversed"].includes(status)) return "Failed";
+  return "Processing";
+};
+
 const normalizeStatus = (value = "") => {
   const normalized = String(value).trim().toLowerCase();
   if (normalized === "paid") return "Paid";
   if (normalized === "partially paid") return "Partially Paid";
   if (normalized === "pending") return "Pending";
+  if (normalized === "processing") return "Processing";
   if (normalized === "failed") return "Failed";
   if (normalized === "refunded") return "Refunded";
   return value || "Pending";
@@ -604,6 +613,15 @@ export const financeService = {
 
   createPayment: async (user, payload) => {
     const schoolId = getSchoolId(user);
+    const idempotencyKey = normalizeIdempotencyKey(payload.idempotencyKey);
+    if (idempotencyKey) {
+      const existingPayment = await prisma.payment.findUnique({ where: { idempotencyKey } });
+      if (existingPayment) {
+        const error = new Error("Duplicate payment request");
+        error.statusCode = 409;
+        throw error;
+      }
+    }
     const isPublicPayment = !user.id && payload.studentCode;
     const isApplicationPayment = payload.paymentType === "application_fee";
     const resolvedStudent = isPublicPayment
@@ -674,20 +692,24 @@ export const financeService = {
       throw error;
     }
 
-    const payment = await prisma.$transaction((tx) => tx.payment.create({
-      data: {
+    let payment;
+    try {
+      payment = await prisma.$transaction(async (tx) => {
+        const created = await tx.payment.create({
+          data: {
         schoolId,
         studentId: student.id,
         academicYearId: context.academicYearId,
         termId: context.termId,
         invoiceId: invoices[0]?.id || null,
         method: "Paystack",
-        status: "Pending",
+        status: "Processing",
         amount,
         paidAt: new Date(),
         reference: payload.reference || `PAY-${crypto.randomBytes(4).toString("hex").toUpperCase()}`,
         note: payload.note || (configuredFee ? configuredFee.feeCategory?.name : null),
         createdById: user.id || null,
+        idempotencyKey,
         paymentLines: configuredFeeLines.length
           ? { create: configuredFeeLines.map((line) => ({
             feeStructureId: line.fee.id,
@@ -696,10 +718,26 @@ export const financeService = {
             lineTotal: line.lineTotal,
           })) }
           : undefined,
-      },
-      include: paymentInclude,
-    }));
-    await recordAuditMutation({ user, schoolId, entity: "Payment", entityId: payment.id, action: "CREATE", after: payment });
+          },
+          include: paymentInclude,
+        });
+        if (invoices.length) {
+          await tx.invoice.updateMany({
+            where: { id: { in: invoices.map((invoice) => invoice.id) }, schoolId },
+            data: { status: "PAYMENT_PENDING" },
+          });
+        }
+        return created;
+      });
+    } catch (error) {
+      if (error?.code === "P2002" && idempotencyKey) {
+        const duplicate = new Error("Duplicate payment request");
+        duplicate.statusCode = 409;
+        throw duplicate;
+      }
+      throw error;
+    }
+    await recordAuditMutation({ user, schoolId, entity: "Payment", entityId: payment.id, action: "CREATE", actionType: "PAYMENT", after: payment });
 
     const metadata = {
       studentId: student.id,
@@ -743,20 +781,23 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
-    const updated = await prisma.payment.update({
-      where: { id },
-      data: {
-        studentId: payload.studentId,
-        invoiceId: payload.invoiceId || null,
-        method: payload.method ? normalizeMethod(payload.method) : undefined,
-        status: payload.status ? normalizeStatus(payload.status) : undefined,
-        amount: payload.amount !== undefined ? toDecimal(payload.amount) : undefined,
-        paidAt: payload.paidAt ? new Date(payload.paidAt) : undefined,
-        note: payload.note,
-      },
-      include: paymentInclude,
+    const updated = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Payment" WHERE "id" = ${id} AND "schoolId" = ${existing.schoolId} FOR UPDATE`;
+      return tx.payment.update({
+        where: { id },
+        data: {
+          studentId: payload.studentId,
+          invoiceId: payload.invoiceId || null,
+          method: payload.method ? normalizeMethod(payload.method) : undefined,
+          status: payload.status ? normalizeStatus(payload.status) : undefined,
+          amount: payload.amount !== undefined ? toDecimal(payload.amount) : undefined,
+          paidAt: payload.paidAt ? new Date(payload.paidAt) : undefined,
+          note: payload.note,
+        },
+        include: paymentInclude,
+      });
     });
-    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "UPDATE", before: existing, after: updated });
+    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "UPDATE", actionType: "PAYMENT", before: existing, after: updated });
     return mapPayment(updated);
   },
 
@@ -767,9 +808,12 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
-    await prisma.receipt.deleteMany({ where: { paymentId: id } });
-    const deleted = await prisma.payment.delete({ where: { id } });
-    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "DELETE", before: deleted });
+    const deleted = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Payment" WHERE "id" = ${id} AND "schoolId" = ${existing.schoolId} FOR UPDATE`;
+      await tx.receipt.deleteMany({ where: { paymentId: id } });
+      return tx.payment.delete({ where: { id } });
+    });
+    await recordAuditMutation({ user, schoolId: existing.schoolId, entity: "Payment", entityId: id, action: "DELETE", actionType: "PAYMENT", before: deleted });
     return deleted;
   },
 
@@ -1040,6 +1084,16 @@ export const financeService = {
     if (updated.alreadyProcessed) return mapPayment(updated.payment);
 
     await syncAdmissionVerificationMetadata(reference, verificationData);
+    await recordAuditMutation({
+      user: { id: existing.createdById },
+      schoolId,
+      entity: "Payment",
+      entityId: existing.id,
+      action: "VERIFY_SUCCESS",
+      actionType: "PAYMENT",
+      before: existing,
+      after: updated.payment,
+    });
 
     const student = await prisma.student.findUnique({ where: { id: existing.studentId } });
     await notifyUser({ schoolId, userId: student?.parentId || existing.createdById, title: "Payment successful", body: `Payment ${reference} has been verified.` });
@@ -1072,9 +1126,36 @@ export const financeService = {
       };
     });
     if (updated.alreadyProcessed) return mapPayment(updated.payment);
+    await recordAuditMutation({
+      user: { id: existing.createdById },
+      schoolId: existing.schoolId,
+      entity: "Payment",
+      entityId: existing.id,
+      action: "VERIFY_FAILED",
+      actionType: "PAYMENT",
+      before: existing,
+      after: updated.payment,
+    });
     await notifyUser({ schoolId: existing.schoolId, userId: existing.createdById, title: "Payment failed", body: `Payment ${reference} failed: ${reason || "Paystack verification failed"}.` });
     await notifyAdmin({ schoolId: existing.schoolId, title: "Payment failed", body: `Payment ${reference} failed verification.` });
     return mapPayment(updated.payment);
+  },
+
+  reconcilePayment: async (reference) => {
+    const existing = await prisma.payment.findUnique({ where: { reference } });
+    if (!existing || ["Successful", "Failed", "Refunded"].includes(existing.status)) {
+      return existing ? mapPayment(existing) : null;
+    }
+
+    const verified = await paystackService.verifyTransaction(reference);
+    const providerStatus = reconcilePaystackStatus(verified?.status);
+    if (providerStatus === "Successful") {
+      return financeService.processVerifiedPayment(reference, verified);
+    }
+    if (providerStatus === "Failed") {
+      return financeService.processFailedPayment(reference, providerStatus);
+    }
+    return mapPayment(existing);
   },
 
   processPaystackWebhook: async (rawBody, signatureHeader) => {

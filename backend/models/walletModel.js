@@ -46,5 +46,24 @@ export const walletModel = {
     });
   },
 
-  createTransaction: (data) => prisma.transaction.create({ data }),
+  createTransaction: async (data) => {
+    if (data?.idempotencyKey) {
+      const existing = await prisma.transaction.findUnique({ where: { idempotencyKey: String(data.idempotencyKey) } });
+      if (existing) {
+        const error = new Error("Duplicate transaction request");
+        error.statusCode = 409;
+        throw error;
+      }
+    }
+    try {
+      return await prisma.transaction.create({ data });
+    } catch (error) {
+      if (error?.code === "P2002" && data?.idempotencyKey) {
+        const duplicate = new Error("Duplicate transaction request");
+        duplicate.statusCode = 409;
+        throw duplicate;
+      }
+      throw error;
+    }
+  },
 };

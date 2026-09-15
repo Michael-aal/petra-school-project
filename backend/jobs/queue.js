@@ -27,10 +27,18 @@ export const notificationQueue = jobsEnabled
     })
   : unavailableQueue;
 
+export const paymentReconciliationQueue = jobsEnabled
+  ? new Queue("payment-reconciliation", {
+      connection,
+      defaultJobOptions: { attempts: 4, backoff: { type: "exponential", delay: 5000 }, removeOnComplete: 100, removeOnFail: 100 },
+    })
+  : unavailableQueue;
+
 export const closeQueues = async () => {
   await Promise.all([
     reportGenerationQueue.close(),
     notificationQueue.close(),
+    paymentReconciliationQueue.close(),
     connection ? connection.quit() : Promise.resolve("disabled"),
   ]);
 };

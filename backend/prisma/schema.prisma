@@ -192,6 +192,7 @@ model Transaction {
   id          String   @id @default(cuid())
   walletId    String
   userId      String
+  idempotencyKey String? @unique
   reference   String   @unique
   type        String
   amount      Decimal  @db.Decimal(12, 2)
@@ -1213,6 +1214,7 @@ model Payment {
   reference       String         @unique
   note            String?
   createdById     String?
+  idempotencyKey  String?        @unique
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   invoice         Invoice?       @relation(fields: [invoiceId], references: [id])
@@ -1567,6 +1569,7 @@ model AuditLog {
   schoolId    Int?
   userId      String?
   action      String
+  actionType  String?  
   entity      String?
   entityId    String   @default("unknown")
   performedBy String   @default("system")
@@ -1705,4 +1708,17 @@ model WebhookEvent {
 
   @@unique([provider, eventKey])
   @@index([provider, status, receivedAt])
+}
+
+model WebhookLog {
+  id          String   @id @default(cuid())
+  provider    String
+  requestId   String
+  payloadHash String
+  status      String   @default("processing")
+  receivedAt  DateTime @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, requestId])
+  @@index([provider, receivedAt])
 }
