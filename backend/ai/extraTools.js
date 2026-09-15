@@ -3,7 +3,7 @@ import { assertSchoolAccess, getSchoolId } from "../utils/authorization.js";
 import { normalizeRole } from "../utils/roleUtils.js";
 
 const role = (user) => normalizeRole(user?.role);
-const canUseActivity = (user) => ["super_admin", "principal", "teacher"].includes(role(user));
+const canUseActivity = (user) => ["super_admin", "superadmin", "principal", "teacher"].includes(role(user));
 const canNavigate = (user) => Boolean(user?.id);
 
 const activityTool = {
