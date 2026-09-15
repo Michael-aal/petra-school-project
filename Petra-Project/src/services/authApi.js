@@ -21,26 +21,41 @@ export const API_BASE_URL = resolveApiBaseUrl();
 
 const TAB_ACCESS_KEY = "petra_tab_access";
 const TAB_REFRESH_KEY = "petra_tab_refresh";
-const TAB_MODE_KEY = "petra_tab_auth_mode";
+const TAB_ID_KEY = "petra_tab_id";
 
 const getTabStorage = () => {
   if (typeof window === "undefined") return null;
   try { return window.sessionStorage; } catch { return null; }
 };
 
-export const isTabAuthMode = () => getTabStorage()?.getItem(TAB_MODE_KEY) === "1";
+const ensureTabId = () => {
+  const storage = getTabStorage();
+  if (!storage) return "server";
+  try {
+    const existing = storage.getItem(TAB_ID_KEY);
+    if (existing) return existing;
+    const generated = typeof crypto?.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    storage.setItem(TAB_ID_KEY, generated);
+    return generated;
+  } catch {
+    return "unavailable";
+  }
+};
+
+// Browser requests always use tab-scoped authentication. This is deliberate:
+// an unauthenticated/new tab must never silently authenticate as another tab's
+// shared HttpOnly cookie.
+export const isTabAuthMode = () => Boolean(getTabStorage());
 
 export const readAuthToken = () => getTabStorage()?.getItem(TAB_ACCESS_KEY) || null;
 
 export const writeAuthToken = (token) => {
   const storage = getTabStorage();
   if (!storage) return;
-  if (token) {
-    storage.setItem(TAB_ACCESS_KEY, token);
-    storage.setItem(TAB_MODE_KEY, "1");
-  } else {
-    storage.removeItem(TAB_ACCESS_KEY);
-  }
+  if (token) storage.setItem(TAB_ACCESS_KEY, token);
+  else storage.removeItem(TAB_ACCESS_KEY);
 };
 
 const readTabRefreshToken = () => getTabStorage()?.getItem(TAB_REFRESH_KEY) || null;
@@ -50,7 +65,6 @@ const persistTabCredentials = (response) => {
   if (!storage) return response;
   if (response?.tabSession?.accessToken) storage.setItem(TAB_ACCESS_KEY, response.tabSession.accessToken);
   if (response?.tabSession?.refreshToken) storage.setItem(TAB_REFRESH_KEY, response.tabSession.refreshToken);
-  if (response?.tabSession?.accessToken || response?.tabSession?.refreshToken) storage.setItem(TAB_MODE_KEY, "1");
   return response;
 };
 
@@ -59,7 +73,6 @@ const clearTabCredentials = () => {
   if (!storage) return;
   storage.removeItem(TAB_ACCESS_KEY);
   storage.removeItem(TAB_REFRESH_KEY);
-  storage.removeItem(TAB_MODE_KEY);
 };
 
 export const clearAuthToken = clearTabCredentials;
@@ -67,7 +80,6 @@ export const clearAuthToken = clearTabCredentials;
 async function request(path, options = {}, { tabCredential = true } = {}) {
   const requestUrl = `${API_BASE_URL}${path}`;
   const tabToken = tabCredential ? readAuthToken() : null;
-  const tabMode = tabCredential && isTabAuthMode();
   const mergedHeaders = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
@@ -76,8 +88,11 @@ async function request(path, options = {}, { tabCredential = true } = {}) {
   if (tabToken && !mergedHeaders.Authorization && !mergedHeaders.authorization) {
     mergedHeaders.Authorization = `Bearer ${tabToken}`;
   }
-  if (tabMode && !mergedHeaders["X-Petra-Tab-Auth"] && !mergedHeaders["x-petra-tab-auth"]) {
+  if (tabCredential && !mergedHeaders["X-Petra-Tab-Auth"] && !mergedHeaders["x-petra-tab-auth"]) {
     mergedHeaders["X-Petra-Tab-Auth"] = "1";
+  }
+  if (!mergedHeaders["X-Petra-Tab-Id"] && !mergedHeaders["x-petra-tab-id"]) {
+    mergedHeaders["X-Petra-Tab-Id"] = ensureTabId();
   }
 
   const response = await fetch(requestUrl, {
@@ -87,8 +102,6 @@ async function request(path, options = {}, { tabCredential = true } = {}) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    // Keep tab mode on 401 so this tab cannot fall back to another account's
-    // shared cookie on a later request.
     if (response.status === 401) getTabStorage()?.removeItem(TAB_ACCESS_KEY);
     const error = new Error(data.message || "Request failed");
     error.status = response.status;
@@ -121,7 +134,6 @@ export const authApi = {
   deactivateTeacher: (teacherUserId) => request(`/api/auth/staff/teachers/${encodeURIComponent(teacherUserId)}/deactivate`, { method: "PATCH" }),
   reactivateTeacher: (teacherUserId) => request(`/api/auth/staff/teachers/${encodeURIComponent(teacherUserId)}/reactivate`, { method: "PATCH" }),
   parentRegister: (payload) => publicAuthRequest("/api/auth/parent/register", payload),
-  linkChild: (payload) => protectedPost("/api/auth/parent/link-child", payload),
   login: (payload) => publicAuthRequest("/api/auth/login", payload),
   me: () => request("/api/auth/me", { method: "GET", cache: "no-store" }),
   logout: () => request("/api/auth/revoke", { method: "POST", headers: { "X-Petra-Tab-Auth": "1" } }).finally(clearTabCredentials),
