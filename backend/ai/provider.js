@@ -44,7 +44,7 @@ class MockAIProvider {
    * the client cannot supply or override it.
    */
   getAuthenticatedName(systemPrompt = "") {
-    const match = systemPrompt.match(/^[-*]?\\s*Name:\\s*(.+?)\\s*$/im);
+    const match = systemPrompt.match(/^[-*]?\s*Name:\s*(.+?)\s*$/im);
     const name = match?.[1]?.trim();
     return name && name !== "User" ? name : null;
   }
