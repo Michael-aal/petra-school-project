@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Search, RefreshCcw, Users } from "lucide-react";
 import { request } from "../../../../services/apiClient";
 import { adminApi } from "../../../../services/adminApi";
-import { academicApi } from "../../../../services/academicApi";
 import "../page-styles/TeachersPage.css";
 
 const getTeacherName = (teacher) =>
@@ -35,15 +34,13 @@ export default function TeachersPage() {
     setLoading(true);
     setError("");
     try {
-      const [teacherResponse, classResponse, subjectResponse] =
-        await Promise.all([
-          teacherDirectoryApi.list({ search, limit: 50 }),
-          academicApi.classes(),
-          academicApi.subjects(),
-        ]);
+      const [teacherResponse, optionResponse] = await Promise.all([
+        teacherDirectoryApi.list({ search, limit: 50 }),
+        adminApi.teacherAssignmentOptions(),
+      ]);
       setTeachers(teacherResponse.teachers || []);
-      setClasses(classResponse.classes || []);
-      setSubjects(subjectResponse.subjects || []);
+      setClasses(optionResponse.data?.classes || optionResponse.classes || []);
+      setSubjects(optionResponse.data?.subjects || optionResponse.subjects || []);
     } catch (err) {
       setError(err.message || "Unable to load teachers");
     } finally {
