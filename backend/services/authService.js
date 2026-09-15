@@ -108,76 +108,59 @@ export const authService = {
     const finalFirstName = nameParts.firstName || fallbackParts.firstName;
     const finalLastName = nameParts.lastName || fallbackParts.lastName;
     const finalFullName = nameParts.fullName || [finalFirstName, nameParts.middleName, finalLastName].filter(Boolean).join(" ");
-
     if (!normalizedEmail) throw buildPasswordError("Email is required");
     if (!password) throw buildPasswordError("Password is required");
     validatePasswordStrength(password);
     if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
     if (!finalFirstName || !finalLastName) throw buildPasswordError("First name and last name are required");
-
     const school = await prisma.school.findUnique({ where: { id: resolvedSchoolId }, select: { id: true } });
     if (!school) throw buildPasswordError("School not found");
-
     const normalizedUsername = normalizeUsername(username || normalizedEmail.split("@")[0]);
     if (!normalizedUsername) throw buildPasswordError("Username is required");
-
-    const [existingEmail, existingUsername, existingPhone] = await Promise.all([
-      userModel.findByEmail(normalizedEmail),
-      userModel.findByUsername(normalizedUsername),
-      normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null),
-    ]);
+    const [existingEmail, existingUsername, existingPhone] = await Promise.all([userModel.findByEmail(normalizedEmail), userModel.findByUsername(normalizedUsername), normalizedPhone ? userModel.findByPhone(normalizedPhone) : Promise.resolve(null)]);
     if (existingEmail) { const error = new Error("Email already in use"); error.statusCode = 409; throw error; }
     if (existingUsername) { const error = new Error("Username already in use"); error.statusCode = 409; throw error; }
     if (existingPhone) { const error = new Error("Phone number already in use"); error.statusCode = 409; throw error; }
-
     const hashed = await hashPassword(password);
     const parentCode = makeCode("PAR");
     const user = await prisma.$transaction(async (tx) => {
-      const createdUser = await tx.user.create({
-        data: {
-          firstName: finalFirstName,
-          middleName: nameParts.middleName || null,
-          lastName: finalLastName,
-          fullName: finalFullName,
-          username: normalizedUsername,
-          email: normalizedEmail,
-          password: hashed,
-          phone: normalizedPhone,
-          institution: institution || null,
-          city: city || null,
-          state: state || null,
-          role: "parent",
-          schoolId: resolvedSchoolId,
-          parentAccessCode: parentCode,
-          parentAccessCodeUsed: false,
-          accountStatus: "active",
-        },
-      });
-
-      await tx.parent.create({
-        data: {
-          userId: createdUser.id,
-          schoolId: resolvedSchoolId,
-          name: finalFullName,
-          phone: normalizedPhone,
-          email: normalizedEmail,
-        },
-      });
-
+      const createdUser = await tx.user.create({ data: { firstName: finalFirstName, middleName: nameParts.middleName || null, lastName: finalLastName, fullName: finalFullName, username: normalizedUsername, email: normalizedEmail, password: hashed, phone: normalizedPhone, institution: institution || null, city: city || null, state: state || null, role: "parent", schoolId: resolvedSchoolId, parentAccessCode: parentCode, parentAccessCodeUsed: false, accountStatus: "active" } });
+      await tx.parent.create({ data: { userId: createdUser.id, schoolId: resolvedSchoolId, name: finalFullName, phone: normalizedPhone, email: normalizedEmail } });
       return createdUser;
     });
-
-    return {
-      user: safeUser(user),
-      token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: resolvedSchoolId, sessionVersion: user.sessionVersion }),
-      parentAccessCode: parentCode,
-    };
+    return { user: safeUser(user), token: generateToken({ id: user.id, email: user.email, role: user.role, schoolId: resolvedSchoolId, sessionVersion: user.sessionVersion }), parentAccessCode: parentCode };
   },
 
   listStaffInvitations: async (schoolId) => {
     const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
     if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
     return userModel.listStaffInvitations(resolvedSchoolId);
+  },
+
+  getStaffInvitation: async (token) => {
+    const registrationCode = String(token || "").trim().toUpperCase();
+    if (!registrationCode) throw Object.assign(new Error("Registration code is required"), { statusCode: 400 });
+    const invitation = await userModel.findStaffInvitationByCode(registrationCode);
+    if (!invitation) throw Object.assign(new Error("Invalid registration code"), { statusCode: 404 });
+    if (invitation.role && String(invitation.role).toLowerCase() !== "teacher") {
+      throw Object.assign(new Error("This registration code is not for a teacher."), { statusCode: 400 });
+    }
+    if (invitation.status === "revoked") throw Object.assign(new Error("This registration code has been revoked"), { statusCode: 400 });
+    if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) throw Object.assign(new Error("This registration code has expired"), { statusCode: 400 });
+    return {
+      id: invitation.id,
+      registrationCode: invitation.registrationCode,
+      staffName: invitation.staffName || "",
+      email: invitation.email || "",
+      role: invitation.role || "Teacher",
+      department: invitation.department || "",
+      assignedClass: invitation.assignedClass || "",
+      assignedSubjects: Array.isArray(invitation.assignedSubjects) ? invitation.assignedSubjects : [],
+      employmentStatus: invitation.employmentStatus || "active",
+      status: invitation.status || "unused",
+      staffUserId: invitation.staffUserId || null,
+      expiresAt: invitation.expiresAt || null,
+    };
   },
 
   login: async ({ email, password }) => {
@@ -196,61 +179,14 @@ export const authService = {
 
   selectSchool: async ({ userId, schoolId }) => {
     const resolvedSchoolId = Number.parseInt(String(schoolId ?? ""), 10);
-    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) {
-      throw buildPasswordError("A valid school is required");
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, role: true },
-    });
-
-    if (!user || normalizeRole(user.role) !== "super_admin") {
-      const error = new Error("Only Super Admin can select a school");
-      error.statusCode = 403;
-      throw error;
-    }
-
-    const school = await prisma.school.findUnique({
-      where: { id: resolvedSchoolId },
-      select: {
-        id: true,
-        name: true,
-        address: true,
-        email: true,
-        phone: true,
-        website: true,
-        country: true,
-        state: true,
-        city: true,
-        timezone: true,
-        logo: true,
-        isActive: true,
-      },
-    });
-
-    if (!school) {
-      const error = new Error("School not found");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    if (!school.isActive) {
-      const error = new Error("Cannot select an inactive school");
-      error.statusCode = 403;
-      throw error;
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { selectedSchoolId: school.id },
-      select: { id: true, selectedSchoolId: true },
-    });
-
-    return {
-      selectedSchool: school,
-      selectedSchoolId: updatedUser.selectedSchoolId,
-    };
+    if (!Number.isInteger(resolvedSchoolId) || resolvedSchoolId <= 0) throw buildPasswordError("A valid school is required");
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, role: true } });
+    if (!user || normalizeRole(user.role) !== "super_admin") { const error = new Error("Only Super Admin can select a school"); error.statusCode = 403; throw error; }
+    const school = await prisma.school.findUnique({ where: { id: resolvedSchoolId }, select: { id: true, name: true, address: true, email: true, phone: true, website: true, country: true, state: true, city: true, timezone: true, logo: true, isActive: true } });
+    if (!school) { const error = new Error("School not found"); error.statusCode = 404; throw error; }
+    if (!school.isActive) { const error = new Error("Cannot select an inactive school"); error.statusCode = 403; throw error; }
+    const updatedUser = await prisma.user.update({ where: { id: userId }, data: { selectedSchoolId: school.id }, select: { id: true, selectedSchoolId: true } });
+    return { selectedSchool: school, selectedSchoolId: updatedUser.selectedSchoolId };
   },
 
   profile: async (userId) => {
