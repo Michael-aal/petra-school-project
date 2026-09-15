@@ -62,12 +62,17 @@ const refreshTabAccess = async () => {
   if (!refreshToken) throw Object.assign(new Error("Refresh token missing"), { status: 401 });
   if (refreshPromise) return refreshPromise;
   refreshPromise = (async () => {
+    const accessToken = readAuthToken();
     const headers = {
       "Content-Type": "application/json",
       "X-Petra-Tab-Auth": "1",
       "X-Petra-Tab-Id": ensureTabId(),
       "X-Petra-Tab-Refresh": refreshToken,
     };
+    // Send the current tab's access token too. The backend uses its session id
+    // to rotate exactly this tab's session rather than touching other tabs.
+    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+
     const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, { method: "POST", credentials: "include", headers });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
