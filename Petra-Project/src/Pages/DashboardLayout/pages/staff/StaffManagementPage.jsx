@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Copy, RotateCw, Ban, UserCog, Filter, ClipboardList } from "lucide-react";
+import { Search, Plus, Copy, RotateCw, Ban, UserCog, UserX, UserCheck, Filter, ClipboardList } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "../../../../services/authApi";
 import TeacherApplicationsPage from "./TeacherApplicationsPage";
@@ -30,8 +30,11 @@ function StaffManagementWorkspace() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [invitations, setInvitations] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [teachersLoading, setTeachersLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [updatingTeacherId, setUpdatingTeacherId] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -48,13 +51,33 @@ function StaffManagementWorkspace() {
     }
   };
 
-  useEffect(() => { loadInvitations(); }, []);
+  const loadTeachers = async () => {
+    setTeachersLoading(true);
+    try {
+      const response = await authApi.managedTeachers();
+      setTeachers(response.teachers || []);
+    } catch (err) {
+      setError(err.data?.message || err.message || "Failed to load active teachers");
+    } finally {
+      setTeachersLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadInvitations();
+    loadTeachers();
+  }, []);
 
   const filteredInvitations = useMemo(() => invitations.filter((item) => {
     const matchesQuery = `${item.staffName} ${item.role} ${item.department} ${item.registrationCode}`.toLowerCase().includes(query.toLowerCase());
     const matchesFilter = filter === "all" || item.status === filter;
     return matchesQuery && matchesFilter;
   }), [filter, invitations, query]);
+
+  const filteredTeachers = useMemo(() => teachers.filter((teacher) => {
+    const haystack = `${teacher.fullName} ${teacher.email} ${teacher.designation} ${teacher.department}`.toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  }), [teachers, query]);
 
   const summary = useMemo(() => ({
     total: invitations.length,
@@ -93,12 +116,40 @@ function StaffManagementWorkspace() {
     catch (err) { setError(err.data?.message || err.message || "Failed to revoke code"); }
   };
 
+  const toggleTeacherStatus = async (teacher) => {
+    const action = teacher.isActive ? "deactivate" : "reactivate";
+    const verb = teacher.isActive ? "deactivate" : "reactivate";
+    const confirmed = window.confirm(
+      teacher.isActive
+        ? `Deactivate ${teacher.fullName}? They will no longer be able to sign in, but their historical school records will be preserved.`
+        : `Reactivate ${teacher.fullName}? They will be allowed to sign in again.`
+    );
+    if (!confirmed) return;
+
+    setUpdatingTeacherId(teacher.userId);
+    setError("");
+    setMessage("");
+    try {
+      if (action === "deactivate") {
+        await authApi.deactivateTeacher(teacher.userId);
+      } else {
+        await authApi.reactivateTeacher(teacher.userId);
+      }
+      setMessage(`${teacher.fullName} was ${verb}d successfully.`);
+      await loadTeachers();
+    } catch (err) {
+      setError(err.data?.message || err.message || `Failed to ${action} teacher`);
+    } finally {
+      setUpdatingTeacherId("");
+    }
+  };
+
   return (
     <div className="dashboard-home">
       <section className="dashboard-home-header">
         <div>
           <h1>Teacher Management</h1>
-          <p>Add teachers with basic school details and generate a registration code for account setup.</p>
+          <p>Add teachers, manage registration codes, and deactivate or reactivate existing teacher accounts.</p>
         </div>
         <div className="dashboard-home-session-pill">Admin Workspace</div>
       </section>
@@ -120,6 +171,15 @@ function StaffManagementWorkspace() {
         <div style={{ marginTop: 12 }}><div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, border: "1px solid var(--app-border)", background: "var(--app-surface)" }}><Search size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search teachers" style={{ flex: 1, border: 0, outline: 0, background: "transparent", color: "var(--app-text)" }} /></div></div>
       </section>
       {error ? <div className="auth-alert" style={{ marginBottom: 16 }}>{error}</div> : null}{message ? <div className="auth-alert" style={{ marginBottom: 16 }}>{message}</div> : null}
+
+      <section className="dashboard-home-panel" style={{ marginBottom: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+          <div><h2 style={{ margin: 0, color: "var(--app-text)" }}>Existing Teachers</h2><p style={{ margin: "5px 0 0", color: "var(--app-text-muted)" }}>Deactivate a particular teacher without deleting their academic history.</p></div>
+          <span className="dashboard-home-session-pill" style={{ marginTop: 0 }}>{teachers.filter((teacher) => teacher.isActive).length} active</span>
+        </div>
+        {teachersLoading ? <p>Loading existing teachers...</p> : filteredTeachers.length === 0 ? <p style={{ color: "var(--app-text-muted)" }}>No teacher accounts found.</p> : <div style={{ display: "grid", gap: 10 }}>{filteredTeachers.map((teacher) => <article key={teacher.userId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 14, border: "1px solid var(--app-border)", background: "var(--app-surface)" }}><div><div style={{ fontWeight: 800, color: "var(--app-text)" }}>{teacher.fullName}</div><div style={{ fontSize: "0.84rem", color: "var(--app-text-muted)" }}>{teacher.designation || "Teacher"} {teacher.department ? `• ${teacher.department}` : ""}</div><div style={{ fontSize: "0.82rem", color: "var(--app-text-muted)" }}>{teacher.email || "No email"}</div></div><div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}><span className="dashboard-home-session-pill" style={{ marginTop: 0 }}>{teacher.isActive ? "active" : "inactive"}</span><button type="button" onClick={() => toggleTeacherStatus(teacher)} disabled={updatingTeacherId === teacher.userId} title={teacher.isActive ? "Deactivate teacher" : "Reactivate teacher"} style={{ display: "inline-flex", alignItems: "center", gap: 7, border: "1px solid currentColor", background: "transparent", borderRadius: 10, padding: "8px 11px", color: teacher.isActive ? "#ef4444" : "#16a34a", cursor: updatingTeacherId === teacher.userId ? "wait" : "pointer" }}>{teacher.isActive ? <UserX size={16} /> : <UserCheck size={16} />}{updatingTeacherId === teacher.userId ? "Updating..." : teacher.isActive ? "Deactivate" : "Reactivate"}</button></div></article>)}</div>}
+      </section>
+
       <section className="dashboard-home-panel">{loading ? <p>Loading teacher invitations...</p> : <div style={{ display: "grid", gap: 10 }}>{filteredInvitations.map((invitation) => <article key={invitation.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 14, border: "1px solid var(--app-border)", background: "var(--app-surface)" }}><div><div style={{ fontWeight: 800, color: "var(--app-text)" }}>{invitation.staffName}</div><div style={{ fontSize: "0.84rem", color: "var(--app-text-muted)" }}>{invitation.role || "Teacher"} • {invitation.department || "No department"}</div><div style={{ fontSize: "0.82rem", color: "var(--app-text-muted)" }}>{invitation.assignedClass || "No class assigned"}</div><div style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--app-text)" }}>{invitation.registrationCode}</div></div><div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}><span className="dashboard-home-session-pill" style={{ marginTop: 0 }}>{invitation.status}</span><button type="button" onClick={() => copyCode(invitation.registrationCode)} style={{ border: "1px solid var(--app-border)", background: "transparent", borderRadius: 10, padding: "8px", color: "var(--app-text)" }}><Copy size={16} /></button><button type="button" onClick={() => regenerateCode(invitation.registrationCode)} disabled={invitation.status === "used"} style={{ border: "1px solid var(--app-border)", background: "transparent", borderRadius: 10, padding: "8px", color: "var(--app-text)" }}><RotateCw size={16} /></button><button type="button" onClick={() => revokeCode(invitation.registrationCode)} disabled={invitation.status === "used"} style={{ border: "1px solid var(--app-border)", background: "transparent", borderRadius: 10, padding: "8px", color: "#ef4444" }}><Ban size={16} /></button></div></article>)}</div>}</section>
     </div>
   );
