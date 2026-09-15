@@ -1,4 +1,4 @@
-import { Bell, Search, CheckCheck, Smartphone } from "lucide-react";
+import { Bell, Search, CheckCheck, Smartphone, Send } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import "../page-styles/NotificationsPage.css";
 import { notificationApi } from "../../../../services/notificationApi";
@@ -50,12 +50,29 @@ export default function NotificationsPage() {
   const enableDeviceNotifications = async () => {
     setPushBusy(true);
     setPushMessage("");
+    setError("");
     try {
       await pushNotificationService.enable();
       setPushEnabled(true);
-      setPushMessage("Device notifications are enabled on this device.");
+      setPushMessage("Device notifications are enabled. You can now test a real system notification.");
     } catch (err) {
       setPushMessage(err?.message || "Unable to enable device notifications.");
+    } finally {
+      setPushBusy(false);
+    }
+  };
+
+  const sendTestNotification = async () => {
+    setPushBusy(true);
+    setPushMessage("");
+    setError("");
+    try {
+      if (!pushEnabled) await pushNotificationService.enable();
+      const result = await pushNotificationService.sendTest();
+      setPushEnabled(true);
+      setPushMessage(result?.message || "Test device notification sent. Check your system notification area.");
+    } catch (err) {
+      setPushMessage(err?.message || "Unable to send the test device notification.");
     } finally {
       setPushBusy(false);
     }
@@ -114,6 +131,12 @@ export default function NotificationsPage() {
             <button type="button" className="notifications-send-button" onClick={enableDeviceNotifications} disabled={pushBusy}>
               <Smartphone size={16} />
               <span>{pushBusy ? "Enabling..." : "Enable device alerts"}</span>
+            </button>
+          ) : null}
+          {pushNotificationService.isSupported() && pushEnabled ? (
+            <button type="button" className="notifications-send-button" onClick={sendTestNotification} disabled={pushBusy}>
+              <Send size={16} />
+              <span>{pushBusy ? "Sending..." : "Send test alert"}</span>
             </button>
           ) : null}
           <button type="button" className="notifications-send-button" onClick={markAllRead} disabled={!unread}>
