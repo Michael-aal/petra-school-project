@@ -1,4 +1,4 @@
-import { API_BASE_URL, clearAuthToken, readAuthToken } from "./authApi";
+import { API_BASE_URL, clearAuthToken, isTabAuthMode, readAuthToken } from "./authApi";
 
 export const request = async (path, options = {}) => {
   const headers = {
@@ -6,16 +6,18 @@ export const request = async (path, options = {}) => {
     ...(options.headers || {}),
   };
 
-  // Every dashboard/API request must use the authentication session belonging
-  // to this browser tab. The tab access token lives in sessionStorage, so it
-  // cannot be replaced by another tab's login. The HttpOnly cookie remains as
-  // a fallback for clients that do not have a tab credential.
+  // Dashboard requests must remain bound to the current browser tab. A tab
+  // marker is sent even when its short-lived access token is temporarily
+  // unavailable, which prevents the backend from selecting another tab's
+  // shared HttpOnly cookie.
   const tabToken = readAuthToken();
   if (tabToken && !headers.Authorization && !headers.authorization) {
     headers.Authorization = `Bearer ${tabToken}`;
   }
+  if (isTabAuthMode() && !headers["X-Petra-Tab-Auth"] && !headers["x-petra-tab-auth"]) {
+    headers["X-Petra-Tab-Auth"] = "1";
+  }
 
-  // Send the currently selected school to the backend.
   const selectedSchoolId = localStorage.getItem("petra_selected_school_id");
   if (selectedSchoolId) {
     headers["x-school-id"] = selectedSchoolId;
@@ -38,7 +40,13 @@ export const request = async (path, options = {}) => {
 
   if (!response.ok) {
     if (response.status === 401) {
-      clearAuthToken();
+      // Clear only the access token. Keep tab-auth mode so a failed/expired
+      // tab session can never fall through to another tab's cookie.
+      try {
+        window.sessionStorage.removeItem("petra_tab_access");
+      } catch {
+        clearAuthToken();
+      }
     }
 
     const message =
