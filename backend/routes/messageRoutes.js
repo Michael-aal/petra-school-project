@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { protect, requireRole } from "../middleware/authMiddleware.js";
-import { listMessages, sendMessage, getConversation } from "../controllers/messageController.js";
+import { listContacts, listMessages, sendMessage, getConversation } from "../controllers/messageController.js";
 import { messageValidators } from "../validators/messageValidator.js";
 import { addMessage, createTicket, getTicket, listTickets, updateTicket } from "../controllers/supportController.js";
 
 const router = Router();
 
+router.get("/contacts", protect, messageValidators.contacts, listContacts);
 router.get("/", protect, messageValidators.listMessages, listMessages);
 router.get("/conversation/:id", protect, messageValidators.conversation, getConversation);
 router.post("/", protect, messageValidators.sendMessage, sendMessage);
