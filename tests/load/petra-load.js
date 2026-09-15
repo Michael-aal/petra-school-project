@@ -5,6 +5,8 @@ import { check, sleep } from 'k6';
 // Set BASE_URL when needed: k6 run -e BASE_URL=http://localhost:5000 tests/load/petra-load.js
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000';
 
+// Maximum planned concurrent VUs: 10,000 total
+// Admin: 2,500 | Parent: 5,000 | Staff: 2,500
 export const options = {
   scenarios: {
     admin_users: {
@@ -12,10 +14,10 @@ export const options = {
       exec: 'adminWorkflow',
       startVUs: 0,
       stages: [
-        { duration: '30s', target: 5 },
-        { duration: '1m', target: 20 },
-        { duration: '1m', target: 50 },
-        { duration: '1m', target: 100 },
+        { duration: '30s', target: 250 },
+        { duration: '1m', target: 750 },
+        { duration: '1m', target: 1500 },
+        { duration: '1m', target: 2500 },
         { duration: '30s', target: 0 },
       ],
       gracefulRampDown: '10s',
@@ -25,10 +27,10 @@ export const options = {
       exec: 'parentWorkflow',
       startVUs: 0,
       stages: [
-        { duration: '30s', target: 10 },
-        { duration: '1m', target: 40 },
-        { duration: '1m', target: 100 },
-        { duration: '1m', target: 200 },
+        { duration: '30s', target: 500 },
+        { duration: '1m', target: 1500 },
+        { duration: '1m', target: 3000 },
+        { duration: '1m', target: 5000 },
         { duration: '30s', target: 0 },
       ],
       gracefulRampDown: '10s',
@@ -38,10 +40,10 @@ export const options = {
       exec: 'staffWorkflow',
       startVUs: 0,
       stages: [
-        { duration: '30s', target: 5 },
-        { duration: '1m', target: 20 },
-        { duration: '1m', target: 50 },
-        { duration: '1m', target: 100 },
+        { duration: '30s', target: 250 },
+        { duration: '1m', target: 750 },
+        { duration: '1m', target: 1500 },
+        { duration: '1m', target: 2500 },
         { duration: '30s', target: 0 },
       ],
       gracefulRampDown: '10s',
