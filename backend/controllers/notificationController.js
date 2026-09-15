@@ -36,6 +36,15 @@ export const markNotificationRead = async (req, res, next) => {
   }
 };
 
+export const deleteNotification = async (req, res, next) => {
+  try {
+    const result = await notificationService.deleteNotification(req.user, req.params.id);
+    return res.json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const markAllNotificationsRead = async (req, res, next) => {
   try {
     const result = await notificationService.markAllRead(req.user);
