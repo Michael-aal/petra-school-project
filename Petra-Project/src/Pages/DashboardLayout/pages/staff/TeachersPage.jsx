@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, RefreshCcw, Users } from "lucide-react";
+import { request } from "../../../../services/apiClient";
 import { adminApi } from "../../../../services/adminApi";
 import { academicApi } from "../../../../services/academicApi";
 import "../page-styles/TeachersPage.css";
@@ -9,6 +10,16 @@ const getTeacherName = (teacher) =>
   [teacher.firstName, teacher.lastName].filter(Boolean).join(" ") ||
   teacher.email ||
   "Teacher";
+
+const teacherDirectoryApi = {
+  list: (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.search) query.set("search", params.search);
+    if (params.limit) query.set("limit", String(params.limit));
+    const suffix = query.toString() ? `?${query.toString()}` : "";
+    return request(`/api/teacher/directory${suffix}`, { method: "GET" });
+  },
+};
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState([]);
@@ -26,11 +37,11 @@ export default function TeachersPage() {
     try {
       const [teacherResponse, classResponse, subjectResponse] =
         await Promise.all([
-          adminApi.teachers({ search, limit: 20 }),
+          teacherDirectoryApi.list({ search, limit: 50 }),
           academicApi.classes(),
           academicApi.subjects(),
         ]);
-      setTeachers(teacherResponse.data?.users || []);
+      setTeachers(teacherResponse.teachers || []);
       setClasses(classResponse.classes || []);
       setSubjects(subjectResponse.subjects || []);
     } catch (err) {
@@ -139,7 +150,7 @@ export default function TeachersPage() {
                   <p>{teacher.staffDepartment || teacher.email}</p>
                 </div>
                 <span className="dashboard-home-session-pill">
-                  {teacher.role}
+                  {teacher.role || "teacher"}
                 </span>
                 <div className="teacher-assignment-controls">
                   <select
