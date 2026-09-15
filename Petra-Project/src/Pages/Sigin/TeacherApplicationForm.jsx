@@ -6,7 +6,6 @@ import {
   ChevronRight,
   GraduationCap,
   IdCard,
-  Mail,
   MapPin,
   Phone,
   Send,
@@ -62,10 +61,32 @@ export default function TeacherApplicationForm() {
     if (currentStep === 2 && !form.qualification.trim()) {
       return "Please provide your highest qualification.";
     }
-    if (currentStep === 3 && (!form.positionApplied.trim() || !form.majorSubject.trim())) {
-      return "Please provide the position and main subject you are applying for.";
+    if (currentStep === 3 && !form.majorSubject.trim()) {
+      return "Please provide the main subject you are applying for.";
+    }
+    if (currentStep === 4 && !form.positionApplied.trim()) {
+      return "Please provide the position you are applying for.";
     }
     if (currentStep === 5 && !form.declarationAccepted) {
+      return "Please accept the declaration before submitting.";
+    }
+    return "";
+  };
+
+  const validateAll = () => {
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.phone.trim()) {
+      return "Please complete your name, email and phone number.";
+    }
+    if (!form.qualification.trim()) {
+      return "Please provide your highest qualification.";
+    }
+    if (!form.majorSubject.trim()) {
+      return "Please provide the main subject you are applying for.";
+    }
+    if (!form.positionApplied.trim()) {
+      return "Please provide the position you are applying for.";
+    }
+    if (!form.declarationAccepted) {
       return "Please accept the declaration before submitting.";
     }
     return "";
@@ -85,7 +106,7 @@ export default function TeacherApplicationForm() {
 
   const submit = async (event) => {
     event.preventDefault();
-    const message = validateStep();
+    const message = validateAll();
     if (message) return setError(message);
     if (!/^\d+$/.test(String(schoolId || ""))) {
       return setError("This application link is missing a valid school reference. Please use the school's official application link.");
