@@ -101,7 +101,7 @@ export default function NotificationsPage() {
       setPushMessage(result?.message || "External test sent. Check your system notification area.");
       await inspectDeviceNotifications();
     } catch (err) {
-      const deliveryErrors = err?.details?.deliveryErrors || err?.deliveryErrors || [];
+      const deliveryErrors = err?.data?.errors?.[0]?.deliveryErrors || [];
       const firstDeliveryError = Array.isArray(deliveryErrors) && deliveryErrors[0]?.message;
       setPushMessage(firstDeliveryError ? `Push delivery failed: ${firstDeliveryError}` : (err?.message || "Unable to send the external device notification."));
     } finally {
