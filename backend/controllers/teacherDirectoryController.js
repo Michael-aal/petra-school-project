@@ -1,9 +1,20 @@
 import { prisma } from "../config/db.js";
 
+const resolveSchoolId = (user) => {
+  const candidates = [
+    user?.schoolId,
+    user?.principalProfile?.schoolId,
+    user?.adminProfile?.schoolId,
+    user?.teacherProfile?.schoolId,
+    user?.staffProfile?.schoolId,
+  ];
+  return candidates.map(Number).find((value) => Number.isInteger(value) && value > 0) || null;
+};
+
 export const listTeacherDirectory = async (req, res, next) => {
   try {
-    const schoolId = Number(req.user?.schoolId);
-    if (!Number.isInteger(schoolId) || schoolId <= 0) {
+    const schoolId = resolveSchoolId(req.user);
+    if (!schoolId) {
       return res.status(403).json({ success: false, message: "School context missing" });
     }
 

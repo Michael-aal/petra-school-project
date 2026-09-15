@@ -58,7 +58,7 @@ export default function StaffRegister() {
           ...current,
           invitationCode: code,
           fullName: response?.invitation?.staffName || "",
-          email: "",
+          email: response?.invitation?.email || "",
           department: response?.invitation?.department || "",
           position: response?.invitation?.role || "Teacher",
         }));
@@ -92,7 +92,7 @@ export default function StaffRegister() {
       setForm((current) => ({
         ...current,
         fullName: response?.invitation?.staffName || "",
-        email: "",
+        email: response?.invitation?.email || "",
         department: response?.invitation?.department || "",
         position: response?.invitation?.role || "Teacher",
         invitationCode: code.trim(),
@@ -125,8 +125,8 @@ export default function StaffRegister() {
     const code = form.invitationCode?.trim();
     if (!code && !token) next.token = "Invitation code is required.";
     if (!form.email?.trim()) next.email = "Email is required.";
-    if (!form.password) next.password = "Password is required.";
     if (form.password && form.password.length < 8) next.password = "Password must be at least 8 characters.";
+    if (!form.password) next.password = "Password is required.";
     if (form.password !== form.confirmPassword) next.confirmPassword = "Passwords do not match.";
     return next;
   };
@@ -218,7 +218,7 @@ export default function StaffRegister() {
           <span>Your Email Address</span>
           <div className="auth-input-wrap">
             <Mail size={18} />
-            <input name="email" type="email" placeholder="Enter your email address" autoComplete="email" value={form.email} onChange={handleChange} />
+            <input name="email" type="email" placeholder="Enter your email address" autoComplete="email" value={form.email} onChange={handleChange} readOnly={Boolean(form.email)} />
           </div>
           {errors.email ? <small>{errors.email}</small> : null}
         </label>
