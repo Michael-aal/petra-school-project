@@ -9,6 +9,24 @@ export const listNotifications = async (req, res, next) => {
   }
 };
 
+export const unreadNotificationSummary = async (req, res, next) => {
+  try {
+    const result = await notificationService.unreadSummary(req.user);
+    return res.json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const markNotificationSectionRead = async (req, res, next) => {
+  try {
+    const result = await notificationService.markSectionRead(req.user, req.params.section);
+    return res.json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export const markNotificationRead = async (req, res, next) => {
   try {
     const result = await notificationService.markRead(req.user, req.params.id);
