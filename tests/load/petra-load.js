@@ -3,13 +3,8 @@ import { check, sleep } from 'k6';
 
 // Petra authenticated role load test.
 // Credentials are supplied at runtime and are NEVER stored in this file.
-// Example:
-// k6 run -e BASE_URL=http://localhost:5000 \
-//   -e ADMIN_EMAIL=admin@example.com -e ADMIN_PASSWORD='...' \
-//   -e PARENT_EMAIL=parent@example.com -e PARENT_PASSWORD='...' \
-//   -e STAFF_EMAIL=teacher@example.com -e STAFF_PASSWORD='...' \
-//   tests/load/petra-load.js
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000';
+const ORIGIN = __ENV.ORIGIN || 'http://localhost:5173';
 
 const ROLE_CONFIG = {
   admin: {
@@ -33,6 +28,7 @@ const ROLE_CONFIG = {
 // 3,000 total VUs is intentional for the first authenticated run because
 // the previous 10,000-VU health-only test began refusing connections locally.
 export const options = {
+  setupTimeout: '2m',
   scenarios: {
     admin_users: {
       executor: 'ramping-vus',
@@ -81,18 +77,12 @@ export const options = {
   },
 };
 
-function request(path, role, operation, params = {}) {
-  const response = http.get(`${BASE_URL}${path}`, {
-    ...params,
-    tags: { role, operation },
-  });
-
-  check(response, {
-    [`${role} ${operation}: no 5xx`]: (r) => r.status < 500,
-    [`${role} ${operation}: response received`]: (r) => r.status > 0,
-  });
-
-  return response;
+function authHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Origin: ORIGIN,
+    Accept: 'application/json',
+  };
 }
 
 function login(role) {
@@ -110,6 +100,8 @@ function login(role) {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Origin: ORIGIN,
+        'X-Petra-Tab-Auth': '1',
       },
       tags: { role, operation: 'login' },
     },
@@ -124,40 +116,68 @@ function login(role) {
         return false;
       }
     },
+    [`${role} login: access token returned`]: (r) => {
+      try {
+        return Boolean(r.json('tabSession.accessToken'));
+      } catch {
+        return false;
+      }
+    },
   });
 
   if (!ok) {
     throw new Error(`${role} login failed with HTTP ${response.status}: ${response.body}`);
   }
+
+  return response.json('tabSession.accessToken');
 }
 
-// k6 gives each VU its own JS runtime, so this flag is per simulated user.
-// The VU logs in once and then keeps its session cookie across iterations.
-let loggedIn = false;
+// Authenticate once per role in setup(), not once per VU. This avoids turning
+// the load test into an artificial password-brute-force test from one IP.
+export function setup() {
+  return {
+    adminToken: login('admin'),
+    parentToken: login('parent'),
+    staffToken: login('staff'),
+  };
+}
 
-function authenticatedWorkflow(role) {
-  if (!loggedIn) {
-    login(role);
-    loggedIn = true;
-  }
+function request(path, role, token, operation, params = {}) {
+  const response = http.get(`${BASE_URL}${path}`, {
+    ...params,
+    headers: {
+      ...authHeaders(token),
+      ...(params.headers || {}),
+    },
+    tags: { role, operation },
+  });
 
+  check(response, {
+    [`${role} ${operation}: no 5xx`]: (r) => r.status < 500,
+    [`${role} ${operation}: authenticated response`]: (r) => r.status === 200,
+  });
+
+  return response;
+}
+
+function authenticatedWorkflow(role, token) {
   const config = ROLE_CONFIG[role];
   for (const path of config.routes) {
-    request(path, role, path.replaceAll('/', '_').replace(/^_/, '') || 'request');
+    request(path, role, token, path.replaceAll('/', '_').replace(/^_/, '') || 'request');
   }
 
   // Think-time: model an active user instead of a tight request loop.
   sleep(1);
 }
 
-export function adminWorkflow() {
-  authenticatedWorkflow('admin');
+export function adminWorkflow(data) {
+  authenticatedWorkflow('admin', data.adminToken);
 }
 
-export function parentWorkflow() {
-  authenticatedWorkflow('parent');
+export function parentWorkflow(data) {
+  authenticatedWorkflow('parent', data.parentToken);
 }
 
-export function staffWorkflow() {
-  authenticatedWorkflow('staff');
+export function staffWorkflow(data) {
+  authenticatedWorkflow('staff', data.staffToken);
 }
