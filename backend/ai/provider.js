@@ -28,17 +28,42 @@ class MockAIProvider {
     this.name = name;
   }
 
-  async generateResponse({ prompt }) {
+  async generateResponse({ prompt, systemPrompt }) {
     logger.info("MockAIProvider generateResponse invoked");
     return {
-      text: `Nuvora Assistant: I received your request: "${prompt}". No live AI provider is configured, so I am operating in development/test mode.`,
+      text: this.getIdentityResponse(prompt, systemPrompt) || `Nuvora Assistant: I received your request: "${prompt}". No live AI provider is configured, so I am operating in development/test mode.`,
       finishReason: "STOP",
       toolCalls: [],
       provider: this.name,
     };
   }
 
-  async generateWithTools({ prompt, tools = [], toolResults = [] }) {
+  /**
+   * Extract the authenticated user's name from the trusted system prompt.
+   * The orchestrator builds this prompt from the authenticated request context;
+   * the client cannot supply or override it.
+   */
+  getAuthenticatedName(systemPrompt = "") {
+    const match = systemPrompt.match(/^[-*]?\\s*Name:\\s*(.+?)\\s*$/im);
+    const name = match?.[1]?.trim();
+    return name && name !== "User" ? name : null;
+  }
+
+  getIdentityResponse(prompt = "", systemPrompt = "") {
+    const normalizedPrompt = prompt.trim().toLowerCase().replace(/[?!.,]+$/g, "");
+    const identityQuestion = /^(what(?:'s| is) my name|what is my full name|who am i|do you know my name|tell me my name|remember my name)$/.test(normalizedPrompt);
+
+    if (!identityQuestion) return null;
+
+    const name = this.getAuthenticatedName(systemPrompt);
+    if (!name) {
+      return "I don't have your name available in this session.";
+    }
+
+    return `Your name is ${name}.`;
+  }
+
+  async generateWithTools({ prompt, systemPrompt, tools = [], toolResults = [] }) {
     logger.info("MockAIProvider generateWithTools invoked", {
       prompt,
       toolResultsCount: toolResults.length,
@@ -103,6 +128,16 @@ class MockAIProvider {
 
       return {
         text: `Here is the information from your school records: ${JSON.stringify(toolOutput)}`,
+        finishReason: "STOP",
+        toolCalls: [],
+        provider: this.name,
+      };
+    }
+
+    const identityResponse = this.getIdentityResponse(prompt, systemPrompt);
+    if (identityResponse) {
+      return {
+        text: identityResponse,
         finishReason: "STOP",
         toolCalls: [],
         provider: this.name,
