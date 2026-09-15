@@ -51,30 +51,44 @@ export default function AskNuvoraPage() {
   const { userInfo } = useContext(UserContext);
   const role = normalizeRole(userInfo?.role || "parent");
   const suggestions = ROLE_SUGGESTIONS[role] || ROLE_SUGGESTIONS.parent;
+  const historyKey = userInfo?.id
+    ? `nuvora_ai_chat_history:${userInfo.id}:${userInfo.selectedSchoolId || userInfo.schoolId || "none"}`
+    : null;
 
-  const [messages, setMessages] = useState(() => {
-    try {
-      const saved = sessionStorage.getItem("nuvora_ai_chat_history");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const messagesEndRef = useRef(null);
 
+  // Chat history belongs to the authenticated account + selected school.
+  // Never use one global storage key: otherwise another account on the same
+  // browser/session can see the previous user's conversation.
   useEffect(() => {
+    if (!historyKey) {
+      setMessages([]);
+      return;
+    }
+
     try {
-      sessionStorage.setItem("nuvora_ai_chat_history", JSON.stringify(messages));
+      const saved = sessionStorage.getItem(historyKey);
+      setMessages(saved ? JSON.parse(saved) : []);
     } catch {
-      // ignore
+      setMessages([]);
+    }
+  }, [historyKey]);
+
+  useEffect(() => {
+    if (historyKey) {
+      try {
+        sessionStorage.setItem(historyKey, JSON.stringify(messages));
+      } catch {
+        // ignore storage failures
+      }
     }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, historyKey]);
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
@@ -116,16 +130,16 @@ export default function AskNuvoraPage() {
     }
   };
 
-  const handleSuggestionClick = (text) => {
-    setInput(text);
-  };
+  const handleSuggestionClick = (text) => setInput(text);
 
   const handleClearHistory = () => {
     setMessages([]);
     setError(null);
-    try {
-      sessionStorage.removeItem("nuvora_ai_chat_history");
-    } catch {}
+    if (historyKey) {
+      try {
+        sessionStorage.removeItem(historyKey);
+      } catch {}
+    }
   };
 
   const handleCopy = (text, idx) => {
@@ -150,30 +164,16 @@ export default function AskNuvoraPage() {
 
       <header className="ask-nuvora-header">
         <div className="ask-nuvora-header-left">
-          <div className="ask-nuvora-icon-badge">
-            <Sparkles size={22} />
-          </div>
+          <div className="ask-nuvora-icon-badge"><Sparkles size={22} /></div>
           <div>
-            <h1 className="ask-nuvora-title">
-              Nuvora
-              <span className="ask-nuvora-tag">{role}</span>
-            </h1>
-            <p className="ask-nuvora-subtitle">
-              Secure AI copilot for your authorized school data
-            </p>
+            <h1 className="ask-nuvora-title">Nuvora <span className="ask-nuvora-tag">{role}</span></h1>
+            <p className="ask-nuvora-subtitle">Secure AI copilot for your authorized school data</p>
           </div>
         </div>
-
         {messages.length > 0 && (
           <div className="ask-nuvora-header-actions">
-            <button
-              type="button"
-              className="ask-nuvora-btn-ghost"
-              onClick={handleClearHistory}
-              title="Clear conversation"
-            >
-              <Trash2 size={16} />
-              Clear
+            <button type="button" className="ask-nuvora-btn-ghost" onClick={handleClearHistory} title="Clear conversation">
+              <Trash2 size={16} /> Clear
             </button>
           </div>
         )}
@@ -182,25 +182,13 @@ export default function AskNuvoraPage() {
       <div className="ask-nuvora-messages-container">
         {messages.length === 0 ? (
           <div className="ask-nuvora-empty-state">
-            <div className="ask-nuvora-empty-icon">
-              <Sparkles size={36} />
-            </div>
+            <div className="ask-nuvora-empty-icon"><Sparkles size={36} /></div>
             <h2 className="ask-nuvora-empty-title">What would you like to know?</h2>
-            <p className="ask-nuvora-empty-desc">
-              Ask questions in plain language about attendance, academic results, school operations,
-              or fee summaries. Nuvora only accesses data you are authorized to see.
-            </p>
-
+            <p className="ask-nuvora-empty-desc">Ask questions in plain language about attendance, academic results, school operations, or fee summaries. Nuvora only accesses data you are authorized to see.</p>
             <div className="ask-nuvora-suggestions">
               {suggestions.map((s, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  className="ask-nuvora-suggestion-btn"
-                  onClick={() => handleSuggestionClick(s.text)}
-                >
-                  <span>{s.text}</span>
-                  <Sparkles size={14} className="opacity-60" />
+                <button key={idx} type="button" className="ask-nuvora-suggestion-btn" onClick={() => handleSuggestionClick(s.text)}>
+                  <span>{s.text}</span><Sparkles size={14} className="opacity-60" />
                 </button>
               ))}
             </div>
@@ -208,87 +196,27 @@ export default function AskNuvoraPage() {
         ) : (
           messages.map((msg, idx) => (
             <div key={idx} className={`ask-nuvora-msg-row ${msg.role === "user" ? "user" : "ai"}`}>
-              <div className={`ask-nuvora-avatar ${msg.role === "user" ? "user" : "ai"}`}>
-                {msg.role === "user" ? <User size={18} /> : <Bot size={18} />}
-              </div>
-
+              <div className={`ask-nuvora-avatar ${msg.role === "user" ? "user" : "ai"}`}>{msg.role === "user" ? <User size={18} /> : <Bot size={18} />}</div>
               <div className="ask-nuvora-bubble">
                 <div className="whitespace-pre-wrap">{msg.content}</div>
-
                 {msg.data && (
                   <div className="ask-nuvora-data-card">
-                    <div className="font-semibold text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
-                      <CheckCircle2 size={14} className="text-emerald-600" />
-                      Authoritative Verified Data
-                    </div>
+                    <div className="font-semibold text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1"><CheckCircle2 size={14} className="text-emerald-600" /> Authoritative Verified Data</div>
                     <div className="ask-nuvora-data-grid">
-                      {msg.data.totalStudents !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Students</div>
-                          <div className="ask-nuvora-data-val">{msg.data.totalStudents}</div>
-                        </div>
-                      )}
-                      {msg.data.totalTeachers !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Teachers</div>
-                          <div className="ask-nuvora-data-val">{msg.data.totalTeachers}</div>
-                        </div>
-                      )}
-                      {msg.data.attendanceRate !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Attendance</div>
-                          <div className="ask-nuvora-data-val">{msg.data.attendanceRate}%</div>
-                        </div>
-                      )}
-                      {msg.data.percentage !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Attendance Rate</div>
-                          <div className="ask-nuvora-data-val">{msg.data.percentage}%</div>
-                        </div>
-                      )}
-                      {msg.data.averageScore !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Average Score</div>
-                          <div className="ask-nuvora-data-val">{msg.data.averageScore}%</div>
-                        </div>
-                      )}
-                      {msg.data.outstandingBalance !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Outstanding Balance</div>
-                          <div className="ask-nuvora-data-val">
-                            ₦{Number(msg.data.outstandingBalance || 0).toLocaleString()}
-                          </div>
-                        </div>
-                      )}
-                      {msg.data.totalPaid !== undefined && (
-                        <div className="ask-nuvora-data-item">
-                          <div className="ask-nuvora-data-label">Total Paid</div>
-                          <div className="ask-nuvora-data-val">
-                            ₦{Number(msg.data.totalPaid || 0).toLocaleString()}
-                          </div>
-                        </div>
-                      )}
+                      {msg.data.totalStudents !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Students</div><div className="ask-nuvora-data-val">{msg.data.totalStudents}</div></div>}
+                      {msg.data.totalTeachers !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Teachers</div><div className="ask-nuvora-data-val">{msg.data.totalTeachers}</div></div>}
+                      {msg.data.totalClasses !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Classes</div><div className="ask-nuvora-data-val">{msg.data.totalClasses}</div></div>}
+                      {msg.data.attendanceRate !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Attendance</div><div className="ask-nuvora-data-val">{msg.data.attendanceRate}%</div></div>}
+                      {msg.data.percentage !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Attendance Rate</div><div className="ask-nuvora-data-val">{msg.data.percentage}%</div></div>}
+                      {msg.data.averageScore !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Average Score</div><div className="ask-nuvora-data-val">{msg.data.averageScore}%</div></div>}
+                      {msg.data.outstandingBalance !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Outstanding Balance</div><div className="ask-nuvora-data-val">₦{Number(msg.data.outstandingBalance || 0).toLocaleString()}</div></div>}
+                      {msg.data.totalPaid !== undefined && <div className="ask-nuvora-data-item"><div className="ask-nuvora-data-label">Total Paid</div><div className="ask-nuvora-data-val">₦{Number(msg.data.totalPaid || 0).toLocaleString()}</div></div>}
                     </div>
                   </div>
                 )}
-
                 {msg.role === "assistant" && (
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(msg.content, idx)}
-                    className="mt-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    {copiedIndex === idx ? (
-                      <>
-                        <CheckCircle2 size={12} className="text-emerald-600" />
-                        <span>Copied</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={12} />
-                        <span>Copy answer</span>
-                      </>
-                    )}
+                  <button type="button" onClick={() => handleCopy(msg.content, idx)} className="mt-2 text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+                    {copiedIndex === idx ? <><CheckCircle2 size={12} className="text-emerald-600" /><span>Copied</span></> : <><Copy size={12} /><span>Copy answer</span></>}
                   </button>
                 )}
               </div>
@@ -296,53 +224,15 @@ export default function AskNuvoraPage() {
           ))
         )}
 
-        {loading && (
-          <div className="ask-nuvora-msg-row ai">
-            <div className="ask-nuvora-avatar ai">
-              <Bot size={18} />
-            </div>
-            <div className="ask-nuvora-bubble ask-nuvora-loading">
-              <span>Nuvora is checking school records</span>
-              <div className="ask-nuvora-typing-dots">
-                <div className="ask-nuvora-typing-dot" />
-                <div className="ask-nuvora-typing-dot" />
-                <div className="ask-nuvora-typing-dot" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="ask-nuvora-error-banner">
-            <div className="flex items-center gap-2">
-              <AlertCircle size={16} />
-              <span>{error}</span>
-            </div>
-          </div>
-        )}
-
+        {loading && <div className="ask-nuvora-msg-row ai"><div className="ask-nuvora-avatar ai"><Bot size={18} /></div><div className="ask-nuvora-bubble ask-nuvora-loading"><span>Nuvora is checking school records</span><div className="ask-nuvora-typing-dots"><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /></div></div></div>}
+        {error && <div className="ask-nuvora-error-banner"><div className="flex items-center gap-2"><AlertCircle size={16} /><span>{error}</span></div></div>}
         <div ref={messagesEndRef} />
       </div>
 
       <div className="ask-nuvora-input-card">
         <form onSubmit={handleSubmit} className="ask-nuvora-form">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask Nuvora about attendance, results, fees, or school activity..."
-            className="ask-nuvora-textarea"
-            rows={1}
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || loading}
-            className="ask-nuvora-send-btn"
-            aria-label="Send query"
-          >
-            <Send size={18} />
-          </button>
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask Nuvora about attendance, results, fees, or school activity..." className="ask-nuvora-textarea" rows={1} disabled={loading} />
+          <button type="submit" disabled={!input.trim() || loading} className="ask-nuvora-send-btn" aria-label="Send query"><Send size={18} /></button>
         </form>
       </div>
     </div>
