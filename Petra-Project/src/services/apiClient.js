@@ -1,4 +1,4 @@
-import { API_BASE_URL, clearAuthToken } from "./authApi";
+import { API_BASE_URL, clearAuthToken, readAuthToken } from "./authApi";
 
 export const request = async (path, options = {}) => {
   const headers = {
@@ -6,9 +6,17 @@ export const request = async (path, options = {}) => {
     ...(options.headers || {}),
   };
 
-  // Send the currently selected school to the backend
-  const selectedSchoolId = localStorage.getItem("petra_selected_school_id");
+  // Every dashboard/API request must use the authentication session belonging
+  // to this browser tab. The tab access token lives in sessionStorage, so it
+  // cannot be replaced by another tab's login. The HttpOnly cookie remains as
+  // a fallback for clients that do not have a tab credential.
+  const tabToken = readAuthToken();
+  if (tabToken && !headers.Authorization && !headers.authorization) {
+    headers.Authorization = `Bearer ${tabToken}`;
+  }
 
+  // Send the currently selected school to the backend.
+  const selectedSchoolId = localStorage.getItem("petra_selected_school_id");
   if (selectedSchoolId) {
     headers["x-school-id"] = selectedSchoolId;
   }
