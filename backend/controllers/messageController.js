@@ -13,6 +13,17 @@ const validate = (req, res) => {
   return null;
 };
 
+export const listContacts = async (req, res, next) => {
+  try {
+    const invalid = validate(req, res);
+    if (invalid) return invalid;
+    const result = await messageService.listContacts(req.user, req.query);
+    return res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const listMessages = async (req, res, next) => {
   try {
     const invalid = validate(req, res);

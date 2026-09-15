@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "../config/db.js";
 import { financeService } from "../services/financeService.js";
+import { pushNotificationService } from "../services/pushNotificationService.js";
 import { paymentReconciliationQueue } from "./queue.js";
 
 const connection = new IORedis(process.env.REDIS_URL || "redis://127.0.0.1:6379", {
@@ -51,6 +52,15 @@ const notificationProcessor = async (job) => {
   const notifications = Array.isArray(job.data.notifications) ? job.data.notifications : [];
   if (!notifications.length) return { created: 0 };
   const result = await prisma.notification.createMany({ data: notifications });
+  for (const notification of notifications) {
+    if (!notification.userId) continue;
+    void pushNotificationService.sendToUser(notification.userId, {
+      title: notification.title,
+      body: notification.body,
+      url: "/notifications",
+      tag: `notification-${notification.title || "general"}`,
+    }).catch(() => {});
+  }
   return { created: result.count };
 };
 

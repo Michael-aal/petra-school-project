@@ -1,4 +1,5 @@
 import { prisma } from "../config/db.js";
+import { pushNotificationService } from "./pushNotificationService.js";
 
 const roleOf = (user) => String(user?.role || "").trim().toLowerCase().replace(/\s+/g, "_");
 const isPlatform = (user) => ["super_admin", "developer"].includes(roleOf(user));
@@ -48,6 +49,17 @@ const userNotificationWhere = (user, schoolId, unreadOnly = false) => {
 };
 
 const sectionMatches = (notification, section) => notificationSection(notification) === section;
+
+const sendPushSafely = (userId, notification) => {
+  if (!userId) return;
+  void pushNotificationService.sendToUser(userId, {
+    title: notification.title,
+    body: notification.body,
+    notificationId: notification.id,
+    url: notification.url || "/notifications",
+    tag: `notification-${notification.id}`,
+  }).catch(() => {});
+};
 
 export const notificationService = {
   listForUser: async (user, query = {}) => {
@@ -174,15 +186,20 @@ export const notificationService = {
     if (!platformUsers.length) return { notified: 0 };
 
     const body = `${requesterName || "A user"} (${requesterRole || "user"}) requested support: ${subject}.`;
-    await prisma.notification.createMany({
-      data: platformUsers.map((recipient) => ({
-        schoolId: Number(schoolId),
-        userId: recipient.id,
-        title: "New Support Request",
-        body,
-        isRead: false,
-      })),
-    });
+    const notifications = platformUsers.map((recipient) => ({
+      schoolId: Number(schoolId),
+      userId: recipient.id,
+      title: "New Support Request",
+      body,
+      isRead: false,
+    }));
+    await prisma.notification.createMany({ data: notifications });
+    void pushNotificationService.sendToUsers(platformUsers, {
+      title: "New Support Request",
+      body,
+      url: "/dashboard/communication/support",
+      tag: `support-${ticketId}`,
+    }).catch(() => {});
 
     return { notified: platformUsers.length, ticketId };
   },
