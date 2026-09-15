@@ -2,6 +2,7 @@ import webpush from "web-push";
 import { redisClient } from "../config/redis.js";
 
 const redisKey = (userId) => `petra:push-subscriptions:${userId}`;
+const deliveredKey = (notificationId, userId) => `petra:push-delivered:${notificationId}:${userId}`;
 const publicKey = String(process.env.VAPID_PUBLIC_KEY || "").trim();
 const privateKey = String(process.env.VAPID_PRIVATE_KEY || "").trim();
 const subject = String(process.env.VAPID_SUBJECT || "mailto:admin@petra-school.local").trim();
@@ -25,12 +26,23 @@ const normalizeSubscription = (subscription) => ({
   keys: { p256dh: String(subscription?.keys?.p256dh || "").trim(), auth: String(subscription?.keys?.auth || "").trim() },
 });
 
+const markDelivered = async (notificationId, userId) => {
+  if (!redisClient || !notificationId || !userId) return;
+  await redisClient.set(deliveredKey(notificationId, userId), "1", "EX", 86400);
+};
+
 export const pushNotificationService = {
   isConfigured: () => Boolean(publicKey && privateKey && redisClient),
 
   getPublicKey: () => {
     if (!publicKey) { const error = new Error("Web Push is not configured"); error.statusCode = 503; throw error; }
     return publicKey;
+  },
+
+  wasDelivered: async (notificationId, userId) => {
+    if (!redisClient || !notificationId || !userId) return false;
+    await ensureRedis();
+    return Boolean(await redisClient.exists(deliveredKey(notificationId, userId)));
   },
 
   saveSubscription: async (userId, subscription, metadata = {}) => {
@@ -88,6 +100,7 @@ export const pushNotificationService = {
         }
       }
     }
+    if (sent > 0 && payload?.notificationId) await markDelivered(payload.notificationId, userId);
     return { sent };
   },
 
