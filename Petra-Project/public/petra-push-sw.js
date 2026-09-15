@@ -1,25 +1,50 @@
+const SW_VERSION = "petra-push-v2";
+
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener("push", (event) => {
-  let payload = {};
-  try {
-    payload = event.data ? event.data.json() : {};
-  } catch {
-    payload = { title: "Petra School", body: event.data?.text?.() || "You have a new notification." };
-  }
+  event.waitUntil((async () => {
+    let payload = {};
+    try {
+      payload = event.data ? event.data.json() : {};
+    } catch {
+      payload = {
+        title: "Petra School",
+        body: event.data?.text?.() || "You have a new notification.",
+      };
+    }
 
-  const title = payload.title || "Petra School";
-  const options = {
-    body: payload.body || "You have a new notification.",
-    tag: payload.tag || "petra-notification",
-    renotify: true,
-    data: { url: payload.url || "/notifications", notificationId: payload.notificationId || null },
-  };
+    const title = String(payload.title || "Petra School");
+    const options = {
+      body: String(payload.body || "You have a new notification."),
+      tag: String(payload.tag || `${SW_VERSION}-${Date.now()}`),
+      renotify: true,
+      requireInteraction: true,
+      silent: false,
+      icon: "/favicon.ico",
+      badge: "/favicon.ico",
+      data: {
+        url: payload.url || "/dashboard/communication/notifications",
+        notificationId: payload.notificationId || null,
+      },
+    };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+    await self.registration.showNotification(title, options);
+  })());
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = new URL(event.notification.data?.url || "/notifications", self.location.origin).href;
+  const target = new URL(
+    event.notification.data?.url || "/dashboard/communication/notifications",
+    self.location.origin,
+  ).href;
 
   event.waitUntil((async () => {
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
