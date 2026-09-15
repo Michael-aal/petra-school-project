@@ -29,7 +29,7 @@ const ROLE_CONFIG = {
   },
 };
 
-// Progressive stress test: 25% admin, 50% parent, 25% staff.
+// Progressive authenticated stress test: 25% admin, 50% parent, 25% staff.
 // 3,000 total VUs is intentional for the first authenticated run because
 // the previous 10,000-VU health-only test began refusing connections locally.
 export const options = {
@@ -131,19 +131,22 @@ function login(role) {
   }
 }
 
+// k6 gives each VU its own JS runtime, so this flag is per simulated user.
+// The VU logs in once and then keeps its session cookie across iterations.
+let loggedIn = false;
+
 function authenticatedWorkflow(role) {
-  // Each VU creates its own authenticated session once, then reuses the
-  // session cookie for the rest of that VU's iterations. This models users
-  // staying signed in instead of repeatedly hammering the login endpoint.
-  login(role);
+  if (!loggedIn) {
+    login(role);
+    loggedIn = true;
+  }
 
   const config = ROLE_CONFIG[role];
   for (const path of config.routes) {
     request(path, role, path.replaceAll('/', '_').replace(/^_/, '') || 'request');
   }
 
-  // Keep a small think-time so the test represents active users rather than
-  // a tight request loop.
+  // Think-time: model an active user instead of a tight request loop.
   sleep(1);
 }
 
