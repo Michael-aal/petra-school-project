@@ -41,8 +41,8 @@ export default function TopNavbar({ onToggle }) {
   }, []);
 
   const showIncoming = (notification) => {
-    if (!notification?.id) return;
-    const key = `${notification.id}:${getTime(notification)}`;
+    if (!notification?.id && !notification?.tag) return;
+    const key = String(notification.id || notification.tag);
     if (key === latestKeyRef.current) return;
     latestKeyRef.current = key;
     setIncoming(notification);
@@ -57,14 +57,14 @@ export default function TopNavbar({ onToggle }) {
       const payload = event.data.payload || {};
       showIncoming({
         id: payload.notificationId || payload.tag,
-        createdAt: new Date().toISOString(),
+        tag: payload.tag,
         title: payload.title,
         body: payload.body,
       });
     };
     navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
     return () => navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
-  }, []);
+  }, [info]);
 
   useEffect(() => {
     let active = true;
@@ -76,13 +76,12 @@ export default function TopNavbar({ onToggle }) {
         if (!list.length) { initializedRef.current = true; return; }
         const latest = [...list].sort((a, b) => getTime(b) - getTime(a))[0];
         if (!latest?.id) return;
-        const key = `${latest.id}:${getTime(latest)}`;
         if (!initializedRef.current) {
           initializedRef.current = true;
-          latestKeyRef.current = key;
+          latestKeyRef.current = String(latest.id);
           return;
         }
-        if (key !== latestKeyRef.current) showIncoming(latest);
+        if (String(latest.id) !== latestKeyRef.current) showIncoming(latest);
       } catch {
         // Notification polling is non-blocking.
       }
