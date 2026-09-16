@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "predev": "prisma migrate deploy && prisma generate",
+    "predev": "node scripts/deployMigrations.js && prisma generate",
     "dev": "nodemon server.js",
     "prestart": "node scripts/deployMigrations.js && prisma generate",
     "start": "node server.js",
