@@ -33,7 +33,12 @@ const ensureTabId = () => {
     return generated;
   } catch { return "unavailable"; }
 };
-export const isTabAuthMode = () => Boolean(getTabStorage());
+
+// A browser having sessionStorage does not mean the tab is using tab-scoped
+// authentication. Only opt into the tab-auth transport when this tab actually
+// has Petra tab credentials. This preserves normal HttpOnly-cookie sessions
+// for tabs whose login flow has not populated tab credentials yet.
+export const isTabAuthMode = () => Boolean(getTabStorage()?.getItem(TAB_ACCESS_KEY) || getTabStorage()?.getItem(TAB_REFRESH_KEY));
 export const readAuthToken = () => getTabStorage()?.getItem(TAB_ACCESS_KEY) || null;
 export const writeAuthToken = (token) => {
   const storage = getTabStorage();
@@ -53,6 +58,7 @@ const clearTabCredentials = () => {
   if (!storage) return;
   storage.removeItem(TAB_ACCESS_KEY);
   storage.removeItem(TAB_REFRESH_KEY);
+  storage.removeItem(TAB_ID_KEY);
 };
 export const clearAuthToken = clearTabCredentials;
 
@@ -69,8 +75,6 @@ const refreshTabAccess = async () => {
       "X-Petra-Tab-Id": ensureTabId(),
       "X-Petra-Tab-Refresh": refreshToken,
     };
-    // Send the current tab's access token too. The backend uses its session id
-    // to rotate exactly this tab's session rather than touching other tabs.
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
     const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, { method: "POST", credentials: "include", headers });
@@ -91,40 +95,34 @@ async function request(path, options = {}, { tabCredential = true, retryAuth = t
   const token = tabCredential ? readAuthToken() : null;
   const refreshToken = tabCredential ? readTabRefreshToken() : null;
 
-  // Never send a protected browser request with an empty Authorization value.
-  // If this tab has a refresh credential, rotate it first. Otherwise fail
-  // locally instead of asking the API to authenticate an empty tab request.
   if (tabCredential && !token && !path.includes("/api/auth/refresh")) {
     if (retryAuth && refreshToken) {
       try {
         await refreshTabAccess();
         return request(path, options, { tabCredential: true, retryAuth: false });
       } catch {
-        // Fall through to a local authentication error without a network call.
+        // Fall through and allow the server's normal cookie authentication
+        // when this browser has a valid HttpOnly session.
       }
     }
-    const error = new Error("Authentication required");
-    error.status = 401;
-    error.data = { success: false, message: "Authentication required" };
-    throw error;
   }
 
   if (token && !headers.Authorization && !headers.authorization) headers.Authorization = `Bearer ${token}`;
-  if (tabCredential && !headers["X-Petra-Tab-Auth"] && !headers["x-petra-tab-auth"]) headers["X-Petra-Tab-Auth"] = "1";
-  if (!headers["X-Petra-Tab-Id"] && !headers["x-petra-tab-id"]) headers["X-Petra-Tab-Id"] = ensureTabId();
+  if (tabCredential && isTabAuthMode() && !headers["X-Petra-Tab-Auth"] && !headers["x-petra-tab-auth"]) headers["X-Petra-Tab-Auth"] = "1";
+  if (tabCredential && isTabAuthMode() && !headers["X-Petra-Tab-Id"] && !headers["x-petra-tab-id"]) headers["X-Petra-Tab-Id"] = ensureTabId();
 
   const response = await fetch(`${API_BASE_URL}${path}`, { ...options, credentials: "include", headers });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401 && tabCredential && retryAuth && !path.includes("/api/auth/refresh")) {
+    if (response.status === 401 && tabCredential && isTabAuthMode() && retryAuth && !path.includes("/api/auth/refresh")) {
       try {
         await refreshTabAccess();
         return request(path, options, { tabCredential: true, retryAuth: false });
       } catch {
-        // Fall through with the original authentication error below.
+        // Surface the original authentication response below.
       }
     }
-    if (response.status === 401) {
+    if (response.status === 401 && isTabAuthMode()) {
       try { getTabStorage()?.removeItem(TAB_ACCESS_KEY); } catch {}
     }
     const error = new Error(data.message || "Request failed");
