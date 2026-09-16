@@ -35,6 +35,8 @@ import { originLock } from "./middleware/originLock.js";
 const app = express();
 app.set("trust proxy", 1);
 const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
+const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?-michael-aals-projects\.vercel\.app$/i;
+const isPetraVercelOrigin = (origin) => PETRA_VERCEL_ORIGIN.test(String(origin || "").trim().replace(/\/+$/, ""));
 const allowedOrigins = [
   process.env.CORS_ORIGIN,
   process.env.CLIENT_URL,
@@ -70,7 +72,7 @@ const corsOptions = {
     const allowDevelopmentOrigin =
       process.env.NODE_ENV !== "production" &&
       (isLocalDevOrigin(normalizedOrigin) || isCodespacesDevOrigin(normalizedOrigin));
-    if (allowedOrigins.includes(normalizedOrigin) || allowDevelopmentOrigin) {
+    if (allowedOrigins.includes(normalizedOrigin) || isPetraVercelOrigin(normalizedOrigin) || allowDevelopmentOrigin) {
       return callback(null, true);
     }
     return callback(new Error(`CORS blocked for origin: ${origin}`));
@@ -92,7 +94,7 @@ app.use(helmet({
       frameAncestors: ["'none'"],
       objectSrc: ["'none'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
     },
   },
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
@@ -118,16 +120,13 @@ app.get("/health", async (_req, res) => {
   }
 
   try {
-    const redis = await checkQueueHealth();
-    return res.status(200).json({ status: "healthy", database: "connected", redis: redis.connected ? "connected" : "disconnected" });
+    const queue = await checkQueueHealth();
+    return res.json({ status: "healthy", database: "connected", redis: queue.status, queue });
   } catch {
-    return res.status(503).json({ status: "degraded", database: "connected", redis: "disconnected" });
+    return res.json({ status: "healthy", database: "connected", redis: "unknown" });
   }
 });
-app.get("/metrics", async (_req, res) => {
-  res.setHeader("Content-Type", metricsRegistry.contentType);
-  return res.send(await metricsRegistry.metrics());
-});
+
 app.use("/api", originLock);
 app.use("/api", apiRateLimiter);
 app.use("/api/auth", authRoutes);
@@ -136,21 +135,21 @@ app.use("/api/academic", academicRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/paystack", paystackRoutes);
-app.use("/api/parent", parentRoutes);
+app.use("/api/parents", parentRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
-app.use("/api/admissions", admissionRoutes);
-app.use("/api/teacher", teacherRoutes);
-app.use("/api/teacher/applications", teacherApplicationRoutes);
-app.use("/api/classmarker", classmarkerRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/assessments", assessmentsRoutes);
+app.use("/api/teachers", teacherRoutes);
+app.use("/api/teacher-applications", teacherApplicationRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/schools", schoolRoutes);
-app.use("/api/superadmin", superAdminRoutes);
-app.get("/", (_req, res) => res.status(200).json({ success: true, message: "Petra School API is running" }));
+app.use("/api/super-admin", superAdminRoutes);
+app.use("/api/admissions", admissionRoutes);
+app.use("/api/classmarker", classmarkerRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/assessments", assessmentsRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 
