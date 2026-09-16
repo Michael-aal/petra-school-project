@@ -29,9 +29,18 @@ const runPrisma = (args) => {
 
 const rollbackFailedHistoricalMigrations = async (prisma) => {
   for (const migrationName of HISTORICAL_MIGRATIONS_TO_SKIP) {
-    const rows = await prisma.$queryRawUnsafe(
-      `SELECT "finished_at", "rolled_back_at" FROM "_prisma_migrations" WHERE "migration_name" = '${migrationName.replaceAll("'", "''")}' LIMIT 1`,
-    );
+    let rows;
+    try {
+      rows = await prisma.$queryRawUnsafe(
+        `SELECT "finished_at", "rolled_back_at" FROM "_prisma_migrations" WHERE "migration_name" = '${migrationName.replaceAll("'", "''")}' LIMIT 1`,
+      );
+    } catch (error) {
+      if (error?.code === "P2010" && /_prisma_migrations.*does not exist/i.test(String(error?.message))) {
+        // A fresh database has no Prisma migration ledger yet; migrate deploy will create it.
+        return;
+      }
+      throw error;
+    }
 
     const migration = rows[0];
     if (!migration || migration.finished_at || migration.rolled_back_at) continue;
