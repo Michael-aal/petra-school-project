@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import { Prisma } from "@prisma/client";
+import bcrypt from "bcrypt";
 import { walletModel } from "../models/walletModel.js";
 import { userModel } from "../models/userModel.js";
 import { paystackService } from "./paystackService.js";
@@ -45,18 +46,32 @@ const ensureWallet = async (userId, email) => {
   return wallet;
 };
 
-const buildTransactionMeta = ({ reference, amount, type, description, source, destination, metadata }) => ({
-  walletId: metadata.walletId,
-  userId: metadata.userId,
-  reference,
-  type,
-  amount,
-  status: "completed",
-  description,
-  source,
-  destination,
-  metadata,
-});
+const getWithdrawalPinHash = (wallet) => {
+  const preferences = wallet?.notificationPreferences;
+  return preferences && typeof preferences === "object" && !Array.isArray(preferences)
+    ? preferences.withdrawalPinHash || null
+    : null;
+};
+
+const validateWithdrawalPin = (pin) => {
+  const normalized = String(pin ?? "").trim();
+  if (!/^\d{4,6}$/.test(normalized)) {
+    const error = new Error("Withdrawal PIN must contain 4 to 6 digits");
+    error.statusCode = 400;
+    throw error;
+  }
+  return normalized;
+};
+
+const validateIdempotencyKey = (key) => {
+  const normalized = String(key ?? "").trim();
+  if (!normalized || normalized.length < 16 || normalized.length > 100) {
+    const error = new Error("A valid idempotency key is required for withdrawals");
+    error.statusCode = 400;
+    throw error;
+  }
+  return normalized;
+};
 
 export const walletService = {
   getWalletSummary: async (userId, email) => {
@@ -89,7 +104,30 @@ export const walletService = {
     return walletModel.findTransactions({ userId, startDate, endDate });
   },
 
-  withdraw: async (userId, amount, description) => {
+  setWithdrawalPin: async (userId, pin) => {
+    const normalizedPin = validateWithdrawalPin(pin);
+    const wallet = await ensureWallet(userId);
+    const currentPreferences = wallet.notificationPreferences && typeof wallet.notificationPreferences === "object" && !Array.isArray(wallet.notificationPreferences)
+      ? wallet.notificationPreferences
+      : {};
+
+    const withdrawalPinHash = await bcrypt.hash(normalizedPin, 12);
+    const updatedWallet = await walletModel.update(
+      { id: wallet.id },
+      {
+        notificationPreferences: {
+          ...currentPreferences,
+          withdrawalPinHash,
+        },
+      },
+    );
+
+    return {
+      configured: Boolean(getWithdrawalPinHash(updatedWallet)),
+    };
+  },
+
+  withdraw: async (userId, { amount, description, bankCode, bankName, accountNumber, accountName, pin, idempotencyKey }) => {
     const parsedAmount = toDecimal(amount);
     if (parsedAmount.lte(0)) {
       const error = new Error("Withdrawal amount must be a positive number");
@@ -97,32 +135,124 @@ export const walletService = {
       throw error;
     }
 
+    const normalizedPin = validateWithdrawalPin(pin);
+    const normalizedIdempotencyKey = validateIdempotencyKey(idempotencyKey);
+
+    const existingTransaction = await prisma.transaction.findUnique({
+      where: { idempotencyKey: normalizedIdempotencyKey },
+    });
+    if (existingTransaction) {
+      if (existingTransaction.userId !== userId || existingTransaction.type !== "WITHDRAW") {
+        const error = new Error("This idempotency key is already used by another transaction");
+        error.statusCode = 409;
+        throw error;
+      }
+      return {
+        transaction: existingTransaction,
+        wallet: await walletModel.findByUserId(userId),
+        duplicate: true,
+      };
+    }
+
     const wallet = await ensureWallet(userId);
-    if (toDecimal(wallet.balance).lt(parsedAmount)) {
-      const error = new Error("Insufficient wallet balance");
+    const pinHash = getWithdrawalPinHash(wallet);
+    if (!pinHash) {
+      const error = new Error("Withdrawal PIN is not configured. Set your withdrawal PIN first.");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const pinMatches = await bcrypt.compare(normalizedPin, pinHash);
+    if (!pinMatches) {
+      const error = new Error("Incorrect withdrawal PIN");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    if (!accountNumber || !/^\d{8,20}$/.test(String(accountNumber))) {
+      const error = new Error("A valid destination account number is required");
       error.statusCode = 400;
       throw error;
     }
 
-    const newBalance = toDecimal(wallet.balance).minus(parsedAmount);
+    if (!bankCode) {
+      const error = new Error("Destination bank code is required");
+      error.statusCode = 400;
+      throw error;
+    }
 
-    const [updatedWallet] = await prisma.$transaction([
-      walletModel.update({ userId }, { balance: newBalance }),
-      walletModel.createTransaction({
-        walletId: wallet.id,
-        userId,
-        reference: buildReference(),
-        type: "WITHDRAW",
-        amount: parsedAmount,
-        status: "completed",
-        description: description || "Wallet withdrawal",
-        source: "Wallet",
-        destination: "Bank transfer",
-        metadata: { note: description || "withdrawal" },
-      }),
-    ]);
+    const reference = buildReference();
 
-    return updatedWallet;
+    try {
+      const result = await prisma.$transaction(async (tx) => {
+        const currentWallet = await tx.wallet.findUnique({ where: { id: wallet.id } });
+        if (!currentWallet) {
+          const error = new Error("Wallet not found");
+          error.statusCode = 404;
+          throw error;
+        }
+
+        const updated = await tx.wallet.updateMany({
+          where: {
+            id: currentWallet.id,
+            balance: { gte: parsedAmount },
+          },
+          data: {
+            balance: { decrement: parsedAmount },
+          },
+        });
+
+        if (updated.count !== 1) {
+          const error = new Error("Insufficient wallet balance");
+          error.statusCode = 400;
+          throw error;
+        }
+
+        const transaction = await tx.transaction.create({
+          data: {
+            walletId: currentWallet.id,
+            userId,
+            idempotencyKey: normalizedIdempotencyKey,
+            reference,
+            type: "WITHDRAW",
+            amount: parsedAmount,
+            status: "pending",
+            description: description || "Wallet withdrawal",
+            source: currentWallet.accountNumber,
+            destination: "Bank transfer",
+            metadata: {
+              bankCode: String(bankCode),
+              bankName: bankName || null,
+              accountNumber: String(accountNumber),
+              accountName: accountName || null,
+              providerStatus: "NOT_SUBMITTED",
+              security: "petra_withdrawal_pin",
+            },
+          },
+        });
+
+        return {
+          transaction,
+          wallet: await tx.wallet.findUnique({ where: { id: currentWallet.id } }),
+        };
+      });
+
+      return { ...result, duplicate: false };
+    } catch (error) {
+      if (error?.code === "P2002") {
+        const duplicate = await prisma.transaction.findUnique({
+          where: { idempotencyKey: normalizedIdempotencyKey },
+        });
+        if (duplicate && duplicate.userId === userId && duplicate.type === "WITHDRAW") {
+          return {
+            transaction: duplicate,
+            wallet: await walletModel.findByUserId(userId),
+            duplicate: true,
+          };
+        }
+      }
+      throw error;
+    }
   },
 
   transfer: async (userId, recipient, amount, note) => {
