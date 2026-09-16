@@ -3,6 +3,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 export const HISTORICAL_MIGRATIONS_TO_SKIP = [
   "20260911070535_add_admin_user_relation",
@@ -80,8 +81,20 @@ const deployWithHistoricalMigrationsSkipped = () => {
   }
 };
 
+const createMigrationPrisma = () => {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required to run production migrations.");
+  }
+
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  return new PrismaClient({ adapter });
+};
+
 const main = async () => {
-  const prisma = new PrismaClient();
+  const prisma = createMigrationPrisma();
   try {
     await prisma.$connect();
     await rollbackFailedHistoricalMigrations(prisma);
