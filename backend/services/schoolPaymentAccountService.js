@@ -1,7 +1,11 @@
 import crypto from "crypto";
 import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
-import { isPaystackTestMode, shouldProvisionSettlementSubaccount } from "../utils/paystackProvisioningMode.js";
+import {
+  isPaystackTestMode,
+  shouldGracefullyPendDvaProvisioning,
+  shouldProvisionSettlementSubaccount,
+} from "../utils/paystackProvisioningMode.js";
 
 const requireSchool = (user) => {
   const schoolId = Number(user?.schoolId);
@@ -79,7 +83,10 @@ export const schoolPaymentAccountService = {
       && existing?.dvaAccountNumber
       && existing?.paystackCustomerCode
       && (sandbox || existing?.paystackSubaccountCode);
-    if (hasUsableExistingAccount) {
+    const hasPendingSandboxDva = sandbox
+      && existing?.status === "pending_dva"
+      && existing?.paystackCustomerCode;
+    if (hasUsableExistingAccount || hasPendingSandboxDva) {
       return mapAccount(existing);
     }
 
@@ -104,11 +111,6 @@ export const schoolPaymentAccountService = {
       throw error;
     }
 
-    // Paystack's current test-mode documentation does not provide a stable
-    // subaccount settlement credential. Test mode can still exercise the
-    // customer + dedicated virtual account flow, while real settlement
-    // subaccount creation is reserved for live mode where the school's real
-    // settlement account is verified by Paystack.
     const subaccount = shouldProvisionSettlementSubaccount()
       ? await paystackService.createSubaccount({
         businessName: school.name,
@@ -134,11 +136,18 @@ export const schoolPaymentAccountService = {
     const preferredBank = process.env.PAYSTACK_DVA_PROVIDER
       || (sandbox ? "test-bank" : "titan-paystack");
 
-    const dva = await paystackService.createDedicatedVirtualAccount({
-      customer: customer.customer_code,
-      preferredBank,
-      ...(subaccount?.subaccount_code ? { subaccount: subaccount.subaccount_code } : {}),
-    });
+    let dva = null;
+    let status = "active";
+    try {
+      dva = await paystackService.createDedicatedVirtualAccount({
+        customer: customer.customer_code,
+        preferredBank,
+        ...(subaccount?.subaccount_code ? { subaccount: subaccount.subaccount_code } : {}),
+      });
+    } catch (error) {
+      if (!shouldGracefullyPendDvaProvisioning(error)) throw error;
+      status = "pending_dva";
+    }
 
     const id = existing?.id || crypto.randomUUID();
     const settlementAccountName = subaccount?.account_name || null;
@@ -152,9 +161,9 @@ export const schoolPaymentAccountService = {
         "dvaBankName", "dvaBankCode", "dvaProviderSlug", "settlementBankCode", "settlementBankName",
         "settlementAccountNumber", "settlementAccountName", "settlementSchedule"
       ) VALUES (
-        ${id}, ${schoolId}, ${user.id}, 'active', ${customer.id}, ${customer.customer_code},
-        ${subaccount?.subaccount_code || null}, ${subaccount?.id || null}, ${dva.id}, ${dva.account_number}, ${dva.account_name},
-        ${dva.bank?.name || null}, ${dva.bank?.id ? String(dva.bank.id) : preferredBank}, ${dva.bank?.slug || preferredBank},
+        ${id}, ${schoolId}, ${user.id}, ${status}, ${customer.id}, ${customer.customer_code},
+        ${subaccount?.subaccount_code || null}, ${subaccount?.id || null}, ${dva?.id || null}, ${dva?.account_number || null}, ${dva?.account_name || null},
+        ${dva?.bank?.name || null}, ${dva?.bank?.id ? String(dva.bank.id) : (dva ? preferredBank : null)}, ${dva?.bank?.slug || (dva ? preferredBank : null)},
         ${bankCode}, ${settlementBankName}, ${accountNumber},
         ${settlementAccountName}, ${settlementSchedule}
       )
