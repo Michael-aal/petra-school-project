@@ -1,4 +1,5 @@
 const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
+const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?-michael-aals-projects\.vercel\.app$/i;
 
 const isLocalDevelopmentOrigin = (origin) => {
   try {
@@ -13,6 +14,8 @@ const isLocalDevelopmentOrigin = (origin) => {
 const isDevelopmentLocalOrigin = (origin) => {
   return isLocalDevelopmentOrigin(origin) && process.env.NODE_ENV !== "production";
 };
+
+const isPetraVercelOrigin = (origin) => PETRA_VERCEL_ORIGIN.test(String(origin || "").trim().replace(/\/+$/, ""));
 
 const isLocalLoadTestRequest = (req) => {
   if (process.env.NODE_ENV === "production") return false;
@@ -38,7 +41,7 @@ export const originLock = (req, res, next) => {
 
   if (origin) {
     const allowedOrigins = getAllowedOrigins();
-    if (!allowedOrigins.includes(origin)) {
+    if (!allowedOrigins.includes(origin) && !isPetraVercelOrigin(origin)) {
       return res.status(403).json({ success: false, message: "Forbidden" });
     }
 
