@@ -84,7 +84,6 @@ export const schoolPaymentAccountService = {
       throw error;
     }
 
-    const resolved = await paystackService.resolveBankAccount(accountNumber, bankCode);
     const contactName = String(payload.contactName || user.fullName || school.name).trim();
     const contactEmail = String(payload.contactEmail || user.email || school.email || "").trim();
     const contactPhone = String(payload.contactPhone || user.phone || school.phone || "").trim();
@@ -128,6 +127,10 @@ export const schoolPaymentAccountService = {
     });
 
     const id = existing?.id || crypto.randomUUID();
+    const settlementAccountName = subaccount.account_name || null;
+    const settlementBankName = subaccount.settlement_bank || null;
+    const settlementSchedule = subaccount.settlement_schedule || "AUTO";
+
     const rows = await prisma.$queryRaw`
       INSERT INTO "SchoolPaymentAccount" (
         "id", "schoolId", "ownerUserId", "status", "paystackCustomerId", "paystackCustomerCode",
@@ -138,8 +141,8 @@ export const schoolPaymentAccountService = {
         ${id}, ${schoolId}, ${user.id}, 'active', ${customer.id}, ${customer.customer_code},
         ${subaccount.subaccount_code}, ${subaccount.id}, ${dva.id}, ${dva.account_number}, ${dva.account_name},
         ${dva.bank?.name || null}, ${dva.bank?.id ? String(dva.bank.id) : preferredBank}, ${dva.bank?.slug || preferredBank},
-        ${bankCode}, ${subaccount.settlement_bank || resolved.bankName || null}, ${accountNumber},
-        ${resolved.accountName || subaccount.account_name || null}, ${subaccount.settlement_schedule || 'AUTO'}
+        ${bankCode}, ${settlementBankName}, ${accountNumber},
+        ${settlementAccountName}, ${settlementSchedule}
       )
       ON CONFLICT ("schoolId") DO UPDATE SET
         "ownerUserId" = EXCLUDED."ownerUserId",
