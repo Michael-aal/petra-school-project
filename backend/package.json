@@ -9,7 +9,6 @@
     "prestart": "prisma migrate deploy && prisma generate",
     "start": "node server.js",
     "worker": "node jobs/worker.js",
-    "postinstall": "prisma generate",
     "test": "cross-env NODE_ENV=test node --test ./tests/**/*.test.js",
     "test:security": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "test:load": "node scripts/load-test.mjs",
@@ -54,11 +53,12 @@
     "pino": "^10.0.0",
     "pino-pretty": "^13.1.3",
     "prom-client": "^15.1.3",
+    "prisma": "^7.10.0",
     "rate-limit-redis": "^6.0.0",
     "rate-limiter-flexible": "^11.0.0",
     "redlock": "^5.0.0-beta.2",
     "resend": "^6.27.0",
-    "web-push": "^3.6.7",
+    "web-push": "^3.6.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
