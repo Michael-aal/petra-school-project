@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual, randomBytes } from "crypto";
 import { createResilientProviderClient } from "../utils/axiosWithRetry.js";
+import { prisma } from "../config/db.js";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE = "https://api.paystack.co";
@@ -47,6 +48,29 @@ const getPaystackHeaders = () => {
   };
 };
 
+const assertPaystackResponse = (response, fallbackMessage) => {
+  const data = response.data;
+  if (!data?.status) {
+    const error = new Error(data?.message || fallbackMessage);
+    error.statusCode = 502;
+    throw error;
+  }
+  return data.data;
+};
+
+const getSchoolSubaccountCode = async (schoolId) => {
+  if (schoolId === undefined || schoolId === null) return null;
+  const rows = await prisma.$queryRaw`
+    SELECT "paystackSubaccountCode", "status"
+    FROM "SchoolPaymentAccount"
+    WHERE "schoolId" = ${Number(schoolId)}
+    LIMIT 1
+  `;
+  const row = rows[0];
+  if (!row || row.status !== "active") return null;
+  return row.paystackSubaccountCode || null;
+};
+
 export const paystackService = {
   initializePayment: async ({ amount, email, userId, reference, metadata = {}, callbackUrl }) => {
     const parsedAmount = Number(amount);
@@ -56,27 +80,78 @@ export const paystackService = {
       throw error;
     }
 
-    const response = await paystackClient.post("/transaction/initialize", {
-        email,
-        amount: Math.round(parsedAmount * 100),
-        reference: reference || buildReference(),
-        metadata: { userId, ...metadata },
-        callback_url: resolveCallbackUrl(callbackUrl),
-      }, { headers: getPaystackHeaders(), retryable: false });
-
-    const data = response.data;
-    if (!data?.status) {
-      const error = new Error(data?.message || "Paystack initialization failed");
-      error.statusCode = 502;
-      throw error;
-    }
-
-    return {
-      authorization_url: data.data.authorization_url,
-      access_code: data.data.access_code,
-      reference: data.data.reference,
-      amount: parsedAmount,
+    const schoolId = metadata?.schoolId;
+    const subaccount = await getSchoolSubaccountCode(schoolId);
+    const body = {
+      email,
+      amount: Math.round(parsedAmount * 100),
+      reference: reference || buildReference(),
+      metadata: { userId, ...metadata },
+      callback_url: resolveCallbackUrl(callbackUrl),
+      ...(subaccount ? { subaccount, bearer: "subaccount" } : {}),
     };
+
+    const response = await paystackClient.post("/transaction/initialize", body, {
+      headers: getPaystackHeaders(),
+      retryable: false,
+    });
+
+    const data = assertPaystackResponse(response, "Paystack initialization failed");
+    return {
+      authorization_url: data.authorization_url,
+      access_code: data.access_code,
+      reference: data.reference,
+      amount: parsedAmount,
+      subaccount: subaccount || null,
+    };
+  },
+
+  createCustomer: async ({ email, firstName, lastName, phone, metadata = {} }) => {
+    const response = await paystackClient.post("/customer", {
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      ...(phone ? { phone } : {}),
+      metadata,
+    }, { headers: getPaystackHeaders(), retryable: false });
+    return assertPaystackResponse(response, "Paystack customer creation failed");
+  },
+
+  createSubaccount: async ({ businessName, bankCode, accountNumber, percentageCharge = 0, description, primaryContactEmail, primaryContactName, primaryContactPhone, metadata = {} }) => {
+    const response = await paystackClient.post("/subaccount", {
+      business_name: businessName,
+      bank_code: bankCode,
+      account_number: accountNumber,
+      percentage_charge: percentageCharge,
+      ...(description ? { description } : {}),
+      ...(primaryContactEmail ? { primary_contact_email: primaryContactEmail } : {}),
+      ...(primaryContactName ? { primary_contact_name: primaryContactName } : {}),
+      ...(primaryContactPhone ? { primary_contact_phone: primaryContactPhone } : {}),
+      metadata: JSON.stringify(metadata),
+    }, { headers: getPaystackHeaders(), retryable: false });
+    return assertPaystackResponse(response, "Paystack subaccount creation failed");
+  },
+
+  resolveBankAccount: async (accountNumber, bankCode) => {
+    const response = await paystackClient.get(`/bank/resolve?account_number=${encodeURIComponent(accountNumber)}&bank_code=${encodeURIComponent(bankCode)}`, {
+      headers: getPaystackHeaders(),
+    });
+    const data = assertPaystackResponse(response, "Unable to verify the settlement bank account");
+    return {
+      accountNumber: data.account_number,
+      accountName: data.account_name,
+      bankId: data.bank_id,
+      bankName: data.bank_name || null,
+    };
+  },
+
+  createDedicatedVirtualAccount: async ({ customer, preferredBank, subaccount }) => {
+    const response = await paystackClient.post("/dedicated_account", {
+      customer,
+      preferred_bank: preferredBank,
+      ...(subaccount ? { subaccount } : {}),
+    }, { headers: getPaystackHeaders(), retryable: false });
+    return assertPaystackResponse(response, "Paystack dedicated virtual account creation failed");
   },
 
   verifySignature: (rawBody, signatureHeader) => {
