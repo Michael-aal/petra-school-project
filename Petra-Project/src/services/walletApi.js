@@ -15,6 +15,13 @@ export const walletApi = {
     const query = new URLSearchParams(params || {}).toString();
     return request(`/api/wallet/statement?${query}`, { method: "GET" });
   },
+  getSchoolPaymentAccount: () =>
+    request("/api/wallet/school-payment-account", { method: "GET" }),
+  setupSchoolPaymentAccount: (payload) =>
+    request("/api/wallet/school-payment-account", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   setWithdrawalPin: (pin) =>
     request("/api/wallet/withdrawal-pin", {
       method: "POST",
