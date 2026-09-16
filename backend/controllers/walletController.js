@@ -1,9 +1,27 @@
 import { walletService } from "../services/walletService.js";
 
+const sanitizeWalletResponse = (wallet) => {
+  if (!wallet) return wallet;
+  const { notificationPreferences, ...safeWallet } = wallet;
+  const configured = Boolean(
+    notificationPreferences &&
+      typeof notificationPreferences === "object" &&
+      !Array.isArray(notificationPreferences) &&
+      notificationPreferences.withdrawalPinHash,
+  );
+  return { wallet: safeWallet, withdrawalPinConfigured: configured };
+};
+
 export const getWallet = async (req, res, next) => {
   try {
     const data = await walletService.getWalletSummary(req.user.id, req.user.email);
-    return res.status(200).json({ success: true, ...data });
+    const safe = sanitizeWalletResponse(data.wallet);
+    return res.status(200).json({
+      success: true,
+      ...data,
+      ...safe,
+      summary: { ...data.summary, withdrawalPinConfigured: safe.withdrawalPinConfigured },
+    });
   } catch (error) {
     next(error);
   }
@@ -71,7 +89,7 @@ export const withdrawWallet = async (req, res, next) => {
       success: true,
       duplicate: result.duplicate,
       transaction: result.transaction,
-      wallet: result.wallet,
+      wallet: sanitizeWalletResponse(result.wallet).wallet,
       message: result.duplicate
         ? "The withdrawal request was already received; no second withdrawal was created."
         : "Withdrawal request created successfully and is pending processing.",
