@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { prisma } from "../config/db.js";
 import { hashPassword } from "../utils/hashPassword.js";
+import { sendTeacherApplicationDecisionEmail } from "./emailService.js";
 
 const clean = (value) => {
   if (value === undefined || value === null) return null;
@@ -126,17 +127,6 @@ const createApprovedTeacher = async (tx, application) => {
   return { teacher, user, invitation };
 };
 
-const selectReviewRows = (whereSql) => `
-  SELECT ta.*,
-    (SELECT si."registrationCode" FROM "StaffInvitation" si
-      WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
-    (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
-  FROM "TeacherApplication" ta
-  LEFT JOIN "User" u ON lower(u.email) = lower(ta.email)
-    AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
-  ${whereSql}
-`;
-
 export const teacherApplicationService = {
   create: async ({ schoolId, payload }) => {
     const id = `ta_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -219,43 +209,83 @@ export const teacherApplicationService = {
     return normalizeRow(rows[0]);
   },
 
-  updateStatus: async ({ id, status }) => {
+  updateStatus: async ({ id, status, schoolId }) => {
     const allowed = new Set(["pending", "shortlisted", "rejected", "approved"]);
     const nextStatus = clean(status)?.toLowerCase();
+    const tenantId = Number(schoolId);
+    if (!Number.isInteger(tenantId) || tenantId <= 0) throw Object.assign(new Error("School context is required."), { statusCode: 403 });
     if (!allowed.has(nextStatus)) throw Object.assign(new Error("Invalid teacher application status."), { statusCode: 400 });
+
+    let result;
 
     if (nextStatus !== "approved") {
       const rows = await prisma.$queryRaw`
         UPDATE "TeacherApplication" SET "status" = ${nextStatus}, "updatedAt" = CURRENT_TIMESTAMP
-        WHERE "id" = ${String(id)} RETURNING *
+        WHERE "id" = ${String(id)} AND "schoolId" = ${tenantId} RETURNING *
       `;
       if (!rows.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
-      return normalizeRow(rows[0]);
+      result = normalizeRow(rows[0]);
+    } else {
+      result = await prisma.$transaction(async (tx) => {
+        const locked = await tx.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} AND "schoolId" = ${tenantId} FOR UPDATE`;
+        if (!locked.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
+
+        const application = locked[0];
+        if (String(application.status).toLowerCase() === "approved") {
+          const existingRows = await tx.$queryRaw`
+            SELECT ta.*,
+              (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+              (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
+            FROM "TeacherApplication" ta
+            LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+            WHERE ta."id" = ${String(id)} AND ta."schoolId" = ${tenantId} LIMIT 1
+          `;
+          return normalizeRow(existingRows[0]);
+        }
+
+        const { teacher, invitation } = await createApprovedTeacher(tx, application);
+        await tx.$executeRaw`UPDATE "TeacherApplication" SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${String(id)} AND "schoolId" = ${tenantId}`;
+
+        const updatedRows = await tx.$queryRaw`
+          SELECT ta.*,
+            (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
+            (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
+          FROM "TeacherApplication" ta
+          LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
+          WHERE ta."id" = ${String(id)} AND ta."schoolId" = ${tenantId} LIMIT 1
+        `;
+
+        return {
+          ...normalizeRow(updatedRows[0]),
+          teacherId: teacher.id,
+          registrationCode: invitation.registrationCode,
+          registrationPath: `/register/staff?token=${encodeURIComponent(invitation.registrationCode)}`,
+        };
+      });
     }
 
-    return prisma.$transaction(async (tx) => {
-      const locked = await tx.$queryRaw`SELECT * FROM "TeacherApplication" WHERE "id" = ${String(id)} FOR UPDATE`;
-      if (!locked.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
+    // Email is deliberately sent AFTER the database status/approval operation
+    // succeeds. A provider failure must never undo a successful decision.
+    try {
+      const school = await prisma.school.findUnique({ where: { id: tenantId }, select: { id: true, name: true, logo: true, website: true } });
+      if (school) {
+        await sendTeacherApplicationDecisionEmail({
+          school,
+          application: result,
+          status: nextStatus,
+          registrationCode: result.registrationCode,
+          registrationPath: result.registrationPath,
+        });
+      }
+    } catch (emailError) {
+      console.error("Teacher application decision email failed", {
+        applicationId: id,
+        schoolId: tenantId,
+        status: nextStatus,
+        error: emailError?.message || emailError,
+      });
+    }
 
-      const application = locked[0];
-      const { teacher, invitation } = await createApprovedTeacher(tx, application);
-      await tx.$executeRaw`UPDATE "TeacherApplication" SET "status" = 'approved', "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${String(id)}`;
-
-      const updatedRows = await tx.$queryRaw`
-        SELECT ta.*,
-          (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
-          (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
-        FROM "TeacherApplication" ta
-        LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
-        WHERE ta."id" = ${String(id)} LIMIT 1
-      `;
-
-      return {
-        ...normalizeRow(updatedRows[0]),
-        teacherId: teacher.id,
-        registrationCode: invitation.registrationCode,
-        registrationPath: `/register/staff?token=${encodeURIComponent(invitation.registrationCode)}`,
-      };
-    });
+    return result;
   },
 };
