@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { prisma } from "../config/db.js";
 import { paystackService } from "./paystackService.js";
+import { isPaystackTestMode, shouldProvisionSettlementSubaccount } from "../utils/paystackProvisioningMode.js";
 
 const requireSchool = (user) => {
   const schoolId = Number(user?.schoolId);
@@ -19,6 +20,7 @@ const mapAccount = (row) => row ? ({
   status: row.status,
   paystackCustomerCode: row.paystackCustomerCode,
   paystackSubaccountCode: row.paystackSubaccountCode,
+  testMode: row.dvaProviderSlug === "test-bank" || !row.paystackSubaccountCode,
   dva: row.dvaAccountNumber ? {
     id: row.dvaId,
     accountNumber: row.dvaAccountNumber,
@@ -72,13 +74,18 @@ export const schoolPaymentAccountService = {
     }
 
     const existing = await getAccount(schoolId);
-    if (existing?.status === "active" && existing?.dvaAccountNumber && existing?.paystackSubaccountCode) {
+    const sandbox = isPaystackTestMode();
+    const hasUsableExistingAccount = existing?.status === "active"
+      && existing?.dvaAccountNumber
+      && existing?.paystackCustomerCode
+      && (sandbox || existing?.paystackSubaccountCode);
+    if (hasUsableExistingAccount) {
       return mapAccount(existing);
     }
 
     const bankCode = String(payload.bankCode || "").trim();
     const accountNumber = String(payload.accountNumber || "").trim();
-    if (!/^\d{10}$/.test(accountNumber) || !bankCode) {
+    if (!/^\d{10}$/.test(accountNumber) || !/^\d+$/.test(bankCode)) {
       const error = new Error("A valid 10-digit settlement bank account number and bank code are required");
       error.statusCode = 400;
       throw error;
@@ -97,17 +104,24 @@ export const schoolPaymentAccountService = {
       throw error;
     }
 
-    const subaccount = await paystackService.createSubaccount({
-      businessName: school.name,
-      bankCode,
-      accountNumber,
-      percentageCharge,
-      description: `Petra school account for school ${schoolId}`,
-      primaryContactEmail: contactEmail || undefined,
-      primaryContactName: contactName || undefined,
-      primaryContactPhone: contactPhone || undefined,
-      metadata: { schoolId: String(schoolId), product: "petra-school-payments" },
-    });
+    // Paystack's current test-mode documentation does not provide a stable
+    // subaccount settlement credential. Test mode can still exercise the
+    // customer + dedicated virtual account flow, while real settlement
+    // subaccount creation is reserved for live mode where the school's real
+    // settlement account is verified by Paystack.
+    const subaccount = shouldProvisionSettlementSubaccount()
+      ? await paystackService.createSubaccount({
+        businessName: school.name,
+        bankCode,
+        accountNumber,
+        percentageCharge,
+        description: `Petra school account for school ${schoolId}`,
+        primaryContactEmail: contactEmail || undefined,
+        primaryContactName: contactName || undefined,
+        primaryContactPhone: contactPhone || undefined,
+        metadata: { schoolId: String(schoolId), product: "petra-school-payments" },
+      })
+      : null;
 
     const customer = await paystackService.createCustomer({
       email: contactEmail || user.email,
@@ -118,18 +132,18 @@ export const schoolPaymentAccountService = {
     });
 
     const preferredBank = process.env.PAYSTACK_DVA_PROVIDER
-      || (String(process.env.PAYSTACK_SECRET_KEY || "").startsWith("sk_test_") ? "test-bank" : "titan-paystack");
+      || (sandbox ? "test-bank" : "titan-paystack");
 
     const dva = await paystackService.createDedicatedVirtualAccount({
       customer: customer.customer_code,
       preferredBank,
-      subaccount: subaccount.subaccount_code,
+      ...(subaccount?.subaccount_code ? { subaccount: subaccount.subaccount_code } : {}),
     });
 
     const id = existing?.id || crypto.randomUUID();
-    const settlementAccountName = subaccount.account_name || null;
-    const settlementBankName = subaccount.settlement_bank || null;
-    const settlementSchedule = subaccount.settlement_schedule || "AUTO";
+    const settlementAccountName = subaccount?.account_name || null;
+    const settlementBankName = subaccount?.settlement_bank || null;
+    const settlementSchedule = subaccount?.settlement_schedule || "AUTO";
 
     const rows = await prisma.$queryRaw`
       INSERT INTO "SchoolPaymentAccount" (
@@ -139,7 +153,7 @@ export const schoolPaymentAccountService = {
         "settlementAccountNumber", "settlementAccountName", "settlementSchedule"
       ) VALUES (
         ${id}, ${schoolId}, ${user.id}, 'active', ${customer.id}, ${customer.customer_code},
-        ${subaccount.subaccount_code}, ${subaccount.id}, ${dva.id}, ${dva.account_number}, ${dva.account_name},
+        ${subaccount?.subaccount_code || null}, ${subaccount?.id || null}, ${dva.id}, ${dva.account_number}, ${dva.account_name},
         ${dva.bank?.name || null}, ${dva.bank?.id ? String(dva.bank.id) : preferredBank}, ${dva.bank?.slug || preferredBank},
         ${bankCode}, ${settlementBankName}, ${accountNumber},
         ${settlementAccountName}, ${settlementSchedule}
