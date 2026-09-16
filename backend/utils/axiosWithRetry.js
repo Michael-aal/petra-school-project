@@ -48,6 +48,20 @@ export const createResilientProviderClient = ({
     try {
       return await client.request({ ...config, timeout: configuredTimeout });
     } catch (error) {
+      const status = error?.response?.status;
+      const providerData = error?.response?.data;
+      const providerMessage = providerData?.message || error?.message || "External provider request failed";
+
+      // Preserve the provider failure details at the service boundary. This is
+      // especially important for provider-auth failures: a generic Axios 401
+      // does not identify which endpoint rejected the credential.
+      const diagnostic = `[${provider}] ${config.method?.toUpperCase?.() || "REQUEST"} ${endpoint} failed (${status || "no status"}): ${providerMessage}`;
+      error.provider = provider;
+      error.providerEndpoint = endpoint;
+      error.providerStatus = status || null;
+      error.providerMessage = providerMessage;
+      error.message = diagnostic;
+
       await logAudit({
         action: "external_api.failure",
         actionType: "EXTERNAL_API_ERROR",
@@ -56,7 +70,9 @@ export const createResilientProviderClient = ({
           metadata: {
             provider,
             endpoint,
-            error: error?.message || "External provider request failed",
+            status: status || null,
+            providerMessage,
+            error: diagnostic,
             retryCount: Number(error?.retryCount || error?.config?.metadata?.retryCount || 0),
           },
         },
