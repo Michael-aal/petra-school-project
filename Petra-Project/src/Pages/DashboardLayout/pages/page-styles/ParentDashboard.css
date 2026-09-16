@@ -284,3 +284,185 @@ body.dark .parent-list-item {
 body.dark .parent-hero-card {
   background: var(--dashboard-card-bg);
 }
+
+/* Parent portal visual layer: warm, focused, and deliberately quieter than the school admin workspace. */
+.parent-dashboard {
+  --parent-orange: #e8752f;
+  --parent-orange-dark: #bd5318;
+  --parent-orange-soft: #fff2e8;
+  --parent-ink: #1f2933;
+  --parent-muted: #6f7b87;
+  --parent-line: #e7e2dc;
+  background: #f7f8f7;
+}
+
+.parent-dashboard .dashboard-shell-header {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--parent-line);
+  background: linear-gradient(112deg, #fffaf6 0%, #ffffff 64%);
+  box-shadow: 0 12px 30px rgba(42, 35, 27, 0.06);
+}
+
+.parent-dashboard .dashboard-shell-header::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -78px;
+  top: -94px;
+  border: 22px solid rgba(232, 117, 47, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.parent-dashboard .dashboard-shell-eyebrow,
+.parent-dashboard .dashboard-widget-kicker {
+  color: var(--parent-orange-dark);
+}
+
+.parent-dashboard .dashboard-shell-header-copy h1,
+.parent-dashboard .dashboard-widget h3,
+.parent-dashboard .dashboard-stat-card-content strong {
+  color: var(--parent-ink);
+}
+
+.parent-dashboard .dashboard-shell-pill,
+.parent-dashboard .parent-pill,
+.parent-dashboard .parent-chip {
+  border-color: #ffd8bf;
+  background: var(--parent-orange-soft);
+  color: var(--parent-orange-dark);
+}
+
+.parent-dashboard .dashboard-shell-link,
+.parent-dashboard .dashboard-empty-action,
+.parent-dashboard .module-button:not(.ghost) {
+  background: var(--parent-orange);
+  border-color: var(--parent-orange);
+}
+
+.parent-dashboard .dashboard-shell-link:hover,
+.parent-dashboard .dashboard-empty-action:hover,
+.parent-dashboard .module-button:not(.ghost):hover {
+  background: var(--parent-orange-dark);
+  border-color: var(--parent-orange-dark);
+}
+
+.parent-dashboard .parent-summary-grid {
+  gap: 14px;
+}
+
+.parent-dashboard .dashboard-stat-card {
+  min-height: 132px;
+  border-color: var(--parent-line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(42, 35, 27, 0.045);
+}
+
+.parent-dashboard .dashboard-stat-card-icon,
+.parent-dashboard .dashboard-quick-action-icon,
+.parent-dashboard .dashboard-empty-icon {
+  background: var(--parent-orange-soft);
+  color: var(--parent-orange-dark);
+}
+
+.parent-dashboard .dashboard-stat-card-trend {
+  color: var(--parent-orange-dark);
+  background: var(--parent-orange-soft);
+}
+
+.parent-dashboard .dashboard-widget {
+  border-color: var(--parent-line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(42, 35, 27, 0.045);
+}
+
+.parent-dashboard .dashboard-quick-action,
+.parent-dashboard .parent-list-item {
+  border-color: var(--parent-line);
+  background: #fff;
+}
+
+.parent-dashboard .dashboard-quick-action:hover {
+  border-color: #ffc6a3;
+  background: #fffaf7;
+}
+
+.parent-dashboard .parent-list-item {
+  border-radius: 12px;
+  padding: 14px 15px;
+}
+
+.parent-dashboard .parent-child-picker-wrap {
+  margin-bottom: 16px;
+}
+
+.parent-dashboard .parent-child-picker {
+  margin-bottom: 0;
+  border-color: #ffd8bf;
+  background: #fffaf7;
+}
+
+.parent-dashboard .parent-child-select {
+  min-width: 190px;
+}
+
+.parent-dashboard .parent-list-item.is-selected {
+  border-left: 3px solid var(--parent-orange);
+  padding-left: 13px;
+}
+
+.parent-dashboard .parent-live-note {
+  padding: 10px 13px;
+  border: 1px solid #ffd8bf;
+  border-radius: 10px;
+  background: #fffaf7;
+  color: var(--parent-orange-dark);
+  font-size: 0.82rem;
+}
+
+.parent-dashboard select,
+.parent-dashboard input:not([type="checkbox"]),
+.parent-dashboard textarea {
+  min-height: 42px;
+  border: 1px solid var(--parent-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--parent-ink);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.parent-dashboard select:focus,
+.parent-dashboard input:focus,
+.parent-dashboard textarea:focus {
+  border-color: var(--parent-orange);
+  outline: 3px solid rgba(232, 117, 47, 0.14);
+}
+
+.parent-dashboard .dashboard-alert {
+  border-radius: 12px;
+}
+
+.parent-dashboard .dashboard-alert.error {
+  border-color: #f2c0b0;
+  background: #fff7f4;
+  color: #9c3f25;
+}
+
+@media (max-width: 640px) {
+  .parent-dashboard .dashboard-shell-header-actions {
+    align-items: stretch;
+  }
+
+  .parent-dashboard .dashboard-shell-pill,
+  .parent-dashboard .dashboard-shell-link {
+    justify-content: center;
+  }
+
+  .parent-dashboard .parent-child-select {
+    width: 100%;
+    min-width: 0;
+  }
+}
