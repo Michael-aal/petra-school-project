@@ -6,10 +6,6 @@ export const request = async (path, options = {}, retryAuth = true) => {
     ...(options.headers || {}),
   };
 
-  // Dashboard requests must remain bound to the current browser tab. A tab
-  // marker is sent even when its short-lived access token is temporarily
-  // unavailable, which prevents the backend from selecting another tab's
-  // shared HttpOnly cookie.
   const tabToken = readAuthToken();
   if (tabToken && !headers.Authorization && !headers.authorization) {
     headers.Authorization = `Bearer ${tabToken}`;
@@ -39,21 +35,20 @@ export const request = async (path, options = {}, retryAuth = true) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    // A dashboard request can hit a normal 15-minute access-token expiry.
-    // Refresh the credentials belonging ONLY to this browser tab, then retry
-    // the original request once. Never clear the tab's refresh credential here.
     if (response.status === 401 && retryAuth && isTabAuthMode() && !path.includes("/api/auth/refresh")) {
       try {
         await authApi.refresh();
         return request(path, options, false);
       } catch {
-        // The refresh token is invalid/revoked; surface the original 401 below.
+        // This tab's session is no longer refreshable. Remove its tab
+        // credentials before retrying so the normal HttpOnly cookie session
+        // can authenticate the request instead of sending a stale tab marker.
+        clearAuthToken();
+        return request(path, options, false);
       }
     }
 
     if (response.status === 401) {
-      // Clear only the access token. Keep tab-auth mode and the refresh token
-      // so another request cannot fall through to a different tab's cookie.
       try {
         window.sessionStorage.removeItem("petra_tab_access");
       } catch {
