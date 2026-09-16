@@ -35,7 +35,12 @@ const rollbackFailedHistoricalMigrations = async (prisma) => {
         `SELECT "finished_at", "rolled_back_at" FROM "_prisma_migrations" WHERE "migration_name" = '${migrationName.replaceAll("'", "''")}' LIMIT 1`,
       );
     } catch (error) {
-      if (error?.code === "P2010" && /_prisma_migrations.*does not exist/i.test(String(error?.message))) {
+      const message = String(error?.message || "");
+      const missingLedger =
+        error?.code === "P2021" ||
+        (error?.code === "P2010" && /_prisma_migrations.*does not exist|relation .*_prisma_migrations.*does not exist/i.test(message));
+
+      if (missingLedger) {
         // A fresh database has no Prisma migration ledger yet; migrate deploy will create it.
         return;
       }
@@ -87,7 +92,7 @@ const main = async () => {
   deployWithHistoricalMigrationsSkipped();
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (path.resolve(process.argv[1] || "") === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
     console.error(error);
     process.exitCode = 1;
