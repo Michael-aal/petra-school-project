@@ -113,6 +113,7 @@ function Payment() {
     } catch (requestError) {
       if (requestError.status === 401) {
         navigate("/signin", { replace: true });
+        paymentRequestLock.current = false;
         return;
       }
       setError(requestError.data?.message || requestError.message || "Unable to initialize payment.");
@@ -172,7 +173,7 @@ function Payment() {
             {verifiedStudent && <div className="summary-student"><span>Student</span><strong>{verifiedStudent.name || "Student"}</strong><small>{verifiedStudent.className || "Class not assigned"}</small></div>}
             <div className="summary-items">{selectedFeeItems.length ? feeStructures.filter((fee) => selectedFees[fee.id]).map((fee) => { const quantity = fee.quantityRequired ? Number(selectedFees[fee.id]) || 1 : 1; return <div className="summary-item" key={fee.id}><div><span>{fee.name || fee.category || "School fee"}</span>{quantity > 1 && <small>{quantity} × {formatMoney(fee.amount)}</small>}</div><strong>{formatMoney(Number(fee.amount) * quantity)}</strong></div>; }) : <div className="summary-empty"><span>No items selected</span><small>Select a fee to see it here.</small></div>}</div>
             <div className="summary-total"><span>Total amount</span><strong>{formatMoney(totalAmount)}</strong></div>
-            <button type="button" className="pay-button" onClick={continuePayment} disabled={processingPayment || paymentRequestLock.current || !verifiedStudent || !selectedFeeItems.length}>{processingPayment ? <><span className="button-spinner" />Processing...</> : <>Pay {formatMoney(totalAmount)}<span>→</span></>}</button>
+            <button type="button" className="pay-button" onClick={continuePayment} disabled={processingPayment || !verifiedStudent || !selectedFeeItems.length}>{processingPayment ? <><span className="button-spinner" />Processing...</> : <>Pay {formatMoney(totalAmount)}<span>→</span></>}</button>
             <div className="paystack-note"><span className="paystack-dot" />Secured by Paystack</div>
           </div></aside>
         </div>
