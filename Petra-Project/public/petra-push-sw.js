@@ -45,7 +45,7 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("push", (event) => {
   event.waitUntil((async () => {
-    let payload = {};
+    let payload;
     try {
       payload = event.data ? event.data.json() : {};
     } catch {
