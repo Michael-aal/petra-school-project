@@ -26,10 +26,6 @@ const initialForm = {
 };
 
 export default function Register({ rolePreset = "" }) {
-  if (rolePreset === "teacher") {
-    return <TeacherApplicationForm />;
-  }
-
   const { userInfo, setUserInfo } = useContext(UserContext);
   const [form, setForm] = useState(() => ({ ...initialForm, role: rolePreset || "" }));
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +49,10 @@ export default function Register({ rolePreset = "" }) {
   useEffect(() => {
     setForm((current) => ({ ...current, role: rolePreset || current.role }));
   }, [rolePreset]);
+
+  if (rolePreset === "teacher") {
+    return <TeacherApplicationForm />;
+  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
