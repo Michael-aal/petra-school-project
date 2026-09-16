@@ -34,10 +34,9 @@ const ensureTabId = () => {
   } catch { return "unavailable"; }
 };
 
-// A browser having sessionStorage does not mean the tab is using tab-scoped
-// authentication. Only opt into the tab-auth transport when this tab actually
-// has Petra tab credentials. This preserves normal HttpOnly-cookie sessions
-// for tabs whose login flow has not populated tab credentials yet.
+// sessionStorage exists in every browser tab, but a tab should only opt into
+// Petra's tab-scoped authentication transport when it actually has tab
+// credentials. Otherwise the normal HttpOnly cookie session must remain usable.
 export const isTabAuthMode = () => Boolean(getTabStorage()?.getItem(TAB_ACCESS_KEY) || getTabStorage()?.getItem(TAB_REFRESH_KEY));
 export const readAuthToken = () => getTabStorage()?.getItem(TAB_ACCESS_KEY) || null;
 export const writeAuthToken = (token) => {
@@ -95,15 +94,14 @@ async function request(path, options = {}, { tabCredential = true, retryAuth = t
   const token = tabCredential ? readAuthToken() : null;
   const refreshToken = tabCredential ? readTabRefreshToken() : null;
 
-  if (tabCredential && !token && !path.includes("/api/auth/refresh")) {
-    if (retryAuth && refreshToken) {
-      try {
-        await refreshTabAccess();
-        return request(path, options, { tabCredential: true, retryAuth: false });
-      } catch {
-        // Fall through and allow the server's normal cookie authentication
-        // when this browser has a valid HttpOnly session.
-      }
+  if (tabCredential && !token && !path.includes("/api/auth/refresh") && retryAuth && refreshToken) {
+    try {
+      await refreshTabAccess();
+      return request(path, options, { tabCredential: true, retryAuth: false });
+    } catch {
+      // The tab refresh credential is unusable. Drop only tab credentials and
+      // continue with normal HttpOnly-cookie authentication for this session.
+      clearTabCredentials();
     }
   }
 
@@ -119,12 +117,13 @@ async function request(path, options = {}, { tabCredential = true, retryAuth = t
         await refreshTabAccess();
         return request(path, options, { tabCredential: true, retryAuth: false });
       } catch {
-        // Surface the original authentication response below.
+        // Refresh failed. Drop tab credentials and retry once with the normal
+        // cookie session instead of sending the same invalid tab marker again.
+        clearTabCredentials();
+        if (retryAuth) return request(path, options, { tabCredential: false, retryAuth: false });
       }
     }
-    if (response.status === 401 && isTabAuthMode()) {
-      try { getTabStorage()?.removeItem(TAB_ACCESS_KEY); } catch {}
-    }
+    if (response.status === 401 && isTabAuthMode()) clearTabCredentials();
     const error = new Error(data.message || "Request failed");
     error.status = response.status;
     error.data = data;
