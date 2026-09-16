@@ -94,7 +94,7 @@ app.use(helmet({
       frameAncestors: ["'none'"],
       objectSrc: ["'none'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'"],
     },
   },
   hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
