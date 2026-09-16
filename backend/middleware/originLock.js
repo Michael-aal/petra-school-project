@@ -1,3 +1,5 @@
+const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
+
 const isLocalDevelopmentOrigin = (origin) => {
   try {
     const normalized = String(origin || "").trim().replace(/\/+$/, "");
@@ -19,6 +21,13 @@ const isLocalLoadTestRequest = (req) => {
   return isLocalDevelopmentOrigin(origin) && req.get("x-petra-load-test") === "1";
 };
 
+const getAllowedOrigins = () => [
+  process.env.CORS_ORIGIN,
+  process.env.CLIENT_URL,
+  process.env.PUBLIC_FRONTEND_ORIGIN,
+  DEFAULT_PRODUCTION_FRONTEND_ORIGIN,
+].filter(Boolean).map((value) => String(value).trim().replace(/\/+$/, ""));
+
 export const originLock = (req, res, next) => {
   if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
 
@@ -28,12 +37,15 @@ export const originLock = (req, res, next) => {
   if (isDevelopmentLocalOrigin(origin)) return next();
 
   if (origin) {
-    const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL]
-      .filter(Boolean)
-      .map((value) => String(value).trim().replace(/\/+$/, ""));
+    const allowedOrigins = getAllowedOrigins();
     if (!allowedOrigins.includes(origin)) {
       return res.status(403).json({ success: false, message: "Forbidden" });
     }
+
+    // Direct browser requests come from an allow-listed HTTPS frontend. The
+    // browser cannot safely carry Petra's private edge secret, so the secret
+    // remains required for non-browser/server-to-server requests instead.
+    return next();
   }
 
   const configured = String(process.env.ORIGIN_SECRET || "");
