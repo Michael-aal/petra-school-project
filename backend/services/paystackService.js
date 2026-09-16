@@ -133,18 +133,37 @@ export const paystackService = {
       throw error;
     }
 
-    const response = await paystackClient.post("/subaccount", {
-      business_name: businessName,
-      settlement_bank: normalizedBankCode,
-      account_number: normalizedAccountNumber,
-      percentage_charge: percentageCharge,
-      ...(description ? { description } : {}),
-      ...(primaryContactEmail ? { primary_contact_email: primaryContactEmail } : {}),
-      ...(primaryContactName ? { primary_contact_name: primaryContactName } : {}),
-      ...(primaryContactPhone ? { primary_contact_phone: primaryContactPhone } : {}),
-      metadata: JSON.stringify(metadata),
-    }, { headers: getPaystackHeaders(), retryable: false });
-    return assertPaystackResponse(response, "Paystack subaccount creation failed");
+    try {
+      const response = await paystackClient.post("/subaccount", {
+        business_name: businessName,
+        // Paystack's current documentation describes bank_code as the body
+        // parameter while its example payload uses settlement_bank. Sending
+        // both with the same verified code keeps Petra compatible with either
+        // representation without trusting user-supplied bank identifiers.
+        bank_code: normalizedBankCode,
+        settlement_bank: normalizedBankCode,
+        account_number: normalizedAccountNumber,
+        percentage_charge: percentageCharge,
+        ...(description ? { description } : {}),
+        ...(primaryContactEmail ? { primary_contact_email: primaryContactEmail } : {}),
+        ...(primaryContactName ? { primary_contact_name: primaryContactName } : {}),
+        ...(primaryContactPhone ? { primary_contact_phone: primaryContactPhone } : {}),
+        metadata: JSON.stringify(metadata),
+      }, { headers: getPaystackHeaders(), retryable: false });
+      return assertPaystackResponse(response, "Paystack subaccount creation failed");
+    } catch (error) {
+      const providerMessage = String(error?.providerMessage || error?.response?.data?.message || error?.message || "");
+      if (error?.providerStatus === 400 && /account details are invalid/i.test(providerMessage)) {
+        const testMode = String(PAYSTACK_SECRET || "").startsWith("sk_test_");
+        const hint = testMode
+          ? " For Paystack test mode, use the official Subaccount test values from Paystack's Subaccount documentation (Access Bank code 044, account 0193274682), not the transfer-only test pair."
+          : " Verify that the settlement account belongs to the selected bank and that the account is eligible for Paystack subaccounts.";
+        const detailed = new Error(`Paystack rejected the settlement account details.${hint}`);
+        detailed.statusCode = 400;
+        throw detailed;
+      }
+      throw error;
+    }
   },
 
   resolveBankAccount: async (accountNumber, bankCode) => {
