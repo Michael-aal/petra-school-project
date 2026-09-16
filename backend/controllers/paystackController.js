@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import { financeService } from "../services/financeService.js";
+import { walletService } from "../services/walletService.js";
 import { activateAdmittedStudentAfterFeePayment } from "../services/studentActivationService.js";
 import { paystackService } from "../services/paystackService.js";
 import { webhookEventService } from "../services/webhookEventService.js";
@@ -58,10 +59,7 @@ export const handlePaystackWebhook = async (req, res, next) => {
     const providerEventId = payload?.data?.id || payload?.data?.reference
       ? `${payload?.event || "unknown"}:${payload.data.id || payload.data.reference}`
       : null;
-    const eventKey = webhookEventService.eventKey({
-      providerEventId,
-      rawBody,
-    });
+    const eventKey = webhookEventService.eventKey({ providerEventId, rawBody });
     const reserved = await webhookEventService.reserve({ provider: "paystack", eventKey });
     if (!reserved) {
       await webhookLogModel.complete({ provider: "paystack", requestId });
@@ -73,29 +71,38 @@ export const handlePaystackWebhook = async (req, res, next) => {
       const reference = payload?.data?.reference;
 
       if (payload?.event === "charge.success") {
-        if (!reference) {
-          throw Object.assign(new Error("Webhook missing payment reference"), { statusCode: 400 });
-        }
+        if (!reference) throw Object.assign(new Error("Webhook missing payment reference"), { statusCode: 400 });
 
-        const pendingPayment = await prisma.payment.findUnique({
-          where: { reference },
-          select: { id: true, reference: true, amount: true, status: true },
-        });
-        if (!pendingPayment) {
-          throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
-        }
+        // Wallet deposits are provider payments too, but they intentionally do
+        // not have a School Payment row. Route them to the wallet ledger first.
+        if (payload?.data?.metadata?.purpose === "wallet_deposit" || payload?.data?.metadata?.walletUserId) {
+          const verified = await paystackService.verifyTransaction(reference);
+          if (String(verified?.reference || "") !== reference || String(verified?.status || "").toLowerCase() !== "success") {
+            throw Object.assign(new Error("Paystack wallet deposit could not be verified"), { statusCode: 409 });
+          }
+          if (String(verified?.currency || "NGN").toUpperCase() !== "NGN") {
+            throw Object.assign(new Error("Paystack wallet deposit currency is not NGN"), { statusCode: 409 });
+          }
+          result = await walletService.processVerifiedPaystackCharge(verified);
+        } else {
+          const pendingPayment = await prisma.payment.findUnique({
+            where: { reference },
+            select: { id: true, reference: true, amount: true, status: true },
+          });
+          if (!pendingPayment) throw Object.assign(new Error("Payment record not found"), { statusCode: 404 });
 
-        const verified = await paystackService.verifyTransaction(reference);
-        assertVerifiedPaymentMatchesRecord(pendingPayment, verified);
-        result = await financeService.processVerifiedPayment(reference, verified);
+          const verified = await paystackService.verifyTransaction(reference);
+          assertVerifiedPaymentMatchesRecord(pendingPayment, verified);
+          result = await financeService.processVerifiedPayment(reference, verified);
+        }
       } else if (payload?.event === "charge.failed") {
-        if (!reference) {
-          throw Object.assign(new Error("Webhook missing payment reference"), { statusCode: 400 });
-        }
+        if (!reference) throw Object.assign(new Error("Webhook missing payment reference"), { statusCode: 400 });
         result = await financeService.processFailedPayment(
           reference,
           payload?.data?.gateway_response || payload?.data?.failure_message || "Paystack charge failed",
         );
+      } else if (["transfer.success", "transfer.failed", "transfer.reversed"].includes(payload?.event)) {
+        result = await walletService.processTransferWebhook(payload.data);
       } else {
         result = payload;
       }
@@ -105,7 +112,7 @@ export const handlePaystackWebhook = async (req, res, next) => {
       await recordAuditMutation({
         user: null,
         schoolId: result?.schoolId || null,
-        entity: "Payment",
+        entity: payload?.event?.startsWith("transfer.") ? "WalletTransaction" : "Payment",
         entityId: result?.id || payload?.data?.reference || requestId,
         action: `WEBHOOK_${String(payload?.event || "UNKNOWN").toUpperCase()}`,
         actionType: "PAYMENT",
@@ -117,16 +124,12 @@ export const handlePaystackWebhook = async (req, res, next) => {
       throw error;
     }
 
-    // A verified school-fee payment is the final admission gate. Once Paystack
-    // confirms the charge, promote the already-admitted applicant into the
-    // active student/enrollment records used by the student portal.
     if (result?.status === "Successful" && result?.studentId && result?.schoolId) {
       const activation = await activateAdmittedStudentAfterFeePayment({
         schoolId: result.schoolId,
         studentId: result.studentId,
         paymentReference: result.reference,
       });
-
       return res.status(200).json({ success: true, result, activation });
     }
 
