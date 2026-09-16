@@ -34,9 +34,12 @@ import { originLock } from "./middleware/originLock.js";
 
 const app = express();
 app.set("trust proxy", 1);
+const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
 const allowedOrigins = [
   process.env.CORS_ORIGIN,
   process.env.CLIENT_URL,
+  process.env.PUBLIC_FRONTEND_ORIGIN,
+  DEFAULT_PRODUCTION_FRONTEND_ORIGIN,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ].filter(Boolean).map((origin) => origin.trim().replace(/\/+$/, ""));
