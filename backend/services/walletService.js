@@ -6,7 +6,7 @@ import { userModel } from "../models/userModel.js";
 import { paystackService } from "./paystackService.js";
 
 const generateAccountNumber = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
-const buildReference = () => `wallet_tx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+const buildReference = () => `wallet_tx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`.toLowerCase();
 const toDecimal = (value) => value instanceof Prisma.Decimal ? value : new Prisma.Decimal(String(value ?? 0));
 
 const getUser = async (userId, email) => {
@@ -48,9 +48,7 @@ const ensureWallet = async (userId, email) => {
     try {
       wallet = await createWallet(userId, email);
     } catch (error) {
-      if (error?.code === "P2002") {
-        wallet = await walletModel.findByUserId(userId);
-      }
+      if (error?.code === "P2002") wallet = await walletModel.findByUserId(userId);
       if (!wallet) throw error;
     }
   }
@@ -183,8 +181,6 @@ export const walletService = {
       throw error;
     }
 
-    // Resolve the destination before debiting the wallet so a bad account never
-    // creates an irreversible debit.
     const resolvedAccount = await paystackService.resolveBankAccount(String(accountNumber), String(bankCode));
     const destinationName = resolvedAccount.accountName || accountName || "Bank recipient";
     const reference = buildReference();
@@ -264,7 +260,7 @@ export const walletService = {
       const transfer = await paystackService.initiateTransfer({
         amount: Number(amountKobo.toFixed(0)),
         recipient: recipient.recipient_code,
-        reference: result.transaction.reference.toLowerCase(),
+        reference: result.transaction.reference,
         reason: description || "Petra wallet withdrawal",
       });
 
@@ -275,11 +271,7 @@ export const walletService = {
         providerStatus: transfer.status || "pending",
       });
 
-      const updatedTransaction = await prisma.transaction.update({
-        where: { id: result.transaction.id },
-        data: { metadata },
-      });
-
+      const updatedTransaction = await prisma.transaction.update({ where: { id: result.transaction.id }, data: { metadata } });
       return { transaction: updatedTransaction, wallet: await walletModel.findByUserId(userId), duplicate: false };
     } catch (providerError) {
       await prisma.$transaction(async (tx) => {
@@ -287,10 +279,7 @@ export const walletService = {
         if (!current || current.status !== "pending") return;
         await tx.wallet.update({
           where: { id: result.transaction.walletId },
-          data: {
-            balance: { increment: parsedAmount },
-            frozenBalance: { decrement: parsedAmount },
-          },
+          data: { balance: { increment: parsedAmount }, frozenBalance: { decrement: parsedAmount } },
         });
         await tx.transaction.update({
           where: { id: result.transaction.id },
@@ -336,53 +325,49 @@ export const walletService = {
       throw error;
     }
 
-    try {
-      return await prisma.$transaction(async (tx) => {
-        const updatedSender = await tx.wallet.updateMany({
-          where: { id: senderWallet.id, balance: { gte: parsedAmount } },
-          data: { balance: { decrement: parsedAmount } },
-        });
-        if (updatedSender.count !== 1) {
-          const error = new Error("Insufficient balance to transfer");
-          error.statusCode = 400;
-          throw error;
-        }
-
-        await tx.wallet.update({ where: { id: recipientWallet.id }, data: { balance: { increment: parsedAmount } } });
-        await tx.transaction.create({
-          data: {
-            walletId: senderWallet.id,
-            userId,
-            reference: buildReference(),
-            type: "TRANSFER",
-            amount: parsedAmount,
-            status: "completed",
-            description: note || "Sent transfer",
-            source: senderWallet.accountNumber,
-            destination: recipientWallet.accountNumber,
-            metadata: { note, recipient: recipientWallet.accountNumber },
-          },
-        });
-        await tx.transaction.create({
-          data: {
-            walletId: recipientWallet.id,
-            userId: recipientWallet.userId,
-            reference: buildReference(),
-            type: "RECEIVE",
-            amount: parsedAmount,
-            status: "completed",
-            description: note || "Received transfer",
-            source: senderWallet.accountNumber,
-            destination: recipientWallet.accountNumber,
-            metadata: { note, sender: senderWallet.accountNumber },
-          },
-        });
-
-        return tx.wallet.findUnique({ where: { id: senderWallet.id } });
+    return prisma.$transaction(async (tx) => {
+      const updatedSender = await tx.wallet.updateMany({
+        where: { id: senderWallet.id, balance: { gte: parsedAmount } },
+        data: { balance: { decrement: parsedAmount } },
       });
-    } catch (error) {
-      throw error;
-    }
+      if (updatedSender.count !== 1) {
+        const error = new Error("Insufficient balance to transfer");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      await tx.wallet.update({ where: { id: recipientWallet.id }, data: { balance: { increment: parsedAmount } } });
+      await tx.transaction.create({
+        data: {
+          walletId: senderWallet.id,
+          userId,
+          reference: buildReference(),
+          type: "TRANSFER",
+          amount: parsedAmount,
+          status: "completed",
+          description: note || "Sent transfer",
+          source: senderWallet.accountNumber,
+          destination: recipientWallet.accountNumber,
+          metadata: { note, recipient: recipientWallet.accountNumber },
+        },
+      });
+      await tx.transaction.create({
+        data: {
+          walletId: recipientWallet.id,
+          userId: recipientWallet.userId,
+          reference: buildReference(),
+          type: "RECEIVE",
+          amount: parsedAmount,
+          status: "completed",
+          description: note || "Received transfer",
+          source: senderWallet.accountNumber,
+          destination: recipientWallet.accountNumber,
+          metadata: { note, sender: senderWallet.accountNumber },
+        },
+      });
+
+      return tx.wallet.findUnique({ where: { id: senderWallet.id } });
+    });
   },
 
   initializePaystack: async (userId, email, amount) => {
@@ -433,9 +418,9 @@ export const walletService = {
     const amount = new Prisma.Decimal(amountKobo).dividedBy(100);
     const wallet = await ensureWallet(user.id, data?.customer?.email);
 
-    const result = await prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx) => {
       const existing = await tx.transaction.findUnique({ where: { reference } });
-      if (existing) return { wallet: await tx.wallet.findUnique({ where: { id: wallet.id } }), transaction: existing, duplicate: true };
+      if (existing) return { wallet: await tx.wallet.findUnique({ where: { id: wallet.id } }), transaction: existing, duplicate: true, handled: true };
 
       const transaction = await tx.transaction.create({
         data: {
@@ -451,16 +436,9 @@ export const walletService = {
           metadata: data,
         },
       });
-
-      const updatedWallet = await tx.wallet.update({
-        where: { id: wallet.id },
-        data: { balance: { increment: amount } },
-      });
-
-      return { wallet: updatedWallet, transaction, duplicate: false };
+      const updatedWallet = await tx.wallet.update({ where: { id: wallet.id }, data: { balance: { increment: amount } } });
+      return { wallet: updatedWallet, transaction, duplicate: false, handled: true };
     });
-
-    return { ...result, handled: true };
   },
 
   processTransferWebhook: async (data) => {
