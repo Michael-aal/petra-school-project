@@ -145,6 +145,52 @@ export const paystackService = {
     };
   },
 
+  createTransferRecipient: async ({ name, accountNumber, bankCode, description, metadata = {} }) => {
+    const response = await paystackClient.post("/transferrecipient", {
+      type: "nuban",
+      name,
+      account_number: String(accountNumber),
+      bank_code: String(bankCode),
+      currency: "NGN",
+      ...(description ? { description } : {}),
+      metadata,
+    }, { headers: getPaystackHeaders(), retryable: false });
+    return assertPaystackResponse(response, "Unable to create the Paystack transfer recipient");
+  },
+
+  initiateTransfer: async ({ amount, recipient, reference, reason, currency = "NGN" }) => {
+    const parsedAmount = Number(amount);
+    if (!Number.isInteger(parsedAmount) || parsedAmount <= 0) {
+      const error = new Error("Transfer amount must be a positive whole number in the smallest currency unit");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const normalizedReference = String(reference || buildReference()).trim();
+    if (!/^[a-z0-9_-]{16,50}$/.test(normalizedReference)) {
+      const error = new Error("Transfer reference must be 16 to 50 lowercase characters, numbers, hyphens or underscores");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const response = await paystackClient.post("/transfer", {
+      source: "balance",
+      amount: parsedAmount,
+      recipient,
+      reference: normalizedReference,
+      ...(reason ? { reason: String(reason).slice(0, 100) } : {}),
+      currency,
+    }, { headers: getPaystackHeaders(), retryable: false });
+    return assertPaystackResponse(response, "Unable to initiate the Paystack transfer");
+  },
+
+  verifyTransfer: async (reference) => {
+    const response = await paystackClient.get(`/transfer/verify/${encodeURIComponent(reference)}`, {
+      headers: getPaystackHeaders(),
+    });
+    return assertPaystackResponse(response, "Unable to verify the Paystack transfer");
+  },
+
   createDedicatedVirtualAccount: async ({ customer, preferredBank, subaccount }) => {
     const response = await paystackClient.post("/dedicated_account", {
       customer,
