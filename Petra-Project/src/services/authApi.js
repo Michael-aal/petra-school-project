@@ -1,5 +1,5 @@
-const configuredApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "" : "http://localhost:5000");
-if (!configuredApiUrl) throw new Error("VITE_API_URL must be configured for production builds.");
+const DEFAULT_PRODUCTION_API_URL = "https://petra-school-project.onrender.com";
+const configuredApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? DEFAULT_PRODUCTION_API_URL : "http://localhost:5000");
 const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, "");
 const resolveApiBaseUrl = () => {
   if (typeof window === "undefined") return normalizedApiUrl;
@@ -99,8 +99,6 @@ async function request(path, options = {}, { tabCredential = true, retryAuth = t
       await refreshTabAccess();
       return request(path, options, { tabCredential: true, retryAuth: false });
     } catch {
-      // The tab refresh credential is unusable. Drop only tab credentials and
-      // continue with normal HttpOnly-cookie authentication for this session.
       clearTabCredentials();
     }
   }
@@ -117,8 +115,6 @@ async function request(path, options = {}, { tabCredential = true, retryAuth = t
         await refreshTabAccess();
         return request(path, options, { tabCredential: true, retryAuth: false });
       } catch {
-        // Refresh failed. Drop tab credentials and retry once with the normal
-        // cookie session instead of sending the same invalid tab marker again.
         clearTabCredentials();
         if (retryAuth) return request(path, options, { tabCredential: false, retryAuth: false });
       }
