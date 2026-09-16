@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { scopeTenantData, scopeWhere, runWithSchoolContext, UNSCOPED_TENANT_MODEL_ALLOWLIST } from "../config/db.js";
 import { logAudit } from "../utils/auditLog.js";
-import { prisma } from "../config/db.js";
 
 test("tenant guard scopes where clauses to a single school", () => {
   assert.deepEqual(scopeWhere({ id: "student-1" }, 12), { AND: [{ id: "student-1" }, { schoolId: 12 }] });
@@ -21,10 +21,26 @@ test("tenant boundary has an explicit global-model allowlist", () => {
   assert.equal(UNSCOPED_TENANT_MODEL_ALLOWLIST.has("Student"), false);
 });
 
+test("every Prisma model with schoolId is tenant-scoped or explicitly allowlisted", async () => {
+  const schema = await readFile(new URL("../prisma/schema.prisma", import.meta.url), "utf8");
+  const models = [...schema.matchAll(/model\s+(\w+)\s*\{([\s\S]*?)(?=\n\})\n/g)]
+    .map((match) => ({ name: match[1], body: match[2] }))
+    .filter(({ body }) => /(^|\n)\s*schoolId\s+/.test(body))
+    .map(({ name }) => name);
+
+  assert.ok(models.length > 0, "schema should contain school-owned models");
+
+  const unallowlisted = models.filter((model) => UNSCOPED_TENANT_MODEL_ALLOWLIST.has(model));
+  assert.deepEqual(
+    unallowlisted,
+    [],
+    `school-owned models must not be globally allowlisted: ${unallowlisted.join(", ")}`,
+  );
+});
+
 test("runWithSchoolContext sets the active tenant for nested Prisma operations", () => {
   runWithSchoolContext(31, () => {
-    const current = globalThis.prisma;
-    assert.ok(current);
+    assert.ok(globalThis.prisma);
   });
 });
 

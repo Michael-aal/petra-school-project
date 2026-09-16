@@ -44,7 +44,9 @@ jobs:
           cache: npm
           cache-dependency-path: backend/package-lock.json
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
       - name: Verify PostgreSQL readiness
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
