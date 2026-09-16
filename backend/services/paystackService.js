@@ -118,10 +118,25 @@ export const paystackService = {
   },
 
   createSubaccount: async ({ businessName, bankCode, accountNumber, percentageCharge = 0, description, primaryContactEmail, primaryContactName, primaryContactPhone, metadata = {} }) => {
+    const normalizedBankCode = String(bankCode || "").trim();
+    const normalizedAccountNumber = String(accountNumber || "").trim();
+    if (!/^\d{3,10}$/.test(normalizedBankCode) || !/^\d{10}$/.test(normalizedAccountNumber)) {
+      const error = new Error("A valid bank code and 10-digit account number are required for the settlement account");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const resolved = await paystackService.resolveBankAccount(normalizedAccountNumber, normalizedBankCode);
+    if (!resolved?.accountName) {
+      const error = new Error("Unable to verify the settlement account details with Paystack");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const response = await paystackClient.post("/subaccount", {
       business_name: businessName,
-      bank_code: bankCode,
-      account_number: accountNumber,
+      settlement_bank: normalizedBankCode,
+      account_number: normalizedAccountNumber,
       percentage_charge: percentageCharge,
       ...(description ? { description } : {}),
       ...(primaryContactEmail ? { primary_contact_email: primaryContactEmail } : {}),
