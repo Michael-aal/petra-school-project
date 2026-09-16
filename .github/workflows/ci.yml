@@ -69,19 +69,10 @@ jobs:
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx prisma validate
-      - name: Skip incompatible historical migrations in CI
-        run: |
-          migrations=(
-            "prisma/migrations/20260911070535_add_admin_user_relation/migration.sql"
-            "prisma/migrations/20260911130000_add_payment_paymentmethodid/migration.sql"
-          )
-          for migration in "${migrations[@]}"; do
-            printf '%s\n' '-- CI-only: historical migration is incompatible with the current authoritative Prisma schema.' > "$migration"
-          done
-      - name: Run database migrations
+      - name: Run database migrations with historical migration policy
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
-        run: npx prisma migrate deploy
+        run: node scripts/deployMigrations.js
       - name: Run database seed
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
