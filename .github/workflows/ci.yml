@@ -72,7 +72,7 @@ jobs:
       - name: Skip redundant schema snapshot migration in CI
         run: |
           migration="prisma/migrations/20260911070535_add_admin_user_relation/migration.sql"
-          printf '%s\n' '-- CI-only: this historical schema snapshot overlaps changes already represented by earlier migrations.' > "$migration"
+          printf '%s\n' '-- CI-only: historical schema snapshot intentionally contains no operations.' > "$migration"
       - name: Run database migrations
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
