@@ -100,7 +100,7 @@ test("origin lock allows proxied public auth requests without an Origin header",
   process.env.NODE_ENV = previousNodeEnv;
 });
 
-test("origin lock allows authenticated tab session checks without an Origin header", () => {
+test("origin lock allows authenticated proxied API requests without an Origin header", () => {
   const previousNodeEnv = process.env.NODE_ENV;
   const previousSecret = process.env.ORIGIN_SECRET;
   process.env.NODE_ENV = "production";
@@ -111,8 +111,8 @@ test("origin lock allows authenticated tab session checks without an Origin head
   const response = { status: (code) => { status = code; return { json: () => undefined }; } };
   originLock(
     {
-      path: "/auth/me",
-      get: (name) => name === "x-petra-tab-auth" ? "1" : "",
+      path: "/finance/fees",
+      get: (name) => name === "cookie" ? "petra_session=opaque-session-token" : "",
     },
     response,
     () => { passed = true; },
@@ -120,6 +120,50 @@ test("origin lock allows authenticated tab session checks without an Origin head
 
   assert.equal(passed, true);
   assert.equal(status, undefined);
+  process.env.ORIGIN_SECRET = previousSecret;
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
+test("origin lock allows bearer-authenticated proxied API requests without an Origin header", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousSecret = process.env.ORIGIN_SECRET;
+  process.env.NODE_ENV = "production";
+  process.env.ORIGIN_SECRET = "proxy-secret";
+
+  let passed = false;
+  const response = { status: () => ({ json: () => undefined }) };
+  originLock(
+    {
+      path: "/students",
+      get: (name) => name === "authorization" ? "Bearer opaque-token" : "",
+    },
+    response,
+    () => { passed = true; },
+  );
+
+  assert.equal(passed, true);
+  process.env.ORIGIN_SECRET = previousSecret;
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
+test("origin lock still rejects unauthenticated proxied API requests without an Origin header", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousSecret = process.env.ORIGIN_SECRET;
+  process.env.NODE_ENV = "production";
+  process.env.ORIGIN_SECRET = "proxy-secret";
+
+  let status;
+  const response = { status: (code) => { status = code; return { json: () => undefined }; } };
+  originLock(
+    {
+      path: "/students",
+      get: () => "",
+    },
+    response,
+    () => undefined,
+  );
+
+  assert.equal(status, 403);
   process.env.ORIGIN_SECRET = previousSecret;
   process.env.NODE_ENV = previousNodeEnv;
 });

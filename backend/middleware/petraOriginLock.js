@@ -37,6 +37,17 @@ const isLocalLoadTestRequest = (req) => {
   return isLocalDevelopmentOrigin(origin) && req.get("x-petra-load-test") === "1";
 };
 
+const hasAuthenticatedRequestCredential = (req) => {
+  const authorization = String(req.get("authorization") || "").trim();
+  if (/^Bearer\s+\S+/i.test(authorization)) return true;
+
+  const cookieHeader = String(req.get("cookie") || "");
+  return cookieHeader
+    .split(";")
+    .map((item) => item.trim())
+    .some((item) => item.startsWith("petra_session=") && item.length > "petra_session=".length);
+};
+
 const PUBLIC_AUTH_NO_ORIGIN_PATHS = new Set([
   "/auth/login",
   "/auth/register",
@@ -76,22 +87,20 @@ export const originLock = (req, res, next) => {
     return next();
   }
 
-  // Public credential/bootstrap endpoints do not rely on a browser cookie and
-  // may arrive without Origin when Vercel proxies /api/* to Render. CORS still
-  // controls browser cross-origin access, while rate limiting protects these
-  // public endpoints from abuse.
+  // Public credential/bootstrap endpoints may arrive without Origin when
+  // Vercel proxies /api/* to Render. CORS and the endpoint's own rate limiter
+  // still protect these public routes.
   if (PUBLIC_AUTH_NO_ORIGIN_PATHS.has(req.path)) return next();
 
-  // Same-origin browser GETs such as /api/auth/me may legitimately omit the
-  // Origin header. These endpoints have their own authentication/authorization
-  // middleware, so the origin lock must not reject them before auth can run.
-  // Vercel's /api/* rewrite can also remove the browser Origin at the Render
-  // boundary, so treating these protected auth routes as server-to-server
-  // traffic creates a false 403.
-  if (isProtectedAuthPath(req.path)) return next();
+  // Vercel's /api/* rewrite can remove the browser Origin before the request
+  // reaches Render. Authenticated Petra requests are already protected by a
+  // bearer token or the HttpOnly petra_session cookie, and the production
+  // cookie is SameSite=Strict. Do not turn the proxy rewrite into a false 403.
+  // The credential itself is still validated by authMiddleware/tenantGuard.
+  if (hasAuthenticatedRequestCredential(req)) return next();
 
-  // Server-to-server requests without a browser Origin must prove knowledge
-  // of the private origin secret. Browser requests never need this secret.
+  // Keep rejecting unauthenticated server-to-server requests without a known
+  // Origin unless they prove knowledge of the private origin secret.
   const configured = String(process.env.ORIGIN_SECRET || "");
   const supplied = String(req.get("x-origin-secret") || "");
   if (!configured || supplied.length !== configured.length) {
