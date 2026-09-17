@@ -78,6 +78,28 @@ test("origin lock allows Petra Vercel team deployment origins", () => {
   process.env.NODE_ENV = previousNodeEnv;
 });
 
+test("origin lock allows proxied public auth requests without an Origin header", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousSecret = process.env.ORIGIN_SECRET;
+  process.env.NODE_ENV = "production";
+  process.env.ORIGIN_SECRET = "proxy-secret";
+
+  let passed = false;
+  const response = { status: () => ({ json: () => undefined }) };
+  originLock(
+    {
+      path: "/auth/login",
+      get: () => "",
+    },
+    response,
+    () => { passed = true; },
+  );
+
+  assert.equal(passed, true);
+  process.env.ORIGIN_SECRET = previousSecret;
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
 test("session cookie remains HttpOnly and does not expose a Domain", () => {
   assert.equal(authCookieOptions.httpOnly, true);
   assert.equal(authCookieOptions.sameSite, "strict");
