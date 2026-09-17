@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { originLock } from "../middleware/originLock.js";
+import { originLock } from "../middleware/petraOriginLock.js";
 import { authCookieOptions } from "../controllers/authController.js";
 
 test("origin lock rejects an unapproved browser origin", () => {
