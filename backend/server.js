@@ -4,7 +4,7 @@ import app from "./app.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import { closeQueues } from "./jobs/queue.js";
 import { closeRateLimiter } from "./middleware/rateLimiter.js";
-import { closeRedis } from "./config/redis.js";
+import { closeRedis, connectRedis } from "./config/redis.js";
 import { sessionService } from "./services/sessionService.js";
 import { startNotificationPushWatcher, stopNotificationPushWatcher } from "./services/notificationPushWatcher.js";
 
@@ -13,6 +13,7 @@ let isShuttingDown = false;
 
 const start = async () => {
   await connectDB();
+  await connectRedis();
   startNotificationPushWatcher();
   server = app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
