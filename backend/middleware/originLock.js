@@ -1,3 +1,4 @@
+const PRIMARY_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project.vercel.app";
 const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
 const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?-michael-aals-projects\.vercel\.app$/i;
 
@@ -15,7 +16,10 @@ const isDevelopmentLocalOrigin = (origin) => {
   return isLocalDevelopmentOrigin(origin) && process.env.NODE_ENV !== "production";
 };
 
-const isPetraVercelOrigin = (origin) => PETRA_VERCEL_ORIGIN.test(String(origin || "").trim().replace(/\/+$/, ""));
+const isPetraVercelOrigin = (origin) => {
+  const normalizedOrigin = String(origin || "").trim().replace(/\/+$/, "");
+  return normalizedOrigin === PRIMARY_PRODUCTION_FRONTEND_ORIGIN || PETRA_VERCEL_ORIGIN.test(normalizedOrigin);
+};
 
 const isLocalLoadTestRequest = (req) => {
   if (process.env.NODE_ENV === "production") return false;
@@ -28,6 +32,7 @@ const getAllowedOrigins = () => [
   process.env.CORS_ORIGIN,
   process.env.CLIENT_URL,
   process.env.PUBLIC_FRONTEND_ORIGIN,
+  PRIMARY_PRODUCTION_FRONTEND_ORIGIN,
   DEFAULT_PRODUCTION_FRONTEND_ORIGIN,
 ].filter(Boolean).map((value) => String(value).trim().replace(/\/+$/, ""));
 
