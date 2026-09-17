@@ -4,14 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "predev": "prisma migrate deploy && prisma generate",
+    "predev": "node scripts/deployMigrations.js && prisma generate",
     "dev": "nodemon server.js",
-    "prestart": "prisma generate",
+    "prestart": "node scripts/deployMigrations.js && prisma generate",
     "start": "node server.js",
     "worker": "node jobs/worker.js",
-    "postinstall": "prisma generate",
     "test": "cross-env NODE_ENV=test node --test ./tests/**/*.test.js",
-    "test:security": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
+    "test:security": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "test:load": "node scripts/load-test.mjs",
     "test:stress": "node scripts/load-test.mjs",
     "db:validate": "prisma validate",
@@ -28,11 +27,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "homepage": "https://github.com/Michael-aal/petra-school-project#readme",
   "bugs": {
     "url": "https://github.com/Michael-aal/petra-school-project/issues"
   },
-  "homepage": "https://github.com/Michael-aal/petra-school-project#readme",
+  "type": "module",
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
@@ -49,17 +48,16 @@
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.11.0",
-    "node-fetch": "^3.3.2",
     "nodemailer": "^10.0.10",
     "opossum": "^10.0.0",
     "pino": "^10.0.0",
     "pino-pretty": "^13.1.3",
     "prom-client": "^15.1.3",
     "rate-limit-redis": "^6.0.0",
-    "rate-limiter-flexible": "^11.2.0",
+    "rate-limiter-flexible": "^11.0.0",
     "redlock": "^5.0.0-beta.2",
     "resend": "^6.27.0",
-    "web-push": "^3.8.0",
+    "web-push": "^3.6.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -78,6 +76,10 @@
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0",
+    "mysql2": "^3.24.4"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

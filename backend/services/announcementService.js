@@ -156,8 +156,9 @@ export const announcementService = {
     `;
 
     const recipientFilter = buildAudienceFilter(audience);
+    // Strict invariant: the actor who publishes the announcement is never a recipient.
     const recipients = await prisma.user.findMany({
-      where: { schoolId, ...recipientFilter },
+      where: { schoolId, id: { not: user.id }, ...recipientFilter },
       select: { id: true, role: true },
     });
 
@@ -175,19 +176,33 @@ export const announcementService = {
         ON CONFLICT ("announcementId", "userId") DO NOTHING
       `;
 
+      // Give every notification its own stable id so push delivery can be
+      // marked per recipient and the background watcher can safely recover.
       const notifications = recipients.map((recipient) => ({
+        id: randomUUID(),
         schoolId,
         userId: recipient.id,
         title: `New announcement: ${announcement.title}`,
         body: announcement.body,
+        isRead: false,
       }));
       await prisma.notification.createMany({ data: notifications });
-      void pushNotificationService.sendToUsers(recipients, {
-        title: `New announcement: ${announcement.title}`,
-        body: announcement.body,
-        url: "/announcements",
-        tag: `announcement-${announcement.id}`,
-      }).catch(() => {});
+
+      // Deliver immediately from the publish workflow. The sender was excluded
+      // above, and forceExternal makes this a real browser/OS notification even
+      // when Petra is currently visible. The watcher remains a recovery path.
+      await Promise.allSettled(
+        notifications.map((notification) =>
+          pushNotificationService.sendToUser(notification.userId, {
+            title: notification.title,
+            body: notification.body,
+            url: "/dashboard/communication/notifications",
+            tag: `notification-${notification.id}`,
+            notificationId: notification.id,
+            forceExternal: true,
+          }),
+        ),
+      );
     }
 
     return announcement;

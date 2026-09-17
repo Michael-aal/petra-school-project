@@ -8,6 +8,7 @@ export const notificationApi = {
   unreadSummary: () => request("/api/notifications/unread-summary"),
   markSectionRead: (section) => request(`/api/notifications/section/${encodeURIComponent(section)}/read`, { method: "POST" }),
   markRead: (id) => request(`/api/notifications/${encodeURIComponent(id)}/read`, { method: "POST" }),
+  delete: (id) => request(`/api/notifications/${encodeURIComponent(id)}`, { method: "DELETE" }),
   markAllRead: () => request("/api/notifications/read-all", { method: "POST" }),
 };
 

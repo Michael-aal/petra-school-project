@@ -31,12 +31,33 @@ const markDelivered = async (notificationId, userId) => {
   await redisClient.set(deliveredKey(notificationId, userId), "1", "EX", 86400);
 };
 
+const summarizeError = (error) => ({
+  statusCode: Number(error?.statusCode || error?.status || 0) || null,
+  message: String(error?.body || error?.message || "Push delivery failed").slice(0, 300),
+});
+
 export const pushNotificationService = {
   isConfigured: () => Boolean(publicKey && privateKey && redisClient),
 
   getPublicKey: () => {
     if (!publicKey) { const error = new Error("Web Push is not configured"); error.statusCode = 503; throw error; }
     return publicKey;
+  },
+
+  getStatus: async (userId, endpoint) => {
+    if (!redisClient || !userId) {
+      return { configured: Boolean(publicKey && privateKey), storageAvailable: false, subscriptionCount: 0, subscribed: false };
+    }
+    await ensureRedis();
+    const stored = await redisClient.hgetall(redisKey(userId));
+    const subscriptions = Object.values(stored || {});
+    const normalizedEndpoint = String(endpoint || "").trim();
+    return {
+      configured: Boolean(publicKey && privateKey),
+      storageAvailable: true,
+      subscriptionCount: subscriptions.length,
+      subscribed: normalizedEndpoint ? Boolean(await redisClient.hget(redisKey(userId), normalizedEndpoint)) : false,
+    };
   },
 
   wasDelivered: async (notificationId, userId) => {
@@ -52,6 +73,15 @@ export const pushNotificationService = {
     }
     if (!redisClient) { const error = new Error("Push storage is unavailable"); error.statusCode = 503; throw error; }
     await ensureRedis();
+
+    // A browser push endpoint belongs to one logged-in Petra account at a time.
+    // This prevents a shared browser/device from receiving another account's
+    // private message notification after the user switches accounts.
+    const keys = await redisClient.keys("petra:push-subscriptions:*");
+    for (const key of keys) {
+      if (key !== redisKey(userId)) await redisClient.hdel(key, normalized.endpoint);
+    }
+
     const record = {
       endpoint: normalized.endpoint,
       keys: normalized.keys,
@@ -70,22 +100,26 @@ export const pushNotificationService = {
   },
 
   sendToUser: async (userId, payload) => {
-    if (!configure() || !redisClient || !userId) return { sent: 0, skipped: true };
+    if (!configure() || !redisClient || !userId) return { attempted: 0, sent: 0, failed: 0, skipped: true, errors: [] };
     await ensureRedis();
     const stored = await redisClient.hgetall(redisKey(userId));
     const subscriptions = Object.values(stored || {});
-    if (!subscriptions.length) return { sent: 0 };
+    if (!subscriptions.length) return { attempted: 0, sent: 0, failed: 0, errors: [] };
 
     const body = JSON.stringify({
       title: String(payload?.title || "Petra School"),
       body: String(payload?.body || "You have a new notification."),
       url: String(payload?.url || "/dashboard/communication/notifications"),
       notificationId: payload?.notificationId || null,
+      recipientUserId: String(userId),
       tag: String(payload?.tag || "petra-notification"),
+      forceExternal: payload?.forceExternal === true,
       timestamp: Date.now(),
     });
 
     let sent = 0;
+    let failed = 0;
+    const errors = [];
     for (const raw of subscriptions) {
       let subscription;
       try {
@@ -93,21 +127,27 @@ export const pushNotificationService = {
         await webpush.sendNotification(subscription, body);
         sent += 1;
       } catch (error) {
+        failed += 1;
         const statusCode = Number(error?.statusCode || error?.status || 0);
         if (statusCode === 404 || statusCode === 410) {
           const endpoint = subscription?.endpoint;
           if (endpoint) await redisClient.hdel(redisKey(userId), endpoint);
         }
+        errors.push(summarizeError(error));
       }
     }
     if (sent > 0 && payload?.notificationId) await markDelivered(payload.notificationId, userId);
-    return { sent };
+    return { attempted: subscriptions.length, sent, failed, errors };
   },
 
   sendToUsers: async (users, payload) => {
     const ids = [...new Set((users || []).map((user) => typeof user === "string" ? user : user?.id).filter(Boolean))];
     const results = await Promise.allSettled(ids.map((id) => pushNotificationService.sendToUser(id, payload)));
-    return { sent: results.reduce((sum, result) => sum + (result.status === "fulfilled" ? Number(result.value?.sent || 0) : 0), 0) };
+    return {
+      attempted: results.reduce((sum, result) => sum + (result.status === "fulfilled" ? Number(result.value?.attempted || 0) : 0), 0),
+      sent: results.reduce((sum, result) => sum + (result.status === "fulfilled" ? Number(result.value?.sent || 0) : 0), 0),
+      failed: results.reduce((sum, result) => sum + (result.status === "fulfilled" ? Number(result.value?.failed || 0) : 0), 0),
+    };
   },
 };
 

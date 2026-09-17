@@ -107,31 +107,20 @@ const createEmailLog = async ({ school, admission, subject, text, sendTo, dedupe
 
   const existing = await prisma.emailLog.findUnique({ where: { dedupeKey } });
   if (existing) {
-    // A concurrent request can arrive while the first request is delivering.
-    // Treat an existing pending/sent log as already claimed so only one email
-    // delivery is performed for the same logical result.
     if (existing.status === "sent" || existing.status === "pending") {
       return { log: existing, deduped: true };
     }
-
     const log = await prisma.emailLog.update({
       where: { id: existing.id },
       data: {
-        recipient: sendTo.join(", "),
-        subject,
-        body: text,
+        recipient: sendTo.join(", "), subject, body: text,
         status: emailProviderAvailable ? "pending" : "skipped",
-        attempts: { increment: 1 },
-        lastAttemptAt: new Date(),
-        errorMessage: null,
+        attempts: { increment: 1 }, lastAttemptAt: new Date(), errorMessage: null,
       },
     });
     return { log, deduped: false };
   }
 
-  // Claim the unique dedupe key atomically. If another request wins the race,
-  // the unique constraint makes this create fail and we reuse its log instead
-  // of sending a second message.
   try {
     const log = await prisma.emailLog.create({ data: logData });
     return { log, deduped: false };
@@ -174,4 +163,48 @@ export const sendAdmissionFailureEmail = async ({ school, admission, studentName
   return deliverAdmissionEmail({ school, admission, subject, html, text, sendTo: recipients, fromEmail, dedupeKey });
 };
 
-export default { buildAdmissionEmailPayload, buildAdmissionFailureEmailPayload, sendAdmissionEmail, sendAdmissionFailureEmail, getEmailProviderStatus };
+export const buildTeacherApplicationDecisionEmailPayload = ({ school, applicantName, status, registrationCode, registrationPath }) => {
+  const approved = String(status || "").toLowerCase() === "approved";
+  const schoolName = school?.name || "the school";
+  const safeName = applicantName || "Applicant";
+  const subject = approved
+    ? `Congratulations — Your Teacher Application Has Been Approved`
+    : `Update on Your Teacher Application`;
+
+  const nextStep = approved && registrationCode
+    ? `<p>Your teacher registration code is <strong>${safeHtml(registrationCode)}</strong>.</p>${registrationPath ? `<p>Complete your teacher registration here: <a href="${safeHtml(registrationPath)}">Continue registration</a></p>` : ""}`
+    : "";
+  const nextStepText = approved && registrationCode
+    ? `\nYour teacher registration code is: ${registrationCode}${registrationPath ? `\nComplete your teacher registration here: ${registrationPath}` : ""}\n`
+    : "";
+
+  const html = approved
+    ? `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.6"><p>Dear ${safeHtml(safeName)},</p><p><strong>Congratulations!</strong></p><p>We are pleased to let you know that your application to join <strong>${safeHtml(schoolName)}</strong> as a teacher has been approved.</p><p>Your application has successfully passed the school's review process.</p>${nextStep}<p>We look forward to welcoming you to ${safeHtml(schoolName)}.</p><p>Best regards,<br/>${safeHtml(schoolName)}<br/>Petra School Management</p></div>`
+    : `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.6"><p>Dear ${safeHtml(safeName)},</p><p>Thank you for taking the time to apply to <strong>${safeHtml(schoolName)}</strong>.</p><p>After reviewing your application, we regret to inform you that your application has not been approved at this time.</p><p>We appreciate your interest in joining our school and thank you for the time and effort you put into your application.</p><p>We wish you all the best in your future opportunities.</p><p>Best regards,<br/>${safeHtml(schoolName)}<br/>Petra School Management</p></div>`;
+
+  const text = approved
+    ? `Dear ${safeName},\n\nCongratulations!\n\nWe are pleased to let you know that your application to join ${schoolName} as a teacher has been approved.\n\nYour application has successfully passed the school's review process.\n${nextStepText}\nWe look forward to welcoming you to ${schoolName}.\n\nBest regards,\n${schoolName}\nPetra School Management`
+    : `Dear ${safeName},\n\nThank you for taking the time to apply to ${schoolName}.\n\nAfter reviewing your application, we regret to inform you that your application has not been approved at this time.\n\nWe appreciate your interest in joining our school and thank you for the time and effort you put into your application.\n\nWe wish you all the best in your future opportunities.\n\nBest regards,\n${schoolName}\nPetra School Management`;
+
+  return { subject, html, text };
+};
+
+export const sendTeacherApplicationDecisionEmail = async ({ school, application, status, registrationCode, registrationPath, fromEmail }) => {
+  const recipient = normalizeEmailAddress(application?.email);
+  const applicantName = [application?.firstName, application?.middleName, application?.lastName].filter(Boolean).join(" ").trim() || "Applicant";
+  const payload = buildTeacherApplicationDecisionEmailPayload({ school, applicantName, status, registrationCode, registrationPath });
+  const dedupeKey = `teacher-application:${application?.id}:${String(status).toLowerCase()}`;
+  if (!recipient) return { success: false, reason: "invalid_recipient", invalidRecipients: application?.email ? [String(application.email)] : [], provider: emailProvider, dedupeKey };
+  return deliverAdmissionEmail({
+    school,
+    admission: { schoolId: application?.schoolId },
+    subject: payload.subject,
+    html: payload.html,
+    text: payload.text,
+    sendTo: [recipient],
+    fromEmail,
+    dedupeKey,
+  });
+};
+
+export default { buildAdmissionEmailPayload, buildAdmissionFailureEmailPayload, sendAdmissionEmail, sendAdmissionFailureEmail, buildTeacherApplicationDecisionEmailPayload, sendTeacherApplicationDecisionEmail, getEmailProviderStatus };

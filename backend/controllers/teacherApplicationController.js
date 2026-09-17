@@ -41,6 +41,7 @@ export const updateTeacherApplicationStatus = async (req, res, next) => {
     const application = await teacherApplicationService.updateStatus({
       id: req.params.id,
       status: req.body?.status,
+      schoolId: req.schoolId,
     });
     return res.json({ success: true, application });
   } catch (error) {

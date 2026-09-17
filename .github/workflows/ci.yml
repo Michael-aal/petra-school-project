@@ -40,11 +40,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
+      - name: Refresh lockfile for security overrides
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install dependencies
-        run: npm install
+        run: npm ci --no-audit --no-fund
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
       - name: Verify PostgreSQL readiness
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -65,10 +69,10 @@ jobs:
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx prisma validate
-      - name: Run database migrations
+      - name: Run database migrations with historical migration policy
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
-        run: npx prisma migrate deploy
+        run: node scripts/deployMigrations.js
       - name: Run database seed
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}

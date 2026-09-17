@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Clock, Download, FileText, Wallet } from "lucide-react";
 import { financeApi } from "../../../../services/financeApi";
-import { API_BASE_URL } from "../../../../services/authApi";
+import { API_BASE_URL, isTabAuthMode, readAuthToken } from "../../../../services/authApi";
 import { getStudentDisplayName } from "../../../../utils/studentDisplay";
 import DashboardHeader from "../../../../components/dashboard/DashboardHeader";
 import StatCard from "../../../../components/dashboard/StatCard";
@@ -130,9 +130,15 @@ export default function ParentFeesPage() {
     setError("");
     setMessage("");
     try {
+      const headers = {};
+      const tabToken = readAuthToken();
+      if (tabToken) headers.Authorization = `Bearer ${tabToken}`;
+      if (isTabAuthMode()) headers["X-Petra-Tab-Auth"] = "1";
+
       const response = await fetch(`${API_BASE_URL}/api/finance/payments/${encodeURIComponent(paymentId)}/receipt`, {
         method: "GET",
         credentials: "include",
+        headers,
       });
       if (!response.ok) {
         const text = await response.text();

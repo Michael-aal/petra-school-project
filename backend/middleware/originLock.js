@@ -1,3 +1,7 @@
+const PRIMARY_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project.vercel.app";
+const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
+const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?-michael-aals-projects\.vercel\.app$/i;
+
 const isLocalDevelopmentOrigin = (origin) => {
   try {
     const normalized = String(origin || "").trim().replace(/\/+$/, "");
@@ -12,19 +16,44 @@ const isDevelopmentLocalOrigin = (origin) => {
   return isLocalDevelopmentOrigin(origin) && process.env.NODE_ENV !== "production";
 };
 
+const isPetraVercelOrigin = (origin) => {
+  const normalizedOrigin = String(origin || "").trim().replace(/\/+$/, "");
+  return normalizedOrigin === PRIMARY_PRODUCTION_FRONTEND_ORIGIN || PETRA_VERCEL_ORIGIN.test(normalizedOrigin);
+};
+
+const isLocalLoadTestRequest = (req) => {
+  if (process.env.NODE_ENV === "production") return false;
+  if (String(process.env.LOAD_TEST_MODE || "").toLowerCase() !== "true") return false;
+  const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
+  return isLocalDevelopmentOrigin(origin) && req.get("x-petra-load-test") === "1";
+};
+
+const getAllowedOrigins = () => [
+  process.env.CORS_ORIGIN,
+  process.env.CLIENT_URL,
+  process.env.PUBLIC_FRONTEND_ORIGIN,
+  PRIMARY_PRODUCTION_FRONTEND_ORIGIN,
+  DEFAULT_PRODUCTION_FRONTEND_ORIGIN,
+].filter(Boolean).map((value) => String(value).trim().replace(/\/+$/, ""));
+
 export const originLock = (req, res, next) => {
   if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
+
+  if (isLocalLoadTestRequest(req)) return next();
 
   const origin = String(req.get("origin") || "").trim().replace(/\/+$/, "");
   if (isDevelopmentLocalOrigin(origin)) return next();
 
   if (origin) {
-    const allowedOrigins = [process.env.CORS_ORIGIN, process.env.CLIENT_URL]
-      .filter(Boolean)
-      .map((value) => String(value).trim().replace(/\/+$/, ""));
-    if (!allowedOrigins.includes(origin)) {
+    const allowedOrigins = getAllowedOrigins();
+    if (!allowedOrigins.includes(origin) && !isPetraVercelOrigin(origin)) {
       return res.status(403).json({ success: false, message: "Forbidden" });
     }
+
+    // Direct browser requests come from an allow-listed HTTPS frontend. The
+    // browser cannot safely carry Petra's private edge secret, so the secret
+    // remains required for non-browser/server-to-server requests instead.
+    return next();
   }
 
   const configured = String(process.env.ORIGIN_SECRET || "");

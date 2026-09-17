@@ -23,6 +23,7 @@ export default function ParentDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [hub, setHub] = useState(null);
+  const [hubLoading, setHubLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -33,44 +34,68 @@ export default function ParentDashboard() {
 
       try {
         const response = await parentApi.children();
-        const nextChildren = Array.isArray(response?.children) ? response.children : [];
+        const nextChildren = Array.isArray(response?.children)
+          ? response.children
+          : [];
 
         if (!active) return;
 
         setChildren(nextChildren);
         setSelectedChildId((current) => {
-          if (nextChildren.some((child) => child.id === current)) return current;
+          if (nextChildren.some((child) => child.id === current))
+            return current;
           return nextChildren[0]?.id || "";
         });
       } catch (err) {
         if (!active) return;
         setChildren([]);
         setSelectedChildId("");
-        setError(err.data?.message || err.message || "Unable to load your children.");
+        setError(
+          err.data?.message || err.message || "Unable to load your children.",
+        );
       } finally {
         if (active) setLoading(false);
       }
     };
 
     loadChildren();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   const selectedChild = useMemo(
-    () => children.find((child) => child.id === selectedChildId) || children[0] || null,
+    () =>
+      children.find((child) => child.id === selectedChildId) ||
+      children[0] ||
+      null,
     [children, selectedChildId],
   );
 
   useEffect(() => {
     if (!selectedChild?.id) {
       setHub(null);
+      setHubLoading(false);
       return;
     }
 
+    let active = true;
+    setHubLoading(true);
     parentApi
       .childHub(selectedChild.id)
-      .then(setHub)
-      .catch(() => setHub(null));
+      .then((data) => {
+        if (active) setHub(data);
+      })
+      .catch(() => {
+        if (active) setHub(null);
+      })
+      .finally(() => {
+        if (active) setHubLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [selectedChild?.id]);
 
   const summaryItems = [
@@ -78,26 +103,38 @@ export default function ParentDashboard() {
       label: "Linked Students",
       value: children.length,
       icon: GraduationCap,
-      description: children.length ? `${children.length} active profiles` : "No profiles linked yet",
+      description: children.length
+        ? `${children.length} active profiles`
+        : "No profiles linked yet",
       trend: "Live",
     },
     {
       label: "Attendance",
-      value: hub?.summary?.attendancePercentage ? `${hub.summary.attendancePercentage}%` : "On track",
+      value:
+        hub?.summary?.attendancePercentage != null
+          ? `${hub.summary.attendancePercentage}%`
+          : hubLoading
+            ? "..."
+            : "Pending",
       icon: ClipboardCheck,
       description: "Latest updates shared",
       trend: "Live",
     },
     {
       label: "Results",
-      value: hub?.summary?.performanceAverage ? `${hub.summary.performanceAverage}%` : "Pending",
+      value:
+        hub?.summary?.performanceAverage != null
+          ? `${hub.summary.performanceAverage}%`
+          : hubLoading
+            ? "..."
+            : "Pending",
       icon: FileText,
       description: "Published scores",
       trend: "Live",
     },
     {
       label: "Resources",
-      value: hub?.reportCards?.length || "Ready",
+      value: hub?.reportCards?.length ?? (hubLoading ? "..." : 0),
       icon: BookOpen,
       description: "Report cards available",
       trend: "Ready",
@@ -115,9 +152,7 @@ export default function ParentDashboard() {
         actionHref="/portal/announcements"
       />
 
-      {error ? (
-        <div className="dashboard-alert error">{error}</div>
-      ) : null}
+      {error ? <div className="dashboard-alert error">{error}</div> : null}
 
       {loading ? (
         <div className="dashboard-page-copy">Loading your children...</div>
@@ -161,7 +196,12 @@ export default function ParentDashboard() {
                   icon: GraduationCap,
                   href: "/portal/children",
                 },
-                { label: "Pay Fees", meta: "Review pending fees", icon: BookOpen, href: "/portal/fees" },
+                {
+                  label: "Pay Fees",
+                  meta: "Review pending fees",
+                  icon: BookOpen,
+                  href: "/portal/fees",
+                },
                 {
                   label: "Check Attendance",
                   meta: "See the latest attendance",
@@ -184,15 +224,17 @@ export default function ParentDashboard() {
             >
               <div className="parent-list">
                 {children.length > 1 ? (
-                  <div className="parent-list-item" style={{ marginBottom: "0.75rem" }}>
+                  <div className="parent-list-item parent-child-picker">
                     <div>
                       <strong>Selected child</strong>
                       <p>Choose which linked student to review.</p>
                     </div>
                     <select
                       value={selectedChildId}
-                      onChange={(event) => setSelectedChildId(event.target.value)}
-                      style={{ minWidth: 180 }}
+                      onChange={(event) =>
+                        setSelectedChildId(event.target.value)
+                      }
+                      className="parent-child-select"
                     >
                       {children.map((child) => (
                         <option key={child.id} value={child.id}>
@@ -209,8 +251,7 @@ export default function ParentDashboard() {
                   return (
                     <div
                       key={child.id}
-                      className="parent-list-item"
-                      style={{ borderLeft: isSelected ? "3px solid #3b82f6" : undefined }}
+                      className={`parent-list-item${isSelected ? " is-selected" : ""}`}
                     >
                       <div>
                         <strong>{childFullName}</strong>

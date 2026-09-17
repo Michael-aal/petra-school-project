@@ -5,12 +5,15 @@ import {
   unreadNotificationSummary,
   markNotificationSectionRead,
   markNotificationRead,
+  deleteNotification,
   markAllNotificationsRead,
 } from "../controllers/notificationController.js";
 import {
   getPushPublicKey,
+  getPushStatus,
   subscribeToPush,
   unsubscribeFromPush,
+  sendPushTest,
 } from "../controllers/pushNotificationController.js";
 
 const router = Router();
@@ -18,10 +21,13 @@ const router = Router();
 router.get("/", protect, listNotifications);
 router.get("/unread-summary", protect, unreadNotificationSummary);
 router.get("/push/public-key", protect, getPushPublicKey);
+router.get("/push/status", protect, getPushStatus);
 router.post("/push/subscribe", protect, subscribeToPush);
 router.post("/push/unsubscribe", protect, unsubscribeFromPush);
+router.post("/push/test", protect, sendPushTest);
 router.post("/section/:section/read", protect, markNotificationSectionRead);
 router.post("/read-all", protect, markAllNotificationsRead);
 router.post("/:id/read", protect, markNotificationRead);
+router.delete("/:id", protect, deleteNotification);
 
 export default router;

@@ -1,14 +1,20 @@
-import { API_BASE_URL, clearAuthToken } from "./authApi";
+import { API_BASE_URL, authApi, clearAuthToken, isTabAuthMode, readAuthToken } from "./authApi";
 
-export const request = async (path, options = {}) => {
+export const request = async (path, options = {}, retryAuth = true) => {
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
 
-  // Send the currently selected school to the backend
-  const selectedSchoolId = localStorage.getItem("petra_selected_school_id");
+  const tabToken = readAuthToken();
+  if (tabToken && !headers.Authorization && !headers.authorization) {
+    headers.Authorization = `Bearer ${tabToken}`;
+  }
+  if (isTabAuthMode() && !headers["X-Petra-Tab-Auth"] && !headers["x-petra-tab-auth"]) {
+    headers["X-Petra-Tab-Auth"] = "1";
+  }
 
+  const selectedSchoolId = localStorage.getItem("petra_selected_school_id");
   if (selectedSchoolId) {
     headers["x-school-id"] = selectedSchoolId;
   }
@@ -29,8 +35,25 @@ export const request = async (path, options = {}) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401 && retryAuth && isTabAuthMode() && !path.includes("/api/auth/refresh")) {
+      try {
+        await authApi.refresh();
+        return request(path, options, false);
+      } catch {
+        // This tab's session is no longer refreshable. Remove its tab
+        // credentials before retrying so the normal HttpOnly cookie session
+        // can authenticate the request instead of sending a stale tab marker.
+        clearAuthToken();
+        return request(path, options, false);
+      }
+    }
+
     if (response.status === 401) {
-      clearAuthToken();
+      try {
+        window.sessionStorage.removeItem("petra_tab_access");
+      } catch {
+        clearAuthToken();
+      }
     }
 
     const message =
