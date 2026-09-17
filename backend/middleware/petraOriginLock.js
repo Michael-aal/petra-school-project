@@ -37,6 +37,13 @@ const isLocalLoadTestRequest = (req) => {
   return isLocalDevelopmentOrigin(origin) && req.get("x-petra-load-test") === "1";
 };
 
+const PUBLIC_AUTH_NO_ORIGIN_PATHS = new Set([
+  "/auth/login",
+  "/auth/register",
+  "/auth/parent/register",
+  "/auth/staff/activate",
+]);
+
 export const originLock = (req, res, next) => {
   if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
   if (isLocalLoadTestRequest(req)) return next();
@@ -51,6 +58,12 @@ export const originLock = (req, res, next) => {
     }
     return next();
   }
+
+  // Public credential/bootstrap endpoints do not rely on a browser cookie and
+  // may arrive without Origin when Vercel proxies /api/* to Render. CORS still
+  // controls browser cross-origin access, while rate limiting protects these
+  // public endpoints from abuse.
+  if (PUBLIC_AUTH_NO_ORIGIN_PATHS.has(req.path)) return next();
 
   // Server-to-server requests without a browser Origin must prove knowledge
   // of the private origin secret. Browser requests never need this secret.
