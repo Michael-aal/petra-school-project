@@ -6,8 +6,6 @@ import crypto from "node:crypto";
 import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
 import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/redis.js";
 
-// Bump this whenever authentication limiter semantics change so stale Redis
-// buckets from an older configuration cannot lock legitimate users out.
 const RATE_LIMIT_VERSION = "v4";
 const LOAD_TEST_MODE = process.env.LOAD_TEST_MODE === "true" && process.env.NODE_ENV !== "production";
 const LOAD_TEST_MAX = 100000;
@@ -104,14 +102,18 @@ export const createRateLimiter = ({
       }
 
       rateLimitHits.inc({ scope });
-      return res.status(429).json({ success: false, message: "Rate limiting service is unavailable." });
+      // Keep production fail-closed for security, but distinguish infrastructure
+      // failure from an actual rate-limit hit in logs/monitoring.
+      console.error(`[rate-limit:${scope}] backing service unavailable`, {
+        name: error?.name,
+        code: error?.code,
+        message: error?.message,
+      });
+      return res.status(503).json({ success: false, message: "Rate limiting service is unavailable." });
     }
   };
 };
 
-// Password/credential attempts are isolated by account AND browser tab.
-// Keep enough headroom for normal retries, autofill retries and multiple
-// legitimate login sessions while retaining protection against brute force.
 export const authRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -125,8 +127,6 @@ export const authRateLimiter = createRateLimiter({
   message: "Too many authentication attempts. Please try again later.",
 });
 
-// A separate IP guard prevents unlimited credential attempts while still
-// allowing legitimate simultaneous accounts/tabs to have independent buckets.
 export const authIpRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
   max: 30,
@@ -135,8 +135,6 @@ export const authIpRateLimiter = createRateLimiter({
   message: "Too many authentication requests from this network. Please try again later.",
 });
 
-// Refresh is session maintenance, not a password attempt. It is isolated by
-// the tab refresh/access credential so simultaneous tabs never share a bucket.
 export const refreshRateLimiter = createRateLimiter({
   windowMs: 60 * 1000,
   max: 30,
