@@ -100,6 +100,30 @@ test("origin lock allows proxied public auth requests without an Origin header",
   process.env.NODE_ENV = previousNodeEnv;
 });
 
+test("origin lock allows authenticated tab session checks without an Origin header", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  const previousSecret = process.env.ORIGIN_SECRET;
+  process.env.NODE_ENV = "production";
+  process.env.ORIGIN_SECRET = "proxy-secret";
+
+  let passed = false;
+  let status;
+  const response = { status: (code) => { status = code; return { json: () => undefined }; } };
+  originLock(
+    {
+      path: "/auth/me",
+      get: (name) => name === "x-petra-tab-auth" ? "1" : "",
+    },
+    response,
+    () => { passed = true; },
+  );
+
+  assert.equal(passed, true);
+  assert.equal(status, undefined);
+  process.env.ORIGIN_SECRET = previousSecret;
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
 test("session cookie remains HttpOnly and does not expose a Domain", () => {
   assert.equal(authCookieOptions.httpOnly, true);
   assert.equal(authCookieOptions.sameSite, "strict");

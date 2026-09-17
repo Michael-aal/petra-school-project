@@ -44,6 +44,23 @@ const PUBLIC_AUTH_NO_ORIGIN_PATHS = new Set([
   "/auth/staff/activate",
 ]);
 
+const isProtectedAuthPath = (path) =>
+  path === "/auth/me" ||
+  path === "/auth/refresh" ||
+  path === "/auth/profile" ||
+  path === "/auth/change-password" ||
+  path === "/auth/revoke" ||
+  path === "/auth/logout" ||
+  path === "/auth/logout-all" ||
+  path === "/auth/account" ||
+  path === "/auth/parent/link-child" ||
+  path === "/auth/select-school" ||
+  path === "/auth/staff/pending" ||
+  path === "/auth/staff/invitations" ||
+  path.startsWith("/auth/staff/invitations/") ||
+  path === "/auth/staff/teachers" ||
+  path.startsWith("/auth/staff/teachers/");
+
 export const originLock = (req, res, next) => {
   if (["/health", "/healthz", "/readyz", "/paystack/webhook", "/classmarker/webhook"].includes(req.path)) return next();
   if (isLocalLoadTestRequest(req)) return next();
@@ -64,6 +81,14 @@ export const originLock = (req, res, next) => {
   // controls browser cross-origin access, while rate limiting protects these
   // public endpoints from abuse.
   if (PUBLIC_AUTH_NO_ORIGIN_PATHS.has(req.path)) return next();
+
+  // Same-origin browser GETs such as /api/auth/me may legitimately omit the
+  // Origin header. These endpoints have their own authentication/authorization
+  // middleware, so the origin lock must not reject them before auth can run.
+  // Vercel's /api/* rewrite can also remove the browser Origin at the Render
+  // boundary, so treating these protected auth routes as server-to-server
+  // traffic creates a false 403.
+  if (isProtectedAuthPath(req.path)) return next();
 
   // Server-to-server requests without a browser Origin must prove knowledge
   // of the private origin secret. Browser requests never need this secret.
