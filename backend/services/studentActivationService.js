@@ -100,6 +100,10 @@ export const activateAdmittedStudentAfterFeePayment = async ({ schoolId, student
     where: {
       schoolId: Number(schoolId),
       studentId: String(studentId),
+      // An administrator may approve an application, but approval is not an
+      // assessment result.  Never let the payment path turn that into an
+      // active enrolment until the provider-backed result has passed.
+      examResult: "passed",
       OR: [
         { status: "admission_offered" },
         { status: "passed" },

@@ -781,6 +781,28 @@ export const financeService = {
       error.statusCode = 404;
       throw error;
     }
+    if (normalizeMethod(existing.method) === "Paystack") {
+      const error = new Error("Paystack payments are provider-verified and cannot be edited manually");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    if (payload.studentId) {
+      const student = await prisma.student.findFirst({ where: { id: String(payload.studentId), schoolId: existing.schoolId }, select: { id: true } });
+      if (!student) {
+        const error = new Error("Student not found in this school");
+        error.statusCode = 400;
+        throw error;
+      }
+    }
+    if (payload.invoiceId) {
+      const invoice = await prisma.invoice.findFirst({ where: { id: String(payload.invoiceId), schoolId: existing.schoolId }, select: { id: true, studentId: true } });
+      if (!invoice || (payload.studentId && invoice.studentId !== String(payload.studentId))) {
+        const error = new Error("Invoice does not belong to the selected student in this school");
+        error.statusCode = 400;
+        throw error;
+      }
+    }
     const updated = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT "id" FROM "Payment" WHERE "id" = ${id} AND "schoolId" = ${existing.schoolId} FOR UPDATE`;
       return tx.payment.update({
@@ -1017,6 +1039,9 @@ export const financeService = {
       let remaining = toDecimal(payment.amount);
 
       if (invoiceIds.length) {
+        // Different payment references can settle the same invoice at the
+        // same time. Lock settlement targets as well as the payment row.
+        await tx.$queryRaw`SELECT "id" FROM "Invoice" WHERE "id" IN (${Prisma.join(invoiceIds)}) AND "schoolId" = ${schoolId} FOR UPDATE`;
         const invoices = await tx.invoice.findMany({ where: { id: { in: invoiceIds }, schoolId } });
         for (const invoice of invoices) {
           if (remaining <= 0) break;
@@ -1035,6 +1060,7 @@ export const financeService = {
       }
 
       if (studentFeeIds.length && remaining > 0) {
+        await tx.$queryRaw`SELECT "id" FROM "StudentFee" WHERE "id" IN (${Prisma.join(studentFeeIds)}) AND "schoolId" = ${schoolId} FOR UPDATE`;
         const fees = await tx.studentFee.findMany({ where: { id: { in: studentFeeIds }, schoolId } });
         for (const fee of fees) {
           if (remaining <= 0) break;
@@ -1047,6 +1073,7 @@ export const financeService = {
       }
 
       if (!invoiceIds.length && !studentFeeIds.length && payment.invoiceId) {
+        await tx.$queryRaw`SELECT "id" FROM "Invoice" WHERE "id" = ${payment.invoiceId} AND "schoolId" = ${schoolId} FOR UPDATE`;
         const invoice = await tx.invoice.findUnique({ where: { id: payment.invoiceId } });
         if (invoice) {
           const currentOutstanding = toDecimal(invoice.outstandingBalance || invoice.totalAmount);
@@ -1062,6 +1089,7 @@ export const financeService = {
       }
 
       if (!invoiceIds.length && !studentFeeIds.length) {
+        await tx.$queryRaw`SELECT "id" FROM "StudentFee" WHERE "studentId" = ${existing.studentId} AND "schoolId" = ${schoolId} AND "outstandingBalance" > 0 FOR UPDATE`;
         const fees = await tx.studentFee.findMany({ where: { studentId: existing.studentId, schoolId, outstandingBalance: { gt: 0 } }, orderBy: { createdAt: "asc" } });
         for (const fee of fees) {
           if (remaining <= 0) break;

@@ -1,6 +1,6 @@
-# Petra School Platform
+# Nuvora School Platform
 
-Petra is a multi-tenant school operations platform for managing the daily academic, administrative, financial, and communication workflows of schools from one workspace.
+Nuvora is a multi-tenant school operations platform for managing the daily academic, administrative, financial, and communication workflows of schools from one workspace.
 
 The repository contains a React/Vite web application and an Express/Prisma API backed by PostgreSQL. The backend applies school-aware access controls across authenticated requests, while the frontend provides role-specific experiences for school leaders, staff, teachers, parents, students, and platform administrators.
 

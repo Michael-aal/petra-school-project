@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { walletModel } from "../models/walletModel.js";
 import { userModel } from "../models/userModel.js";
 import { paystackService } from "./paystackService.js";
+import { recordAuditMutation } from "../middleware/audit.js";
 
 const generateAccountNumber = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
 
@@ -97,31 +98,25 @@ export const walletService = {
       throw error;
     }
 
-    const wallet = await ensureWallet(userId);
-    if (toDecimal(wallet.balance).lt(parsedAmount)) {
-      const error = new Error("Insufficient wallet balance");
-      error.statusCode = 400;
-      throw error;
-    }
-
-    const newBalance = toDecimal(wallet.balance).minus(parsedAmount);
-
-    const [updatedWallet] = await prisma.$transaction([
-      walletModel.update({ userId }, { balance: newBalance }),
-      walletModel.createTransaction({
-        walletId: wallet.id,
-        userId,
-        reference: buildReference(),
-        type: "WITHDRAW",
-        amount: parsedAmount,
-        status: "completed",
-        description: description || "Wallet withdrawal",
-        source: "Wallet",
-        destination: "Bank transfer",
-        metadata: { note: description || "withdrawal" },
-      }),
-    ]);
-
+    const updatedWallet = await prisma.$transaction(async (tx) => {
+      const wallet = await tx.wallet.findUnique({ where: { userId } });
+      if (!wallet || toDecimal(wallet.balance).lt(parsedAmount)) {
+        const error = new Error("Insufficient wallet balance");
+        error.statusCode = 400;
+        throw error;
+      }
+      await tx.$queryRaw`SELECT "id" FROM "Wallet" WHERE "id" = ${wallet.id} FOR UPDATE`;
+      const locked = await tx.wallet.findUnique({ where: { id: wallet.id } });
+      if (!locked || toDecimal(locked.balance).lt(parsedAmount)) {
+        const error = new Error("Insufficient wallet balance");
+        error.statusCode = 400;
+        throw error;
+      }
+      const updated = await tx.wallet.update({ where: { id: locked.id }, data: { balance: toDecimal(locked.balance).minus(parsedAmount) } });
+      await tx.transaction.create({ data: { walletId: locked.id, userId, reference: buildReference(), type: "WITHDRAW", amount: parsedAmount, status: "completed", description: description || "Wallet withdrawal", source: "Wallet", destination: "Bank transfer", metadata: { note: description || "withdrawal" } } });
+      return updated;
+    });
+    await recordAuditMutation({ user: { id: userId }, entity: "Wallet", entityId: updatedWallet.id, action: "WITHDRAW", actionType: "WALLET", after: { amount: parsedAmount, description } });
     return updatedWallet;
   },
 
@@ -134,11 +129,6 @@ export const walletService = {
     }
 
     const senderWallet = await ensureWallet(userId);
-    if (toDecimal(senderWallet.balance).lt(parsedAmount)) {
-      const error = new Error("Insufficient balance to transfer");
-      error.statusCode = 400;
-      throw error;
-    }
 
     const recipientWallet = recipient.includes("@")
       ? await (async () => {
@@ -160,39 +150,29 @@ export const walletService = {
       throw error;
     }
 
-    const newSenderBalance = toDecimal(senderWallet.balance).minus(parsedAmount);
-    const newRecipientBalance = toDecimal(recipientWallet.balance).plus(parsedAmount);
-
-    await prisma.$transaction([
-      walletModel.update({ userId }, { balance: newSenderBalance }),
-      walletModel.update({ id: recipientWallet.id }, { balance: newRecipientBalance }),
-      walletModel.createTransaction({
-        walletId: senderWallet.id,
-        userId,
-        reference: buildReference(),
-        type: "TRANSFER",
-        amount: parsedAmount,
-        status: "completed",
-        description: note || "Sent transfer",
-        source: senderWallet.accountNumber,
-        destination: recipientWallet.accountNumber,
-        metadata: { note, recipient: recipientWallet.accountNumber },
-      }),
-      walletModel.createTransaction({
-        walletId: recipientWallet.id,
-        userId: recipientWallet.userId,
-        reference: buildReference(),
-        type: "RECEIVE",
-        amount: parsedAmount,
-        status: "completed",
-        description: note || "Received transfer",
-        source: senderWallet.accountNumber,
-        destination: recipientWallet.accountNumber,
-        metadata: { note, sender: senderWallet.accountNumber },
-      }),
-    ]);
-
-    return walletModel.findByUserId(userId);
+    const updated = await prisma.$transaction(async (tx) => {
+      // A consistent lock order prevents deadlocks for opposing transfers.
+      const ids = [senderWallet.id, recipientWallet.id].sort();
+      await tx.$queryRaw`SELECT "id" FROM "Wallet" WHERE "id" IN (${Prisma.join(ids)}) FOR UPDATE`;
+      const [sender, recipientRecord] = await Promise.all([
+        tx.wallet.findUnique({ where: { id: senderWallet.id } }),
+        tx.wallet.findUnique({ where: { id: recipientWallet.id } }),
+      ]);
+      if (!sender || !recipientRecord || toDecimal(sender.balance).lt(parsedAmount)) {
+        const error = new Error("Insufficient balance to transfer");
+        error.statusCode = 400;
+        throw error;
+      }
+      await tx.wallet.update({ where: { id: sender.id }, data: { balance: toDecimal(sender.balance).minus(parsedAmount) } });
+      await tx.wallet.update({ where: { id: recipientRecord.id }, data: { balance: toDecimal(recipientRecord.balance).plus(parsedAmount) } });
+      await tx.transaction.createMany({ data: [
+        { walletId: sender.id, userId, reference: buildReference(), type: "TRANSFER", amount: parsedAmount, status: "completed", description: note || "Sent transfer", source: sender.accountNumber, destination: recipientRecord.accountNumber, metadata: { note, recipient: recipientRecord.accountNumber } },
+        { walletId: recipientRecord.id, userId: recipientRecord.userId, reference: buildReference(), type: "RECEIVE", amount: parsedAmount, status: "completed", description: note || "Received transfer", source: sender.accountNumber, destination: recipientRecord.accountNumber, metadata: { note, sender: sender.accountNumber } },
+      ] });
+      return sender;
+    });
+    await recordAuditMutation({ user: { id: userId }, entity: "Wallet", entityId: senderWallet.id, action: "TRANSFER", actionType: "WALLET", after: { amount: parsedAmount, recipient: recipientWallet.id, note } });
+    return updated;
   },
 
   initializePaystack: async (userId, email, amount) => {

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { recordAuditMutation } from "../middleware/audit.js";
 import { prisma } from "../config/db.js";
 import { getSchoolId } from "../utils/authorization.js";
 
@@ -223,6 +224,7 @@ export const admissionService = {
         approvedBy: userId,
       },
     });
+    await recordAuditMutation({ user: { id: userId }, schoolId: updated.schoolId, entity: "Admission", entityId: updated.id, action: "APPROVE", actionType: "ADMISSION", before: admission, after: updated });
 
     return safeAdmission(updated);
   },
@@ -433,6 +435,7 @@ export const admissionService = {
       return { student, enrollment, admission: updatedAdmission, alreadyEnrolled: false };
     });
 
+    await recordAuditMutation({ user: { id: userId }, schoolId: effectiveSchoolId, entity: "Admission", entityId: enrolled.admission.id, action: "ENROLL_PENDING_PAYMENT", actionType: "ADMISSION", before: admission, after: enrolled.admission });
     return safeAdmission(enrolled.admission);
   },
 
@@ -454,6 +457,8 @@ export const admissionService = {
         rejectionReason: reason || "",
       },
     });
+
+    await recordAuditMutation({ user: { id: userId }, schoolId: updated.schoolId, entity: "Admission", entityId: updated.id, action: "REJECT", actionType: "ADMISSION", before: admission, after: updated });
 
     return safeAdmission(updated);
   },
