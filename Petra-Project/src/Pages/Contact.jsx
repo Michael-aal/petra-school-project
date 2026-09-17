@@ -116,8 +116,21 @@ export default function ContactPage() {
             <h3>Send us a message</h3>
             <p>Fill out the form below and we’ll get back to you shortly.</p>
 
-            <form className="contact-form" onSubmit={(event) => {\n              event.preventDefault();\n              const subject = encodeURIComponent(form.topic ? `${form.topic} — ${form.name || "Website visitor"}` : `Website enquiry — ${form.name || "Website visitor"}`);\n              const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\nTopic: ${form.topic}\n\n${form.message}`);\n              window.location.href = `mailto:support@acceede.com?subject=${subject}&body=${body}`;\n            }}>
-              <div className="contact-field-row">
+            <form
+              className="contact-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const subject = encodeURIComponent(
+                  form.topic
+                    ? `${form.topic} — ${form.name || "Website visitor"}`
+                    : `Website enquiry — ${form.name || "Website visitor"}`,
+                );
+                const body = encodeURIComponent(
+                  [`Name: ${form.name}`, `Email: ${form.email}`, `Topic: ${form.topic}`, "", form.message].join("\n"),
+                );
+                window.location.href = `mailto:support@acceede.com?subject=${subject}&body=${body}`;
+              }}
+            >              <div className="contact-field-row">
                 <div className="contact-field">
                   <label>Full Name</label>
                   <input type="text" name="name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} placeholder="John Doe" required />
