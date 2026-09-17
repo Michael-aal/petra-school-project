@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, UserPlus, Users, Clock3, CheckCircle2, X } from "lucide-react";
 import { admissionApi } from "../../../../services/admissionApi";
+import { authApi } from "../../../../services/authApi";
 import "../page-styles/ApplicantsPage.css";
 
 const ENROLLABLE_STATUSES = new Set(["approved", "admission_offered", "passed"]);
@@ -12,6 +13,7 @@ export default function ApplicantsPage() {
   const [query, setQuery] = useState("");
   const [savingId, setSavingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [schoolId, setSchoolId] = useState("");
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     applicantName: "",
@@ -34,12 +36,12 @@ export default function ApplicantsPage() {
 
   useEffect(() => {
     let mounted = true;
-    if (mounted) {
-      loadApplicants();
-    }
-    return () => {
-      mounted = false;
-    };
+    Promise.all([loadApplicants(), authApi.me()])
+      .then(([, me]) => {
+        if (mounted) setSchoolId(me?.user?.schoolId || me?.schoolId || "");
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
   }, []);
 
   const handleSubmit = async (event) => {
@@ -47,7 +49,18 @@ export default function ApplicantsPage() {
     setSaving(true);
     setError("");
     try {
-      await admissionApi.submit(form);
+      if (!schoolId) throw new Error("School context is missing. Please refresh and sign in again.");
+      const nameParts = form.applicantName.trim().split(/\s+/).filter(Boolean);
+      if (nameParts.length < 2) throw new Error("Enter the applicant's full name.");
+      const [firstName, ...lastParts] = nameParts;
+      const lastName = lastParts.join(" ");
+      await admissionApi.submit({
+        ...form,
+        schoolId: Number(schoolId),
+        firstName,
+        lastName,
+        gender: form.applicantGender,
+      });
       setForm({
         applicantName: "",
         guardianName: "",
@@ -183,7 +196,7 @@ export default function ApplicantsPage() {
               </label>
               <label>
                 <span>Gender</span>
-                <select value={form.applicantGender} onChange={(event) => setForm({ ...form, applicantGender: event.target.value })}>
+                <select required value={form.applicantGender} onChange={(event) => setForm({ ...form, applicantGender: event.target.value })}>
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
