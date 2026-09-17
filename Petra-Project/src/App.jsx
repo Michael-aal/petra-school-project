@@ -150,6 +150,8 @@ function App() {
           <Route path="/portal/downloads" element={parentSection({ title:"Downloads and Documents", description:"Published school documents for the selected child will appear here automatically.", heroTitle:"Useful documents", heroDescription:"No demo files are shown; only authorized records are loaded from the backend.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
           <Route path="/portal/profile" element={parentSection({ title:"Parent Profile", description:"Your authenticated account details are shown in the settings area, not from demo data.", heroTitle:"Account overview", heroDescription:"Profile information is loaded from the signed-in parent record only.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
           <Route path="/portal/settings" element={<SettingsPage role="parent" />} />
+          <Route path="/portal/subjects" element={parentSection({ title:"My Subjects", description:"Subjects, teachers, and academic progress for your linked learners.", heroTitle:"Your subjects", heroDescription:"Subject information is shown for the authenticated portal account.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
+          <Route path="/portal/report-cards" element={parentSection({ title:"Report Cards", description:"Access available academic report cards.", heroTitle:"Academic reports", heroDescription:"Published report cards for your linked learners appear here.", heroChips:[], summaryCards:[], sections:[], actions:[] })} />
         </Route>
       </Routes>
       <DeleteAccountButton />
