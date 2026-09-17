@@ -209,9 +209,9 @@ export default function Register({ rolePreset = "" }) {
         <div className="auth-form-header"><h2>Register</h2><p>Fill in the details below to create your Nuvora account.</p></div>
         {serverError ? <div className="auth-alert">{serverError}</div> : null}
 
-        <div style={{ display: "flex", gap: 12 }}>
-          <label className="auth-field" style={{ flex: 1 }}><span>First Name</span><div className="auth-input-wrap"><UserRound size={18} /><input name="firstName" type="text" placeholder="Enter first name" value={form.firstName} onChange={handleChange} autoComplete="given-name" /></div>{errors.firstName ? <small>{errors.firstName}</small> : null}</label>
-          <label className="auth-field" style={{ flex: 1 }}><span>Last Name</span><div className="auth-input-wrap"><UserRound size={18} /><input name="lastName" type="text" placeholder="Enter last name" value={form.lastName} onChange={handleChange} autoComplete="family-name" /></div>{errors.lastName ? <small>{errors.lastName}</small> : null}</label>
+        <div className="auth-field-row">
+          <label className="auth-field auth-field-row-item"><span>First Name</span><div className="auth-input-wrap"><UserRound size={18} /><input name="firstName" type="text" placeholder="Enter first name" value={form.firstName} onChange={handleChange} autoComplete="given-name" /></div>{errors.firstName ? <small>{errors.firstName}</small> : null}</label>
+          <label className="auth-field auth-field-row-item"><span>Last Name</span><div className="auth-input-wrap"><UserRound size={18} /><input name="lastName" type="text" placeholder="Enter last name" value={form.lastName} onChange={handleChange} autoComplete="family-name" /></div>{errors.lastName ? <small>{errors.lastName}</small> : null}</label>
         </div>
 
         <label className="auth-field"><span>Username</span><div className="auth-input-wrap"><UserRound size={18} /><input name="username" type="text" placeholder="Choose a username" value={form.username} onChange={handleChange} autoComplete="username" /></div>{errors.username ? <small>{errors.username}</small> : null}</label>
@@ -226,7 +226,7 @@ export default function Register({ rolePreset = "" }) {
         <label className="auth-field"><span>Name of Institution</span><div className="auth-input-wrap"><UserRound size={18} /><input name="institution" type="text" placeholder="e.g. Grace Schools" value={form.institution} onChange={handleChange} /></div>{errors.institution ? <small>{errors.institution}</small> : null}</label>
         <label className="auth-field"><span>Institution Type</span><div className="auth-input-wrap"><select name="institutionType" value={form.institutionType} onChange={handleChange}><option value="">Select Type</option><option value="primary">Primary</option><option value="secondary">Secondary</option><option value="tertiary">Tertiary</option><option value="other">Other</option></select></div></label>
 
-        <div style={{ display: "flex", gap: 12 }}>
+        <div className="auth-field-row">
           <label className="auth-field" style={{ flex: 1 }}><span>State</span><div className="auth-input-wrap"><input name="state" type="text" placeholder="Select State" value={form.state} onChange={handleChange} /></div></label>
           <label className="auth-field" style={{ flex: 1 }}><span>City</span><div className="auth-input-wrap"><input name="city" type="text" placeholder="e.g. Ikeja" value={form.city} onChange={handleChange} /></div></label>
         </div>
