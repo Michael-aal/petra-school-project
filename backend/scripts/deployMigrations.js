@@ -104,6 +104,17 @@ const rollbackFailedHistoricalMigrations = async (prisma) => {
   }
 };
 
+const reconcileSchemaWithPrisma = async () => {
+  // Migrations are authoritative, but production databases can predate the
+  // current migration chain. Reconcile only changes Prisma considers safe.
+  // We deliberately do NOT pass --accept-data-loss: destructive drift must
+  // fail loudly instead of deleting production data.
+  console.log("Reconciling production database schema with prisma/schema.prisma...");
+  await runMigrationsWithLockRetry(() =>
+    runPrisma(["db", "push", "--skip-generate"]),
+  );
+};
+
 const deployWithHistoricalMigrationsSkipped = async () => {
   const backups = [];
 
@@ -151,6 +162,7 @@ const main = async () => {
   }
 
   await deployWithHistoricalMigrationsSkipped();
+  await reconcileSchemaWithPrisma();
 };
 
 if (path.resolve(process.argv[1] || "") === fileURLToPath(import.meta.url)) {
