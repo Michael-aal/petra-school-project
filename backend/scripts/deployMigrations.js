@@ -2,8 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { PrismaClient } from "@prisma/client";
+import prismaClientPackage from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+
+const { PrismaClient } = prismaClientPackage;
 
 export const HISTORICAL_MIGRATIONS_TO_SKIP = [
   "20260911070535_add_admin_user_relation",
