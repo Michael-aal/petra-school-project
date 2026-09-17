@@ -46,39 +46,65 @@ const syncAcademicCalendar = async (tx, { schoolId, name, term, startsAt, endsAt
     await tx.term.updateMany({ where: { schoolId }, data: { isActive: false } });
   }
 
-  const academicYear = await tx.academicYear.upsert({
-    where: { schoolId_name: { schoolId, name: yearName } },
-    create: {
-      schoolId,
-      name: yearName,
-      startsAt,
-      endsAt,
-      isActive: Boolean(isActive),
-    },
-    update: {
-      startsAt,
-      endsAt,
-      isActive: Boolean(isActive),
-    },
+  // Avoid Prisma generated composite-key selectors here. A stale generated
+  // client can reject selectors such as schoolId_name even when the
+  // database/schema are correct. Scoped findFirst + update/create remains
+  // compatible with older and current generated clients.
+  let academicYear = await tx.academicYear.findFirst({
+    where: { schoolId, name: yearName },
   });
 
-  await tx.term.upsert({
-    where: { academicYearId_name: { academicYearId: academicYear.id, name: termName } },
-    create: {
+  const academicYearData = {
+    startsAt,
+    endsAt,
+    isActive: Boolean(isActive),
+  };
+
+  if (academicYear) {
+    academicYear = await tx.academicYear.update({
+      where: { id: academicYear.id },
+      data: academicYearData,
+    });
+  } else {
+    academicYear = await tx.academicYear.create({
+      data: {
+        schoolId,
+        name: yearName,
+        ...academicYearData,
+      },
+    });
+  }
+
+  const existingTerm = await tx.term.findFirst({
+    where: {
       schoolId,
       academicYearId: academicYear.id,
       name: termName,
-      startsAt,
-      endsAt,
-      isActive: Boolean(isActive),
-    },
-    update: {
-      schoolId,
-      startsAt,
-      endsAt,
-      isActive: Boolean(isActive),
     },
   });
+
+  if (existingTerm) {
+    await tx.term.update({
+      where: { id: existingTerm.id },
+      data: {
+        schoolId,
+        startsAt,
+        endsAt,
+        isActive: Boolean(isActive),
+      },
+    });
+  } else {
+    await tx.term.create({
+      data: {
+        schoolId,
+        academicYearId: academicYear.id,
+        name: termName,
+        startsAt,
+        endsAt,
+        isActive: Boolean(isActive),
+      },
+    });
+  }
 
   return academicYear;
 };
