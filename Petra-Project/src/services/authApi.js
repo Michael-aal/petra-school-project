@@ -1,10 +1,11 @@
 const DEV_API_FALLBACK = "http://localhost:5000";
 
-// Production requests intentionally use the Vercel origin. A same-origin
-// Vercel rewrite proxies /api/* to Render, removing browser-to-Render CORS
-// failures from the normal production request path.
+// Production must always use the browser's current Vercel origin. The
+// /api/* rewrite proxies requests to Render, so the browser never needs to
+// make a cross-origin API request in production. This prevents stale or
+// misconfigured VITE_API_URL values from reintroducing CORS failures.
 const configuredApiUrl = import.meta.env.PROD
-  ? ""
+  ? (typeof window !== "undefined" ? window.location.origin : "")
   : (import.meta.env.VITE_API_URL || DEV_API_FALLBACK);
 
 const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, "");
@@ -60,9 +61,6 @@ const ensureTabId = () => {
   }
 };
 
-// sessionStorage exists in every browser tab, but a tab should only opt into
-// Petra's tab-scoped authentication transport when it actually has tab
-// credentials. Otherwise the normal HttpOnly cookie session remains usable.
 export const isTabAuthMode = () => Boolean(
   getTabStorage()?.getItem(TAB_ACCESS_KEY) || getTabStorage()?.getItem(TAB_REFRESH_KEY),
 );
