@@ -12,8 +12,28 @@ export const HISTORICAL_MIGRATIONS_TO_SKIP = [
   "20260911130000_add_payment_paymentmethodid",
 ];
 
+export const MIGRATION_LOCK_RETRY_ATTEMPTS = 6;
+export const MIGRATION_LOCK_RETRY_DELAY_MS = 5000;
+
 export const buildNoopMigrationSql = (migrationName) =>
   `-- CI/production-only: historical migration skipped because it is incompatible with the current authoritative Prisma schema.\n-- Migration: ${migrationName}\n`;
+
+export const isMigrationLockTimeout = (error) => {
+  const message = [
+    error?.message,
+    error?.stderr?.toString?.(),
+    error?.stdout?.toString?.(),
+  ].filter(Boolean).join("\n");
+
+  return (
+    error?.status === 1 &&
+    (/P1002\b/i.test(message) ||
+      /timed out trying to acquire a postgres advisory lock/i.test(message) ||
+      /pg_advisory_lock\(/i.test(message))
+  );
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const backendRoot = path.resolve(here, "..");
@@ -28,6 +48,25 @@ const runPrisma = (args) => {
     env: process.env,
     stdio: "inherit",
   });
+};
+
+export const runMigrationsWithLockRetry = async (deploy) => {
+  for (let attempt = 1; attempt <= MIGRATION_LOCK_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      return deploy();
+    } catch (error) {
+      if (!isMigrationLockTimeout(error) || attempt === MIGRATION_LOCK_RETRY_ATTEMPTS) {
+        throw error;
+      }
+
+      const delayMs = MIGRATION_LOCK_RETRY_DELAY_MS;
+      console.warn(
+        `Prisma migration advisory lock is busy; retrying in ${delayMs / 1000}s ` +
+        `(attempt ${attempt + 1}/${MIGRATION_LOCK_RETRY_ATTEMPTS}).`,
+      );
+      await sleep(delayMs);
+    }
+  }
 };
 
 const rollbackFailedHistoricalMigrations = async (prisma) => {
@@ -58,7 +97,7 @@ const rollbackFailedHistoricalMigrations = async (prisma) => {
   }
 };
 
-const deployWithHistoricalMigrationsSkipped = () => {
+const deployWithHistoricalMigrationsSkipped = async () => {
   const backups = [];
 
   try {
@@ -75,7 +114,7 @@ const deployWithHistoricalMigrationsSkipped = () => {
       fs.writeFileSync(migrationFile, buildNoopMigrationSql(migrationName), "utf8");
     }
 
-    runPrisma(["migrate", "deploy"]);
+    await runMigrationsWithLockRetry(() => runPrisma(["migrate", "deploy"]));
   } finally {
     for (const backup of backups) {
       fs.writeFileSync(backup.migrationFile, backup.content, "utf8");
@@ -104,7 +143,7 @@ const main = async () => {
     await prisma.$disconnect();
   }
 
-  deployWithHistoricalMigrationsSkipped();
+  await deployWithHistoricalMigrationsSkipped();
 };
 
 if (path.resolve(process.argv[1] || "") === fileURLToPath(import.meta.url)) {
