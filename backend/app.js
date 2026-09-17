@@ -30,13 +30,13 @@ import { apiRateLimiter } from "./middleware/rateLimiter.js";
 import { metricsRegistry } from "./config/redis.js";
 import { prisma } from "./config/db.js";
 import { checkQueueHealth } from "./jobs/queue.js";
-import { originLock } from "./middleware/originLock.js";
+import { originLock } from "./middleware/petraOriginLock.js";
 
 const app = express();
 app.set("trust proxy", 1);
 const PRIMARY_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project.vercel.app";
 const DEFAULT_PRODUCTION_FRONTEND_ORIGIN = "https://petra-school-project-b6b77wv9c-michael-aals-projects.vercel.app";
-const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?-michael-aals-projects\.vercel\.app$/i;
+const PETRA_VERCEL_ORIGIN = /^https:\/\/petra-school-project(?:-[a-z0-9-]+)?\.vercel\.app$/i;
 const isPetraVercelOrigin = (origin) => {
   const normalizedOrigin = String(origin || "").trim().replace(/\/+$/, "");
   return normalizedOrigin === PRIMARY_PRODUCTION_FRONTEND_ORIGIN || PETRA_VERCEL_ORIGIN.test(normalizedOrigin);
