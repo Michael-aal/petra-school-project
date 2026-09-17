@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Mail, Phone, MapPin, ArrowRight, Sparkles, Info, MessageSquareText } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
@@ -32,6 +33,7 @@ const quickTopics = [
 ];
 
 export default function ContactPage() {
+  const [form, setForm] = useState({ name: "", email: "", topic: "", message: "" });
   return (
     <main className="marketing-page fparent contact-page">
       <section className="marketing-header">
@@ -114,22 +116,22 @@ export default function ContactPage() {
             <h3>Send us a message</h3>
             <p>Fill out the form below and we’ll get back to you shortly.</p>
 
-            <form className="contact-form">
+            <form className="contact-form" onSubmit={(event) => {\n              event.preventDefault();\n              const subject = encodeURIComponent(form.topic ? `${form.topic} — ${form.name || "Website visitor"}` : `Website enquiry — ${form.name || "Website visitor"}`);\n              const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\nTopic: ${form.topic}\n\n${form.message}`);\n              window.location.href = `mailto:support@acceede.com?subject=${subject}&body=${body}`;\n            }}>
               <div className="contact-field-row">
                 <div className="contact-field">
                   <label>Full Name</label>
-                  <input type="text" placeholder="John Doe" />
+                  <input type="text" name="name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} placeholder="John Doe" required />
                 </div>
 
                 <div className="contact-field">
                   <label>Email Address</label>
-                  <input type="email" placeholder="john@example.com" />
+                  <input type="email" name="email" value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder="john@example.com" required />
                 </div>
               </div>
 
               <div className="contact-field">
                 <label>Select Topic</label>
-                <select defaultValue="">
+                <select name="topic" value={form.topic} onChange={(event) => setForm((current) => ({ ...current, topic: event.target.value }))} required>
                   <option value="" disabled>
                     Choose a topic
                   </option>
@@ -143,7 +145,7 @@ export default function ContactPage() {
 
               <div className="contact-field">
                 <label>Message</label>
-                <textarea placeholder="How can we help you?" />
+                <textarea name="message" value={form.message} onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))} placeholder="How can we help you?" required />
               </div>
 
               <button type="submit" className="marketing-btn marketing-btn-primary cta-btn contact-submit">
