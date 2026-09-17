@@ -21,6 +21,25 @@ test("origin lock rejects an unapproved browser origin", () => {
   process.env.NODE_ENV = previousNodeEnv;
 });
 
+test("origin lock allows the primary Petra production origin", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = "production";
+
+  let passed = false;
+  const response = { status: () => ({ json: () => undefined }) };
+  originLock(
+    {
+      path: "/auth/login",
+      get: (name) => name === "origin" ? "https://petra-school-project.vercel.app" : "",
+    },
+    response,
+    () => { passed = true; },
+  );
+
+  assert.equal(passed, true);
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
 test("origin lock allows Petra Vercel deployment origins", () => {
   const previousNodeEnv = process.env.NODE_ENV;
   process.env.NODE_ENV = "production";
