@@ -111,7 +111,7 @@ const reconcileSchemaWithPrisma = async () => {
   // fail loudly instead of deleting production data.
   console.log("Reconciling production database schema with prisma/schema.prisma...");
   await runMigrationsWithLockRetry(() =>
-    runPrisma(["db", "push", "--skip-generate"]),
+    runPrisma(["db", "push"]),
   );
 };
 
