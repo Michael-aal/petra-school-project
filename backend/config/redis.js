@@ -47,6 +47,16 @@ if (redisClient) {
   });
 }
 
+export const connectRedis = async () => {
+  if (!redisClient) return;
+  if (redisClient.status === "ready") return;
+  if (redisClient.status === "wait") await redisClient.connect();
+  if (redisClient.status !== "ready") {
+    throw new Error(`Redis did not become ready (status: ${redisClient.status})`);
+  }
+  await measureRedis("startup_ping", () => redisClient.ping());
+};
+
 export const measureRedis = async (operation, callback) => {
   const end = redisLatency.startTimer({ operation });
   try {
