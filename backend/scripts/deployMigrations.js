@@ -43,11 +43,18 @@ const prismaBin = process.platform === "win32"
 const migrationsRoot = path.join(backendRoot, "prisma", "migrations");
 
 const runPrisma = (args) => {
-  execFileSync(prismaBin, args, {
-    cwd: backendRoot,
-    env: process.env,
-    stdio: "inherit",
-  });
+  try {
+    return execFileSync(prismaBin, args, {
+      cwd: backendRoot,
+      env: process.env,
+      stdio: ["inherit", "inherit", "pipe"],
+      encoding: "utf8",
+    });
+  } catch (error) {
+    const stderr = error?.stderr?.toString?.() || "";
+    if (stderr) process.stderr.write(stderr);
+    throw error;
+  }
 };
 
 export const runMigrationsWithLockRetry = async (deploy) => {
