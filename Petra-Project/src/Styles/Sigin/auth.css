@@ -1314,3 +1314,153 @@ body.dark .auth-page:has(.registration-choice-grid) {
     padding: 88px 20px 48px;
   }
 }
+
+/* Responsive form rows: two columns on wider screens, one full-width field on phones. */
+.auth-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.auth-field-row .auth-field-row-item {
+  min-width: 0;
+}
+
+.auth-input-wrap,
+.auth-input-wrap input,
+.auth-input-wrap select,
+.auth-input-wrap textarea {
+  max-width: 100%;
+}
+
+.auth-input-wrap select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--auth-ink);
+  font: 500 0.86rem "Manrope", sans-serif;
+}
+
+.auth-input-wrap input[type="file"] {
+  width: 100%;
+  min-width: 0;
+  font-size: 0.8rem;
+}
+
+.auth-submit {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    width: 100%;
+    min-width: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .auth-shell {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .auth-form {
+    width: 100%;
+    min-width: 0;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .auth-field-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .auth-field-row .auth-field-row-item {
+    width: 100%;
+  }
+
+  .auth-input-wrap {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .auth-input-wrap input,
+  .auth-input-wrap select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .auth-form-header h2 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+    overflow-wrap: anywhere;
+  }
+
+  .auth-form-header p,
+  .auth-alert,
+  .auth-switch,
+  .auth-footnote {
+    overflow-wrap: anywhere;
+  }
+
+  .auth-meta-row {
+    width: 100%;
+  }
+
+  .auth-page:has(.auth-shell--staff-register) .auth-form,
+  .auth-page:has(.auth-shell--admin-register) .auth-form,
+  .auth-page:has(.auth-shell--parent-register) .auth-form,
+  .auth-page:has(.auth-shell--signin) .auth-form {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .auth-page:has(.auth-shell--staff-register),
+  .auth-page:has(.auth-shell--admin-register),
+  .auth-page:has(.auth-shell--parent-register),
+  .auth-page:has(.auth-shell--signin) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .auth-page:has(.auth-shell--staff-register) .auth-brand-header,
+  .auth-page:has(.auth-shell--admin-register) .auth-brand-header,
+  .auth-page:has(.auth-shell--parent-register) .auth-brand-header,
+  .auth-page:has(.auth-shell--signin) .auth-brand-header {
+    min-width: 0;
+  }
+
+  .auth-brand-row {
+    min-width: 0;
+  }
+
+  .auth-brand,
+  .auth-brand-sub {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .auth-form {
+    padding: 18px 12px;
+  }
+
+  .auth-page:has(.auth-shell--staff-register) .auth-form,
+  .auth-page:has(.auth-shell--admin-register) .auth-form,
+  .auth-page:has(.auth-shell--parent-register) .auth-form,
+  .auth-page:has(.auth-shell--signin) .auth-form {
+    padding: 18px 12px;
+  }
+
+  .auth-input-wrap {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
