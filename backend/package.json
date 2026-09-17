@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "predev": "prisma generate && node scripts/deployMigrations.js",
     "dev": "nodemon server.js",
     "prestart": "prisma generate",
