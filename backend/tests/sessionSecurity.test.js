@@ -40,7 +40,26 @@ test("origin lock allows the primary Petra production origin", () => {
   process.env.NODE_ENV = previousNodeEnv;
 });
 
-test("origin lock allows Petra Vercel deployment origins", () => {
+test("origin lock allows arbitrary Petra Vercel deployment origins", () => {
+  const previousNodeEnv = process.env.NODE_ENV;
+  process.env.NODE_ENV = "production";
+
+  let passed = false;
+  const response = { status: () => ({ json: () => undefined }) };
+  originLock(
+    {
+      path: "/auth/login",
+      get: (name) => name === "origin" ? "https://petra-school-project-9x7k2m.vercel.app" : "",
+    },
+    response,
+    () => { passed = true; },
+  );
+
+  assert.equal(passed, true);
+  process.env.NODE_ENV = previousNodeEnv;
+});
+
+test("origin lock allows Petra Vercel team deployment origins", () => {
   const previousNodeEnv = process.env.NODE_ENV;
   process.env.NODE_ENV = "production";
 
