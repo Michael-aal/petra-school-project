@@ -4,6 +4,7 @@ import { studentApi } from "../../../services/studentApi";
 import "./page-styles/StudentsPage.css";
 
 export default function StudentsPage() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -109,7 +110,7 @@ export default function StudentsPage() {
           <button
             className="dashboard-home-summary-action tone-blue"
             type="button"
-            onClick={() => { window.location.href = "/dashboard/students"; }}
+            onClick={() => navigate("/dashboard/students")}
           >
             <span>Open student list</span>
             <ArrowRight size={14} />
