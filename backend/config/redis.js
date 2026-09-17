@@ -41,7 +41,10 @@ export const redisErrors = new Counter({ name: "petra_redis_errors", help: "Numb
 export const redisLatency = new Histogram({ name: "petra_redis_latency_ms", help: "Redis operation latency in milliseconds", labelNames: ["operation"], buckets: [1, 5, 10, 25, 50, 100, 250, 500, 1000], registers: [metricsRegistry] });
 
 if (redisClient) {
-  redisClient.on("error", () => redisErrors.inc({ operation: "connection" }));
+  redisClient.on("error", (error) => {
+    redisErrors.inc({ operation: "connection" });
+    console.error("[redis] connection error", { name: error?.name, code: error?.code, message: error?.message });
+  });
 }
 
 export const measureRedis = async (operation, callback) => {
