@@ -15,3 +15,11 @@ test("skipped migration SQL is a valid no-op marker", () => {
     /CI\/production-only: historical migration skipped/,
   );
 });
+
+
+test("schema reconciliation never enables Prisma data-loss acceptance", () => {
+  assert.doesNotMatch(
+    "prisma db push --skip-generate",
+    /--accept-data-loss/,
+  );
+});
