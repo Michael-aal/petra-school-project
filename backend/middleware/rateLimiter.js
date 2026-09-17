@@ -4,9 +4,9 @@
  */
 import crypto from "node:crypto";
 import { RateLimiterMemory, RateLimiterRedis } from "rate-limiter-flexible";
-import { measureRedis, rateLimitHits, redisClient, redlock } from "../config/redis.js";
+import { measureRedis, rateLimitHits, redisClient } from "../config/redis.js";
 
-const RATE_LIMIT_VERSION = "v4";
+const RATE_LIMIT_VERSION = "v5";
 const LOAD_TEST_MODE = process.env.LOAD_TEST_MODE === "true" && process.env.NODE_ENV !== "production";
 const LOAD_TEST_MAX = 100000;
 const localLimiters = new Map();
@@ -29,21 +29,11 @@ const createLimiter = ({ keyPrefix, windowMs, max }) => {
   });
 };
 
-const lockAndConsume = async (limiter, key, scope) => {
+const consume = async (limiter, key) => {
   if (!limiter) throw new Error("Redis rate limiter is unavailable");
-  const consume = () => redisClient
+  return redisClient
     ? measureRedis("rate_limit_consume", () => limiter.consume(key))
     : limiter.consume(key);
-
-  if (!redlock || !redisClient) return consume();
-  const mode = LOAD_TEST_MODE ? "load" : "normal";
-  const resource = `petra:rate-limit-lock:${RATE_LIMIT_VERSION}:${mode}:${scope}:${key}`;
-  const lock = await measureRedis("rate_limit_lock", () => redlock.acquire([resource], 1000));
-  try {
-    return await consume();
-  } finally {
-    await lock.release().catch(() => undefined);
-  }
 };
 
 const fingerprint = (value) => {
@@ -89,7 +79,7 @@ export const createRateLimiter = ({
       return next();
     }
     try {
-      const result = await lockAndConsume(limiter, key, scope);
+      const result = await consume(limiter, key);
       if (result?.msBeforeNext !== undefined) res.setHeader("X-RateLimit-Remaining", result.remainingPoints);
       return next();
     } catch (error) {
