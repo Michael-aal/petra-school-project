@@ -12,7 +12,7 @@ export const HISTORICAL_MIGRATIONS_TO_SKIP = [
   "20260911130000_add_payment_paymentmethodid",
 ];
 
-export const MIGRATION_LOCK_RETRY_ATTEMPTS = 6;
+export const MIGRATION_LOCK_RETRY_ATTEMPTS = 24;
 export const MIGRATION_LOCK_RETRY_DELAY_MS = 5000;
 
 export const buildNoopMigrationSql = (migrationName) =>
