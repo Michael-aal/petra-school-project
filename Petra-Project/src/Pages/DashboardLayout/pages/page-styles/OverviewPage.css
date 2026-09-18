@@ -18,14 +18,14 @@
 .overview-bar-column strong { font-size: .82rem; color: var(--app-text); }
 .overview-bar-column span { width: 100%; text-align: center; color: var(--app-text-muted); font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .overview-bar-track { width: min(44px, 100%); height: 135px; display: flex; align-items: end; overflow: hidden; border-radius: 10px 10px 5px 5px; background: var(--app-surface-muted, rgba(37, 99, 235, .08)); }
-.overview-bar-fill { width: 100%; min-height: 8px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #f59e0b, #e8752f); transition: height .45s ease; }
+.overview-bar-fill { width: 100%; min-height: 8px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #1877f2, #1877f2); transition: height .45s ease; }
 
 .overview-admission-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0 20px; }
 .overview-admission-visual div { padding: 16px 12px; border: 1px solid var(--app-border); border-radius: 14px; text-align: center; background: var(--app-surface); }
 .overview-admission-visual strong { display: block; font-size: 1.55rem; color: var(--app-text); }
 .overview-admission-visual span { color: var(--app-text-muted); font-size: .78rem; }
 .overview-admission-track { display: flex; height: 12px; gap: 3px; overflow: hidden; border-radius: 999px; background: var(--app-surface-muted, rgba(37, 99, 235, .08)); }
-.overview-admission-track i { min-width: 8px; border-radius: 999px; background: #e8752f; }
+.overview-admission-track i { min-width: 8px; border-radius: 999px; background: #1877f2; }
 .overview-admission-track i:nth-child(2) { background: #16a34a; }
 .overview-admission-track i:nth-child(3) { background: #ef4444; }
 
@@ -35,7 +35,7 @@
 .overview-chart-row span { color: var(--app-text-muted); font-size: .86rem; }
 .overview-chart-row strong { color: var(--app-text); font-size: 1.05rem; }
 .overview-chart-line { height: 14px; overflow: hidden; border-radius: 999px; background: var(--app-surface-muted, rgba(37, 99, 235, .08)); }
-.overview-chart-line i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f59e0b, #e8752f); transition: width .45s ease; }
+.overview-chart-line i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1877f2, #1877f2); transition: width .45s ease; }
 .overview-chart-line.expenses i { background: linear-gradient(90deg, #fb7185, #ef4444); }
 
 .overview-attendance-ring { display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; gap: 12px; min-height: 180px; }
@@ -45,7 +45,7 @@
 .overview-attendance-ring svg { width: 120px; height: 120px; transform: rotate(-90deg); }
 .overview-attendance-ring circle { fill: none; stroke-width: 10; }
 .overview-attendance-ring .ring-bg { stroke: var(--app-border); }
-.overview-attendance-ring .ring-value { stroke: #e8752f; stroke-linecap: round; transition: stroke-dasharray .45s ease; }
+.overview-attendance-ring .ring-value { stroke: #1877f2; stroke-linecap: round; transition: stroke-dasharray .45s ease; }
 .overview-attendance-legend { display: grid; gap: 8px; font-size: .78rem; color: var(--app-text-muted); }
 .overview-attendance-legend b { color: var(--app-text); }
 
@@ -53,8 +53,8 @@
 .daily-report-page .dashboard-stat-card, .term-summary-page .dashboard-stat-card { min-height: 118px; border-radius: 8px; background: #fff; border-color: #dfe3df; color: #202321; }
 .daily-report-page .dashboard-stat-card::before, .term-summary-page .dashboard-stat-card::before { display: none; }
 .daily-report-page .dashboard-stat-card .dashboard-stat-card-content strong, .term-summary-page .dashboard-stat-card .dashboard-stat-card-content strong, .daily-report-page .dashboard-stat-card .dashboard-stat-card-content span, .term-summary-page .dashboard-stat-card .dashboard-stat-card-content span, .daily-report-page .dashboard-stat-card .dashboard-stat-card-content p, .term-summary-page .dashboard-stat-card .dashboard-stat-card-content p { color: #202321; }
-.daily-report-page .dashboard-shell-link, .term-summary-page .dashboard-shell-link, .daily-report-page .dashboard-stat-card-footer a, .daily-report-page .dashboard-stat-card-footer button, .term-summary-page .dashboard-stat-card-footer a, .term-summary-page .dashboard-stat-card-footer button { border-color: #e8752f; background: #e8752f; color: #fff; box-shadow: none; text-decoration: none; }
-.daily-report-page .dashboard-shell-link:hover, .term-summary-page .dashboard-shell-link:hover, .daily-report-page .dashboard-shell-link:focus-visible, .term-summary-page .dashboard-shell-link:focus-visible, .daily-report-page .dashboard-stat-card-footer a:hover, .daily-report-page .dashboard-stat-card-footer button:hover, .term-summary-page .dashboard-stat-card-footer a:hover, .term-summary-page .dashboard-stat-card-footer button:hover { background: #d96a1d; border-color: #d96a1d; color: #fff; outline: none; }
+.daily-report-page .dashboard-shell-link, .term-summary-page .dashboard-shell-link, .daily-report-page .dashboard-stat-card-footer a, .daily-report-page .dashboard-stat-card-footer button, .term-summary-page .dashboard-stat-card-footer a, .term-summary-page .dashboard-stat-card-footer button { border-color: #1877f2; background: #1877f2; color: #fff; box-shadow: none; text-decoration: none; }
+.daily-report-page .dashboard-shell-link:hover, .term-summary-page .dashboard-shell-link:hover, .daily-report-page .dashboard-shell-link:focus-visible, .term-summary-page .dashboard-shell-link:focus-visible, .daily-report-page .dashboard-stat-card-footer a:hover, .daily-report-page .dashboard-stat-card-footer button:hover, .term-summary-page .dashboard-stat-card-footer a:hover, .term-summary-page .dashboard-stat-card-footer button:hover { background: #0f5dcc; border-color: #0f5dcc; color: #fff; outline: none; }
 .daily-report-page .dashboard-stat-card:hover, .term-summary-page .dashboard-stat-card:hover { transform: none; }
 .daily-report-page .dashboard-widget, .term-summary-page .dashboard-widget { padding: 18px; }
 .term-summary-page .dashboard-shell-header { margin-bottom: 18px; box-shadow: none; }
