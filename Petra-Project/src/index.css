@@ -1442,3 +1442,34 @@ textarea:focus-visible {
 .dashboard-shell [class*="bg-amber"],
 .dashboard-shell [class*="border-orange"],
 .dashboard-shell [class*="border-amber"] { color:#1877F2 !important; background:#eaf3ff !important; border-color:#bfdbfe !important; }
+
+
+/* NUVORA BLUE SYSTEM — final UI contract: no orange/amber/coral brand accents. */
+:root, body, body.light, body.dark, .dashboard-shell, .dashboard-page, .dashboard-home, .gs, .auth-page {
+  --app-accent: #1877F2 !important;
+  --app-accent-2: #0F5DCC !important;
+  --primary: #1877F2 !important;
+  --color-brand-primary: #1877F2 !important;
+  --color-brand-accent: #1877F2 !important;
+  --surface-accent: #EAF3FF !important;
+  --surface-warning: #EAF3FF !important;
+  --warning: #1877F2 !important;
+}
+.dashboard-shell [class*="orange"], .dashboard-shell [class*="amber"], .dashboard-shell [class*="coral"],
+.dashboard-page [class*="orange"], .dashboard-page [class*="amber"], .dashboard-page [class*="coral"],
+.dashboard-home [class*="orange"], .dashboard-home [class*="amber"], .dashboard-home [class*="coral"],
+.gs [class*="orange"], .gs [class*="amber"], .gs [class*="coral"],
+.auth-page [class*="orange"], .auth-page [class*="amber"], .auth-page [class*="coral"] {
+  color: #1877F2 !important;
+  border-color: #BFDBFE !important;
+  background-color: #EAF3FF !important;
+}
+.dashboard-shell [class*="bg-orange"], .dashboard-shell [class*="bg-amber"],
+.dashboard-page [class*="bg-orange"], .dashboard-page [class*="bg-amber"] { background: #EAF3FF !important; }
+.dashboard-shell [class*="text-orange"], .dashboard-shell [class*="text-amber"],
+.dashboard-page [class*="text-orange"], .dashboard-page [class*="text-amber"] { color: #1877F2 !important; }
+.dashboard-shell [class*="border-orange"], .dashboard-shell [class*="border-amber"],
+.dashboard-page [class*="border-orange"], .dashboard-page [class*="border-amber"] { border-color: #BFDBFE !important; }
+/* Stronger visual hierarchy for headings and primary actions. */
+.dashboard-page h1, .dashboard-home h1, .gs h1 { font-weight: 800; letter-spacing: -0.045em; }
+.dashboard-page h2, .dashboard-home h2, .gs h2 { font-weight: 750; letter-spacing: -0.03em; }
