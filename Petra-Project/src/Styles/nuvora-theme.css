@@ -1,33 +1,33 @@
-/* Nuvora — clean white / blue / neutral visual system. No orange or unrelated brand colors. */
+/* Nuvora — clean white / blue / neutral visual system. No blue or unrelated brand colors. */
 :root{
   color-scheme:light!important;
-  --nuvora-white:#fff;
+  --nuvora-white:#FFFFFF;
   --nuvora-blue:#1877f2;
-  --nuvora-blue-dark:#0f5dcc;
-  --nuvora-blue-soft:#eaf3ff;
-  --nuvora-text:#1c1e21;
-  --nuvora-muted:#65676b;
-  --nuvora-border:#e4e6eb;
-  --nuvora-bg:#f0f2f5;
+  --nuvora-blue-dark:#1877F2;
+  --nuvora-blue-soft:color-mix(in srgb, #1877F2 10%, #FFFFFF);
+  --nuvora-text:#000000;
+  --nuvora-muted:color-mix(in srgb, #000000 60%, #FFFFFF);
+  --nuvora-border:color-mix(in srgb, #000000 10%, transparent);
+  --nuvora-bg:#FFFFFF;
   --nuvora-accent:var(--nuvora-blue);
   --app-bg:var(--nuvora-bg)!important;
-  --app-surface:#fff!important;
-  --app-surface-strong:#f5f6f7!important;
-  --app-card:#fff!important;
-  --app-panel:#fff!important;
+  --app-surface:#FFFFFF!important;
+  --app-surface-strong:#FFFFFF!important;
+  --app-card:#FFFFFF!important;
+  --app-panel:#FFFFFF!important;
   --app-text:var(--nuvora-text)!important;
   --app-text-muted:var(--nuvora-muted)!important;
   --app-border:var(--nuvora-border)!important;
   --app-accent:var(--nuvora-blue)!important;
   --app-accent-2:var(--nuvora-blue-dark)!important;
   --primary:var(--nuvora-blue)!important;
-  --primary-foreground:#fff!important;
+  --primary-foreground:#FFFFFF!important;
   --dashboard-page-bg:var(--nuvora-bg)!important;
-  --dashboard-topbar-bg:#fff!important;
+  --dashboard-topbar-bg:#FFFFFF!important;
   --dashboard-topbar-text:var(--nuvora-text)!important;
   --dashboard-topbar-muted:var(--nuvora-muted)!important;
-  --dashboard-panel-bg:#fff!important;
-  --dashboard-card-bg:#fff!important;
+  --dashboard-panel-bg:#FFFFFF!important;
+  --dashboard-card-bg:#FFFFFF!important;
   --dashboard-card-text:var(--nuvora-text)!important;
   --dashboard-card-muted:var(--nuvora-muted)!important;
   --dashboard-sidebar-bg:var(--nuvora-white)!important;
@@ -38,33 +38,33 @@
 }
 html,body,#root{background:var(--nuvora-bg)!important;color:var(--nuvora-text)!important}
 body{color:var(--nuvora-text)!important}
-.card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,.dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,.dashboard-page .table-container,.layout-card{background:#fff!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
-input,select,textarea,.form-input,.form-select{background:#fff!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
-input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus{border-color:var(--nuvora-blue)!important;box-shadow:0 0 0 2px rgba(24,119,242,.14)!important}
-button[type=submit],.btn-primary,.landing-button-primary{background:var(--nuvora-blue)!important;color:#fff!important;border-color:var(--nuvora-blue)!important}
+.card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,.dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,.dashboard-page .table-container,.layout-card{background:#FFFFFF!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
+input,select,textarea,.form-input,.form-select{background:#FFFFFF!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
+input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus{border-color:var(--nuvora-blue)!important;box-shadow:0 0 0 2px color-mix(in srgb, #1877F2 14%, transparent)!important}
+button[type=submit],.btn-primary,.landing-button-primary{background:var(--nuvora-blue)!important;color:#FFFFFF!important;border-color:var(--nuvora-blue)!important}
 button[type=submit]:hover,.btn-primary:hover,.landing-button-primary:hover{background:var(--nuvora-blue-dark)!important}
 a{color:var(--nuvora-blue)}a:hover{color:var(--nuvora-blue-dark)}
 .data-table th,.payments-table th,.table-container th{color:var(--nuvora-muted)!important}
 .data-table td,.payments-table td,.table-container td{color:var(--nuvora-text)!important;border-color:var(--nuvora-border)!important}
 .data-table tbody tr:hover,.payments-table tbody tr:hover,.table-container tbody tr:hover{background:var(--nuvora-blue-soft)!important}
 .status-badge.success,.badge.success{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue-dark)!important}
-.status-badge.warning,.badge.warning,.status-badge.danger,.badge.danger{background:#f0f2f5!important;color:var(--nuvora-text)!important}
-.dashboard-sidebar,.sidebar,.dashboard-nav{background:#fff!important;color:var(--nuvora-text)!important;border-right:1px solid var(--nuvora-border)!important}
+.status-badge.warning,.badge.warning,.status-badge.danger,.badge.danger{background:#FFFFFF!important;color:var(--nuvora-text)!important}
+.dashboard-sidebar,.sidebar,.dashboard-nav{background:#FFFFFF!important;color:var(--nuvora-text)!important;border-right:1px solid var(--nuvora-border)!important}
 .dashboard-sidebar a,.sidebar a,.dashboard-nav a{color:var(--nuvora-muted)!important}
 .dashboard-sidebar a:hover,.sidebar a:hover,.dashboard-nav a:hover,.dashboard-sidebar a.active,.sidebar a.active,.dashboard-nav a.active{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue)!important}
 
 /* Nuvora final visual hardening: blue-only brand, polished controls, consistent spacing. */
 :root{
-  --nuvora-gradient:linear-gradient(135deg,#1877f2 0%,#0f5dcc 100%);
-  --nuvora-gradient-soft:linear-gradient(135deg,#eaf3ff 0%,#dbeafe 100%);
+  --nuvora-gradient:linear-gradient(135deg,#1877f2 0%,#1877F2 100%);
+  --nuvora-gradient-soft:linear-gradient(135deg,color-mix(in srgb, #1877F2 10%, #FFFFFF) 0%,color-mix(in srgb, #1877F2 8%, #FFFFFF) 100%);
   --dashboard-accent-gradient:var(--nuvora-gradient)!important;
   --dashboard-accent-gradient-strong:var(--nuvora-gradient)!important;
   --app-accent:#1877f2!important;
-  --app-accent-2:#0f5dcc!important;
+  --app-accent-2:#1877F2!important;
   --primary:#1877f2!important;
-  --primary-foreground:#fff!important;
+  --primary-foreground:#FFFFFF!important;
 }
-body,body.light{background:linear-gradient(180deg,#fff 0%,#f0f2f5 100%)!important;color:#1c1e21!important}
+body,body.light{background:linear-gradient(180deg,#FFFFFF 0%,#FFFFFF 100%)!important;color:#000000!important}
 button,.btn,.landing-button,.cta-btn,input,select,textarea{font:inherit}
 button,.btn,.landing-button,.cta-btn{
   min-height:42px;
@@ -75,12 +75,12 @@ button,.btn,.landing-button,.cta-btn{
 }
 button[type=submit],.btn-primary,.landing-button-primary,.cta-btn-primary{
   background:var(--nuvora-gradient)!important;
-  color:#fff!important;
+  color:#FFFFFF!important;
   border:1px solid #1877f2!important;
-  box-shadow:0 6px 16px rgba(24,119,242,.18)!important;
+  box-shadow:0 6px 16px color-mix(in srgb, #1877F2 18%, transparent)!important;
 }
 button[type=submit]:hover,.btn-primary:hover,.landing-button-primary:hover,.cta-btn-primary:hover{
-  background:linear-gradient(135deg,#0f5dcc 0%,#1877f2 100%)!important;
+  background:linear-gradient(135deg,#1877F2 0%,#1877f2 100%)!important;
   transform:translateY(-1px);
 }
 button:disabled,.btn:disabled{opacity:.6;box-shadow:none!important}
@@ -91,9 +91,9 @@ input,select,textarea,.form-input,.form-select{
 }
 textarea{min-height:96px}
 .dashboard-sidebar,.sidebar,.dashboard-nav{
-  background:#fff!important;
-  border-right:1px solid #e4e6eb!important;
-  box-shadow:1px 0 0 rgba(28,30,33,.03)!important;
+  background:#FFFFFF!important;
+  border-right:1px solid color-mix(in srgb, #000000 10%, transparent)!important;
+  box-shadow:1px 0 0 color-mix(in srgb, #000000 3%, transparent)!important;
 }
 .dashboard-sidebar a,.sidebar a,.dashboard-nav a{
   margin:2px 8px;
@@ -102,24 +102,24 @@ textarea{min-height:96px}
 }
 .dashboard-sidebar a.active,.sidebar a.active,.dashboard-nav a.active,
 .dashboard-sidebar a:hover,.sidebar a:hover,.dashboard-nav a:hover{
-  background:#eaf3ff!important;color:#1877f2!important;
+  background:color-mix(in srgb, #1877F2 10%, #FFFFFF)!important;color:#1877f2!important;
 }
 .card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,
 .dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,
 .dashboard-page .table-container,.layout-card{
   border-radius:12px!important;
-  box-shadow:0 4px 18px rgba(28,30,33,.06)!important;
+  box-shadow:0 4px 18px color-mix(in srgb, #000000 6%, transparent)!important;
 }
-[class*="orange"],[class*="amber"],[class*="gold"]{
-  --orange:#1877f2!important;
-  --orange-dark:#0f5dcc!important;
-  --orange-soft:#eaf3ff!important;
-  --amber:#1877f2!important;
+[class*="blue"],[class*="blue"],[class*="gold"]{
+  --blue:#1877f2!important;
+  --blue-dark:#1877F2!important;
+  --blue-soft:color-mix(in srgb, #1877F2 10%, #FFFFFF)!important;
+  --blue:#1877f2!important;
 }
 .support-search:focus-within,.reply-box textarea:focus,
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
   border-color:#1877f2!important;
-  box-shadow:0 0 0 3px rgba(24,119,242,.12)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb, #1877F2 12%, transparent)!important;
 }
 .submit-ticket-btn,
 .create-btn,
@@ -129,20 +129,20 @@ textarea{min-height:96px}
 .wallet-button-primary{
   background:var(--nuvora-gradient)!important;
   border-color:#1877f2!important;
-  color:#fff!important;
+  color:#FFFFFF!important;
   padding:10px 16px!important;
   min-height:42px!important;
 }
-.tone-indigo,.tone-emerald,.tone-rose,.tone-amber,
-.wallet-summary-icon,.wallet-quick-stat-icon,.sp-icon-box.orange,
-.pl-stat-icon.orange{
-  background:#eaf3ff!important;color:#1877f2!important;border-color:#bfdbfe!important;
+.tone-indigo,.tone-emerald,.tone-rose,.tone-blue,
+.wallet-summary-icon,.wallet-quick-stat-icon,.sp-icon-box.blue,
+.pl-stat-icon.blue{
+  background:color-mix(in srgb, #1877F2 10%, #FFFFFF)!important;color:#1877f2!important;border-color:color-mix(in srgb, #1877F2 25%, #FFFFFF)!important;
 }
 .wallet-hero-chip,.wallet-panel-status,.wallet-balance-card{
-  background:#eaf3ff!important;color:#1877f2!important;border-color:#bfdbfe!important;
+  background:color-mix(in srgb, #1877F2 10%, #FFFFFF)!important;color:#1877f2!important;border-color:color-mix(in srgb, #1877F2 25%, #FFFFFF)!important;
 }
 .overview-bar-fill,.overview-admission-track i,.overview-chart-line i,.overview-attendance-ring .ring-value{
   background:#1877f2!important;stroke:#1877f2!important;
 }
-.overview-chart-line.expenses i{background:#0f5dcc!important}
-.generic-list-page{background:linear-gradient(180deg,#fff 0%,#f0f2f5 100%)!important}
+.overview-chart-line.expenses i{background:#1877F2!important}
+.generic-list-page{background:linear-gradient(180deg,#FFFFFF 0%,#FFFFFF 100%)!important}
