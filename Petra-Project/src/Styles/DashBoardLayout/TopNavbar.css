@@ -449,9 +449,9 @@
 .menu-btn:hover,
 .icon-btn:hover,
 .ask-nuvora-btn:hover {
-  background: #fff1e8;
+  background: #eff6ff;
   border-color: #f1b58d;
-  color: #e8752f;
+  color: #1877F2;
 }
 
 @media (max-width: 480px) {
