@@ -1375,3 +1375,70 @@ textarea:focus-visible {
   background: #EAF3FF !important;
   color: #1877F2 !important;
 }
+\n/* Nuvora final dashboard visual contract: white surfaces, black text, blue controls, no orange brand styling. */
+.dashboard-shell,
+.dashboard-shell * { text-shadow: none !important; filter: none !important; }
+.dashboard-shell { --app-bg:#f5f8fc !important; --app-surface:#ffffff !important; --app-card:#ffffff !important; --app-panel:#ffffff !important; --app-text:#0f172a !important; --app-text-muted:#475569 !important; --app-border:#e2e8f0 !important; --app-accent:#1877F2 !important; --app-accent-2:#2563EB !important; --primary:#1877F2 !important; --primary-foreground:#ffffff !important; --dashboard-page-bg:#f5f8fc !important; --dashboard-muted-surface:#eaf3ff !important; --surface-accent:#eaf3ff !important; --warning:#1877F2 !important; }
+.dashboard-shell .dashboard-content,
+.dashboard-shell .dashboard-main,
+.dashboard-shell .dashboard-page { background:#f5f8fc !important; color:#0f172a !important; }
+.dashboard-shell .card,
+.dashboard-shell .panel,
+.dashboard-shell .stat-card,
+.dashboard-shell .settings-card,
+.dashboard-shell .wallet-panel,
+.dashboard-shell .payments-panel,
+.dashboard-shell .form-card,
+.dashboard-shell .dashboard-home-panel,
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .table-container,
+.dashboard-shell .modal-content { background:#ffffff !important; color:#0f172a !important; border-color:#e2e8f0 !important; box-shadow:0 8px 24px rgba(15,23,42,.06) !important; }
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell h4,
+.dashboard-shell h5,
+.dashboard-shell h6,
+.dashboard-shell p,
+.dashboard-shell span,
+.dashboard-shell label,
+.dashboard-shell td,
+.dashboard-shell th,
+.dashboard-shell li,
+.dashboard-shell a { text-shadow:none !important; }
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell h4,
+.dashboard-shell h5,
+.dashboard-shell h6,
+.dashboard-shell td,
+.dashboard-shell label { color:#0f172a !important; }
+.dashboard-shell p,
+.dashboard-shell th,
+.dashboard-shell .muted,
+.dashboard-shell [class*="muted"] { color:#475569 !important; }
+.dashboard-shell button,
+.dashboard-shell .btn,
+.dashboard-shell button[type="submit"] { color:#ffffff !important; }
+.dashboard-shell button:not(.sidebar-link):not(.sidebar-group):not(.sidebar-child):not(.sidebar-assistant):not(.sidebar-close):not(.btn-ghost),
+.dashboard-shell .btn-primary { background:#1877F2 !important; border-color:#1877F2 !important; }
+.dashboard-shell button:not(.sidebar-link):not(.sidebar-group):not(.sidebar-child):not(.sidebar-assistant):not(.sidebar-close):not(.btn-ghost):hover,
+.dashboard-shell .btn-primary:hover { background:#2563EB !important; border-color:#2563EB !important; }
+.dashboard-shell .btn-ghost,
+.dashboard-shell .btn-secondary { background:#ffffff !important; color:#1877F2 !important; border-color:#bfdbfe !important; }
+.dashboard-shell svg { color:#1877F2; stroke:#1877F2; opacity:1 !important; filter:none !important; }
+.dashboard-shell input,
+.dashboard-shell select,
+.dashboard-shell textarea { background:#ffffff !important; color:#0f172a !important; border-color:#cbd5e1 !important; }
+.dashboard-shell input:focus,
+.dashboard-shell select:focus,
+.dashboard-shell textarea:focus { border-color:#1877F2 !important; box-shadow:0 0 0 3px #eaf3ff !important; }
+.dashboard-shell [class*="tone-amber"],
+.dashboard-shell [class*="tone-orange"],
+.dashboard-shell [class*="text-orange"],
+.dashboard-shell [class*="text-amber"],
+.dashboard-shell [class*="bg-orange"],
+.dashboard-shell [class*="bg-amber"],
+.dashboard-shell [class*="border-orange"],
+.dashboard-shell [class*="border-amber"] { color:#1877F2 !important; background:#eaf3ff !important; border-color:#bfdbfe !important; }
