@@ -52,3 +52,97 @@ a{color:var(--nuvora-blue)}a:hover{color:var(--nuvora-blue-dark)}
 .dashboard-sidebar,.sidebar,.dashboard-nav{background:#fff!important;color:var(--nuvora-text)!important;border-right:1px solid var(--nuvora-border)!important}
 .dashboard-sidebar a,.sidebar a,.dashboard-nav a{color:var(--nuvora-muted)!important}
 .dashboard-sidebar a:hover,.sidebar a:hover,.dashboard-nav a:hover,.dashboard-sidebar a.active,.sidebar a.active,.dashboard-nav a.active{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue)!important}
+
+/* Nuvora final visual hardening: blue-only brand, polished controls, consistent spacing. */
+:root{
+  --nuvora-gradient:linear-gradient(135deg,#1877f2 0%,#0f5dcc 100%);
+  --nuvora-gradient-soft:linear-gradient(135deg,#eaf3ff 0%,#dbeafe 100%);
+  --dashboard-accent-gradient:var(--nuvora-gradient)!important;
+  --dashboard-accent-gradient-strong:var(--nuvora-gradient)!important;
+  --app-accent:#1877f2!important;
+  --app-accent-2:#0f5dcc!important;
+  --primary:#1877f2!important;
+  --primary-foreground:#fff!important;
+}
+body,body.light{background:linear-gradient(180deg,#fff 0%,#f0f2f5 100%)!important;color:#1c1e21!important}
+button,.btn,.landing-button,.cta-btn,input,select,textarea{font:inherit}
+button,.btn,.landing-button,.cta-btn{
+  min-height:42px;
+  padding:10px 16px;
+  border-radius:8px;
+  font-weight:700;
+  line-height:1.2;
+}
+button[type=submit],.btn-primary,.landing-button-primary,.cta-btn-primary{
+  background:var(--nuvora-gradient)!important;
+  color:#fff!important;
+  border:1px solid #1877f2!important;
+  box-shadow:0 6px 16px rgba(24,119,242,.18)!important;
+}
+button[type=submit]:hover,.btn-primary:hover,.landing-button-primary:hover,.cta-btn-primary:hover{
+  background:linear-gradient(135deg,#0f5dcc 0%,#1877f2 100%)!important;
+  transform:translateY(-1px);
+}
+button:disabled,.btn:disabled{opacity:.6;box-shadow:none!important}
+input,select,textarea,.form-input,.form-select{
+  min-height:42px;
+  padding:10px 12px!important;
+  border-radius:8px!important;
+}
+textarea{min-height:96px}
+.dashboard-sidebar,.sidebar,.dashboard-nav{
+  background:#fff!important;
+  border-right:1px solid #e4e6eb!important;
+  box-shadow:1px 0 0 rgba(28,30,33,.03)!important;
+}
+.dashboard-sidebar a,.sidebar a,.dashboard-nav a{
+  margin:2px 8px;
+  padding:10px 12px!important;
+  border-radius:8px!important;
+}
+.dashboard-sidebar a.active,.sidebar a.active,.dashboard-nav a.active,
+.dashboard-sidebar a:hover,.sidebar a:hover,.dashboard-nav a:hover{
+  background:#eaf3ff!important;color:#1877f2!important;
+}
+.card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,
+.dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,
+.dashboard-page .table-container,.layout-card{
+  border-radius:12px!important;
+  box-shadow:0 4px 18px rgba(28,30,33,.06)!important;
+}
+[class*="orange"],[class*="amber"],[class*="gold"]{
+  --orange:#1877f2!important;
+  --orange-dark:#0f5dcc!important;
+  --orange-soft:#eaf3ff!important;
+  --amber:#1877f2!important;
+}
+.support-search:focus-within,.reply-box textarea:focus,
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:#1877f2!important;
+  box-shadow:0 0 0 3px rgba(24,119,242,.12)!important;
+}
+.submit-ticket-btn,
+.create-btn,
+.teacher-action-button.primary,
+.parent-dashboard .module-button:not(.ghost),
+.wallet-action-form button,
+.wallet-button-primary{
+  background:var(--nuvora-gradient)!important;
+  border-color:#1877f2!important;
+  color:#fff!important;
+  padding:10px 16px!important;
+  min-height:42px!important;
+}
+.tone-indigo,.tone-emerald,.tone-rose,.tone-amber,
+.wallet-summary-icon,.wallet-quick-stat-icon,.sp-icon-box.orange,
+.pl-stat-icon.orange{
+  background:#eaf3ff!important;color:#1877f2!important;border-color:#bfdbfe!important;
+}
+.wallet-hero-chip,.wallet-panel-status,.wallet-balance-card{
+  background:#eaf3ff!important;color:#1877f2!important;border-color:#bfdbfe!important;
+}
+.overview-bar-fill,.overview-admission-track i,.overview-chart-line i,.overview-attendance-ring .ring-value{
+  background:#1877f2!important;stroke:#1877f2!important;
+}
+.overview-chart-line.expenses i{background:#0f5dcc!important}
+.generic-list-page{background:linear-gradient(180deg,#fff 0%,#f0f2f5 100%)!important}
