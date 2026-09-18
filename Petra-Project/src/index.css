@@ -39,7 +39,7 @@
   --app-accent-2: #0f5dcc;
   --success: #7ad3a1;
   --danger: #ff8a7a;
-  --warning: #f4c77d;
+  --warning: #1877F2;
   --info: #8ec5ff;
   --destructive: #ef4444;
   --icon-primary: var(--app-text);
@@ -579,7 +579,7 @@ body.light {
   --popover: #ffffff;
   --popover-foreground: #0f172a;
   --app-border: rgba(23, 35, 33, 0.12);
-  --app-accent: #c6533d;
+  --app-accent: #1877F2;
   --app-accent-2: #3d8063;
   --app-card: #ffffff;
   --app-panel: #ffffff;
@@ -613,7 +613,7 @@ body.dark {
   --app-text: #f5f6f0;
   --app-text-muted: #aabbb3;
   --app-border: rgba(245, 246, 240, 0.12);
-  --app-accent: #f07a5d;
+  --app-accent: #1877F2;
   --app-accent-2: #78ad91;
   --app-card: #1b2722;
   --app-panel: #1b2722;
