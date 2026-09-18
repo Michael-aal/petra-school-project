@@ -29,9 +29,9 @@
 }
 
 .create-btn {
-  background: linear-gradient(90deg, #e8752f 0%, #f29962 100%) !important;
+  background: linear-gradient(90deg, #1877F2 0%, #60a5fa 100%) !important;
   color: #fffcfc !important;
-  border: 1px solid #e8752f !important;
+  border: 1px solid #1877F2 !important;
   padding: 10px 18px;
   border-radius: 8px;
   font-weight: 700;
@@ -41,7 +41,7 @@
 
 .create-btn:hover,
 .create-btn:focus-visible {
-  background: linear-gradient(90deg, #ef8a47 0%, #e8752f 100%) !important;
+  background: linear-gradient(90deg, #ef8a47 0%, #1877F2 100%) !important;
   color: #000000 !important;
   outline: none;
 }
@@ -136,8 +136,8 @@
 }
 
 .stat-icon.blue {
-  background: rgba(232, 117, 47, 0.18);
-  color: #e8752f;
+  background: rgba(24, 119, 242, 0.18);
+  color: #1877F2;
 }
 
 .stat-icon.green {
