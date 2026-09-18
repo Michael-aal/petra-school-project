@@ -66,9 +66,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid #e8752f !important;
+  border: 1px solid #1877f2 !important;
   border-radius: 8px;
-  background: #e8752f !important;
+  background: #1877f2 !important;
   color: #ffffff !important;
   padding: 10px 14px;
   font-weight: 600;
@@ -78,8 +78,8 @@
 }
 
 .timetable-page .timetable-page-action:hover {
-  background: #d95f1f !important;
-  border-color: #d95f1f !important;
+  background: #0f5dcc !important;
+  border-color: #0f5dcc !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -137,7 +137,7 @@
 .timetable-page .timetable-delete-btn:hover {
   background: #fff3ee;
   border-color: rgba(232, 117, 47, 0.3);
-  color: #d95f1f;
+  color: #0f5dcc;
 }
 
 @media (max-width: 640px) {
