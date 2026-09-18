@@ -1047,3 +1047,89 @@ textarea:focus,
   border-color: var(--app-accent);
   box-shadow: 0 0 0 3px rgba(232, 117, 47, 0.14);
 }
+
+
+/* NUVORA BLUE DESIGN SYSTEM — final cascade guard
+   Keeps semantic success/warning/error colors intact while removing retired brand accents. */
+:root,
+body.light,
+html.light {
+  color-scheme: light;
+  --app-bg:#F5F8FC;
+  --app-surface:#FFFFFF;
+  --app-surface-strong:#EAF3FF;
+  --app-card:#FFFFFF;
+  --app-panel:#FFFFFF;
+  --app-text:#0F172A;
+  --app-text-muted:#64748B;
+  --app-border:#E2E8F0;
+  --app-accent:#1877F2;
+  --app-accent-2:#2563EB;
+  --primary:#1877F2;
+  --primary-foreground:#FFFFFF;
+  --background:#F5F8FC;
+  --foreground:#0F172A;
+  --muted-foreground:#64748B;
+  --card:#FFFFFF;
+  --card-foreground:#0F172A;
+  --popover:#FFFFFF;
+  --popover-foreground:#0F172A;
+  --input:#E2E8F0;
+  --ring:#1877F2;
+  --dashboard-page-bg:#F5F8FC;
+  --dashboard-topbar-bg:rgba(255,255,255,.94);
+  --dashboard-topbar-text:#0F172A;
+  --dashboard-topbar-muted:#64748B;
+  --dashboard-card-bg:#FFFFFF;
+  --dashboard-card-text:#0F172A;
+  --dashboard-card-muted:#64748B;
+  --dashboard-panel-bg:#FFFFFF;
+  --dashboard-panel-text:#0F172A;
+  --dashboard-panel-muted:#64748B;
+  --dashboard-sidebar-bg:linear-gradient(180deg,#0B1F3A 0%,#102B50 100%);
+  --dashboard-sidebar-text:#FFFFFF;
+  --dashboard-sidebar-muted:#B9CBE3;
+  --dashboard-muted-surface:#F5F8FC;
+  --surface-muted:#F5F8FC;
+  --surface-accent:#EAF3FF;
+  --surface-success:#EAF8F1;
+  --surface-warning:#FFF7E6;
+  --surface-danger:#FDECEC;
+  --warning:#B7791F;
+  --success:#16805F;
+  --danger:#C2413B;
+  --info:#2563EB;
+}
+body.light{background:#F5F8FC;color:#0F172A;}
+body.light .btn-primary,
+body.light button[type="submit"],
+.btn-primary,button[type="submit"]{
+  background:#1877F2;
+  color:#fff;
+  border-color:#1877F2;
+  box-shadow:0 8px 20px rgba(24,119,242,.18);
+}
+.btn-primary:hover,button[type="submit"]:hover{background:#2563EB;border-color:#2563EB;}
+.btn-secondary{background:#fff;color:#1877F2;border:1px solid #1877F2;}
+.card,.panel,.dashboard-home-panel,.dashboard-home-summary-card,.settings-card,.wallet-panel,.payments-panel,.stat-card,.dashboard-page .table-container,.modal-content,.form-card,.dashboard-widget,.dashboard-stat-card{
+  background:#fff;border-color:#E2E8F0;color:#0F172A;
+}
+.form-input,.form-select,input,select,textarea{background:#fff;color:#0F172A;border-color:#E2E8F0;}
+.form-input:focus,.form-select:focus,input:focus,select:focus,textarea:focus{border-color:#1877F2;box-shadow:0 0 0 3px rgba(24,119,242,.14);}
+.dashboard-stat-card-icon,.dashboard-quick-action-icon,.dashboard-empty-icon{background:#EAF3FF;color:#1877F2;}
+.dashboard-stat-card-trend{background:#EAF3FF;color:#1877F2;}
+.dashboard-home a,.dashboard-page a,.dashboard-widget-action{color:#1877F2;}
+.sidebar-link.active,.sidebar-group.group-active,.sidebar-child.active{color:#1877F2;}
+table{max-width:100%;}
+.table-container,.data-table-wrap,.table-responsive{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+img,svg{max-width:100%;}
+button,input,select,textarea{max-width:100%;}
+:focus-visible{outline:3px solid rgba(24,119,242,.45);outline-offset:2px;}
+@media(max-width:768px){
+  .dashboard-home,.dashboard-page{padding:12px;}
+  .dashboard-home-header,.dashboard-page-header,.dashboard-page>header{padding:16px;border-radius:14px;}
+  .dashboard-home-summary{grid-template-columns:1fr!important;}
+  .dashboard-home-content{grid-template-columns:1fr!important;}
+  .dashboard-stat-card{min-width:0;}
+  .dashboard-widget{min-width:0;}
+}
