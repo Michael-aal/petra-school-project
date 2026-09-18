@@ -6,11 +6,10 @@ import { ToastProvider, ToastViewport } from "./context/ToastContext.jsx";
 import "./index.css";
 import "./Styles/petra-theme.css";
 import "./Styles/petra-responsive.css";
+import "./Styles/nuvora-theme.css";
 import App from "./App.jsx";
 import { applyTheme } from "./utils/theme.js";
-
-applyTheme("light");
-
+applyTheme();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserProvider>
