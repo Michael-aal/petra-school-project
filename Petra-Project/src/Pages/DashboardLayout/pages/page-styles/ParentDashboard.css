@@ -287,9 +287,9 @@ body.dark .parent-hero-card {
 
 /* Parent portal visual layer: warm, focused, and deliberately quieter than the school admin workspace. */
 .parent-dashboard {
-  --parent-orange: var(--app-accent);
-  --parent-orange-dark: var(--app-accent);
-  --parent-orange-soft: var(--app-accent);
+  --parent-blue: var(--app-accent);
+  --parent-blue: var(--app-accent);
+  --parent-blue-soft: var(--app-accent);
   --parent-ink: #1f2933;
   --parent-muted: #6f7b87;
   --parent-line: #e7e2dc;
