@@ -793,3 +793,66 @@
   color: #1877F2;
   background: color-mix(in srgb, #1877F2 8%, #FFFFFF);
 }
+\n/* Nuvora final navigation cleanup: crisp black text, blue accents, zero orange. */
+.sidebar-container {
+  --sidebar-surface: #ffffff;
+  --sidebar-surface-strong: #f5f8fc;
+  --sidebar-surface-soft: #eef5ff;
+  --sidebar-text: #000000;
+  --sidebar-text-muted: #334155;
+  --sidebar-accent: #1877F2;
+  --sidebar-accent-soft: #eaf3ff;
+  --sidebar-border: #e2e8f0;
+  background: #ffffff !important;
+  color: #000000 !important;
+  filter: none !important;
+}
+.sidebar-container .sidebar-label,
+.sidebar-container .sidebar-title,
+.sidebar-container .child-label,
+.sidebar-container .brand-title,
+.sidebar-container .brand-sub,
+.sidebar-container .sidebar-section-label,
+.sidebar-container .sidebar-user h3,
+.sidebar-container .sidebar-user h4 {
+  color: #000000 !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+.sidebar-container .brand-sub,
+.sidebar-container .sidebar-section-label,
+.sidebar-container .sidebar-user h4 { color: #334155 !important; }
+.sidebar-container .sidebar-link,
+.sidebar-container .sidebar-group,
+.sidebar-container .sidebar-child,
+.sidebar-container .sidebar-assistant {
+  color: #000000 !important;
+  text-shadow: none !important;
+  background: transparent !important;
+}
+.sidebar-container .sidebar-link:hover,
+.sidebar-container .sidebar-group:hover,
+.sidebar-container .sidebar-child:hover,
+.sidebar-container .sidebar-assistant:hover,
+.sidebar-container .sidebar-link.active,
+.sidebar-container .sidebar-child.active,
+.sidebar-container .sidebar-group.group-active,
+.sidebar-container .sidebar-assistant.active {
+  color: #1877F2 !important;
+  background: #eaf3ff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.sidebar-container .sidebar-icon,
+.sidebar-container .child-icon,
+.sidebar-container .sidebar-assistant-icon,
+.sidebar-container .arrow-icon,
+.sidebar-container svg { color: #1877F2 !important; stroke: #1877F2 !important; filter: none !important; opacity: 1 !important; }
+.sidebar-container .sidebar-link:not(.active) .sidebar-icon,
+.sidebar-container .sidebar-child:not(.active) .child-icon,
+.sidebar-container .sidebar-group:not(.group-active) .sidebar-icon { color: #000000 !important; stroke: #000000 !important; }
+.sidebar-container .sidebar-link.active::before,
+.sidebar-container .sidebar-child.active::before,
+.sidebar-container .sidebar-group.group-active::before { background: #1877F2 !important; }
+.sidebar-container .sidebar-contaner-logo { background: #1877F2 !important; border-color: #1877F2 !important; color: #ffffff !important; box-shadow: none !important; }
+.sidebar-container .sidebar-contaner-logo svg { color: #ffffff !important; stroke: #ffffff !important; }
