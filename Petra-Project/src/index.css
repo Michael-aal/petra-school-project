@@ -1133,3 +1133,127 @@ button,input,select,textarea{max-width:100%;}
   .dashboard-stat-card{min-width:0;}
   .dashboard-widget{min-width:0;}
 }
+
+
+/* NUVORA FINAL DASHBOARD POLISH
+   One simple blue system across every authenticated dashboard.
+   Semantic states stay readable, but the retired orange brand is removed. */
+:root,
+body.light,
+html.light {
+  --app-accent: #1877F2 !important;
+  --app-accent-2: #2563EB !important;
+  --warning: #2563EB !important;
+  --color-warning: #2563EB !important;
+  --surface-warning: #EAF3FF !important;
+  --dashboard-sidebar-bg: #FFFFFF !important;
+  --dashboard-sidebar-text: #0F172A !important;
+  --dashboard-sidebar-muted: #64748B !important;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(24,119,242,.35) !important;
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: #1877F2 !important;
+  border-color: #1877F2 !important;
+  box-shadow: 0 6px 16px rgba(24,119,242,.16) !important;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background: #2563EB !important;
+  border-color: #2563EB !important;
+}
+
+.sidebar-container {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-right: 1px solid #E2E8F0 !important;
+  box-shadow: 1px 0 0 rgba(15,23,42,.03) !important;
+}
+
+.sidebar-header,
+.sidebar-footer {
+  border-color: #E2E8F0 !important;
+}
+
+.sidebar-contaner-logo {
+  background: #EAF3FF !important;
+  border: 1px solid #DBEAFE !important;
+  color: #1877F2 !important;
+}
+
+.brand-title,
+.sidebar-user h3 {
+  color: #0F172A !important;
+}
+
+.brand-sub,
+.sidebar-section-label,
+.sidebar-user h4,
+.sidebar-child {
+  color: #64748B !important;
+}
+
+.sidebar-link,
+.sidebar-group,
+.sidebar-assistant {
+  color: #334155 !important;
+  background: transparent !important;
+}
+
+.sidebar-link:hover,
+.sidebar-group:hover,
+.sidebar-assistant:hover,
+.sidebar-child:hover {
+  background: #F5F8FC !important;
+  color: #1877F2 !important;
+}
+
+.sidebar-link.active,
+.sidebar-child.active,
+.sidebar-group.group-active,
+.sidebar-assistant.active {
+  background: #EAF3FF !important;
+  color: #1877F2 !important;
+  border-color: transparent !important;
+}
+
+.sidebar-link.active::before,
+.sidebar-child.active::before,
+.sidebar-group.group-active::before {
+  background: #1877F2 !important;
+}
+
+.sidebar-link.active .sidebar-icon,
+.sidebar-child.active .child-icon,
+.sidebar-assistant.active .sidebar-assistant-icon,
+.sidebar-group.group-active .sidebar-icon,
+.sidebar-assistant-icon {
+  color: #1877F2 !important;
+}
+
+.sidebar-children {
+  border-left-color: #E2E8F0 !important;
+}
+
+/* No orange/amber brand text. Warning states use blue + neutral surfaces. */
+.status-badge.warning,
+.badge.warning,
+.tone-amber {
+  background: #EAF3FF !important;
+  color: #2563EB !important;
+  border-color: #BFDBFE !important;
+}
+
+/* Prevent legacy orange focus/shadow values from surviving the cascade. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-color: rgba(24,119,242,.35) !important;
+}
