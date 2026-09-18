@@ -1535,12 +1535,17 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .registration-choice-card h3 { margin-top: 18px; color: var(--auth-ink); font-size: 1.05rem; }
 .registration-choice-card p { font-size: .82rem; line-height: 1.6; }
 body .auth-page:has(.auth-shell--registration-entry) .registration-choice-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px;
   width: 100%;
   margin-top: 14px;
   border: 1px solid #10223e !important;
   border-radius: 10px;
   background: #10223e !important;
   color: #ffffff !important;
+  text-align: center;
 }
 
 body .auth-page:has(.auth-shell--registration-entry) .registration-choice-button:hover:not(:disabled) {
