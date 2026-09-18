@@ -195,7 +195,7 @@ button[type="submit"] {
   --dashboard-panel-bg: #ffffff;
   --dashboard-page-bg: #f7f7f5;
   --surface-muted: #f7f7f5;
-  --surface-accent: #fff1e8;
+  --surface-accent: #eff6ff;
   --surface-danger: #fff0ee;
 }
 
@@ -516,7 +516,7 @@ body.light {
   --surface-muted: #edf3f8;
   --surface-accent: #e5f5f1;
   --surface-success: #e7f6ef;
-  --surface-warning: #fff6df;
+  --surface-warning: #eff6ff;
   --surface-danger: #fcebea;
   --shadow-soft: 0 16px 40px rgba(20, 33, 61, 0.08);
   --radius-sm: 10px;
@@ -945,11 +945,11 @@ body.light {
   --surface-muted-strong: #eceeeb;
   --shadow-soft: 0 8px 24px rgba(32, 35, 33, 0.06);
   --shadow-soft-dark: 0 8px 24px rgba(32, 35, 33, 0.06);
-  --surface-accent: #fff1e8;
+  --surface-accent: #eff6ff;
   --surface-success: #eaf7ef;
   --surface-danger: #fff0ee;
   --surface-warning: #fff7e6;
-  --button-hover: #fff1e8;
+  --button-hover: #eff6ff;
   --color-brand-primary: #1877f2;
   --color-brand-accent: #1877f2;
   --color-background: #f7f7f5;
@@ -994,7 +994,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid rgba(232, 117, 47, 0.24);
+  outline: 3px solid rgba(24, 119, 242, 0.24);
   outline-offset: 2px;
 }
 
@@ -1003,7 +1003,7 @@ button[type="submit"] {
   background: var(--app-accent);
   border-color: var(--app-accent);
   color: #ffffff;
-  box-shadow: 0 3px 8px rgba(232, 117, 47, 0.18);
+  box-shadow: 0 3px 8px rgba(24, 119, 242, 0.18);
 }
 
 .btn-primary:hover,
@@ -1045,7 +1045,7 @@ textarea:focus,
 .form-input:focus,
 .form-select:focus {
   border-color: var(--app-accent);
-  box-shadow: 0 0 0 3px rgba(232, 117, 47, 0.14);
+  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.14);
 }
 
 
