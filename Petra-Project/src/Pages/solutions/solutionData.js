@@ -149,21 +149,21 @@ const baseFeatures = {
 };
 
 const solutionMeta = {
-  "School OS": { icon: School, accent: "#ff6600", eyebrow: "For Schools", badge: "Operations" },
-  "Financial Management": { icon: Wallet, accent: "#ff6600", eyebrow: "For Schools", badge: "Finance" },
-  "CBT Engine": { icon: ClipboardCheck, accent: "#ff6600", eyebrow: "For Schools", badge: "Assessment" },
-  "Nuvora Pay": { icon: ShieldCheck, accent: "#ff6600", eyebrow: "For Parents", badge: "Payments" },
-  FlexPay: { icon: Wallet, accent: "#ff6600", eyebrow: "For Parents", badge: "Installments" },
-  Performance: { icon: LineChart, accent: "#ff6600", eyebrow: "For Parents", badge: "Progress" },
-  "AI Study App": { icon: Sparkles, accent: "#ff6600", eyebrow: "For Students", badge: "AI Tutor" },
-  "Learning Hub": { icon: PanelsTopLeft, accent: "#ff6600", eyebrow: "For Students", badge: "Learning" },
-  "Digital Library": { icon: LibraryBig, accent: "#ff6600", eyebrow: "For Students", badge: "Library" },
-  "Teacher Workspace": { icon: LayoutDashboard, accent: "#ff6600", eyebrow: "For Teachers", badge: "Workspace" },
-  "Lesson Planner": { icon: SquarePen, accent: "#ff6600", eyebrow: "For Teachers", badge: "Planning" },
-  "Assessment Tools": { icon: ClipboardCheck, accent: "#ff6600", eyebrow: "For Teachers", badge: "Grading" },
-  "School Analytics": { icon: LineChart, accent: "#ff6600", eyebrow: "For Administrators", badge: "Insights" },
-  Admissions: { icon: School, accent: "#ff6600", eyebrow: "For Administrators", badge: "Enrollment" },
-  "Communication Hub": { icon: Megaphone, accent: "#ff6600", eyebrow: "For Administrators", badge: "Messaging" },
+  "School OS": { icon: School, accent: "#1877F2", eyebrow: "For Schools", badge: "Operations" },
+  "Financial Management": { icon: Wallet, accent: "#1877F2", eyebrow: "For Schools", badge: "Finance" },
+  "CBT Engine": { icon: ClipboardCheck, accent: "#1877F2", eyebrow: "For Schools", badge: "Assessment" },
+  "Nuvora Pay": { icon: ShieldCheck, accent: "#1877F2", eyebrow: "For Parents", badge: "Payments" },
+  FlexPay: { icon: Wallet, accent: "#1877F2", eyebrow: "For Parents", badge: "Installments" },
+  Performance: { icon: LineChart, accent: "#1877F2", eyebrow: "For Parents", badge: "Progress" },
+  "AI Study App": { icon: Sparkles, accent: "#1877F2", eyebrow: "For Students", badge: "AI Tutor" },
+  "Learning Hub": { icon: PanelsTopLeft, accent: "#1877F2", eyebrow: "For Students", badge: "Learning" },
+  "Digital Library": { icon: LibraryBig, accent: "#1877F2", eyebrow: "For Students", badge: "Library" },
+  "Teacher Workspace": { icon: LayoutDashboard, accent: "#1877F2", eyebrow: "For Teachers", badge: "Workspace" },
+  "Lesson Planner": { icon: SquarePen, accent: "#1877F2", eyebrow: "For Teachers", badge: "Planning" },
+  "Assessment Tools": { icon: ClipboardCheck, accent: "#1877F2", eyebrow: "For Teachers", badge: "Grading" },
+  "School Analytics": { icon: LineChart, accent: "#1877F2", eyebrow: "For Administrators", badge: "Insights" },
+  Admissions: { icon: School, accent: "#1877F2", eyebrow: "For Administrators", badge: "Enrollment" },
+  "Communication Hub": { icon: Megaphone, accent: "#1877F2", eyebrow: "For Administrators", badge: "Messaging" },
 };
 
 export function getSolutionData(title) {
