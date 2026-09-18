@@ -2,7 +2,7 @@ import { request } from "./apiClient";
 
 export const teacherApplicationApi = {
   submit: (payload) =>
-    request("/api/teacher/applications", {
+    request("/api/teacher-applications", {
       method: "POST",
       body: payload,
     }),
@@ -13,13 +13,13 @@ export const teacherApplicationApi = {
     if (params.q) search.set("q", params.q);
     if (params.limit) search.set("limit", String(params.limit));
     const suffix = search.toString() ? `?${search.toString()}` : "";
-    return request(`/api/teacher/applications${suffix}`, { method: "GET" });
+    return request(`/api/teacher-applications${suffix}`, { method: "GET" });
   },
 
-  get: (id) => request(`/api/teacher/applications/${id}`, { method: "GET" }),
+  get: (id) => request(`/api/teacher-applications/${id}`, { method: "GET" }),
 
   updateStatus: (id, status) =>
-    request(`/api/teacher/applications/${id}/status`, {
+    request(`/api/teacher-applications/${id}/status`, {
       method: "PATCH",
       body: { status },
     }),
