@@ -52,8 +52,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(232, 117, 47, 0.12);
-  color: #d86724;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1565c0;
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -64,15 +64,15 @@
 .live-dot {
   width: 8px;
   height: 8px;
-  background: #e8752f;
+  background: #1877F2;
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(232, 117, 47, 0.55); }
-  70% { box-shadow: 0 0 0 10px rgba(232, 117, 47, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(232, 117, 47, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(24, 119, 242, 0.55); }
+  70% { box-shadow: 0 0 0 10px rgba(24, 119, 242, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(24, 119, 242, 0); }
 }
 
 .gate-search {
@@ -133,13 +133,13 @@
   height: 44px;
   border-radius: 10px;
   flex-shrink: 0;
-  background: rgba(232, 117, 47, 0.1);
-  color: #d86724;
+  background: rgba(24, 119, 242, 0.1);
+  color: #1565c0;
 }
 
 .entry-icon { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.exit-icon { background: rgba(232, 117, 47, 0.12); color: #d86724; }
-.campus-icon { background: rgba(232, 117, 47, 0.12); color: #d86724; }
+.exit-icon { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
+.campus-icon { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
 
 .gate-stat-value {
   display: block;
@@ -233,7 +233,7 @@
 }
 
 .event-entry { border-left-color: #0f9a6f; }
-.event-exit { border-left-color: #d86724; }
+.event-exit { border-left-color: #1565c0; }
 
 .event-direction-icon {
   display: flex;
@@ -243,12 +243,12 @@
   height: 36px;
   border-radius: 10px;
   flex-shrink: 0;
-  background: rgba(232, 117, 47, 0.1);
-  color: #d86724;
+  background: rgba(24, 119, 242, 0.1);
+  color: #1565c0;
 }
 
 .icon-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.icon-exit { background: rgba(232, 117, 47, 0.12); color: #d86724; }
+.icon-exit { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
 
 .event-details {
   flex: 1;
@@ -297,7 +297,7 @@
 }
 
 .badge-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.badge-exit { background: rgba(232, 117, 47, 0.12); color: #d86724; }
+.badge-exit { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
 
 .empty-feed {
   display: flex;
@@ -391,9 +391,9 @@
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #e8752f !important;
+  background: #1877F2 !important;
   color: #ffffff !important;
-  border: 1px solid #e8752f !important;
+  border: 1px solid #1877F2 !important;
   border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
@@ -417,8 +417,8 @@
   gap: 10px;
   margin-top: 24px;
   padding: 12px;
-  background: rgba(232, 117, 47, 0.08);
-  border: 1px solid rgba(232, 117, 47, 0.18);
+  background: rgba(24, 119, 242, 0.08);
+  border: 1px solid rgba(24, 119, 242, 0.18);
   border-radius: 8px;
   font-size: 0.8rem;
   color: #3b2d26;
