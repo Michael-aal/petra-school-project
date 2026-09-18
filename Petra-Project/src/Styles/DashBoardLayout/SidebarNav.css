@@ -751,3 +751,45 @@
   }
 }
 
+
+
+
+/* Sidebar icon contract: icons must remain visible at every breakpoint. */
+.sidebar-container svg.lucide,
+.sidebar-container .sidebar-icon,
+.sidebar-container .child-icon,
+.sidebar-container .arrow-icon,
+.sidebar-container .sidebar-assistant-icon {
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
+  flex: 0 0 auto;
+  color: currentColor;
+  stroke: currentColor;
+  fill: none;
+  opacity: 1;
+  visibility: visible;
+  stroke-width: 2;
+}
+.sidebar-link.active .sidebar-icon,
+.sidebar-child.active .child-icon,
+.sidebar-group.group-active .sidebar-icon,
+.sidebar-assistant.active .sidebar-assistant-icon {
+  color: #1877F2;
+}
+.sidebar-link,
+.sidebar-child,
+.sidebar-group,
+.sidebar-assistant {
+  color: #000000;
+  background: #FFFFFF;
+}
+.sidebar-link:hover,
+.sidebar-child:hover,
+.sidebar-group:hover,
+.sidebar-assistant:hover {
+  color: #1877F2;
+  background: color-mix(in srgb, #1877F2 8%, #FFFFFF);
+}
