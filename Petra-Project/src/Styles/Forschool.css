@@ -34,9 +34,9 @@
   align-items: center;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #ff6600;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
+  color: #1877F2;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
   padding: 6px 14px;
   border-radius: 999px;
   margin-bottom: 22px;
@@ -54,7 +54,7 @@
 
 .fsu-title span {
   background: none;
-  color: #ff6600;
+  color: #1877F2;
   -webkit-text-fill-color: initial;
 }
 
@@ -98,8 +98,8 @@
 }
 
 .fsu-btnPrimary {
-  background: #ff6600 !important;
-  background-color: #ff6600 !important;
+  background: #1877F2 !important;
+  background-color: #1877F2 !important;
   color: #ffffff !important;
   border: none !important;
   box-shadow: none !important;
@@ -115,15 +115,15 @@
 
 .fsu-btnSecondary {
   background: transparent !important;
-  border: 1.5px solid #ff6600 !important;
-  color: #ff6600 !important;
+  border: 1.5px solid #1877F2 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
 }
 
 .fsu-btnSecondary:hover {
-  background: rgba(255, 102, 0, 0.08) !important;
+  background: rgba(24,119,242, 0.08) !important;
   border-color: #e65c00 !important;
-  color: #ff6600 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
   opacity: 1 !important;
 }
@@ -178,8 +178,8 @@
   justify-content: center;
   border-radius: 10px;
   margin-bottom: 20px;
-  background: rgba(255, 102, 0, 0.08);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  color: #1877F2;
 }
 
 .fsu-card-title {
@@ -205,7 +205,7 @@
   font-weight: 700;
   font-size: 0.85rem;
   text-decoration: none;
-  color: #ff6600;
+  color: #1877F2;
   margin-top: auto;
 }
 
@@ -225,7 +225,7 @@
 }
 
 .fsu-reassurance-card .reassurance-icon {
-  color: #ff6600;
+  color: #1877F2;
   margin-bottom: 16px;
 }
 
@@ -538,7 +538,7 @@ body.dark .fsu-btnSecondary:hover {
 .marketing-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-  border-color: var(--card-accent, #ff6600);
+  border-color: var(--card-accent, #1877F2);
 }
 
 .feature-top-circle {
@@ -635,12 +635,12 @@ body.dark .fsu-btnSecondary:hover {
 
 .highlight-card {
   text-align: left;
-  border-color: rgba(255, 102, 0, 0.15);
+  border-color: rgba(24,119,242, 0.15);
 }
 
 .highlight-icon {
-  background: rgba(255, 102, 0, 0.08) !important;
-  color: #ff6600 !important;
+  background: rgba(24,119,242, 0.08) !important;
+  color: #1877F2 !important;
   width: 48px !important;
   height: 48px !important;
 }
@@ -883,7 +883,7 @@ body.dark .fparent .marketing-card:hover {
   --school-muted: #4b5563;
   --school-paper: #ffffff;
   --school-line: #e5e7eb;
-  --school-coral: #ff6600;
+  --school-blue: #1877F2;
   --school-mint: #cce8d4;
   position: relative;
   align-items: stretch;
@@ -922,16 +922,16 @@ body.dark .fparent .marketing-card:hover {
   margin-bottom: 22px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
 
 .marketing-page.fsos .marketing-badge svg {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .marketing-page.fsos .marketing-title {
@@ -947,7 +947,7 @@ body.dark .fparent .marketing-card:hover {
 
 .marketing-page.fsos .marketing-title span {
   background: none;
-  color: #ff6600;
+  color: #1877F2;
   -webkit-text-fill-color: initial;
 }
 
@@ -985,8 +985,8 @@ body.dark .fparent .marketing-card:hover {
 
 .marketing-page.fsos .marketing-btn-primary,
 .marketing-page.fsos .cta-btn {
-  background: #ff6600 !important;
-  background-color: #ff6600 !important;
+  background: #1877F2 !important;
+  background-color: #1877F2 !important;
   color: #ffffff !important;
   border: none !important;
   box-shadow: none !important;
@@ -1003,15 +1003,15 @@ body.dark .fparent .marketing-card:hover {
 
 .marketing-page.fsos .marketing-btn-secondary {
   background: transparent !important;
-  border: 1.5px solid #ff6600 !important;
-  color: #ff6600 !important;
+  border: 1.5px solid #1877F2 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
 }
 
 .marketing-page.fsos .marketing-btn-secondary:hover {
-  background: rgba(255, 102, 0, 0.08) !important;
+  background: rgba(24,119,242, 0.08) !important;
   border-color: #e65c00 !important;
-  color: #ff6600 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
   opacity: 1 !important;
 }
@@ -1038,7 +1038,7 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .marketing-trust-item svg {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .marketing-page.fsos .marketing-trust-divider {
@@ -1073,7 +1073,7 @@ body.dark .fparent .marketing-card:hover {
   transform: translateX(-50%);
   width: 28px;
   height: 2px;
-  background: #ff6600;
+  background: #1877F2;
   border-radius: 999px;
 }
 
@@ -1164,8 +1164,8 @@ body.dark .fparent .marketing-card:hover {
   height: 42px;
   margin-bottom: 20px;
   border-radius: 10px;
-  background: rgba(255, 102, 0, 0.08);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  color: #1877F2;
 }
 
 .marketing-page.fsos .marketing-card-title {
@@ -1190,7 +1190,7 @@ body.dark .fparent .marketing-card:hover {
   gap: 6px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #ff6600;
+  color: #1877F2;
   text-decoration: none;
   margin-top: auto;
 }
@@ -1209,7 +1209,7 @@ body.dark .fparent .marketing-card:hover {
 }
 
 .marketing-page.fsos .school-quote-card .quote-icon {
-  color: #ff6600;
+  color: #1877F2;
   margin-bottom: 16px;
 }
 
@@ -1259,7 +1259,7 @@ body.dark .marketing-page.fsos {
   --school-muted: #9aa9a2;
   --school-paper: #071b16;
   --school-line: rgba(234, 239, 235, 0.12);
-  --school-coral: #ff9560;
+  --school-blue: #60a5fa;
   background:
     linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
@@ -1331,16 +1331,16 @@ body.dark .marketing-page.fsos .marketing-intro-block h2 {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   font-size: 0.8rem;
   font-weight: 700;
 }
 
 .marketing-page.fsos .cta-btn {
-  background: #ff6600 !important;
-  border-color: #ff6600 !important;
+  background: #1877F2 !important;
+  border-color: #1877F2 !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -1435,7 +1435,7 @@ body.dark .marketing-page.fsos .marketing-intro-block h2 {
   inset: 0 auto auto 0;
   width: 34%;
   height: 1px;
-  background: linear-gradient(90deg, var(--school-coral), transparent);
+  background: linear-gradient(90deg, var(--school-blue), transparent);
   animation: school-signal-scan 3.8s ease-in-out infinite;
   pointer-events: none;
 }
@@ -1575,7 +1575,7 @@ body.dark .marketing-page.fsos > .marketing-cta {
   --parent-muted: #4b5563;
   --parent-paper: #ffffff;
   --parent-line: #e5e7eb;
-  --parent-coral: #ff6600;
+  --parent-coral: #1877F2;
   position: relative;
   align-items: stretch;
   gap: 32px;
@@ -1613,16 +1613,16 @@ body.dark .marketing-page.fsos > .marketing-cta {
   margin-bottom: 22px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
 
 .marketing-page.fparent .marketing-badge svg {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .marketing-page.fparent .marketing-title {
@@ -1638,7 +1638,7 @@ body.dark .marketing-page.fsos > .marketing-cta {
 
 .marketing-page.fparent .marketing-title span {
   background: none;
-  color: #ff6600;
+  color: #1877F2;
   -webkit-text-fill-color: initial;
 }
 
@@ -1677,8 +1677,8 @@ body.dark .marketing-page.fsos > .marketing-cta {
 
 .marketing-page.fparent .marketing-btn-primary,
 .marketing-page.fparent .cta-btn {
-  background: #ff6600 !important;
-  background-color: #ff6600 !important;
+  background: #1877F2 !important;
+  background-color: #1877F2 !important;
   color: #ffffff !important;
   border: none !important;
   box-shadow: none !important;
@@ -1695,15 +1695,15 @@ body.dark .marketing-page.fsos > .marketing-cta {
 
 .marketing-page.fparent .marketing-btn-secondary {
   background: transparent !important;
-  border: 1.5px solid #ff6600 !important;
-  color: #ff6600 !important;
+  border: 1.5px solid #1877F2 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
 }
 
 .marketing-page.fparent .marketing-btn-secondary:hover {
-  background: rgba(255, 102, 0, 0.08) !important;
+  background: rgba(24,119,242, 0.08) !important;
   border-color: #e65c00 !important;
-  color: #ff6600 !important;
+  color: #1877F2 !important;
   box-shadow: none !important;
   opacity: 1 !important;
 }
@@ -1730,7 +1730,7 @@ body.dark .marketing-page.fsos > .marketing-cta {
 }
 
 .marketing-page.fparent .marketing-trust-item svg {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .marketing-page.fparent .marketing-trust-divider {
@@ -1782,8 +1782,8 @@ body.dark .marketing-page.fsos > .marketing-cta {
   height: 42px;
   margin-bottom: 20px;
   border-radius: 10px;
-  background: rgba(255, 102, 0, 0.08);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  color: #1877F2;
 }
 
 .marketing-page.fparent .marketing-card-title {
@@ -1808,7 +1808,7 @@ body.dark .marketing-page.fsos > .marketing-cta {
   gap: 6px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #ff6600;
+  color: #1877F2;
   text-decoration: none;
   margin-top: auto;
 }
@@ -1868,7 +1868,7 @@ body.dark .marketing-page.fparent {
   --parent-ink: #edf3ef;
   --parent-muted: #9aa9a2;
   --parent-line: rgba(234, 239, 235, 0.12);
-  --parent-coral: #ff9560;
+  --parent-coral: #60a5fa;
   background:
     linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
@@ -2263,7 +2263,7 @@ body.dark .fsu-section {
   --student-ink: #edf3ef;
   --student-muted: #9aa9a2;
   --student-line: rgba(234, 239, 235, 0.12);
-  --student-coral: #ff9560;
+  --student-coral: #60a5fa;
   background:
     linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
