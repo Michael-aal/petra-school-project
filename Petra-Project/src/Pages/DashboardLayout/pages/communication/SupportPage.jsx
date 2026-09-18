@@ -133,7 +133,7 @@ export default function SupportPage() {
       <div className="support-header">
         <div className="support-header-left">
           <div className="support-icon-box"><LifeBuoy size={23} /></div>
-          <div><h2>{isPlatform ? "Support Center" : "Help & Support"}</h2><p>{isPlatform ? "Review requests, talk to users, and manage support cases in one place." : "Report a problem or ask the Petra support team for help."}</p></div>
+          <div><h2>{isPlatform ? "Support Center" : "Help & Support"}</h2><p>{isPlatform ? "Review requests, talk to users, and manage support cases in one place." : "Report a problem or ask the Nuvora support team for help."}</p></div>
         </div>
         {isPlatform && <div className="support-header-note"><UserRound size={16} /> Human support</div>}
       </div>
@@ -180,7 +180,7 @@ export default function SupportPage() {
         </section>
       </div>
 
-      {isPlatform && <div className="support-footer-note"><CheckCircle2 size={16} /> Support is handled by the Petra team. Each request stays attached to the person who submitted it.</div>}
+      {isPlatform && <div className="support-footer-note"><CheckCircle2 size={16} /> Support is handled by the Nuvora team. Each request stays attached to the person who submitted it.</div>}
     </div>
   );
 }
