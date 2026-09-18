@@ -1242,3 +1242,5 @@ body.dark .dashboard-landing-panel {
 /* Dashboard home: remove legacy orange hover accents. */
 .dashboard-quick-action:hover { border-color:#1877F2 !important; background:#EAF3FF !important; }
 .dashboard-home-summary-action:hover { border-color:#1877F2 !important; color:#1877F2 !important; }
+/* Nuvora blue-only final override. */
+.dashboard-quick-action:hover{border-color:#1877F2!important;background:#EAF3FF!important}.dashboard-home-summary-action:hover{border-color:#1877F2!important;color:#1877F2!important}
