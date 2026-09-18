@@ -36,23 +36,23 @@
 }
 
 .parents-page .title-icon-box {
-  background: rgba(232, 117, 47, 0.12);
-  color: #d86724;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1565c0;
 }
 
 .parents-page .stat-icon-blue {
-  background: rgba(232, 117, 47, 0.12);
-  color: #d86724;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1565c0;
 }
 
 .parents-page .stat-icon-green {
-  background: rgba(232, 117, 47, 0.1);
-  color: #be5a20;
+  background: rgba(24, 119, 242, 0.1);
+  color: #1877F2;
 }
 
 .parents-page .stat-icon-yellow {
-  background: rgba(232, 117, 47, 0.08);
-  color: #b14d1b;
+  background: rgba(24, 119, 242, 0.08);
+  color: #1565c0;
 }
 
 .parent-email {
