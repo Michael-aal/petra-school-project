@@ -1257,3 +1257,121 @@ select:focus-visible,
 textarea:focus-visible {
   outline-color: rgba(24,119,242,.35) !important;
 }
+
+
+/* NUVORA: ADMIN / PARENT / STAFF DASHBOARDS — BLUE ONLY */
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content,
+.dashboard-page {
+  color: #0F172A !important;
+}
+
+/* Cards */
+.dashboard-shell .card,
+.dashboard-shell .panel,
+.dashboard-shell .stat-card,
+.dashboard-shell .dashboard-widget,
+.dashboard-shell .dashboard-stat-card,
+.dashboard-shell .dashboard-home-panel,
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .form-card,
+.dashboard-shell .settings-card,
+.dashboard-shell .wallet-panel,
+.dashboard-shell .payments-panel,
+.dashboard-shell .table-container,
+.dashboard-shell [class*="card"] {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 18px rgba(15,23,42,.06) !important;
+}
+
+/* Card headings/text: never orange */
+.dashboard-shell .card h1,
+.dashboard-shell .card h2,
+.dashboard-shell .card h3,
+.dashboard-shell .card h4,
+.dashboard-shell .panel h1,
+.dashboard-shell .panel h2,
+.dashboard-shell .panel h3,
+.dashboard-shell .panel h4,
+.dashboard-shell [class*="card"] h1,
+.dashboard-shell [class*="card"] h2,
+.dashboard-shell [class*="card"] h3,
+.dashboard-shell [class*="card"] h4 {
+  color: #0F172A !important;
+}
+
+.dashboard-shell .card p,
+.dashboard-shell .panel p,
+.dashboard-shell [class*="card"] p {
+  color: #64748B !important;
+}
+
+/* Buttons: blue only */
+.dashboard-shell button,
+.dashboard-shell .btn {
+  border-radius: 8px;
+}
+
+.dashboard-shell .btn-primary,
+.dashboard-shell button[type="submit"],
+.dashboard-shell .primary-button,
+.dashboard-shell [class*="primary"][class*="button"] {
+  background: #1877F2 !important;
+  border-color: #1877F2 !important;
+  color: #FFFFFF !important;
+}
+
+.dashboard-shell .btn-primary:hover,
+.dashboard-shell button[type="submit"]:hover,
+.dashboard-shell .primary-button:hover,
+.dashboard-shell [class*="primary"][class*="button"]:hover {
+  background: #2563EB !important;
+  border-color: #2563EB !important;
+}
+
+.dashboard-shell .btn-secondary,
+.dashboard-shell .btn-ghost {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #1877F2 !important;
+}
+
+/* Any legacy orange text used by dashboard UI becomes Nuvora blue. */
+.dashboard-shell .text-orange,
+.dashboard-shell .text-orange-500,
+.dashboard-shell .text-orange-600,
+.dashboard-shell .text-orange-700,
+.dashboard-shell .text-amber,
+.dashboard-shell .text-amber-500,
+.dashboard-shell .text-amber-600,
+.dashboard-shell [class*="text-orange"],
+.dashboard-shell [class*="text-amber"] {
+  color: #1877F2 !important;
+}
+
+/* Orange/amber backgrounds and borders become light blue. */
+.dashboard-shell [class*="bg-orange"],
+.dashboard-shell [class*="bg-amber"] {
+  background: #EAF3FF !important;
+}
+
+.dashboard-shell [class*="border-orange"],
+.dashboard-shell [class*="border-amber"] {
+  border-color: #BFDBFE !important;
+}
+
+/* Sidebar remains deliberately basic. */
+.dashboard-shell .sidebar-container {
+  background: #FFFFFF !important;
+  border-right: 1px solid #E2E8F0 !important;
+}
+
+.dashboard-shell .sidebar-link.active,
+.dashboard-shell .sidebar-group.group-active,
+.dashboard-shell .sidebar-child.active {
+  background: #EAF3FF !important;
+  color: #1877F2 !important;
+}
