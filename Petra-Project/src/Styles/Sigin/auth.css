@@ -1653,3 +1653,10 @@ body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card-h
 .auth-page .auth-brand-mark { background: #1877F2 !important; border-color: #1877F2 !important; color: #ffffff !important; }
 .auth-page .auth-back-link { border-color: #bfdbfe !important; background: #eaf3ff !important; color: #1877F2 !important; }
 .auth-page .auth-back-link:hover { background: #dbeafe !important; border-color: #1877F2 !important; color: #2563EB !important; }
+
+
+/* Authentication: blue-only Nuvora brand accent. */
+.auth-page { --auth-accent:#1877F2 !important; --auth-accent-soft:rgba(24,119,242,.10) !important; }
+.auth-page .auth-theme-btn:hover, .auth-page .auth-eye-btn:hover, .auth-page .auth-link, .auth-page .auth-switch a, .auth-page .auth-form-kicker, .auth-page .auth-field small, .auth-page .auth-loading, .auth-page .auth-security-note svg { color:#1877F2 !important; }
+.auth-page .auth-submit { background:#1877F2 !important; }
+.auth-page .auth-submit:hover:not(:disabled) { background:#0F5DCC !important; }
