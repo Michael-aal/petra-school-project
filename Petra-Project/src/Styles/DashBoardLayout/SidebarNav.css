@@ -558,8 +558,8 @@
   --sidebar-surface-soft: #f5f6f3;
   --sidebar-text: #202321;
   --sidebar-text-muted: #69716b;
-  --sidebar-accent: #e8752f;
-  --sidebar-accent-soft: #fff1e8;
+  --sidebar-accent: #1877F2;
+  --sidebar-accent-soft: #eff6ff;
   --sidebar-border: #e2e5e1;
   background: var(--sidebar-surface);
   color: var(--sidebar-text);
@@ -679,7 +679,7 @@
   --app-text: #202321;
   --app-text-muted: #69716b;
   --app-border: #e2e5e1;
-  --app-accent: #e8752f;
+  --app-accent: #1877F2;
   --app-accent-2: #cf5f22;
   --dashboard-page-bg: #f7f8f6;
   --dashboard-topbar-bg: rgba(255, 255, 255, 0.96);
@@ -689,7 +689,7 @@
   --dashboard-panel-bg: #ffffff;
   --dashboard-muted-surface: #f1f3f0;
   --surface-muted: #f1f3f0;
-  --surface-accent: #fff1e8;
+  --surface-accent: #eff6ff;
   --surface-danger: #fff0ee;
   --danger: #b64739;
   --sidebar-width: 224px;
