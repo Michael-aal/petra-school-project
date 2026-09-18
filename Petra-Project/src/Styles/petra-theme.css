@@ -15,7 +15,7 @@
   --petra-muted: #64748b;
   --petra-border: #e2e8f0;
   --petra-success: #16a34a;
-  --petra-warning: #d97706;
+  --petra-warning: #1877F2;
   --petra-danger: #dc2626;
   --petra-info: #2563eb;
   --petra-shadow: 0 10px 30px rgba(15, 39, 71, .06);
@@ -60,7 +60,7 @@
   --surface-muted: #f4f7fb;
   --surface-accent: var(--petra-blue-soft);
   --surface-success: #ecfdf3;
-  --surface-warning: #fffbeb;
+  --surface-warning: #eff6ff;
   --surface-danger: #fef2f2;
   --dashboard-accent-gradient: var(--petra-blue);
   --dashboard-accent-gradient-strong: var(--petra-blue-hover);
@@ -178,7 +178,7 @@ input:focus, select:focus, textarea:focus,
   background: #ecfdf3 !important; color: var(--petra-success) !important;
 }
 .status-badge.warning, .tone-amber {
-  background: #fffbeb !important; color: var(--petra-warning) !important;
+  background: #eff6ff !important; color: var(--petra-warning) !important;
 }
 .status-badge.danger, .tone-rose {
   background: #fef2f2 !important; color: var(--petra-danger) !important;
