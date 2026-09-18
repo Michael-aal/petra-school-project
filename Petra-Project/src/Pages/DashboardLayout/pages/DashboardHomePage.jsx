@@ -22,13 +22,13 @@ import "./page-styles/DashboardHomePage.css";
 import "../../../components/dashboard/dashboard.css";
 
 const overviewMetrics = [
-  { label: "Collected this term", value: "₦48.6m", delta: "+12.8%", tone: "coral" },
+  { label: "Collected this term", value: "₦48.6m", delta: "+12.8%", tone: "blue" },
   { label: "Student attendance", value: "94.8%", delta: "+4.2%", tone: "mint" },
   { label: "Active learners", value: "2,841", delta: "+8.4%", tone: "blue" },
 ];
 
 const summaryCards = [
-  { id: 1, label: "School revenue", value: "₦4.2m", delta: "+15.1%", icon: WalletCards, tone: "coral", link: "/dashboard/finance" },
+  { id: 1, label: "School revenue", value: "₦4.2m", delta: "+15.1%", icon: WalletCards, tone: "blue", link: "/dashboard/finance" },
   { id: 2, label: "Fee collection", value: "86.4%", delta: "+9.8%", icon: CreditCard, tone: "blue", link: "/dashboard/finance/payments" },
   { id: 3, label: "Class attendance", value: "92.7%", delta: "+2.3%", icon: CalendarCheck2, tone: "mint", link: "/dashboard/academics/attendance" },
   { id: 4, label: "Staff active", value: "148", delta: "+6", icon: Users, tone: "blue", link: "/dashboard/staff/management" },
