@@ -15,12 +15,12 @@ import { getFirstName } from "../../../utils/userProfile";
 import "./page-styles/GetStarted.css";
 
 const PAGE_COPY = {
-  eyebrow: "Petra setup",
+  eyebrow: "Nuvora setup",
   title: "A thoughtful start,",
   description:
-    "Set up the essentials once, then let Petra keep your school's people, learning, and finances moving in sync.",
+    "Set up the essentials once, then let Nuvora keep your school's people, learning, and finances moving in sync.",
   setupKicker: "Your workspace",
-  setupTitle: "Make Petra yours",
+  setupTitle: "Make Nuvora yours",
   setupDescription:
     "Three small steps give your team a clear, reliable foundation for the term ahead.",
 };
