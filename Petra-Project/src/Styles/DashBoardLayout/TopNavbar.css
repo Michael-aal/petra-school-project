@@ -38,8 +38,8 @@
 }
 
 .menu-btn:hover {
-  background: rgba(242, 199, 166, 0.08);
-  border-color: rgba(242, 199, 166, 0.2);
+  background: rgba(24,119,242,0.08);
+  border-color: rgba(24,119,242,0.2);
 }
 
 .top-welcome {
@@ -73,8 +73,8 @@
 }
 
 .ask-nuvora-btn:hover {
-  background: rgba(242, 199, 166, 0.08);
-  border-color: rgba(242, 199, 166, 0.2);
+  background: rgba(24,119,242,0.08);
+  border-color: rgba(24,119,242,0.2);
 }
 
 .ask-nuvora-icon-wrap {
@@ -84,7 +84,7 @@
   width: 22px;
   height: 22px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #f09a6f 0%, #d96a4a 100%);
+  background: linear-gradient(135deg, #1877F2 0%, #0F5DCC 100%);
   color: #fff;
   flex-shrink: 0;
 }
@@ -157,7 +157,7 @@
 }
 
 .user-info:hover {
-  border-color: rgba(242, 199, 166, 0.2);
+  border-color: rgba(24,119,242,0.2);
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.16);
 }
 
@@ -342,7 +342,7 @@
 }
 
 .account-dropdown-actions button:hover {
-  background: linear-gradient(135deg, rgba(198, 83, 61, 0.12), rgba(61, 128, 99, 0.08));
+  background: linear-gradient(135deg, rgba(24,119,242,0.12), rgba(24,119,242,0.08));
   color: var(--app-text);
 }
 
@@ -450,7 +450,7 @@
 .icon-btn:hover,
 .ask-nuvora-btn:hover {
   background: #eff6ff;
-  border-color: #f1b58d;
+  border-color: #BFDBFE;
   color: #1877F2;
 }
 
@@ -465,7 +465,7 @@
 }
 
 .ask-nuvora-btn:focus-visible {
-  border-color: #f2bd98;
+  border-color: #BFDBFE;
   background: var(--surface-accent);
   color: var(--app-accent);
 }
@@ -490,7 +490,7 @@
 }
 
 .user-info:hover {
-  border-color: #f2bd98;
+  border-color: #BFDBFE;
   box-shadow: none;
 }
 
