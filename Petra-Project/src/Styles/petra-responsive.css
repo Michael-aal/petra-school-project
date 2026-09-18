@@ -1,0 +1,83 @@
+
+/* Petra responsive UX hardening — shared across every legacy page.
+   Mobile-first layout guardrails; never changes business logic. */
+*,*::before,*::after{box-sizing:border-box}
+img,video,canvas,svg{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%;font:inherit}
+.dashboard-page,.dashboard-content,.dashboard-main,.page-container,.content-container{min-width:0}
+.dashboard-content{width:100%;overflow-x:clip}
+.dashboard-page h1,.dashboard-page h2,.dashboard-page h3,.dashboard-page h4{overflow-wrap:anywhere}
+.dashboard-page p,.dashboard-page label,.dashboard-page td,.dashboard-page th{overflow-wrap:anywhere}
+.dashboard-page .page-header,.dashboard-page .dashboard-header,.dashboard-page .section-header{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap
+}
+.dashboard-page .toolbar,.dashboard-page .filters,.dashboard-page .actions,.dashboard-page .form-actions{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap
+}
+.dashboard-page .toolbar>*{min-width:0}
+.dashboard-page .grid,.dashboard-page .cards-grid,.dashboard-page .stats-grid,.dashboard-page .form-grid{
+  min-width:0
+}
+.dashboard-page .form-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px
+}
+.dashboard-page .form-grid>.full-width,.dashboard-page .form-grid>.span-2{grid-column:1/-1}
+.dashboard-page .form-group,.dashboard-page .field{min-width:0}
+.dashboard-page input,.dashboard-page select,.dashboard-page textarea{width:100%;min-width:0}
+.dashboard-page textarea{min-height:110px;resize:vertical}
+.dashboard-page table{width:100%;max-width:none}
+.dashboard-page .table-container,.dashboard-page .table-wrapper,.dashboard-page .data-table-wrapper{
+  max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch
+}
+.dashboard-page .table-container table,.dashboard-page .data-table,.dashboard-page .payments-table{
+  min-width:680px
+}
+.dashboard-page .modal-content,.dashboard-page .dialog-content{
+  width:min(720px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto
+}
+.card,.panel,.stat-card,.dashboard-home-panel,.dashboard-home-summary-card,.form-card,.settings-card{
+  min-width:0;overflow-wrap:anywhere
+}
+@media(max-width:900px){
+  .dashboard-content{padding-left:18px!important;padding-right:18px!important}
+  .dashboard-page .form-grid{grid-template-columns:1fr}
+  .dashboard-page .form-grid>.full-width,.dashboard-page .form-grid>.span-2{grid-column:auto}
+}
+@media(max-width:640px){
+  .dashboard-content{padding:14px 12px!important}
+  .dashboard-page .page-header,.dashboard-page .dashboard-header,.dashboard-page .section-header{
+    align-items:stretch;gap:12px
+  }
+  .dashboard-page .page-header>*,.dashboard-page .dashboard-header>*{max-width:100%}
+  .dashboard-page .toolbar,.dashboard-page .filters,.dashboard-page .actions,.dashboard-page .form-actions{
+    width:100%;align-items:stretch
+  }
+  .dashboard-page .toolbar>*:not(.icon-btn),.dashboard-page .filters>*,
+  .dashboard-page .actions>*:not(.icon-btn),.dashboard-page .form-actions>*{
+    flex:1 1 140px;min-width:0
+  }
+  .dashboard-page .form-card,.dashboard-page .panel,.dashboard-page .card{border-radius:12px}
+  .dashboard-page .form-card{padding:16px!important}
+  .dashboard-page h1{font-size:1.45rem;line-height:1.18}
+  .dashboard-page h2{font-size:1.2rem;line-height:1.25}
+  .dashboard-page h3{font-size:1.05rem}
+  .dashboard-page .table-container,.dashboard-page .table-wrapper,.dashboard-page .data-table-wrapper{
+    margin-left:-1px;margin-right:-1px
+  }
+  .dashboard-page .table-container table,.dashboard-page .data-table,.dashboard-page .payments-table{
+    min-width:620px
+  }
+  .dashboard-page .modal-content,.dashboard-page .dialog-content{
+    width:calc(100vw - 24px);max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px)
+  }
+  .dashboard-home-summary-card{padding:16px!important}
+}
+@media(max-width:420px){
+  .dashboard-content{padding:12px 10px!important}
+  .dashboard-page .form-card,.dashboard-page .panel,.dashboard-page .card{padding:14px!important}
+  .dashboard-page .form-actions>*{flex-basis:100%}
+  .dashboard-page .table-container table,.dashboard-page .data-table,.dashboard-page .payments-table{min-width:580px}
+}
+@media(hover:none){
+  button:hover,a:hover{transform:none!important}
+}
