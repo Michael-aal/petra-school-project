@@ -162,7 +162,11 @@ const main = async () => {
   }
 
   await deployWithHistoricalMigrationsSkipped();
-  await reconcileSchemaWithPrisma();
+  // Production schema changes must be applied through committed Prisma migrations.
+  // Do not run `prisma db push` here: it can propose destructive changes when
+  // production contains legacy tables that are intentionally absent from the
+  // current authoritative schema.
+  console.log("Production schema reconciliation skipped; committed migrations are authoritative.");
 };
 
 if (path.resolve(process.argv[1] || "") === fileURLToPath(import.meta.url)) {
