@@ -856,3 +856,15 @@
 .sidebar-container .sidebar-group.group-active::before { background: #1877F2 !important; }
 .sidebar-container .sidebar-contaner-logo { background: #1877F2 !important; border-color: #1877F2 !important; color: #ffffff !important; box-shadow: none !important; }
 .sidebar-container .sidebar-contaner-logo svg { color: #ffffff !important; stroke: #ffffff !important; }
+
+
+/* Final navigation palette: every sidebar icon uses exactly one brand color. */
+.sidebar-container { --sidebar-accent:#1877F2 !important; --sidebar-accent-soft:#EAF3FF !important; }
+.sidebar-container svg.lucide, .sidebar-container .sidebar-icon, .sidebar-container .child-icon, .sidebar-container .arrow-icon, .sidebar-container .sidebar-assistant-icon,
+.sidebar-container .sidebar-link .sidebar-icon, .sidebar-container .sidebar-child .child-icon, .sidebar-container .sidebar-group .sidebar-icon { color:#1877F2 !important; stroke:#1877F2 !important; }
+.sidebar-container .sidebar-link, .sidebar-container .sidebar-group, .sidebar-container .sidebar-child, .sidebar-container .sidebar-assistant { color:#0F172A !important; }
+.sidebar-container .sidebar-link:hover, .sidebar-container .sidebar-group:hover, .sidebar-container .sidebar-child:hover, .sidebar-container .sidebar-assistant:hover,
+.sidebar-container .sidebar-link.active, .sidebar-container .sidebar-group.group-active, .sidebar-container .sidebar-child.active, .sidebar-container .sidebar-assistant.active { color:#1877F2 !important; background:#EAF3FF !important; }
+.sidebar-container .sidebar-link.active::before, .sidebar-container .sidebar-group.group-active::before, .sidebar-container .sidebar-child.active::before { background:#1877F2 !important; }
+.sidebar-container .sidebar-contaner-logo { background:#1877F2 !important; border-color:#1877F2 !important; }
+.sidebar-container .sidebar-contaner-logo svg { color:#FFFFFF !important; stroke:#FFFFFF !important; }
