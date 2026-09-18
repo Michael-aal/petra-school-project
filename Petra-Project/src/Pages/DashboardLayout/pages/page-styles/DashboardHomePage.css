@@ -99,7 +99,7 @@
 
 .landing-button-primary {
   background: var(--app-accent);
-  box-shadow: 0 5px 12px rgba(232, 117, 47, 0.16);
+  box-shadow: 0 5px 12px rgba(24, 119, 242, 0.16);
 }
 
 .landing-button-quiet {
@@ -984,24 +984,24 @@
   place-items: center;
   border-radius: 9px;
   border: 0;
-  background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1877F2;
   flex-shrink: 0;
 }
 
 .dashboard-home .dashboard-home-summary-icon.tone-blue {
-  background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1877F2;
 }
 
 .dashboard-home .dashboard-home-summary-icon.tone-teal {
-  background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1877F2;
 }
 
 .dashboard-home .dashboard-home-summary-icon.tone-rose {
-  background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  background: rgba(24, 119, 242, 0.12);
+  color: #1877F2;
 }
 
 .dashboard-home .dashboard-home-panel {
@@ -1092,9 +1092,9 @@
   min-width: 120px;
   min-height: 42px;
   padding: 0 18px;
-  border: 1.5px solid #e8752f !important;
+  border: 1.5px solid #1877F2 !important;
   border-radius: 999px !important;
-  background: #e8752f !important;
+  background: #1877F2 !important;
   color: #ffffff !important;
   box-shadow: none !important;
   font-weight: 500;
