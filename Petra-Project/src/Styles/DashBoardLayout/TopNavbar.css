@@ -598,3 +598,13 @@
   color: #FFFFFF;
   box-shadow: none;
 }
+
+
+/* Final topbar palette: navbar icons are monochrome Nuvora blue. */
+.top-navbar { --app-accent:#1877F2 !important; --app-accent-2:#0F5DCC !important; }
+.top-navbar svg.lucide, .menu-btn svg.lucide, .icon-btn svg.lucide, .ask-nuvora-btn svg.lucide, .user-info svg.lucide { color:#1877F2 !important; stroke:#1877F2 !important; }
+.menu-btn, .icon-btn, .ask-nuvora-btn, .user-info { color:#1877F2 !important; }
+.menu-btn:hover, .icon-btn:hover, .ask-nuvora-btn:hover, .user-info:hover { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
+.ask-nuvora-icon-wrap, .notification-action { background:#1877F2 !important; color:#FFFFFF !important; }
+.ask-nuvora-icon-wrap svg, .notification-action svg { color:#FFFFFF !important; stroke:#FFFFFF !important; }
+.user-name, .top-welcome { color:#0F172A !important; }
