@@ -589,3 +589,6 @@ body.dark .dashboard-alert.error {
   background: var(--surface-danger);
   color: var(--danger);
 }
+
+/* Nuvora blue-only final override. */
+.tone-indigo,.tone-emerald,.tone-rose,.tone-amber{background:rgba(24,119,242,.12)!important;color:#1877F2!important}
