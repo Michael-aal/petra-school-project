@@ -561,3 +561,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Blue-only applicant action accent. */
+.applicant-approve { color:#1877F2 !important; border-color:#1877F2 !important; }
