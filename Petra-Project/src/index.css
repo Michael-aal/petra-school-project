@@ -491,6 +491,75 @@ textarea:disabled {
   border-color: rgba(59, 130, 246, 0.28);
 }
 
+/* Scholarly Navy: a calm, accessible product theme for school operations. */
+:root,
+body.light {
+  color-scheme: light;
+  --app-bg: #f4f7fb;
+  --app-surface: #ffffff;
+  --app-surface-strong: #eaf0f7;
+  --app-card: #ffffff;
+  --app-panel: #ffffff;
+  --app-text: #14213d;
+  --app-text-muted: #5e6c84;
+  --app-border: #dce5f0;
+  --app-accent: #0f766e;
+  --app-accent-2: #0b4f6c;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --success: #16805f;
+  --warning: #b7791f;
+  --danger: #c2413b;
+  --info: #2563a8;
+  --dashboard-page-bg: #f4f7fb;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.9);
+  --dashboard-topbar-text: #14213d;
+  --dashboard-topbar-muted: #5e6c84;
+  --dashboard-card-bg: #ffffff;
+  --dashboard-panel-bg: #ffffff;
+  --dashboard-muted-surface: #edf3f8;
+  --surface-muted: #edf3f8;
+  --surface-accent: #e5f5f1;
+  --surface-success: #e7f6ef;
+  --surface-warning: #fff6df;
+  --surface-danger: #fcebea;
+  --shadow-soft: 0 16px 40px rgba(20, 33, 61, 0.08);
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+body.light {
+  background:
+    radial-gradient(circle at 100% 0, rgba(15, 118, 110, 0.08), transparent 30rem),
+    linear-gradient(180deg, #f8fafc 0%, var(--app-bg) 52rem);
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
+  box-shadow: 0 10px 22px rgba(15, 118, 110, 0.2);
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+  box-shadow: 0 14px 28px rgba(15, 118, 110, 0.28);
+}
+
+.card,
+.panel,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.settings-card,
+.wallet-panel,
+.payments-panel,
+.stat-card,
+.dashboard-page .table-container,
+.modal-content,
+.form-card {
+  box-shadow: 0 10px 30px rgba(20, 33, 61, 0.055);
+}
+
 body.light {
   color-scheme: light;
   --app-bg: #f4f7f5;

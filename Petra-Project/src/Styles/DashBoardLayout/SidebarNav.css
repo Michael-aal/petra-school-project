@@ -481,6 +481,63 @@
   }
 }
 
+/* Scholarly Navy dashboard navigation. */
+.dashboard-shell {
+  --app-bg: #f4f7fb;
+  --app-surface: #ffffff;
+  --app-surface-strong: #eaf0f7;
+  --app-text: #14213d;
+  --app-text-muted: #5e6c84;
+  --app-border: #dce5f0;
+  --app-accent: #0f766e;
+  --app-accent-2: #0b4f6c;
+  --dashboard-page-bg: #f4f7fb;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.92);
+  --dashboard-topbar-text: #14213d;
+  --dashboard-topbar-muted: #5e6c84;
+  --dashboard-card-bg: #ffffff;
+  --dashboard-panel-bg: #ffffff;
+  --dashboard-muted-surface: #edf3f8;
+  --surface-accent: #e5f5f1;
+  --surface-danger: #fcebea;
+  background:
+    radial-gradient(circle at 90% 0, rgba(15, 118, 110, 0.07), transparent 26rem),
+    var(--app-bg);
+}
+
+.sidebar-container {
+  --sidebar-surface: #10223e;
+  --sidebar-surface-strong: #152b4c;
+  --sidebar-surface-soft: rgba(255, 255, 255, 0.075);
+  --sidebar-text: #f6f9fd;
+  --sidebar-text-muted: #aebcd0;
+  --sidebar-accent: #56c6af;
+  --sidebar-accent-soft: rgba(86, 198, 175, 0.14);
+  --sidebar-border: rgba(202, 218, 238, 0.13);
+  background:
+    radial-gradient(circle at 10% 0, rgba(86, 198, 175, 0.12), transparent 19rem),
+    linear-gradient(180deg, #10223e, #0b1930);
+}
+
+.sidebar-contaner-logo {
+  background: linear-gradient(135deg, #1aa184, #2e7793);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.17);
+}
+
+.sidebar-link.active,
+.sidebar-child.active,
+.sidebar-group.group-active {
+  background: var(--sidebar-accent-soft);
+  border-color: rgba(86, 198, 175, 0.12);
+}
+
+.sidebar-link.active::before,
+.sidebar-child.active::before,
+.sidebar-group.group-active::before {
+  background: var(--sidebar-accent);
+}
+
 @media (max-width: 640px) {
   .sidebar-container {
     width: min(84vw, 260px);

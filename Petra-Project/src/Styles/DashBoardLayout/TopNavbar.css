@@ -521,3 +521,27 @@
   background: var(--surface-accent);
   color: var(--app-accent);
 }
+
+/* Keep dashboard controls aligned with the Scholarly Navy theme. */
+.top-navbar {
+  box-shadow: 0 1px 0 rgba(20, 33, 61, 0.06);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.menu-btn:hover,
+.icon-btn:hover,
+.ask-nuvora-btn:hover {
+  background: var(--surface-accent);
+  border-color: color-mix(in srgb, var(--app-accent) 28%, var(--app-border));
+  color: var(--app-accent);
+}
+
+.ask-nuvora-icon-wrap,
+.notification-action {
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
+}
+
+.user-info:hover {
+  border-color: color-mix(in srgb, var(--app-accent) 30%, var(--app-border));
+  box-shadow: 0 8px 20px rgba(20, 33, 61, 0.07);
+}
