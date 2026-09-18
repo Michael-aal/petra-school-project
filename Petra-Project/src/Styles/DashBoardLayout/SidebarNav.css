@@ -793,7 +793,7 @@
   color: #1877F2;
   background: color-mix(in srgb, #1877F2 8%, #FFFFFF);
 }
-\n/* Nuvora final navigation cleanup: crisp black text, blue accents, zero orange. */
+\n/* Nuvora final navigation cleanup: crisp black text, blue accents, zero blue. */
 .sidebar-container {
   --sidebar-surface: #ffffff;
   --sidebar-surface-strong: #f5f8fc;
