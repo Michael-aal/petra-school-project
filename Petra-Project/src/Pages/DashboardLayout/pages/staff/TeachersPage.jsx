@@ -12,7 +12,7 @@ const teacherDirectoryApi = {
     if (params.search) query.set("search", params.search);
     if (params.limit) query.set("limit", String(params.limit));
     const suffix = query.toString() ? `?${query.toString()}` : "";
-    return request(`/api/teacher/directory${suffix}`, { method: "GET" });
+    return request(`/api/teachers/directory${suffix}`, { method: "GET" });
   },
 };
 
