@@ -183,3 +183,78 @@
   border-top-color: #dce5f0;
   background: rgba(255, 255, 255, 0.98);
 }
+
+.navbar-container {
+  max-width: 1240px;
+  min-height: 76px;
+}
+
+.navbar-left {
+  gap: clamp(20px, 3vw, 42px);
+}
+
+.navbar-logo {
+  color: #10223e;
+}
+
+.navbar-logo svg {
+  color: #0f766e;
+}
+
+.nav-links {
+  gap: 6px;
+}
+
+.nav-link,
+.nav-sign-in {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #52617a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link.active,
+.nav-sign-in:hover {
+  color: #0f766e;
+  background: #e5f5f1;
+}
+
+.navbar-right {
+  gap: 8px;
+}
+
+.nav-sign-in {
+  color: #10223e;
+}
+
+.cta-btn {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 10px;
+}
+
+.mobile-menu {
+  padding: 14px 20px 20px;
+  box-shadow: 0 18px 32px rgba(20, 33, 61, 0.09);
+}
+
+.mobile-menu-link {
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #33455f;
+  font-weight: 700;
+}
+
+.mobile-menu-link:hover,
+.mobile-menu-link.active {
+  background: #e5f5f1;
+  color: #0f766e;
+}
+
+.mobile-cta-btn {
+  margin-top: 8px;
+  padding: 13px 14px;
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
@@ -27,15 +27,20 @@ const NuvoraLogo = ({ size = 18 }) => (
 );
 
 export default function Navbar() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleResize = () => {
-    setIsMobile(window.innerWidth < 768);
-    if (window.innerWidth >= 768) {
-      setMobileMenuOpen(false);
-    }
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      const compactNavigation = window.innerWidth < 768;
+      setIsMobile(compactNavigation);
+      if (!compactNavigation) setMobileMenuOpen(false);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <nav className="navbar">
@@ -49,7 +54,7 @@ export default function Navbar() {
           {!isMobile && (
             <div className="nav-links">
               <NavLink to="/schools" className="nav-link">
-                For Schools
+                Schools
               </NavLink>
               <NavLink to="/parents" className="nav-link">
                 For Parents
@@ -60,8 +65,8 @@ export default function Navbar() {
               <NavLink to="/about" className="nav-link">
                 About
               </NavLink>
-              <NavLink to="/contact" className="nav-link">
-                Contact
+              <NavLink to="/solution" className="nav-link">
+                Platform
               </NavLink>
             </div>
           )}
@@ -69,9 +74,10 @@ export default function Navbar() {
 
         <div className="navbar-right">
           {!isMobile && (
-            <NavLink to="/get-started" className="cta-btn">
-              Get Started
-            </NavLink>
+            <>
+              <NavLink to="/signin" className="nav-sign-in">Sign in</NavLink>
+              <NavLink to="/get-started" className="cta-btn">Start your school</NavLink>
+            </>
           )}
 
           {isMobile && (
@@ -90,7 +96,7 @@ export default function Navbar() {
       {isMobile && mobileMenuOpen && (
         <div className="mobile-menu">
           <NavLink to="/schools" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
-            For Schools
+            Schools
           </NavLink>
           <NavLink to="/parents" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
             For Parents
@@ -101,11 +107,12 @@ export default function Navbar() {
           <NavLink to="/about" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
             About
           </NavLink>
-          <NavLink to="/contact" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
-            Contact
+          <NavLink to="/solution" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>
+            Platform
           </NavLink>
+          <NavLink to="/signin" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Sign in</NavLink>
           <NavLink to="/get-started" className="mobile-cta-btn" onClick={() => setMobileMenuOpen(false)}>
-            Get Started
+            Start your school
           </NavLink>
         </div>
       )}
