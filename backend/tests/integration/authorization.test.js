@@ -8,5 +8,5 @@ test("parent fee access rejects an unrelated student", { skip: !process.env.RUN_
     .get("/api/finance/parent/fees")
     .query({ studentId: "student-not-linked-to-parent" });
 
-  assert.equal(response.status, 401);
+  assert.equal(response.status, 403);
 });

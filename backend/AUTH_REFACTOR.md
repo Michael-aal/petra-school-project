@@ -7,12 +7,12 @@ Goals
 
 Key changes made
 - The server sets `petra_session` and `petra_refresh` as HttpOnly cookies after login or registration. They use SameSite=Strict, Path=/, no Domain, and Secure in production.
-- Browser clients authenticate with that cookie and do not send bearer tokens from JavaScript.
+- Browser clients authenticate with these cookies and do not send bearer tokens from JavaScript.
 - User profile is fetched from `/api/auth/me` on app mount via `UserContext` rather than being persisted in `localStorage`.
-- Replaced uses of `localStorage` for `petra_user_info` in nested/demo app copies with `sessionStorage` to avoid cross-tab sharing of profile data.
+- Removed uses of `localStorage` for profile data; authentication now uses HttpOnly cookies only.
 
 Frontend storage policy
-- Do not store `petra_auth_token` in browser storage.
+- Do not store `petra_auth_token` or any authentication tokens in browser storage.
 - Never store user profile, role, permissions, or dashboard data in `localStorage` or `sessionStorage`.
 - On login: the server sets the cookie, then call `/api/auth/me` to load profile into in-memory React state.
 - On logout: call `/api/auth/logout` or `/api/auth/logout-all`; the server revokes sessions, clears the cookies, and the client clears in-memory state before redirecting to `/signin`.
