@@ -148,3 +148,38 @@
     gap: 12px;
   }
 }
+
+/* Public navigation matches the Scholarly Navy theme. */
+.navbar {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom-color: #dce5f0;
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.navbar-logo,
+.nav-link,
+.mobile-menu-link,
+.mobile-menu-btn {
+  color: #14213d;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #0f766e;
+}
+
+.cta-btn,
+.mobile-cta-btn {
+  background: linear-gradient(135deg, #0f766e, #0b4f6c);
+  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2) !important;
+}
+
+.cta-btn:hover,
+.mobile-cta-btn:hover {
+  background: linear-gradient(135deg, #0b5f58, #083f58);
+}
+
+.mobile-menu {
+  border-top-color: #dce5f0;
+  background: rgba(255, 255, 255, 0.98);
+}

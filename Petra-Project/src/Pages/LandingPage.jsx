@@ -85,8 +85,16 @@ export default function LandingPage() {
 
         <div className="landing-card">
           <div className="mini-header">
-            <span>School Live Status</span>
-            <span className="live-dot" />
+            <div>
+              <span className="preview-eyebrow">Petra workspace</span>
+              <strong>School overview</strong>
+            </div>
+            <span className="preview-live"><span className="live-dot" /> Live</span>
+          </div>
+          <div className="preview-metrics" aria-label="School overview metrics">
+            <div><strong>1,248</strong><span>Active learners</span></div>
+            <div><strong>96%</strong><span>Fee collection</span></div>
+            <div><strong>98.4%</strong><span>Attendance</span></div>
           </div>
           <ul className="mini-list">
             <li>
@@ -107,6 +115,12 @@ export default function LandingPage() {
             </li>
           </ul>
         </div>
+      </section>
+
+      <section className="landing-trust-strip" aria-label="Platform benefits">
+        <span>One connected workspace</span>
+        <span>Secure by design</span>
+        <span>Built for every school day</span>
       </section>
 
       {/* FEATURES SECTION */}
