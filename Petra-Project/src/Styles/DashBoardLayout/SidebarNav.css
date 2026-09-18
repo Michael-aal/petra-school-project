@@ -4,8 +4,8 @@
   --sidebar-surface-soft: rgba(255, 255, 255, 0.025);
   --sidebar-text: #edf3f6;
   --sidebar-text-muted: #8d9aa9;
-  --sidebar-accent: #f2c7a6;
-  --sidebar-accent-soft: rgba(242, 199, 166, 0.12);
+  --sidebar-accent: #1877F2;
+  --sidebar-accent-soft: rgba(24,119,242,0.12);
   --sidebar-border: rgba(148, 163, 184, 0.12);
 
   background: linear-gradient(180deg, rgba(10, 16, 23, 1) 0%, rgba(11, 17, 24, 1) 100%);
@@ -46,8 +46,8 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: rgba(242, 199, 166, 0.08);
-  border: 1px solid rgba(242, 199, 166, 0.12);
+  background: rgba(24,119,242,0.08);
+  border: 1px solid rgba(24,119,242,0.12);
   color: var(--sidebar-text);
   flex-shrink: 0;
 }
@@ -196,7 +196,7 @@
 .sidebar-child.active,
 .sidebar-group.group-active {
   background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(242, 199, 166, 0.12);
+  border-color: rgba(24,119,242,0.12);
   color: var(--sidebar-text);
   box-shadow: none;
 }
@@ -680,7 +680,7 @@
   --app-text-muted: #69716b;
   --app-border: #e2e5e1;
   --app-accent: #1877F2;
-  --app-accent-2: #cf5f22;
+  --app-accent-2: #0F5DCC;
   --dashboard-page-bg: #f7f8f6;
   --dashboard-topbar-bg: rgba(255, 255, 255, 0.96);
   --dashboard-topbar-text: #202321;
