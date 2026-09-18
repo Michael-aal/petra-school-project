@@ -291,7 +291,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
 }
 .action-btn:hover { background: var(--dashboard-muted-surface); color: var(--app-text); }
 
-/* Student list workspace: simple surfaces and the shared orange action theme. */
+/* Student list workspace: simple surfaces and the shared blue action theme. */
 .students-page {
   background: #f4f5f4;
   padding: 24px clamp(16px, 2.5vw, 32px) 40px;
@@ -316,7 +316,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
   width: 48px;
   height: 48px;
   border-radius: 6px;
-  background: #fff1e8;
+  background: #eff6ff;
   color: #1877f2;
 }
 
@@ -767,7 +767,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
 }
 
 
-/* Petra responsive/theme pass — remove legacy orange overrides and harden phone layout. */
+/* Petra responsive/theme pass — remove legacy blue overrides and harden phone layout. */
 .students-page{background:var(--petra-canvas)!important;color:var(--petra-ink)!important}
 .students-page .page-header,.students-page .stat-card,.students-page .table-container,
 .students-page .modal-content{background:var(--petra-white)!important;border-color:var(--petra-border)!important}
