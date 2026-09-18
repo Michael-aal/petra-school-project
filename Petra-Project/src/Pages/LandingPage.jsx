@@ -268,6 +268,79 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="landing-section pulse-section landing-anchor" id="school-life">
+        <div className="section-header">
+          <p className="landing-kicker">School life, in motion</p>
+          <h2 className="section-title">A living view of what is happening across your school.</h2>
+          <p className="section-lead">Instead of making people hunt through menus, Petra brings important moments into a clear, familiar flow — like a school day that keeps moving.</p>
+        </div>
+        <div className="pulse-layout">
+          <div className="pulse-feed">
+            <article className="pulse-post">
+              <div className="pulse-avatar">A</div>
+              <div className="pulse-post-body">
+                <div className="pulse-meta"><strong>Academic Office</strong><span>Today · 9:42 AM</span></div>
+                <h3>Mathematics results are ready</h3>
+                <p>SS2 assessment results have been published. Teachers and authorized families can now review the latest academic update.</p>
+                <div className="pulse-actions"><span><BarChart3 size={15}/> Results</span><span><MessageCircle size={15}/> Updates</span><span><Check size={15}/> Published</span></div>
+              </div>
+            </article>
+            <article className="pulse-post">
+              <div className="pulse-avatar pulse-avatar-soft">L</div>
+              <div className="pulse-post-body">
+                <div className="pulse-meta"><strong>School Library</strong><span>Yesterday · 2:18 PM</span></div>
+                <h3>New learning resources arrived</h3>
+                <p>Books, study notes and digital resources can be organized into one learning space students can return to whenever they need them.</p>
+                <div className="pulse-book-row"><FloatingBook label="Biology"/><FloatingBook label="Physics"/><FloatingBook label="English"/></div>
+              </div>
+            </article>
+          </div>
+          <aside className="pulse-side">
+            <div className="pulse-side-card">
+              <span className="pulse-side-label">TODAY AT A GLANCE</span>
+              <strong>School is moving.</strong>
+              <div className="pulse-metric"><span>Attendance</span><b>96%</b></div>
+              <div className="pulse-meter"><i style={{width:"96%"}}/></div>
+              <div className="pulse-metric"><span>Published results</span><b>24</b></div>
+              <div className="pulse-metric"><span>Active resources</span><b>318</b></div>
+            </div>
+            <div className="pulse-side-card pulse-side-blue">
+              <Sparkles size={22}/>
+              <strong>Small moments add up.</strong>
+              <p>Petra connects them so the people responsible can act without losing context.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="landing-section library-section landing-anchor" id="library">
+        <div className="library-copy">
+          <p className="landing-kicker">The digital library</p>
+          <h2>Books should not just sit on a shelf.</h2>
+          <p>They can move, invite curiosity and make learning feel active. Petra gives your school a place to organize resources while playful motion makes the experience feel alive.</p>
+        </div>
+        <div className="library-stage" aria-hidden="true">
+          <div className="book-stack">
+            <FloatingBook className="stack-book stack-one" label="Mathematics"/>
+            <FloatingBook className="stack-book stack-two" label="Computer Science"/>
+            <FloatingBook className="stack-book stack-three" label="Literature"/>
+            <FloatingBook className="stack-book stack-four" label="Physics"/>
+          </div>
+          <div className="library-orbit library-orbit-one"/>
+          <div className="library-orbit library-orbit-two"/>
+          <div className="library-label"><BookOpen size={20}/><span>Petra Library</span></div>
+        </div>
+      </section>
+
+      <section className="landing-section numbers-section">
+        <div className="numbers-grid">
+          <div><strong>01</strong><span>Connected workspace</span><p>Admissions, academics, finance and communication in one school experience.</p></div>
+          <div><strong>04</strong><span>Core roles</span><p>Focused experiences for leaders, teachers, parents and students.</p></div>
+          <div><strong>24/7</strong><span>Access to information</span><p>Responsive experiences that keep important school information close.</p></div>
+          <div><strong>∞</strong><span>Room to grow</span><p>A modular platform designed to expand as your school's needs evolve.</p></div>
+        </div>
+      </section>
+
       <section className="landing-section faq-section landing-anchor" id="faq">
         <div className="section-header centered">
           <p className="landing-kicker">Questions, answered</p>
