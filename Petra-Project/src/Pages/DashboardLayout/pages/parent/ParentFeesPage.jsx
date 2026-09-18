@@ -189,7 +189,7 @@ export default function ParentFeesPage() {
       <section className="parent-summary-grid">
         <StatCard label="Outstanding" value={formatCurrency(totalDue)} icon={Wallet} tone="blue" description="Current balance due" trend="Live" />
         <StatCard label="Paid" value={formatCurrency(paidAmount)} icon={CheckCircle2} tone="teal" description="Payments received" trend="Updated" />
-        <StatCard label="Selected" value={formatCurrency(selectedAmount)} icon={FileText} tone="amber" description="Amount currently chosen" trend="Ready" />
+        <StatCard label="Selected" value={formatCurrency(selectedAmount)} icon={FileText} tone="blue" description="Amount currently chosen" trend="Ready" />
         <StatCard label="Remaining" value={formatCurrency(Math.max(totalDue - paidAmount, 0))} icon={Clock} tone="rose" description="Balance still open" trend="Today" />
       </section>
 
