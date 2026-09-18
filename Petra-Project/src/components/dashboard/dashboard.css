@@ -603,3 +603,53 @@ body.dark .dashboard-home-summary-action {
   background: var(--surface-accent);
   border-color: color-mix(in srgb, var(--app-accent) 24%, transparent);
 }
+
+
+
+/* Unified dashboard icon visibility and blue/white/black palette. */
+.dashboard-home,
+.dashboard-page,
+.dashboard-widget,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.dashboard-stat-card {
+  color: var(--app-text);
+}
+.dashboard-home svg.lucide,
+.dashboard-page svg.lucide,
+.dashboard-widget svg.lucide,
+.dashboard-home-panel svg.lucide,
+.dashboard-home-summary-card svg.lucide,
+.dashboard-stat-card svg.lucide,
+.dashboard-shell-header svg.lucide {
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
+  flex: 0 0 auto;
+  color: var(--app-accent);
+  stroke: currentColor;
+  fill: none;
+  opacity: 1;
+  visibility: visible;
+  stroke-width: 2;
+}
+.dashboard-stat-card-icon svg.lucide,
+.dashboard-quick-action-icon svg.lucide,
+.dashboard-empty-icon svg.lucide,
+.dashboard-home-summary-icon svg.lucide {
+  color: var(--app-accent);
+  stroke: currentColor;
+}
+.dashboard-shell-link svg.lucide,
+.dashboard-empty-action svg.lucide,
+.btn-primary svg.lucide,
+button[type="submit"] svg.lucide {
+  color: #FFFFFF;
+  stroke: currentColor;
+}
+.dashboard-home a,
+.dashboard-page a {
+  color: var(--app-accent);
+}
