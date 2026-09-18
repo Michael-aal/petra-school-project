@@ -1,8 +1,8 @@
 .teacher-page {
-  --teacher-orange: #f97316;
-  --teacher-orange-dark: #ea580c;
-  --teacher-orange-soft: #fff7ed;
-  --teacher-orange-border: #fed7aa;
+  --teacher-orange: var(--app-accent);
+  --teacher-orange-dark: var(--app-accent);
+  --teacher-orange-soft: var(--app-accent);
+  --teacher-orange-border: var(--app-accent);
   --teacher-ink: var(--app-text, #172033);
   --teacher-muted: var(--app-text-muted, #667085);
   --teacher-line: var(--app-border, #e5e7eb);
@@ -20,7 +20,7 @@
   gap: 24px;
   min-height: 164px;
   padding: 28px 30px;
-  border: 1px solid var(--teacher-orange-border);
+  border: 1px solid var(--app-border);
   border-radius: 18px;
   background: linear-gradient(120deg, #fffaf5 0%, #ffffff 62%);
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
@@ -33,7 +33,7 @@
   height: 220px;
   right: -90px;
   top: -125px;
-  border: 28px solid rgba(249, 115, 22, 0.09);
+  border: 28px solid color-mix(in srgb, var(--app-accent) 9%, transparent);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -47,7 +47,7 @@
 .teacher-page .dashboard-home-summary-card strong,
 .teacher-page .dashboard-home-panel h2,
 .teacher-page .dashboard-home-panel h3 {
-  color: var(--teacher-ink);
+  color: var(--app-text);
 }
 
 .teacher-page .dashboard-home-header h1 {
@@ -59,16 +59,16 @@
 .teacher-page .dashboard-home-summary-card p,
 .teacher-page .teacher-item p,
 .teacher-page .teacher-item span {
-  color: var(--teacher-muted);
+  color: var(--app-text-muted);
 }
 
 .teacher-page .dashboard-home-session-pill,
 .teacher-page .teacher-badge,
 .teacher-page .teacher-header-meta,
 .teacher-page .teacher-badge-status {
-  border: 1px solid var(--teacher-orange-border);
-  background: var(--teacher-orange-soft);
-  color: var(--teacher-orange-dark);
+  border: 1px solid var(--app-border);
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .teacher-page .dashboard-home-session-pill {
@@ -81,14 +81,14 @@
 
 .teacher-page .dashboard-home-header .module-button:not(.ghost),
 .teacher-page .teacher-action-button.primary {
-  background: var(--teacher-orange);
-  border-color: var(--teacher-orange);
+  background: var(--app-accent);
+  border-color: var(--app-accent);
 }
 
 .teacher-page .dashboard-home-header .module-button:not(.ghost):hover,
 .teacher-page .teacher-action-button.primary:hover {
-  background: var(--teacher-orange-dark);
-  border-color: var(--teacher-orange-dark);
+  background: var(--app-accent);
+  border-color: var(--app-accent);
 }
 
 .teacher-page .teacher-grid {
@@ -102,7 +102,7 @@
 
 .teacher-page .dashboard-home-panel,
 .teacher-page .teacher-panel {
-  border: 1px solid var(--teacher-line);
+  border: 1px solid var(--app-border);
   border-radius: 16px;
   background: var(--app-surface);
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
@@ -114,9 +114,9 @@
 
 .teacher-page .teacher-profile-photo,
 .teacher-page .teacher-student-avatar {
-  border: 1px solid var(--teacher-orange-border);
-  background: var(--teacher-orange-soft);
-  color: var(--teacher-orange-dark);
+  border: 1px solid var(--app-border);
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .teacher-page .teacher-profile-photo {
@@ -146,7 +146,7 @@
 .teacher-page .dashboard-home-summary-card {
   min-height: 126px;
   padding: 17px;
-  border: 1px solid var(--teacher-line);
+  border: 1px solid var(--app-border);
   border-radius: 14px;
   background: var(--app-surface);
   box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
@@ -154,18 +154,18 @@
 }
 
 .teacher-page .dashboard-home-summary-card:hover {
-  border-color: var(--teacher-orange-border);
+  border-color: var(--app-border);
   transform: translateY(-2px);
   box-shadow: 0 11px 26px rgba(15, 23, 42, 0.07);
 }
 
 .teacher-page .dashboard-home-summary-icon,
 .teacher-page .dashboard-home-summary-top svg {
-  color: var(--teacher-orange);
+  color: var(--app-accent);
 }
 
 .teacher-page .dashboard-home-summary-action {
-  color: var(--teacher-orange-dark);
+  color: var(--app-accent);
 }
 
 .teacher-page .teacher-toolbar {
@@ -175,7 +175,7 @@
 
 .teacher-page .teacher-toolbar-item,
 .teacher-page .teacher-item {
-  border-color: var(--teacher-line);
+  border-color: var(--app-border);
   border-radius: 12px;
   background: var(--app-surface);
 }
@@ -187,22 +187,22 @@
 
 .teacher-page .teacher-toolbar-item:hover,
 .teacher-page .teacher-item:hover {
-  border-color: var(--teacher-orange-border);
+  border-color: var(--app-border);
 }
 
 .teacher-page .teacher-link-button,
 .teacher-page .teacher-action-button {
-  border-color: var(--teacher-line);
+  border-color: var(--app-border);
   background: var(--app-surface);
-  color: var(--teacher-ink);
+  color: var(--app-text);
   transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 
 .teacher-page .teacher-link-button:hover,
 .teacher-page .teacher-action-button:hover {
-  border-color: var(--teacher-orange-border);
-  background: var(--teacher-orange-soft);
-  color: var(--teacher-orange-dark);
+  border-color: var(--app-border);
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .teacher-page .teacher-action-button:hover {
@@ -218,7 +218,7 @@
 }
 
 .teacher-page .teacher-empty-state {
-  border: 1px dashed var(--teacher-line);
+  border: 1px dashed var(--app-border);
   border-radius: 14px;
   padding: 22px;
 }
@@ -226,16 +226,16 @@
 .teacher-page .teacher-filter-bar input,
 .teacher-page .teacher-filter-bar select {
   min-height: 42px;
-  border-color: var(--teacher-line);
+  border-color: var(--app-border);
   border-radius: 10px;
   background: var(--app-surface);
-  color: var(--teacher-ink);
+  color: var(--app-text);
 }
 
 .teacher-page .teacher-filter-bar input:focus,
 .teacher-page .teacher-filter-bar select:focus {
-  border-color: var(--teacher-orange);
-  outline: 3px solid rgba(249, 115, 22, 0.13);
+  border-color: var(--app-accent);
+  outline: 3px solid color-mix(in srgb, var(--app-accent) 13%, transparent);
 }
 
 .teacher-page .teacher-section-header {
@@ -256,7 +256,7 @@
 }
 
 .teacher-page .teacher-item strong {
-  color: var(--teacher-ink);
+  color: var(--app-text);
 }
 
 .teacher-page .teacher-item-right {
@@ -273,7 +273,7 @@
 
 .teacher-page .teacher-table th,
 .teacher-page .teacher-table td {
-  border-bottom-color: var(--teacher-line);
+  border-bottom-color: var(--app-border);
 }
 
 .teacher-page .teacher-grid-classes {
@@ -696,17 +696,17 @@ body.dark .teacher-page .teacher-item {
 }
 
 body.dark .teacher-page .dashboard-home-header {
-  background: linear-gradient(120deg, rgba(249, 115, 22, 0.08), var(--app-card) 65%);
+  background: linear-gradient(120deg, color-mix(in srgb, var(--app-accent) 8%, transparent), var(--app-card) 65%);
 }
 
 body.dark .teacher-page .dashboard-home-header::after {
-  border-color: rgba(249, 115, 22, 0.12);
+  border-color: color-mix(in srgb, var(--app-accent) 12%, transparent);
 }
 
 body.dark .teacher-page .teacher-toolbar-item:hover,
 body.dark .teacher-page .teacher-item:hover,
 body.dark .teacher-page .teacher-link-button:hover,
 body.dark .teacher-page .teacher-action-button:hover {
-  background: rgba(249, 115, 22, 0.08);
-  border-color: rgba(249, 115, 22, 0.35);
+  background: color-mix(in srgb, var(--app-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--app-accent) 35%, transparent);
 }
