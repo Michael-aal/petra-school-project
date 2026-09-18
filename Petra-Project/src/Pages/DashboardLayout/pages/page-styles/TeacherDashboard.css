@@ -1,8 +1,8 @@
 .teacher-page {
-  --teacher-orange: var(--app-accent);
-  --teacher-orange-dark: var(--app-accent);
-  --teacher-orange-soft: var(--app-accent);
-  --teacher-orange-border: var(--app-accent);
+  --teacher-blue: var(--app-accent);
+  --teacher-blue: var(--app-accent);
+  --teacher-blue-soft: var(--app-accent);
+  --teacher-blue-border: var(--app-accent);
   --teacher-ink: var(--app-text, #172033);
   --teacher-muted: var(--app-text-muted, #667085);
   --teacher-line: var(--app-border, #e5e7eb);
