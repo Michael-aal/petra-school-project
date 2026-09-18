@@ -4,6 +4,8 @@ import { UserProvider } from "./context/UserContext.jsx";
 import { SchoolProvider } from "./context/SchoolContext.jsx";
 import { ToastProvider, ToastViewport } from "./context/ToastContext.jsx";
 import "./index.css";
+import "./Styles/petra-theme.css";
+import "./Styles/petra-responsive.css";
 import App from "./App.jsx";
 import { applyTheme } from "./utils/theme.js";
 

@@ -1,0 +1,368 @@
+/* Petra Design System — Future Blue
+ * Visual system: 60% white / 30% deep navy / 10% electric blue.
+ * This layer intentionally changes presentation only; routes, API calls and workflows remain untouched.
+ */
+
+:root {
+  --petra-white: #ffffff;
+  --petra-canvas: #f7f9fc;
+  --petra-navy: #0f2747;
+  --petra-navy-2: #163a63;
+  --petra-blue: #2563eb;
+  --petra-blue-hover: #1d4ed8;
+  --petra-blue-soft: #eff6ff;
+  --petra-ink: #10233f;
+  --petra-muted: #64748b;
+  --petra-border: #e2e8f0;
+  --petra-success: #16a34a;
+  --petra-warning: #d97706;
+  --petra-danger: #dc2626;
+  --petra-info: #2563eb;
+  --petra-shadow: 0 10px 30px rgba(15, 39, 71, .06);
+  --petra-shadow-lg: 0 18px 45px rgba(15, 39, 71, .10);
+
+  --app-bg: var(--petra-canvas);
+  --app-surface: var(--petra-white);
+  --app-surface-strong: #eef3f9;
+  --app-card: var(--petra-white);
+  --app-panel: var(--petra-white);
+  --app-text: var(--petra-ink);
+  --app-text-muted: var(--petra-muted);
+  --app-border: var(--petra-border);
+  --app-accent: var(--petra-blue);
+  --app-accent-2: var(--petra-blue-hover);
+  --background: var(--petra-canvas);
+  --foreground: var(--petra-ink);
+  --card: var(--petra-white);
+  --card-foreground: var(--petra-ink);
+  --popover: var(--petra-white);
+  --popover-foreground: var(--petra-ink);
+  --primary: var(--petra-blue);
+  --primary-foreground: #fff;
+  --secondary: #eef3f9;
+  --secondary-foreground: var(--petra-ink);
+  --muted: #f1f5f9;
+  --muted-foreground: var(--petra-muted);
+  --border: var(--petra-border);
+  --input: var(--petra-border);
+  --ring: var(--petra-blue);
+  --dashboard-page-bg: var(--petra-canvas);
+  --dashboard-topbar-bg: rgba(255,255,255,.94);
+  --dashboard-topbar-text: var(--petra-ink);
+  --dashboard-topbar-muted: var(--petra-muted);
+  --dashboard-card-bg: var(--petra-white);
+  --dashboard-card-text: var(--petra-ink);
+  --dashboard-card-muted: var(--petra-muted);
+  --dashboard-panel-bg: var(--petra-white);
+  --dashboard-panel-text: var(--petra-ink);
+  --dashboard-panel-muted: var(--petra-muted);
+  --dashboard-muted-surface: #f4f7fb;
+  --surface-muted: #f4f7fb;
+  --surface-accent: var(--petra-blue-soft);
+  --surface-success: #ecfdf3;
+  --surface-warning: #fffbeb;
+  --surface-danger: #fef2f2;
+  --dashboard-accent-gradient: var(--petra-blue);
+  --dashboard-accent-gradient-strong: var(--petra-blue-hover);
+  --color-brand-primary: var(--petra-blue);
+  --color-brand-accent: var(--petra-blue);
+  --color-background: var(--petra-canvas);
+  --color-surface: var(--petra-white);
+  --color-surface-muted: #eef3f9;
+  --color-text: var(--petra-ink);
+  --color-text-secondary: var(--petra-muted);
+  --color-text-muted: var(--petra-muted);
+  --color-border: var(--petra-border);
+  --color-success: var(--petra-success);
+  --color-warning: var(--petra-warning);
+  --color-danger: var(--petra-danger);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+html, body, #root {
+  background: var(--petra-canvas) !important;
+  color: var(--petra-ink) !important;
+}
+
+body {
+  font-family: "Manrope", "Inter", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+body.dark {
+  color-scheme: light !important;
+  background: var(--petra-canvas) !important;
+  color: var(--petra-ink) !important;
+}
+body.dark::before,
+body.dark::after { display: none !important; }
+
+/* Global type hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--petra-ink);
+  letter-spacing: -0.035em;
+}
+p, li, label { color: var(--petra-muted); }
+a { color: var(--petra-blue); }
+a:hover { color: var(--petra-blue-hover); }
+
+/* Controls */
+button, .btn, input, select, textarea {
+  font-family: inherit;
+}
+button, .btn {
+  border-radius: 10px;
+}
+.btn-primary, button[type="submit"],
+.landing-button-primary {
+  background: var(--petra-blue) !important;
+  border-color: var(--petra-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(37,99,235,.16) !important;
+}
+.btn-primary:hover, button[type="submit"]:hover,
+.landing-button-primary:hover {
+  background: var(--petra-blue-hover) !important;
+  border-color: var(--petra-blue-hover) !important;
+}
+.btn-secondary, .btn-ghost {
+  background: var(--petra-white) !important;
+  border-color: var(--petra-border) !important;
+  color: var(--petra-ink) !important;
+}
+input, select, textarea, .form-input, .form-select {
+  background: var(--petra-white) !important;
+  border: 1px solid var(--petra-border) !important;
+  color: var(--petra-ink) !important;
+}
+input:focus, select:focus, textarea:focus,
+.form-input:focus, .form-select:focus {
+  border-color: var(--petra-blue) !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12) !important;
+}
+
+/* Shared surfaces */
+.card, .panel, .settings-card, .wallet-panel, .payments-panel,
+.stat-card, .modal-content, .form-card, .dashboard-home-panel,
+.dashboard-home-summary-card, .dashboard-page .table-container,
+.info-card, .testimonial-card, .feature-card, .step-card {
+  background: var(--petra-white) !important;
+  color: var(--petra-ink) !important;
+  border: 1px solid var(--petra-border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--petra-shadow) !important;
+}
+.card:hover, .feature-card:hover, .step-card:hover {
+  box-shadow: var(--petra-shadow-lg) !important;
+}
+
+/* Tables */
+.data-table th, .payments-table th, .table-container th {
+  color: #52647d !important;
+  background: #f8fafc !important;
+  border-bottom-color: var(--petra-border) !important;
+}
+.data-table td, .payments-table td, .table-container td {
+  color: var(--petra-ink) !important;
+  border-bottom-color: var(--petra-border) !important;
+}
+.data-table tbody tr:hover, .payments-table tbody tr:hover,
+.table-container tbody tr:hover {
+  background: var(--petra-blue-soft) !important;
+}
+
+/* Status language */
+.status-badge.success, .tone-emerald, .tone-teal {
+  background: #ecfdf3 !important; color: var(--petra-success) !important;
+}
+.status-badge.warning, .tone-amber {
+  background: #fffbeb !important; color: var(--petra-warning) !important;
+}
+.status-badge.danger, .tone-rose {
+  background: #fef2f2 !important; color: var(--petra-danger) !important;
+}
+
+/* Dashboard shell */
+.dashboard-shell {
+  background: var(--petra-canvas) !important;
+  --sidebar-width: 232px;
+  --sidebar-collapsed-width: 70px;
+}
+.dashboard-main, .dashboard-content, .dashboard-page {
+  background: var(--petra-canvas) !important;
+}
+.dashboard-content { padding: 24px !important; }
+
+/* Navy navigation — the structural 30% */
+.sidebar-container {
+  background: linear-gradient(180deg, var(--petra-navy) 0%, #0b1f3a 100%) !important;
+  color: #f8fbff !important;
+  border-right: 0 !important;
+  box-shadow: 8px 0 28px rgba(15,39,71,.08);
+}
+.sidebar-header { border-bottom-color: rgba(255,255,255,.10) !important; }
+.sidebar-contaner-logo {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.16) !important;
+  color: #fff !important;
+}
+.brand-title, .sidebar-user h3 { color: #fff !important; }
+.brand-sub, .sidebar-section-label, .sidebar-user h4,
+.sidebar-child { color: #aebfd5 !important; }
+.sidebar-link, .sidebar-group, .sidebar-assistant,
+.sidebar-child { color: #dbe7f5 !important; }
+.sidebar-link:hover, .sidebar-group:hover, .sidebar-assistant:hover,
+.sidebar-child:hover {
+  background: rgba(255,255,255,.07) !important;
+  color: #fff !important;
+}
+.sidebar-link.active, .sidebar-child.active,
+.sidebar-group.group-active, .sidebar-assistant.active {
+  background: rgba(37,99,235,.24) !important;
+  color: #fff !important;
+  border-color: rgba(96,165,250,.16) !important;
+}
+.sidebar-link.active::before, .sidebar-child.active::before,
+.sidebar-group.group-active::before {
+  background: var(--petra-blue) !important;
+}
+.sidebar-link.active .sidebar-icon, .sidebar-child.active .child-icon,
+.sidebar-assistant.active .sidebar-assistant-icon,
+.sidebar-group.group-active .sidebar-icon,
+.sidebar-assistant-icon { color: #60a5fa !important; }
+.sidebar-children { border-left-color: rgba(255,255,255,.10) !important; }
+.sidebar-footer { border-top-color: rgba(255,255,255,.10) !important; }
+
+/* Top navigation */
+.top-navbar {
+  background: rgba(255,255,255,.96) !important;
+  color: var(--petra-ink) !important;
+  border-bottom: 1px solid var(--petra-border) !important;
+  box-shadow: 0 1px 0 rgba(15,39,71,.04) !important;
+  backdrop-filter: blur(14px) !important;
+}
+.top-welcome, .user-name { color: var(--petra-ink) !important; }
+.greets, .user-caret { color: var(--petra-muted) !important; }
+.menu-btn, .icon-btn, .ask-nuvora-btn, .user-info {
+  background: #fff !important;
+  border-color: var(--petra-border) !important;
+  color: var(--petra-muted) !important;
+}
+.menu-btn:hover, .icon-btn:hover, .ask-nuvora-btn:hover, .user-info:hover {
+  background: var(--petra-blue-soft) !important;
+  border-color: #bfdbfe !important;
+  color: var(--petra-blue) !important;
+}
+.ask-nuvora-icon-wrap, .avatar {
+  background: var(--petra-blue) !important;
+}
+.notification-dropdown, .account-dropdown {
+  background: #fff !important;
+  border-color: var(--petra-border) !important;
+  box-shadow: var(--petra-shadow-lg) !important;
+}
+
+/* Dashboard home */
+.dashboard-home-header {
+  margin-bottom: 22px;
+}
+.dashboard-home-header h1 {
+  font-size: clamp(1.6rem, 2.4vw, 2.15rem);
+  font-weight: 800;
+  color: var(--petra-ink) !important;
+}
+.dashboard-home-header p { color: var(--petra-muted) !important; }
+.dashboard-home-session-pill {
+  background: var(--petra-blue-soft) !important;
+  color: var(--petra-blue) !important;
+  border: 1px solid #dbeafe !important;
+}
+.dashboard-home-summary-card {
+  padding: 20px !important;
+}
+.dashboard-home-summary-icon {
+  background: var(--petra-blue-soft) !important;
+  color: var(--petra-blue) !important;
+}
+.dashboard-home-summary-action {
+  background: transparent !important;
+  color: var(--petra-blue) !important;
+  border-top: 1px solid var(--petra-border) !important;
+}
+
+/* Public / marketing pages */
+.landing-page, .home-page, .ctc-page, .fsos, .fparent {
+  background: var(--petra-white) !important;
+  color: var(--petra-ink) !important;
+}
+.landing-hero {
+  background:
+    radial-gradient(circle at 82% 20%, rgba(37,99,235,.10), transparent 24rem),
+    linear-gradient(180deg, #fff 0%, #f7faff 100%) !important;
+}
+.landing-badge, .landing-kicker {
+  color: var(--petra-blue) !important;
+}
+.landing-hero h1, .landing-page h2, .landing-page h3 {
+  color: var(--petra-ink) !important;
+}
+.landing-text, .landing-page p { color: var(--petra-muted) !important; }
+.landing-card {
+  background: #fff !important;
+  border: 1px solid var(--petra-border) !important;
+  box-shadow: var(--petra-shadow-lg) !important;
+}
+.landing-button-secondary {
+  background: #fff !important;
+  color: var(--petra-ink) !important;
+  border: 1px solid var(--petra-border) !important;
+}
+.feature-icon, .reassurance-icon {
+  color: var(--petra-blue) !important;
+}
+.landing-cta {
+  background: var(--petra-navy) !important;
+  color: #fff !important;
+}
+.landing-cta h2, .landing-cta p { color: #fff !important; }
+
+/* Legacy Acceede-style sections: neutralize old palette without changing structure. */
+.homeSection1, .homeSection2, .homeSection3, .homeSection4, .homeSection5,
+.homeSection7, .homeSection8, .homeSection9, .homeSection10, .homeSection11 {
+  background: var(--petra-white) !important;
+  color: var(--petra-ink) !important;
+}
+.section5-btn, .section7-btn, .section11-btn {
+  background: var(--petra-blue) !important;
+  color: #fff !important;
+}
+.section1-description, .section5-description, .section7-stats .stats-description,
+.section10-description, .section11-description, .section4-info,
+.feature-text, .testimonial-text, .section8-subtitle, .section3-header p {
+  color: var(--petra-muted) !important;
+}
+.section1-title-highlight, .section5-title-highlight, .section7-title-highlight,
+.section9-highlight {
+  color: var(--petra-blue) !important;
+}
+
+/* Payment surfaces */
+.payment-page, .payment-container, .payment-card,
+.school-fees-payment-page, .student-payment-page {
+  background: var(--petra-white) !important;
+  color: var(--petra-ink) !important;
+}
+.payment-page button, .payment-container button {
+  background: var(--petra-blue);
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .dashboard-content { padding: 18px 16px !important; }
+}
+@media (max-width: 640px) {
+  .dashboard-home-summary { grid-template-columns: 1fr !important; }
+  .dashboard-content { padding: 16px 12px !important; }
+}
