@@ -1622,3 +1622,34 @@ body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card p
 body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card-head > span {
   color: #5e6c84 !important;
 }
+\n/* Nuvora auth final cleanup: blue/white only; remove every retired orange accent. */
+.auth-page,
+.auth-page:has(.auth-shell--signin),
+.auth-page:has(.auth-shell--staff-register),
+.auth-page:has(.auth-shell--admin-register),
+.auth-page:has(.auth-shell--parent-register) {
+  --auth-ink: #0f172a !important;
+  --auth-muted: #475569 !important;
+  --auth-paper: #f5f8fc !important;
+  --auth-surface: #ffffff !important;
+  --auth-line: #dbe4ef !important;
+  --auth-accent: #1877F2 !important;
+  --auth-accent-soft: #eaf3ff !important;
+  background: #f5f8fc !important;
+  color: #0f172a !important;
+}
+.auth-page .auth-form,
+.auth-page .auth-card { color: #0f172a; }
+.auth-page .auth-form-kicker,
+.auth-page .auth-link,
+.auth-page .auth-switch a,
+.auth-page .auth-field small,
+.auth-page .auth-security-note svg,
+.auth-page .auth-loading,
+.auth-page .auth-input-wrap:focus-within > svg { color: #1877F2 !important; }
+.auth-page .auth-input-wrap:focus-within { border-color: #1877F2 !important; box-shadow: 0 0 0 3px #eaf3ff !important; }
+.auth-page .auth-submit { background: #1877F2 !important; border-color: #1877F2 !important; color: #ffffff !important; box-shadow: none !important; }
+.auth-page .auth-submit:hover:not(:disabled) { background: #2563EB !important; border-color: #2563EB !important; color: #ffffff !important; box-shadow: 0 8px 18px rgba(24,119,242,.18) !important; }
+.auth-page .auth-brand-mark { background: #1877F2 !important; border-color: #1877F2 !important; color: #ffffff !important; }
+.auth-page .auth-back-link { border-color: #bfdbfe !important; background: #eaf3ff !important; color: #1877F2 !important; }
+.auth-page .auth-back-link:hover { background: #dbeafe !important; border-color: #1877F2 !important; color: #2563EB !important; }
