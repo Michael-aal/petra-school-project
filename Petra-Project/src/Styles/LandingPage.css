@@ -537,17 +537,13 @@
 }
 
 .landing-page .landing-button-primary,
-.landing-button-primary,
-.cta-btn,
-.mobile-cta-btn {
+.landing-button-primary {
   background: linear-gradient(135deg, var(--brand-teal), #0b596a) !important;
   box-shadow: 0 12px 26px rgba(15, 118, 110, 0.22) !important;
 }
 
 .landing-page .landing-button-primary:hover,
-.landing-button-primary:hover,
-.cta-btn:hover,
-.mobile-cta-btn:hover {
+.landing-button-primary:hover {
   background: linear-gradient(135deg, var(--brand-teal-dark), #084958) !important;
   box-shadow: 0 16px 32px rgba(15, 118, 110, 0.28) !important;
 }

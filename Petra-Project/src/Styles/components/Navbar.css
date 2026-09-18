@@ -168,15 +168,23 @@
   color: #0f766e;
 }
 
-.cta-btn,
-.mobile-cta-btn {
+.navbar-cta,
+.navbar-mobile-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #0f766e, #0b4f6c);
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 800;
   box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2) !important;
 }
 
-.cta-btn:hover,
-.mobile-cta-btn:hover {
+.navbar-cta:hover,
+.navbar-mobile-cta:hover {
   background: linear-gradient(135deg, #0b5f58, #083f58);
+  color: #ffffff !important;
 }
 
 .mobile-menu {
@@ -230,7 +238,7 @@
   color: #10223e;
 }
 
-.cta-btn {
+.navbar-cta {
   min-height: 42px;
   padding: 0 18px;
   border-radius: 10px;
@@ -254,7 +262,10 @@
   color: #0f766e;
 }
 
-.mobile-cta-btn {
+.navbar-mobile-cta {
+  display: block;
+  text-align: center;
   margin-top: 8px;
   padding: 13px 14px;
+  border-radius: 10px;
 }

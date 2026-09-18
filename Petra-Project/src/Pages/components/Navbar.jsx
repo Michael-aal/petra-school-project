@@ -76,7 +76,7 @@ export default function Navbar() {
           {!isMobile && (
             <>
               <NavLink to="/signin" className="nav-sign-in">Sign in</NavLink>
-              <NavLink to="/get-started" className="cta-btn">Start your school</NavLink>
+              <NavLink to="/get-started" className="navbar-cta">Start your school</NavLink>
             </>
           )}
 
@@ -111,7 +111,7 @@ export default function Navbar() {
             Platform
           </NavLink>
           <NavLink to="/signin" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Sign in</NavLink>
-          <NavLink to="/get-started" className="mobile-cta-btn" onClick={() => setMobileMenuOpen(false)}>
+          <NavLink to="/get-started" className="navbar-mobile-cta" onClick={() => setMobileMenuOpen(false)}>
             Start your school
           </NavLink>
         </div>
