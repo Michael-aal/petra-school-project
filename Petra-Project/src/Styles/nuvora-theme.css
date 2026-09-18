@@ -1,64 +1,54 @@
-/* Nuvora visual system — white-first, blue-led, consistent across every role and route. */
-:root {
-  color-scheme: light !important;
-  --nuvora-blue: #1877f2;
-  --nuvora-blue-dark: #0f5dcc;
-  --nuvora-blue-soft: #eaf3ff;
-  --nuvora-accent: #42b72a;
-  --nuvora-white: #ffffff;
-  --nuvora-bg: #f5f8fc;
-  --nuvora-text: #172033;
-  --nuvora-muted: #64748b;
-  --nuvora-border: #dbe5f2;
-
-  --app-bg: var(--nuvora-bg) !important;
-  --app-surface: var(--nuvora-white) !important;
-  --app-surface-strong: #eef4fb !important;
-  --app-card: var(--nuvora-white) !important;
-  --app-panel: var(--nuvora-white) !important;
-  --app-text: var(--nuvora-text) !important;
-  --app-text-muted: var(--nuvora-muted) !important;
-  --app-border: var(--nuvora-border) !important;
-  --app-accent: var(--nuvora-blue) !important;
-  --app-accent-2: var(--nuvora-blue-dark) !important;
-  --primary: var(--nuvora-blue) !important;
-  --primary-foreground: #fff !important;
-  --dashboard-page-bg: var(--nuvora-bg) !important;
-  --dashboard-topbar-bg: rgba(255,255,255,.98) !important;
-  --dashboard-topbar-text: var(--nuvora-text) !important;
-  --dashboard-topbar-muted: var(--nuvora-muted) !important;
-  --dashboard-panel-bg: #fff !important;
-  --dashboard-card-bg: #fff !important;
-  --dashboard-card-text: var(--nuvora-text) !important;
-  --dashboard-card-muted: var(--nuvora-muted) !important;
-  --dashboard-sidebar-bg: linear-gradient(180deg,#1877f2 0%,#0f5dcc 100%) !important;
-  --dashboard-sidebar-text: #fff !important;
-  --dashboard-sidebar-muted: #dceaff !important;
-  --dashboard-accent-gradient: linear-gradient(90deg,#1877f2,#42a5ff) !important;
-  --dashboard-accent-gradient-strong: linear-gradient(90deg,#0f5dcc,#1877f2) !important;
+/* Nuvora — clean white / blue / neutral visual system. No orange or unrelated brand colors. */
+:root{
+  color-scheme:light!important;
+  --nuvora-white:#fff;
+  --nuvora-blue:#1877f2;
+  --nuvora-blue-dark:#0f5dcc;
+  --nuvora-blue-soft:#eaf3ff;
+  --nuvora-text:#1c1e21;
+  --nuvora-muted:#65676b;
+  --nuvora-border:#e4e6eb;
+  --nuvora-bg:#f0f2f5;
+  --nuvora-accent:var(--nuvora-blue);
+  --app-bg:var(--nuvora-bg)!important;
+  --app-surface:#fff!important;
+  --app-surface-strong:#f5f6f7!important;
+  --app-card:#fff!important;
+  --app-panel:#fff!important;
+  --app-text:var(--nuvora-text)!important;
+  --app-text-muted:var(--nuvora-muted)!important;
+  --app-border:var(--nuvora-border)!important;
+  --app-accent:var(--nuvora-blue)!important;
+  --app-accent-2:var(--nuvora-blue-dark)!important;
+  --primary:var(--nuvora-blue)!important;
+  --primary-foreground:#fff!important;
+  --dashboard-page-bg:var(--nuvora-bg)!important;
+  --dashboard-topbar-bg:#fff!important;
+  --dashboard-topbar-text:var(--nuvora-text)!important;
+  --dashboard-topbar-muted:var(--nuvora-muted)!important;
+  --dashboard-panel-bg:#fff!important;
+  --dashboard-card-bg:#fff!important;
+  --dashboard-card-text:var(--nuvora-text)!important;
+  --dashboard-card-muted:var(--nuvora-muted)!important;
+  --dashboard-sidebar-bg:var(--nuvora-white)!important;
+  --dashboard-sidebar-text:var(--nuvora-text)!important;
+  --dashboard-sidebar-muted:var(--nuvora-muted)!important;
+  --dashboard-accent-gradient:none!important;
+  --dashboard-accent-gradient-strong:none!important;
 }
-html, body, #root { background: var(--nuvora-bg) !important; color: var(--nuvora-text) !important; }
-body { color: var(--nuvora-text) !important; }
-.card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,
-.dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,
-.dashboard-page .table-container,.layout-card {
-  background:#fff !important; color:var(--nuvora-text) !important; border-color:var(--nuvora-border) !important;
-}
-input,select,textarea,.form-input,.form-select {
-  background:#fff !important; color:var(--nuvora-text) !important; border-color:var(--nuvora-border) !important;
-}
-input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus {
-  border-color:var(--nuvora-blue) !important; box-shadow:0 0 0 3px rgba(24,119,242,.14) !important;
-}
-button[type="submit"],.btn-primary,.landing-button-primary {
-  background:var(--nuvora-blue) !important; color:#fff !important; border-color:var(--nuvora-blue) !important;
-}
-button[type="submit"]:hover,.btn-primary:hover,.landing-button-primary:hover { background:var(--nuvora-blue-dark) !important; }
-a { color:var(--nuvora-blue); }
-a:hover { color:var(--nuvora-blue-dark); }
-.data-table th,.payments-table th,.table-container th { color:var(--nuvora-muted) !important; }
-.data-table td,.payments-table td,.table-container td { color:var(--nuvora-text) !important; border-color:var(--nuvora-border) !important; }
-.data-table tbody tr:hover,.payments-table tbody tr:hover,.table-container tbody tr:hover { background:var(--nuvora-blue-soft) !important; }
-.status-badge.success,.badge.success { background:#e9f8e5 !important; color:#248a17 !important; }
-.status-badge.warning,.badge.warning { background:#fff6dc !important; color:#946b00 !important; }
-.status-badge.danger,.badge.danger { background:#ffebe9 !important; color:#c0392b !important; }
+html,body,#root{background:var(--nuvora-bg)!important;color:var(--nuvora-text)!important}
+body{color:var(--nuvora-text)!important}
+.card,.panel,.form-card,.settings-card,.stat-card,.dashboard-widget,.modal-content,.dashboard-home-panel,.dashboard-home-summary-card,.wallet-panel,.payments-panel,.dashboard-page .table-container,.layout-card{background:#fff!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
+input,select,textarea,.form-input,.form-select{background:#fff!important;color:var(--nuvora-text)!important;border:1px solid var(--nuvora-border)!important}
+input:focus,select:focus,textarea:focus,.form-input:focus,.form-select:focus{border-color:var(--nuvora-blue)!important;box-shadow:0 0 0 2px rgba(24,119,242,.14)!important}
+button[type=submit],.btn-primary,.landing-button-primary{background:var(--nuvora-blue)!important;color:#fff!important;border-color:var(--nuvora-blue)!important}
+button[type=submit]:hover,.btn-primary:hover,.landing-button-primary:hover{background:var(--nuvora-blue-dark)!important}
+a{color:var(--nuvora-blue)}a:hover{color:var(--nuvora-blue-dark)}
+.data-table th,.payments-table th,.table-container th{color:var(--nuvora-muted)!important}
+.data-table td,.payments-table td,.table-container td{color:var(--nuvora-text)!important;border-color:var(--nuvora-border)!important}
+.data-table tbody tr:hover,.payments-table tbody tr:hover,.table-container tbody tr:hover{background:var(--nuvora-blue-soft)!important}
+.status-badge.success,.badge.success{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue-dark)!important}
+.status-badge.warning,.badge.warning,.status-badge.danger,.badge.danger{background:#f0f2f5!important;color:var(--nuvora-text)!important}
+.dashboard-sidebar,.sidebar,.dashboard-nav{background:#fff!important;color:var(--nuvora-text)!important;border-right:1px solid var(--nuvora-border)!important}
+.dashboard-sidebar a,.sidebar a,.dashboard-nav a{color:var(--nuvora-muted)!important}
+.dashboard-sidebar a:hover,.sidebar a:hover,.dashboard-nav a:hover,.dashboard-sidebar a.active,.sidebar a.active,.dashboard-nav a.active{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue)!important}
