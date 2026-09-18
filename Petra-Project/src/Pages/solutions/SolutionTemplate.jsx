@@ -106,8 +106,8 @@ function Screenshots({ data }) {
       <svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520">
         <defs>
           <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-            <stop stop-color="#fffaf5" offset="0%" />
-            <stop stop-color="#fff1e8" offset="100%" />
+            <stop stop-color="#f7f9fc" offset="0%" />
+            <stop stop-color="#eff6ff" offset="100%" />
           </linearGradient>
         </defs>
         <rect width="800" height="520" rx="34" fill="url(#bg)"/>
@@ -119,9 +119,9 @@ function Screenshots({ data }) {
         <rect x="362" y="214" width="260" height="18" rx="9" fill="#f0c5a5"/>
         <rect x="362" y="250" width="290" height="18" rx="9" fill="#f0c5a5"/>
         <rect x="362" y="286" width="220" height="18" rx="9" fill="#f0c5a5"/>
-        <rect x="72" y="382" width="160" height="58" rx="16" fill="#ff6600" opacity="0.12"/>
-        <rect x="250" y="382" width="160" height="58" rx="16" fill="#ff6600" opacity="0.10"/>
-        <rect x="428" y="382" width="160" height="58" rx="16" fill="#ff6600" opacity="0.08"/>
+        <rect x="72" y="382" width="160" height="58" rx="16" fill="#1877F2" opacity="0.12"/>
+        <rect x="250" y="382" width="160" height="58" rx="16" fill="#1877F2" opacity="0.10"/>
+        <rect x="428" y="382" width="160" height="58" rx="16" fill="#1877F2" opacity="0.08"/>
       </svg>
     `);
 
