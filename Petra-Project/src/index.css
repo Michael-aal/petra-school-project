@@ -1473,3 +1473,160 @@ textarea:focus-visible {
 /* Stronger visual hierarchy for headings and primary actions. */
 .dashboard-page h1, .dashboard-home h1, .gs h1 { font-weight: 800; letter-spacing: -0.045em; }
 .dashboard-page h2, .dashboard-home h2, .gs h2 { font-weight: 750; letter-spacing: -0.03em; }
+
+
+/* NUVORA MOTION SYSTEM — smooth, restrained, accessible.
+   Animates only properties that benefit from motion; avoids layout-jank. */
+:root {
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes nuvoraPageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nuvoraRiseIn {
+  from { opacity: 0; transform: translateY(12px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes nuvoraPopIn {
+  from { opacity: 0; transform: scale(.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Route/page entrance */
+.dashboard-page,
+.dashboard-home,
+.gs,
+.auth-page {
+  animation: nuvoraPageIn var(--motion-slow) var(--ease-out) both;
+}
+
+/* Content hierarchy enters gently instead of appearing abruptly. */
+.dashboard-page .card,
+.dashboard-page .panel,
+.dashboard-home .card,
+.dashboard-home .panel,
+.dashboard-home-summary-card,
+.dashboard-stat-card,
+.dashboard-widget,
+.gs .card,
+.auth-page .card {
+  animation: nuvoraRiseIn 420ms var(--ease-out) both;
+}
+
+/* Interactive controls: tactile but subtle. */
+button,
+.btn,
+a,
+.sidebar-link,
+.sidebar-group,
+.sidebar-child,
+.sidebar-assistant,
+.dashboard-widget-action {
+  transition:
+    background-color var(--motion-base) var(--ease-smooth),
+    border-color var(--motion-base) var(--ease-smooth),
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-base) var(--ease-smooth),
+    opacity var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-out);
+  will-change: auto;
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled),
+.sidebar-link:hover,
+.sidebar-group:hover,
+.sidebar-child:hover,
+.sidebar-assistant:hover {
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled),
+.sidebar-link:active,
+.sidebar-group:active,
+.sidebar-child:active,
+.sidebar-assistant:active {
+  transform: translateY(0) scale(.985);
+  transition-duration: 90ms;
+}
+
+/* Cards lift slightly on pointer interaction without changing layout. */
+.dashboard-page .card:hover,
+.dashboard-page .panel:hover,
+.dashboard-home .card:hover,
+.dashboard-home .panel:hover,
+.dashboard-stat-card:hover,
+.dashboard-widget:hover,
+.dashboard-home-summary-card:hover,
+.gs .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(15,23,42,.08);
+}
+
+/* Navigation indicator moves smoothly between states. */
+.sidebar-link::before,
+.sidebar-child::before,
+.sidebar-group::before {
+  transition: width var(--motion-base) var(--ease-out), opacity var(--motion-base) ease, background-color var(--motion-base) ease;
+}
+
+/* Icons keep one consistent blue identity while moving smoothly. */
+.dashboard-shell svg,
+.dashboard-page svg,
+.dashboard-home svg,
+.gs svg,
+.auth-page svg {
+  transition:
+    color var(--motion-base) ease,
+    stroke var(--motion-base) ease,
+    fill var(--motion-base) ease,
+    opacity var(--motion-base) ease,
+    transform var(--motion-base) var(--ease-out);
+}
+
+.sidebar-link:hover svg,
+.sidebar-group:hover svg,
+.sidebar-child:hover svg,
+.sidebar-assistant:hover svg {
+  transform: scale(1.04);
+}
+
+/* Menus/modals/dropdowns: polished entrance. */
+.modal-content,
+.solutions-dropdown,
+.company-dropdown,
+.mobile-menu {
+  animation: nuvoraPopIn 180ms var(--ease-out) both;
+  transform-origin: top center;
+}
+
+/* Loading feedback stays smooth and lightweight. */
+.skeleton {
+  animation: skeletonShimmer 1.35s ease-in-out infinite;
+}
+
+/* Never force motion on users who request reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    scroll-behavior: auto !important;
+  }
+}
