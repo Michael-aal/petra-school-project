@@ -1237,3 +1237,8 @@ body.dark .dashboard-landing-widget {
 body.dark .dashboard-landing-panel {
   background: var(--dashboard-panel-bg);
 }
+
+
+/* Dashboard home: remove legacy orange hover accents. */
+.dashboard-quick-action:hover { border-color:#1877F2 !important; background:#EAF3FF !important; }
+.dashboard-home-summary-action:hover { border-color:#1877F2 !important; color:#1877F2 !important; }
