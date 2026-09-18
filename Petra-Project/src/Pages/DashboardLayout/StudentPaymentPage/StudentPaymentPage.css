@@ -252,7 +252,7 @@
 .sp-icon-box.blue {
   background: rgba(59, 130, 246, 0.10);
   border-color: rgba(59, 130, 246, 0.18);
-  color: #60a5fa;
+  color: #1877F2;
 }
 
 .sp-icon-box.green {
@@ -270,7 +270,7 @@
 .sp-icon-box.blue {
   background: color-mix(in srgb, #1877F2 10%, transparent);
   border-color: color-mix(in srgb, #1877F2 18%, transparent);
-  color: #fb923c;
+  color: #1877F2;
 }
 
 /* =========================================================
