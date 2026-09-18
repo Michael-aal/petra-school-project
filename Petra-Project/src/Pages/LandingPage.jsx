@@ -67,7 +67,7 @@ export default function LandingPage() {
 
           <h1>School should feel <span>connected.</span></h1>
           <p className="landing-text">
-            Petra brings the people, learning, operations and everyday moments of a school into one beautifully connected digital experience.
+            Nuvora brings the people, learning, operations and everyday moments of a school into one beautifully connected digital experience.
           </p>
 
           <div className="landing-actions">
@@ -76,7 +76,7 @@ export default function LandingPage() {
               <ArrowRight size={17} />
             </NavLink>
             <a href="#platform" className="landing-button landing-button-secondary">
-              Explore Petra
+              Explore Nuvora
             </a>
           </div>
 
@@ -87,7 +87,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Petra school platform preview">
+        <div className="hero-visual" aria-label="Nuvora school platform preview">
           <div className="hero-orbit orbit-one" />
           <div className="hero-orbit orbit-two" />
           <FloatingBook className="book-one" label="Library" />
@@ -96,7 +96,7 @@ export default function LandingPage() {
 
           <div className="hero-dashboard">
             <div className="hero-dashboard-top">
-              <div className="mini-brand"><span className="brand-mark">P</span><span>Petra</span></div>
+              <div className="mini-brand"><span className="brand-mark">P</span><span>Nuvora</span></div>
               <div className="mini-user"><span className="mini-avatar">AO</span><span>Good morning</span></div>
             </div>
             <div className="hero-dashboard-heading">
@@ -134,10 +134,10 @@ export default function LandingPage() {
 
       <section className="landing-section intro-section landing-anchor" id="platform">
         <div className="section-header centered">
-          <p className="landing-kicker">The Petra idea</p>
+          <p className="landing-kicker">The Nuvora idea</p>
           <h2 className="section-title">The school is more than a collection of spreadsheets.</h2>
           <p className="section-lead">
-            It is people, conversations, lessons, payments, results, questions and small moments happening at the same time. Petra gives all of that a place to connect.
+            It is people, conversations, lessons, payments, results, questions and small moments happening at the same time. Nuvora gives all of that a place to connect.
           </p>
         </div>
         <div className="story-grid">
@@ -156,7 +156,7 @@ export default function LandingPage() {
           <article className="story-card story-card-dark">
             <span className="story-number">03</span>
             <h3>Make progress visible</h3>
-            <p>From attendance to assessments, Petra turns school activity into useful signals that help people act sooner.</p>
+            <p>From attendance to assessments, Nuvora turns school activity into useful signals that help people act sooner.</p>
             <div className="story-line"><Sparkles size={18} /><span>Progress you can understand</span></div>
           </article>
         </div>
@@ -166,7 +166,7 @@ export default function LandingPage() {
         <div className="section-header">
           <p className="landing-kicker">Everything connected</p>
           <h2 className="section-title">The tools your school uses, finally telling the same story.</h2>
-          <p className="section-lead">Petra is designed as a connected school operating experience, not a pile of separate tools.</p>
+          <p className="section-lead">Nuvora is designed as a connected school operating experience, not a pile of separate tools.</p>
         </div>
         <div className="feature-grid">
           {features.map(({ icon: Icon, title, text }) => (
@@ -216,7 +216,7 @@ export default function LandingPage() {
 
       <section className="landing-section journey-section landing-anchor" id="how-it-works">
         <div className="section-header centered">
-          <p className="landing-kicker">How Petra fits in</p>
+          <p className="landing-kicker">How Nuvora fits in</p>
           <h2 className="section-title">From setup to everyday school life.</h2>
         </div>
         <div className="journey-grid">
@@ -234,7 +234,7 @@ export default function LandingPage() {
           <div className="dashboard-story-copy">
             <p className="landing-kicker">A calmer school day</p>
             <h2>Less hunting for information. More time doing the work that matters.</h2>
-            <p>Petra keeps important school workflows close together, so a teacher can teach, a parent can stay informed and an administrator can make decisions without stitching together five different systems.</p>
+            <p>Nuvora keeps important school workflows close together, so a teacher can teach, a parent can stay informed and an administrator can make decisions without stitching together five different systems.</p>
             <div className="check-list">
               <span><Check size={17} /> Clear role-based experiences</span>
               <span><Check size={17} /> Responsive on phones and computers</span>
@@ -243,7 +243,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="workflow-window">
-            <div className="window-top"><span /><span /><span /><b>Petra workspace</b></div>
+            <div className="window-top"><span /><span /><span /><b>Nuvora workspace</b></div>
             <div className="workflow-layout">
               <aside><div className="side-logo">P</div><i /><i /><i /><i /><i /></aside>
               <div className="workflow-main">
@@ -262,7 +262,7 @@ export default function LandingPage() {
           <div>
             <p className="landing-kicker">Built with responsibility</p>
             <h2>Your school's information deserves a careful home.</h2>
-            <p>Petra's experiences are built around role-aware access, clear workflows and the principle that people should see the information they are authorized to use.</p>
+            <p>Nuvora's experiences are built around role-aware access, clear workflows and the principle that people should see the information they are authorized to use.</p>
           </div>
           <div className="trust-points"><span><Check size={15} /> Role-aware access</span><span><Check size={15} /> Secure workflows</span><span><Check size={15} /> Clear audit trails</span></div>
         </div>
@@ -272,7 +272,7 @@ export default function LandingPage() {
         <div className="section-header">
           <p className="landing-kicker">School life, in motion</p>
           <h2 className="section-title">A living view of what is happening across your school.</h2>
-          <p className="section-lead">Instead of making people hunt through menus, Petra brings important moments into a clear, familiar flow — like a school day that keeps moving.</p>
+          <p className="section-lead">Instead of making people hunt through menus, Nuvora brings important moments into a clear, familiar flow — like a school day that keeps moving.</p>
         </div>
         <div className="pulse-layout">
           <div className="pulse-feed">
@@ -307,7 +307,7 @@ export default function LandingPage() {
             <div className="pulse-side-card pulse-side-blue">
               <Sparkles size={22}/>
               <strong>Small moments add up.</strong>
-              <p>Petra connects them so the people responsible can act without losing context.</p>
+              <p>Nuvora connects them so the people responsible can act without losing context.</p>
             </div>
           </aside>
         </div>
@@ -317,7 +317,7 @@ export default function LandingPage() {
         <div className="library-copy">
           <p className="landing-kicker">The digital library</p>
           <h2>Books should not just sit on a shelf.</h2>
-          <p>They can move, invite curiosity and make learning feel active. Petra gives your school a place to organize resources while playful motion makes the experience feel alive.</p>
+          <p>They can move, invite curiosity and make learning feel active. Nuvora gives your school a place to organize resources while playful motion makes the experience feel alive.</p>
         </div>
         <div className="library-stage" aria-hidden="true">
           <div className="book-stack">
@@ -328,7 +328,7 @@ export default function LandingPage() {
           </div>
           <div className="library-orbit library-orbit-one"/>
           <div className="library-orbit library-orbit-two"/>
-          <div className="library-label"><BookOpen size={20}/><span>Petra Library</span></div>
+          <div className="library-label"><BookOpen size={20}/><span>Nuvora Library</span></div>
         </div>
       </section>
 
@@ -347,10 +347,10 @@ export default function LandingPage() {
           <h2 className="section-title">A few things worth knowing.</h2>
         </div>
         <div className="faq-grid">
-          <details open><summary>Who is Petra for?</summary><p>Petra is designed for schools and the people around them: administrators, teachers, parents and students.</p></details>
-          <details><summary>Does Petra work on phones?</summary><p>Yes. The public experience and the school workflows are designed to remain useful on smaller screens, with mobile navigation and responsive layouts.</p></details>
+          <details open><summary>Who is Nuvora for?</summary><p>Nuvora is designed for schools and the people around them: administrators, teachers, parents and students.</p></details>
+          <details><summary>Does Nuvora work on phones?</summary><p>Yes. The public experience and the school workflows are designed to remain useful on smaller screens, with mobile navigation and responsive layouts.</p></details>
           <details><summary>Can different roles see different things?</summary><p>Yes. The platform is built around role-aware experiences so each person can work with the parts of the school they are responsible for.</p></details>
-          <details><summary>Can Petra grow with a school?</summary><p>The platform is structured around connected modules, making it possible to expand school operations without replacing the entire system.</p></details>
+          <details><summary>Can Nuvora grow with a school?</summary><p>The platform is structured around connected modules, making it possible to expand school operations without replacing the entire system.</p></details>
         </div>
       </section>
 
@@ -358,7 +358,7 @@ export default function LandingPage() {
         <div>
           <p className="landing-kicker">The next school day starts here.</p>
           <h2>Build a school experience people actually enjoy using.</h2>
-          <p className="cta-subtext">Bring your school into one connected space with Petra.</p>
+          <p className="cta-subtext">Bring your school into one connected space with Nuvora.</p>
         </div>
         <div className="cta-actions">
           <NavLink to="/get-started" className="landing-button landing-button-white">Get started <ArrowRight size={17} /></NavLink>
