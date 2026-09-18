@@ -12,7 +12,7 @@
   padding: 20px 24px;
   border: 1px solid #dfe3df;
   border-radius: 12px;
-  background: #f5f4f2;
+  background: #f5f6f7;
   box-shadow: none;
 }
 
@@ -62,7 +62,7 @@
   padding: 18px 16px;
   border-radius: 12px;
   border: 1px solid #dfe3df;
-  background: #f5f4f2;
+  background: #f5f6f7;
   box-shadow: none;
 }
 
@@ -106,7 +106,7 @@
   border-radius: 9px;
   display: grid;
   place-items: center;
-  color: #e8752f;
+  color: #1877f2;
   background: rgba(232, 117, 47, 0.12);
 }
 
@@ -127,7 +127,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #e8752f;
+  color: #1877f2;
   font-size: 0.9rem;
   font-weight: 600;
 }
