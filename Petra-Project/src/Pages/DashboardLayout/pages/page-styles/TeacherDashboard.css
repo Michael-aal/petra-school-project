@@ -22,7 +22,7 @@
   padding: 28px 30px;
   border: 1px solid var(--app-border);
   border-radius: 18px;
-  background: linear-gradient(120deg, #fffaf5 0%, #ffffff 62%);
+  background: linear-gradient(120deg, #f7f9fc 0%, #ffffff 62%);
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
