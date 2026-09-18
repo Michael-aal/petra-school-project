@@ -17,7 +17,7 @@
   padding: 20px 24px;
   border: 1px solid #dfe3df;
   border-radius: 12px;
-  background: #f5f4f2;
+  background: #f5f6f7;
   box-shadow: none;
 }
 
@@ -35,7 +35,7 @@
   text-transform: uppercase;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #e8752f;
+  color: #1877f2;
 }
 
 .dashboard-page-copy {
@@ -50,17 +50,17 @@
   gap: 8px;
   min-height: 42px;
   padding: 0 18px;
-  border: 1px solid #e8752f;
+  border: 1px solid #1877f2;
   border-radius: 10px;
-  background: #e8752f;
+  background: #1877f2;
   color: #ffffff;
   font-weight: 500;
   cursor: pointer;
 }
 
 .module-button:hover:not(:disabled) {
-  background: #d96a1d;
-  border-color: #d96a1d;
+  background: #0f5dcc;
+  border-color: #0f5dcc;
 }
 
 .module-alert {
@@ -128,7 +128,7 @@
   padding: 18px 16px;
   border: 1px solid #dfe3df;
   border-radius: 12px;
-  background: #f5f4f2;
+  background: #f5f6f7;
 }
 
 .finance-cashflow-panel h3 {
