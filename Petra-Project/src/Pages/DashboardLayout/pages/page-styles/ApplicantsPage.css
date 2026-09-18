@@ -565,3 +565,5 @@
 
 /* Blue-only applicant action accent. */
 .applicant-approve { color:#1877F2 !important; border-color:#1877F2 !important; }
+/* Nuvora blue-only final override. */
+.applicant-approve{color:#1877F2!important;border-color:#1877F2!important}
