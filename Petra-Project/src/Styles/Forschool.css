@@ -2350,3 +2350,275 @@ body.dark .fsu-card {
     animation: none;
   }
 }
+
+/* =========================================================
+   PETRA PUBLIC/LANDING RESPONSIVE + BLUE THEME HARDENING
+   ========================================================= */
+.marketing-page.fsos,
+.marketing-page.fparent{
+  --public-bg:var(--petra-canvas);
+  --public-white:var(--petra-white);
+  --public-ink:var(--petra-ink);
+  --public-muted:var(--petra-muted);
+  --public-blue:var(--petra-blue);
+  --public-border:var(--petra-border);
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  overflow-x:clip;
+  background:var(--public-bg)!important;
+  color:var(--public-ink)!important;
+}
+.marketing-page.fsos *,
+.marketing-page.fparent *{box-sizing:border-box;min-width:0}
+.marketing-page.fsos .marketing-header,
+.marketing-page.fparent .marketing-header{
+  width:min(1120px,calc(100% - 32px));
+  margin-inline:auto;
+  background:var(--public-white)!important;
+  border:1px solid var(--public-border)!important;
+}
+.marketing-page.fsos .marketing-title,
+.marketing-page.fparent .marketing-title,
+.marketing-page.fsos .section-intro h2,
+.marketing-page.fparent .section-intro h2,
+.marketing-page.fsos .marketing-card-title,
+.marketing-page.fparent .marketing-card-title{
+  color:var(--public-ink)!important;
+}
+.marketing-page.fsos .marketing-title span,
+.marketing-page.fparent .marketing-title span{
+  color:var(--public-blue)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+}
+.marketing-page.fsos .marketing-description,
+.marketing-page.fparent .marketing-description,
+.marketing-page.fsos .marketing-card-text,
+.marketing-page.fparent .marketing-card-text,
+.marketing-page.fsos .section-subtext,
+.marketing-page.fparent .section-subtext{
+  color:var(--public-muted)!important;
+}
+.marketing-page.fsos .marketing-badge,
+.marketing-page.fparent .marketing-badge{
+  color:var(--public-blue)!important;
+  background:var(--petra-blue-soft)!important;
+  border:1px solid #dbeafe!important;
+}
+.marketing-page.fsos .marketing-badge svg,
+.marketing-page.fparent .marketing-badge svg,
+.marketing-page.fsos .marketing-trust-item svg,
+.marketing-page.fparent .marketing-trust-item svg{
+  color:var(--public-blue)!important;
+}
+.marketing-page.fsos .marketing-btn-primary,
+.marketing-page.fsos .cta-btn,
+.marketing-page.fparent .marketing-btn-primary{
+  background:var(--public-blue)!important;
+  border:1px solid var(--public-blue)!important;
+  color:#fff!important;
+  box-shadow:0 6px 18px rgba(37,99,235,.16)!important;
+}
+.marketing-page.fsos .marketing-btn-primary:hover,
+.marketing-page.fsos .cta-btn:hover,
+.marketing-page.fparent .marketing-btn-primary:hover{
+  background:var(--petra-blue-hover)!important;
+  border-color:var(--petra-blue-hover)!important;
+}
+.marketing-page.fsos .marketing-btn-secondary,
+.marketing-page.fparent .marketing-btn-secondary{
+  background:#fff!important;
+  color:var(--public-ink)!important;
+  border:1px solid var(--public-border)!important;
+}
+.marketing-page.fsos .marketing-btn-secondary:hover,
+.marketing-page.fparent .marketing-btn-secondary:hover{
+  background:var(--petra-blue-soft)!important;
+  color:var(--public-blue)!important;
+}
+.marketing-page.fsos .marketing-card,
+.marketing-page.fparent .marketing-card{
+  background:#fff!important;
+  border:1px solid var(--public-border)!important;
+  color:var(--public-ink)!important;
+}
+.marketing-page.fsos .marketing-card-icon,
+.marketing-page.fparent .marketing-card-icon,
+.marketing-page.fparent .highlight-icon{
+  background:var(--petra-blue-soft)!important;
+  color:var(--public-blue)!important;
+}
+.marketing-page.fsos .marketing-card-link,
+.marketing-page.fparent .marketing-card-link{
+  color:var(--public-blue)!important;
+}
+.marketing-page.fparent .marketing-btn-primary,
+.marketing-page.fparent .highlight-icon{background-color:var(--petra-blue)!important}
+.marketing-page.fsos .marketing-highlight-section,
+.marketing-page.fparent .marketing-highlight-section{
+  background:#f4f7fb!important;
+  border-color:var(--public-border)!important;
+}
+.marketing-page.fsos > .marketing-cta,
+.marketing-page.fparent > .marketing-cta{
+  width:min(1120px,calc(100% - 32px));
+  margin-inline:auto;
+  background:var(--petra-navy)!important;
+  border:0!important;
+}
+.marketing-page.fsos .marketing-cta-title,
+.marketing-page.fparent .marketing-cta-title{color:#fff!important}
+.marketing-page.fsos .marketing-cta-text,
+.marketing-page.fparent .marketing-cta-text{color:#cbd5e1!important}
+.marketing-page.fsos .cta-badge,
+.marketing-page.fparent .cta-badge{
+  background:rgba(37,99,235,.18)!important;
+  border:1px solid rgba(147,197,253,.25)!important;
+  color:#bfdbfe!important;
+}
+
+/* Prevent long words/URLs from creating horizontal page overflow. */
+.marketing-page.fsos h1,
+.marketing-page.fsos h2,
+.marketing-page.fsos h3,
+.marketing-page.fsos p,
+.marketing-page.fparent h1,
+.marketing-page.fparent h2,
+.marketing-page.fparent h3,
+.marketing-page.fparent p{
+  overflow-wrap:anywhere;
+}
+
+/* Tablet */
+@media (max-width:900px){
+  .marketing-page.fsos,
+  .marketing-page.fparent{
+    padding:40px 16px!important;
+    gap:28px!important;
+  }
+  .marketing-page.fsos .marketing-header,
+  .marketing-page.fparent .marketing-header,
+  .marketing-page.fsos > .marketing-section,
+  .marketing-page.fparent > .marketing-section{
+    width:100%!important;
+  }
+  .marketing-page.fsos .feature-grid,
+  .marketing-page.fparent .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Phone */
+@media (max-width:640px){
+  .marketing-page.fsos,
+  .marketing-page.fparent{
+    padding:20px 12px 36px!important;
+    gap:18px!important;
+  }
+  .marketing-page.fsos .marketing-header,
+  .marketing-page.fparent .marketing-header{
+    width:100%!important;
+    padding:28px 18px!important;
+    border-radius:16px!important;
+  }
+  .marketing-page.fsos .marketing-title,
+  .marketing-page.fparent .marketing-title{
+    font-size:clamp(1.9rem,9vw,2.8rem)!important;
+    line-height:1.08!important;
+    letter-spacing:-.045em!important;
+  }
+  .marketing-page.fsos .marketing-description,
+  .marketing-page.fparent .marketing-description{
+    font-size:.96rem!important;
+    line-height:1.65!important;
+  }
+  .marketing-page.fsos .marketing-actions,
+  .marketing-page.fparent .marketing-actions{
+    width:100%!important;
+    flex-direction:column!important;
+    gap:10px!important;
+    margin-bottom:20px!important;
+  }
+  .marketing-page.fsos .marketing-btn,
+  .marketing-page.fparent .marketing-btn{
+    width:100%!important;
+    min-height:46px!important;
+    padding:11px 16px!important;
+  }
+  .marketing-page.fsos .marketing-trust-bar,
+  .marketing-page.fparent .marketing-trust-bar{
+    width:100%!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:10px!important;
+    padding:14px 0 0!important;
+  }
+  .marketing-page.fsos .marketing-trust-item,
+  .marketing-page.fparent .marketing-trust-item{
+    justify-content:center;
+    text-align:center;
+    line-height:1.35;
+  }
+  .marketing-page.fsos .marketing-trust-divider,
+  .marketing-page.fparent .marketing-trust-divider{
+    width:50px!important;height:1px!important;margin:auto;
+  }
+  .marketing-page.fsos > .marketing-section,
+  .marketing-page.fparent > .marketing-section{
+    padding:24px 0!important;
+  }
+  .marketing-page.fsos .section-intro,
+  .marketing-page.fparent .section-intro{margin-bottom:20px}
+  .marketing-page.fsos .section-intro h2,
+  .marketing-page.fparent .section-intro h2{
+    font-size:clamp(1.55rem,7vw,2.1rem)!important;
+    line-height:1.15;
+  }
+  .marketing-page.fsos .feature-grid,
+  .marketing-page.fparent .feature-grid,
+  .marketing-page.fsos .highlight-grid,
+  .marketing-page.fparent .highlight-grid{
+    grid-template-columns:1fr!important;
+    gap:12px!important;
+  }
+  .marketing-page.fsos .marketing-card,
+  .marketing-page.fparent .marketing-card{
+    padding:20px 18px!important;
+    border-radius:14px!important;
+  }
+  .marketing-page.fsos .marketing-card-icon,
+  .marketing-page.fparent .marketing-card-icon{
+    width:44px!important;height:44px!important;margin-bottom:14px!important;
+  }
+  .marketing-page.fsos .marketing-highlight-section,
+  .marketing-page.fparent .marketing-highlight-section{
+    padding:24px 16px!important;
+    border-radius:14px!important;
+  }
+  .marketing-page.fsos > .marketing-cta,
+  .marketing-page.fparent > .marketing-cta{
+    width:100%!important;
+    padding:30px 18px!important;
+    border-radius:16px!important;
+  }
+  .marketing-page.fsos .marketing-cta-title,
+  .marketing-page.fparent .marketing-cta-title{
+    font-size:clamp(1.55rem,7vw,2.2rem)!important;
+    line-height:1.1!important;
+  }
+  .marketing-page.fsos .marketing-cta-text,
+  .marketing-page.fparent .marketing-cta-text{
+    font-size:.94rem!important;
+  }
+}
+
+/* Very small phones */
+@media (max-width:420px){
+  .marketing-page.fsos,
+  .marketing-page.fparent{padding:14px 10px 28px!important}
+  .marketing-page.fsos .marketing-header,
+  .marketing-page.fparent .marketing-header{padding:22px 14px!important}
+  .marketing-page.fsos .marketing-badge,
+  .marketing-page.fparent .marketing-badge{font-size:.7rem;padding:6px 10px}
+  .marketing-page.fsos .marketing-card,
+  .marketing-page.fparent .marketing-card{padding:17px 14px!important}
+}
