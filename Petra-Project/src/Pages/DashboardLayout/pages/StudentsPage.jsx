@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, GraduationCap, Users2 } from "lucide-react";
 import { studentApi } from "../../../services/studentApi";
 import "./page-styles/StudentsPage.css";
