@@ -91,8 +91,8 @@
   margin-bottom: 16px;
   min-height: 220px;
   background:
-    linear-gradient(135deg, rgba(255, 102, 0, 0.08), rgba(255, 102, 0, 0.02)),
-    #fffaf5;
+    linear-gradient(135deg, rgba(24,119,242, 0.08), rgba(24,119,242, 0.02)),
+    #f7f9fc;
 }
 
 .solution-preview-media::before {
@@ -100,13 +100,13 @@
   position: absolute;
   inset: 16px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 102, 0, 0.1);
+  border: 1px solid rgba(24,119,242, 0.1);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 241, 233, 0.78)),
     repeating-linear-gradient(
       90deg,
-      rgba(255, 102, 0, 0.045),
-      rgba(255, 102, 0, 0.045) 12px,
+      rgba(24,119,242, 0.045),
+      rgba(24,119,242, 0.045) 12px,
       rgba(255, 255, 255, 0) 12px,
       rgba(255, 255, 255, 0) 48px
     );
@@ -120,7 +120,7 @@
   width: 100%;
   height: 220px;
   object-fit: cover;
-  background: #fffaf5;
+  background: #f7f9fc;
 }
 
 .solution-benefit-grid {
