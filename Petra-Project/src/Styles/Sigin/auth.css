@@ -362,10 +362,10 @@ body.dark .auth-form {
   gap: 8px;
   align-self: flex-start;
   padding: 8px 14px;
-  border: 1px solid rgba(255, 102, 0, 0.2);
+  border: 1px solid rgba(24,119,242, 0.2);
   border-radius: 999px;
-  background: rgba(255, 102, 0, 0.06);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.06);
+  color: #1877F2;
   font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
@@ -373,9 +373,9 @@ body.dark .auth-form {
 }
 
 .auth-back-link:hover {
-  background: rgba(255, 102, 0, 0.1);
-  border-color: rgba(255, 102, 0, 0.32);
-  color: #e65c00;
+  background: rgba(24,119,242, 0.1);
+  border-color: rgba(24,119,242, 0.32);
+  color: #1565c0;
 }
 
 .auth-loading {
@@ -491,8 +491,8 @@ body.dark .auth-page:has(.auth-shell--signin) {
   --auth-paper: #071b16;
   --auth-surface: rgba(17, 26, 24, 0.86);
   --auth-line: rgba(234, 239, 235, 0.13);
-  --auth-accent: #ff9560;
-  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  --auth-accent: #60a5fa;
+  --auth-accent-soft: rgba(96,165,250, 0.12);
   background:
     linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
@@ -538,8 +538,8 @@ body.dark .auth-page:has(.auth-shell--signin) {
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled) {
-  background: #ff9560;
-  border-color: #ff9560;
+  background: #60a5fa;
+  border-color: #60a5fa;
   color: #071b16;
   box-shadow: none;
 }
@@ -558,8 +558,8 @@ body .auth-page:has(.auth-shell--parent-register) .auth-submit {
 }
 
 body .auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled) {
-  background: #ff9560 !important;
-  border-color: #ff9560 !important;
+  background: #60a5fa !important;
+  border-color: #60a5fa !important;
   color: #071b16 !important;
   box-shadow: none !important;
 }
@@ -664,8 +664,8 @@ body .auth-page:has(.auth-shell--signin) .auth-submit {
 body .auth-page:has(.auth-shell--staff-register) .auth-submit:hover:not(:disabled),
 body .auth-page:has(.auth-shell--admin-register) .auth-submit:hover:not(:disabled),
 body .auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
-  background: #ff9560 !important;
-  border-color: #ff9560 !important;
+  background: #60a5fa !important;
+  border-color: #60a5fa !important;
   color: #071b16 !important;
   box-shadow: none !important;
 }
@@ -708,8 +708,8 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
   --auth-paper: #ffffff;
   --auth-surface: #ffffff;
   --auth-line: #e5e7eb;
-  --auth-accent: #ff6600;
-  --auth-accent-soft: rgba(255, 102, 0, 0.08);
+  --auth-accent: #1877F2;
+  --auth-accent-soft: rgba(24,119,242, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
@@ -744,9 +744,9 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 }
 
 .auth-page:has(.registration-choice-grid) .auth-brand-mark {
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   box-shadow: none;
 }
 
@@ -784,9 +784,9 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -817,7 +817,7 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 }
 
 .auth-page:has(.registration-choice-grid) .auth-back-link:hover {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-grid {
@@ -837,7 +837,7 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255, 102, 0, 0.24);
+  border-color: rgba(24,119,242, 0.24);
   box-shadow: none;
 }
 
@@ -845,10 +845,10 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
   width: 44px;
   height: 44px;
   margin-bottom: 24px;
-  border: 1px solid rgba(255, 102, 0, 0.18);
+  border: 1px solid rgba(24,119,242, 0.18);
   border-radius: 12px;
-  background: rgba(255, 102, 0, 0.08);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  color: #1877F2;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-card h3 {
@@ -867,16 +867,16 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 .auth-page:has(.registration-choice-grid) .registration-choice-button {
   min-height: 42px;
   margin-top: auto;
-  border: 1px solid rgba(255, 102, 0, 0.5);
+  border: 1px solid rgba(24,119,242, 0.5);
   border-radius: 10px;
-  background: #ff6600;
+  background: #1877F2;
   color: #ffffff;
   font-weight: 700;
 }
 
 .auth-page:has(.registration-choice-grid) .registration-choice-button:hover {
-  background: #e65c00;
-  border-color: #e65c00;
+  background: #1565c0;
+  border-color: #1565c0;
   color: #ffffff;
 }
 
@@ -887,7 +887,7 @@ body .auth-page:has(.registration-choice-grid) .auth-shell {
 }
 
 .auth-page:has(.registration-choice-grid) .auth-switch a {
-  color: #ff6600;
+  color: #1877F2;
   font-weight: 700;
 }
 
@@ -905,8 +905,8 @@ body.dark .auth-page:has(.registration-choice-grid) {
   --auth-paper: #071b16;
   --auth-surface: rgba(17, 26, 24, 0.86);
   --auth-line: rgba(234, 239, 235, 0.13);
-  --auth-accent: #ff9560;
-  --auth-accent-soft: rgba(255, 149, 96, 0.12);
+  --auth-accent: #60a5fa;
+  --auth-accent-soft: rgba(96,165,250, 0.12);
   background:
     linear-gradient(rgba(234, 239, 235, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(234, 239, 235, 0.025) 1px, transparent 1px),
@@ -923,8 +923,8 @@ body.dark .auth-page:has(.registration-choice-grid) {
   --auth-paper: #ffffff;
   --auth-surface: #ffffff;
   --auth-line: #e5e7eb;
-  --auth-accent: #ff6600;
-  --auth-accent-soft: rgba(255, 102, 0, 0.08);
+  --auth-accent: #1877F2;
+  --auth-accent-soft: rgba(24,119,242, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
@@ -963,9 +963,9 @@ body.dark .auth-page:has(.registration-choice-grid) {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   box-shadow: none;
 }
 
@@ -1015,24 +1015,24 @@ body.dark .auth-page:has(.registration-choice-grid) {
 
 .auth-page:has(.auth-shell--parent-register) .auth-input-wrap:focus-within,
 .auth-page:has(.auth-shell--signin) .auth-input-wrap:focus-within {
-  border-color: rgba(255, 102, 0, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.08);
+  border-color: rgba(24,119,242, 0.4);
+  box-shadow: 0 0 0 3px rgba(24,119,242, 0.08);
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-submit,
 .auth-page:has(.auth-shell--signin) .auth-submit {
   min-height: 52px;
-  border: 1px solid rgba(255, 102, 0, 0.6);
+  border: 1px solid rgba(24,119,242, 0.6);
   border-radius: 12px;
-  background: #ff6600;
+  background: #1877F2;
   color: #ffffff;
   box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-submit:hover:not(:disabled),
 .auth-page:has(.auth-shell--signin) .auth-submit:hover:not(:disabled) {
-  background: #e65c00;
-  border-color: #e65c00;
+  background: #1565c0;
+  border-color: #1565c0;
   color: #ffffff;
   box-shadow: none;
 }
@@ -1047,7 +1047,7 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--signin) .auth-form .auth-link,
 .auth-page:has(.auth-shell--parent-register) .auth-switch a,
 .auth-page:has(.auth-shell--signin) .auth-switch a {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .auth-page:has(.auth-shell--parent-register) .auth-footnote,
@@ -1110,8 +1110,8 @@ body.dark .auth-page:has(.registration-choice-grid) {
 
 .auth-page:has(.registration-choice-grid) .auth-form {
   border-radius: 8px;
-  border-color: rgba(255, 149, 96, 0.2);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 149, 96, 0.08);
+  border-color: rgba(96,165,250, 0.2);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(96,165,250, 0.08);
 }
 
 @media (max-width: 600px) {
@@ -1165,8 +1165,8 @@ body.dark .auth-page:has(.registration-choice-grid) {
   --auth-paper: #ffffff;
   --auth-surface: #ffffff;
   --auth-line: #e5e7eb;
-  --auth-accent: #ff6600;
-  --auth-accent-soft: rgba(255, 102, 0, 0.08);
+  --auth-accent: #1877F2;
+  --auth-accent-soft: rgba(24,119,242, 0.08);
   min-height: 100svh;
   height: auto;
   justify-content: flex-start;
@@ -1207,9 +1207,9 @@ body.dark .auth-page:has(.registration-choice-grid) {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: rgba(255, 102, 0, 0.08);
-  border: 1px solid rgba(255, 102, 0, 0.2);
-  color: #ff6600;
+  background: rgba(24,119,242, 0.08);
+  border: 1px solid rgba(24,119,242, 0.2);
+  color: #1877F2;
   box-shadow: none;
 }
 
@@ -1277,17 +1277,17 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--staff-register) .auth-submit,
 .auth-page:has(.auth-shell--admin-register) .auth-submit {
   min-height: 52px;
-  border: 1px solid rgba(255, 102, 0, 0.65);
+  border: 1px solid rgba(24,119,242, 0.65);
   border-radius: 12px;
-  background: #ff6600;
+  background: #1877F2;
   color: #ffffff;
   box-shadow: none;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-submit:hover:not(:disabled),
 .auth-page:has(.auth-shell--admin-register) .auth-submit:hover:not(:disabled) {
-  background: #e65c00;
-  border-color: #e65c00;
+  background: #1565c0;
+  border-color: #1565c0;
   color: #ffffff;
   box-shadow: none;
 }
@@ -1296,7 +1296,7 @@ body.dark .auth-page:has(.registration-choice-grid) {
 .auth-page:has(.auth-shell--admin-register) .auth-link,
 .auth-page:has(.auth-shell--staff-register) .auth-switch a,
 .auth-page:has(.auth-shell--admin-register) .auth-switch a {
-  color: #ff6600;
+  color: #1877F2;
 }
 
 .auth-page:has(.auth-shell--staff-register) .auth-footnote,
