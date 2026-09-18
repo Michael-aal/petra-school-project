@@ -1464,3 +1464,156 @@ body.dark .auth-page:has(.registration-choice-grid) {
     padding-right: 10px;
   }
 }
+
+/* Guided registration entry. */
+.auth-page:has(.auth-shell--registration-entry) {
+  --auth-ink: #14213d;
+  --auth-muted: #5e6c84;
+  --auth-paper: #f4f7fb;
+  --auth-surface: #fff;
+  --auth-line: #dce5f0;
+  --auth-accent: #0f766e;
+  --auth-accent-soft: #e5f5f1;
+  height: auto;
+  min-height: 100dvh;
+  padding: 34px 20px;
+  background: radial-gradient(circle at 88% 3%, rgba(15,118,110,.13), transparent 28rem), var(--auth-paper);
+}
+
+.auth-shell--registration-entry { width: min(100%, 1050px); }
+.auth-shell--registration-entry .auth-brand-header { margin-bottom: 22px; }
+.auth-shell--registration-entry .auth-brand-mark { background: linear-gradient(135deg, #0f766e, #0b4f6c); }
+
+.registration-entry-form {
+  gap: 0;
+  padding: clamp(24px, 4vw, 44px);
+  border-radius: 22px;
+  border-color: rgba(186,205,224,.85);
+  box-shadow: 0 24px 60px rgba(20,33,61,.11);
+}
+
+.registration-entry-topbar,
+.registration-choice-header,
+.registration-choice-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.registration-entry-topbar { padding-bottom: 24px; border-bottom: 1px solid var(--auth-line); }
+.registration-entry-topbar p, .registration-help { margin: 0; color: var(--auth-muted); font-size: .8rem; }
+.registration-entry-topbar a, .registration-help a { color: var(--auth-accent); font-weight: 800; }
+.registration-home-link { color: var(--auth-ink) !important; font-size: .8rem; font-weight: 800; }
+
+.registration-entry-heading { max-width: 660px; padding: 34px 0 24px; }
+.registration-eyebrow, .registration-choice-header > div > p {
+  display: block; margin: 0 0 10px; color: var(--auth-accent); font-size: .7rem;
+  font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+}
+.registration-entry-heading h1 { margin: 0; color: var(--auth-ink); font-size: clamp(2rem,4vw,3.25rem); line-height: 1.06; letter-spacing: -.055em; }
+.registration-entry-heading p { margin: 14px 0 0; color: var(--auth-muted); font-size: 1rem; line-height: 1.65; }
+
+.registration-journey {
+  display: flex; margin: 0 0 34px; padding: 0; list-style: none; overflow: hidden;
+  border: 1px solid var(--auth-line); border-radius: 12px; background: #f8fafc;
+}
+.registration-journey li { flex: 1; display: flex; align-items: center; gap: 9px; padding: 14px 16px; color: var(--auth-muted); font-size: .78rem; font-weight: 750; }
+.registration-journey li + li { border-left: 1px solid var(--auth-line); }
+.registration-journey span { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; background: #e6ebf2; color: var(--auth-muted); font-size: .7rem; }
+.registration-journey .is-active { background: var(--auth-accent-soft); color: var(--auth-accent); }
+.registration-journey .is-active span { background: var(--auth-accent); color: #fff; }
+
+.registration-choice-header { margin-bottom: 16px; }
+.registration-choice-header h2 { margin: 0; color: var(--auth-ink); font-size: 1.25rem; letter-spacing: -.03em; }
+.registration-secure-note { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: #e7f6ef; color: #16805f; font-size: .72rem; font-weight: 800; }
+.registration-choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.registration-choice-card { min-height: 270px; padding: 20px; border-radius: 14px; background: linear-gradient(155deg,#fff,#f7fafc); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.registration-choice-card:hover { transform: translateY(-4px); border-color: rgba(15,118,110,.35); box-shadow: 0 16px 30px rgba(20,33,61,.09); }
+.registration-choice-card-head > span { color: var(--auth-muted); font-size: .67rem; font-weight: 800; }
+.registration-choice-icon { width: 42px; height: 42px; border: 0; border-radius: 11px; background: var(--auth-accent-soft); color: var(--auth-accent); }
+.registration-choice-card h3 { margin-top: 18px; color: var(--auth-ink); font-size: 1.05rem; }
+.registration-choice-card p { font-size: .82rem; line-height: 1.6; }
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-button {
+  width: 100%;
+  margin-top: 14px;
+  border: 1px solid #10223e !important;
+  border-radius: 10px;
+  background: #10223e !important;
+  color: #ffffff !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-button:hover:not(:disabled) {
+  border-color: var(--auth-accent) !important;
+  background: var(--auth-accent) !important;
+  color: #ffffff !important;
+}
+.registration-help { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--auth-line); text-align: center; }
+
+@media (max-width: 760px) {
+  .registration-choice-grid { grid-template-columns: 1fr; }
+  .registration-choice-card { min-height: 0; }
+}
+
+@media (max-width: 560px) {
+  .auth-page:has(.auth-shell--registration-entry) { padding: 16px 12px; }
+  .registration-entry-topbar, .registration-choice-header { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .registration-entry-heading { padding: 28px 0 22px; }
+  .registration-journey { display: grid; grid-template-columns: 1fr; }
+  .registration-journey li + li { border-top: 1px solid var(--auth-line); border-left: 0; }
+}
+
+/* Keep legacy registration selectors from reintroducing the retired orange theme. */
+body .auth-page:has(.auth-shell--registration-entry) {
+  --auth-ink: #14213d !important;
+  --auth-muted: #5e6c84 !important;
+  --auth-paper: #f4f7fb !important;
+  --auth-surface: #ffffff !important;
+  --auth-line: #dce5f0 !important;
+  --auth-accent: #0f766e !important;
+  --auth-accent-soft: #e5f5f1 !important;
+  justify-content: center !important;
+  background: radial-gradient(circle at 88% 3%, rgba(15,118,110,.13), transparent 28rem), var(--auth-paper) !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-entry-heading > .registration-eyebrow {
+  background: #e5f5f1 !important;
+  border: 1px solid rgba(15,118,110,.2) !important;
+  color: #0f766e !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-header {
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-header > div > p {
+  color: #0f766e !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card {
+  border-color: #dce5f0 !important;
+  background: linear-gradient(155deg, #ffffff, #f7fafc) !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card:hover {
+  border-color: rgba(15,118,110,.35) !important;
+  box-shadow: 0 16px 30px rgba(20,33,61,.09) !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-icon {
+  border: 0 !important;
+  background: #e5f5f1 !important;
+  color: #0f766e !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card h3 {
+  color: #14213d !important;
+}
+
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card p,
+body .auth-page:has(.auth-shell--registration-entry) .registration-choice-card-head > span {
+  color: #5e6c84 !important;
+}
