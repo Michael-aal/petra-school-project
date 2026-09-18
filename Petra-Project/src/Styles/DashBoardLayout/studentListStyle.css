@@ -224,7 +224,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
 
 .status-paid { background-color: color-mix(in srgb, #14b8a6 16%, transparent); color: #14b8a6; }
 .status-unpaid { background-color: color-mix(in srgb, #ef4444 16%, transparent); color: #ef4444; }
-.status-partial { background-color: color-mix(in srgb, #f59e0b 16%, transparent); color: #f59e0b; }
+.status-partial { background-color: color-mix(in srgb, #1877f2 16%, transparent); color: #1877f2; }
 .status-active { background-color: color-mix(in srgb, var(--app-accent) 16%, transparent); color: var(--app-accent); }
 
 /* =========================================
@@ -317,7 +317,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
   height: 48px;
   border-radius: 6px;
   background: #fff1e8;
-  color: #e8752f;
+  color: #1877f2;
 }
 
 .students-page .stats-bar {
@@ -341,7 +341,7 @@ tr:hover td { background: var(--dashboard-muted-surface); }
   width: 42px;
   height: 42px;
   border-radius: 6px;
-  background: #e8752f !important;
+  background: #1877f2 !important;
   color: #ffffff !important;
 }
 
@@ -406,14 +406,14 @@ tr:hover td { background: var(--dashboard-muted-surface); }
   justify-content: center;
   gap: 8px;
   padding: 0 14px;
-  border: 1px solid #e8752f;
-  background: #e8752f;
+  border: 1px solid #1877f2;
+  background: #1877f2;
   color: #ffffff;
 }
 
 .students-page .btn-primary:hover {
-  background: #e8752f !important;
-  border-color: #e8752f !important;
+  background: #1877f2 !important;
+  border-color: #1877f2 !important;
   color: #ffffff !important;
   opacity: 1 !important;
   box-shadow: none !important;
@@ -551,14 +551,14 @@ tr:hover td { background: var(--dashboard-muted-surface); }
 }
 
 .students-page .modal-footer .btn-primary {
-  border: 1px solid #e8752f;
-  background: #e8752f;
+  border: 1px solid #1877f2;
+  background: #1877f2;
   color: #ffffff;
 }
 
 .students-page .modal-footer .btn-primary:hover {
-  background: #e8752f;
-  border-color: #e8752f;
+  background: #1877f2;
+  border-color: #1877f2;
   opacity: 1;
 }
 
