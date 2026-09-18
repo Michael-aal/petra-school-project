@@ -197,7 +197,7 @@ The API is mounted under `/api` and currently includes these domains:
 | `/api/classmarker` | ClassMarker integration |
 | `/api/ai` | Ask Nuvora AI boundary and query endpoint |
 
-Protected requests use `Authorization: Bearer <token>`. The API also supports a legacy `petra_token` cookie for compatibility. School-scoped requests are resolved from authenticated user context; clients should not treat a client-provided school ID as an authorization decision.
+Protected requests use `Authorization: Bearer <token>`. The API also supports legacy `petra_session` and `petra_refresh` HttpOnly cookies for compatibility. School-scoped requests are resolved from authenticated user context; clients should not treat a client-provided school ID as an authorization decision.
 
 ## Security and Tenant Model
 
