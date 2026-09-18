@@ -107,9 +107,9 @@ export default function TopNavbar({ onToggle }) {
 
   useEffect(() => {
     if (!incoming) return undefined;
-    const handlePetraClick = () => dismissIncoming();
-    document.addEventListener("click", handlePetraClick, true);
-    return () => document.removeEventListener("click", handlePetraClick, true);
+    const handleNuvoraClick = () => dismissIncoming();
+    document.addEventListener("click", handleNuvoraClick, true);
+    return () => document.removeEventListener("click", handleNuvoraClick, true);
   }, [incoming]);
 
   const handleLogout = async () => {
