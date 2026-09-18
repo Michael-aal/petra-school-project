@@ -321,3 +321,5 @@
 
 /* Blue-only action states. */
 .classes-page .classes-form-actions .dashboard-home-summary-action:hover { background:#1877F2 !important; border-color:#1877F2 !important; color:#FFFFFF !important; }
+/* Nuvora blue-only final override. */
+.classes-page .classes-form-actions .dashboard-home-summary-action:hover{background:#1877F2!important;border-color:#1877F2!important;color:#fff!important}
