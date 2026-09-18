@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 
 import "../../Styles/components/Navbar.css";
 
-const NuvoraLogo = ({ size = 18 }) => (
+const PetraLogo = ({ size = 18 }) => (
   <svg
     width={size}
     height={size}
@@ -46,9 +46,9 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-left">
-          <NavLink to="/" className="navbar-logo" aria-label="Nuvora home">
-            <NuvoraLogo size={18} />
-            <span className="petra">Nuvora</span>
+          <NavLink to="/" className="navbar-logo" aria-label="Petra home">
+            <PetraLogo size={18} />
+            <span className="petra">Petra</span>
           </NavLink>
 
           {!isMobile && (
