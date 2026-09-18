@@ -359,3 +359,41 @@
 
   .form-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Petra responsive/theme pass — overrides legacy enrollment presentation only. */
+.create-btn{background:var(--petra-blue)!important;border-color:var(--petra-blue)!important;color:#fff!important}
+.create-btn:hover,.create-btn:focus-visible{background:var(--petra-blue-hover)!important;border-color:var(--petra-blue-hover)!important;color:#fff!important}
+.enrollment-page{color:var(--petra-ink);background:var(--petra-canvas)}
+.enrollment-header .eyebrow,.enrollment-header .title,.stat-label,.stat-value,.form-label,.form-section h3{color:var(--petra-ink)}
+.stat-icon.blue,.stat-icon.green,.stat-icon.red{color:#fff}
+.stat-icon.blue{background:var(--petra-blue)}
+.stat-icon.green{background:var(--petra-success)}
+.stat-icon.red{background:var(--petra-danger)}
+@media (max-width:640px){
+  .enrollment-page{padding:14px 12px}
+  .enrollment-header{align-items:stretch}
+  .enrollment-header>div{min-width:0}
+  .enrollment-header .title{font-size:clamp(1.35rem,7vw,1.8rem);overflow-wrap:anywhere}
+  .create-btn{width:100%;min-height:44px}
+  .enrollment-tabs{gap:8px;margin:14px 0 18px}
+  .tab{flex:1 1 140px;min-height:42px;padding:10px 12px}
+  .cards-row{gap:12px}
+  .stat-card{min-height:104px;padding:16px}
+  .stat-icon{width:44px;height:44px;flex:0 0 44px}
+  .large-panel{min-height:260px;padding:16px;border-radius:14px}
+  .instruction{padding:28px 14px;overflow-wrap:anywhere}
+  .form-section{padding:14px}
+  .form-grid{grid-template-columns:1fr!important}
+  .form-actions{width:100%;flex-direction:column;align-items:stretch}
+  .form-actions>*{width:100%;min-height:44px}
+  .file-preview{align-items:flex-start}
+  .file-meta{flex-direction:column;align-items:flex-start}
+  .help-fab{right:14px;bottom:14px;width:50px;height:50px}
+}
+@media (max-width:420px){
+  .enrollment-page{padding:12px 10px}
+  .cards-row{grid-template-columns:1fr}
+  .stat-card{min-height:96px}
+  .large-panel{padding:12px}
+}
