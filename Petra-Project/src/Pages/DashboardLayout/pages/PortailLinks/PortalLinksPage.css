@@ -97,9 +97,9 @@
   color: var(--success);
 }
 
-.pl-stat-icon.orange {
-  background: var(--surface-warning);
-  color: var(--warning);
+.pl-stat-icon.blue {
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .pl-stat-value {
@@ -264,8 +264,8 @@
 }
 
 .pl-status-badge.pending {
-  background: var(--surface-warning);
-  color: var(--warning);
+  background: var(--surface-accent);
+  color: var(--app-accent);
 }
 
 .pl-last-invited {
