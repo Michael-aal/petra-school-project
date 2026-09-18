@@ -14,7 +14,7 @@
   padding: 20px 24px;
   border: 1px solid #dfe3df;
   border-radius: 12px;
-  background: #f5f4f2;
+  background: #f5f6f7;
   box-shadow: none;
 }
 
@@ -42,7 +42,7 @@
   padding: 0 14px;
   border-radius: 999px;
   background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  color: #1877f2;
   font-size: 0.84rem;
   font-weight: 700;
   border: 1px solid rgba(232, 117, 47, 0.15);
@@ -62,7 +62,7 @@
 }
 
 .wallet-panel {
-  background: #f5f4f2;
+  background: #f5f6f7;
   border: 1px solid #dfe3df;
   border-radius: 12px;
   padding: 18px;
@@ -84,7 +84,7 @@
 
 .wallet-panel-eyebrow {
   margin: 0 0 4px;
-  color: #e8752f;
+  color: #1877f2;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 0.72rem;
@@ -103,7 +103,7 @@
   border-radius: 999px;
   background: rgba(232, 117, 47, 0.12);
   border: 1px solid rgba(232, 117, 47, 0.15);
-  color: #e8752f;
+  color: #1877f2;
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -207,13 +207,13 @@
   place-items: center;
   flex-shrink: 0;
   background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  color: #1877f2;
 }
 
-.tone-indigo { background: rgba(232, 117, 47, 0.12); color: #e8752f; }
-.tone-emerald { background: rgba(232, 117, 47, 0.12); color: #e8752f; }
-.tone-rose { background: rgba(232, 117, 47, 0.12); color: #e8752f; }
-.tone-amber { background: rgba(232, 117, 47, 0.12); color: #e8752f; }
+.tone-indigo { background: rgba(232, 117, 47, 0.12); color: #1877f2; }
+.tone-emerald { background: rgba(232, 117, 47, 0.12); color: #1877f2; }
+.tone-rose { background: rgba(232, 117, 47, 0.12); color: #1877f2; }
+.tone-amber { background: rgba(232, 117, 47, 0.12); color: #1877f2; }
 
 .wallet-quick-stats {
   display: grid;
@@ -239,7 +239,7 @@
   display: grid;
   place-items: center;
   background: rgba(232, 117, 47, 0.12);
-  color: #e8752f;
+  color: #1877f2;
   flex-shrink: 0;
 }
 
