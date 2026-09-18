@@ -27,9 +27,9 @@
   gap: 8px;
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid #e8752f;
+  border: 1px solid #1877f2;
   border-radius: 6px;
-  background: #e8752f;
+  background: #1877f2;
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
@@ -366,8 +366,8 @@
 }
 
 .applicants-submit {
-  border-color: #e8752f;
-  background: #e8752f;
+  border-color: #1877f2;
+  background: #1877f2;
   color: #ffffff;
   box-shadow: none;
 }
@@ -376,8 +376,8 @@
 .applicants-submit:focus-visible:not(:disabled),
 .applicants-primary-action:hover,
 .applicants-primary-action:focus-visible {
-  border-color: #d96a1d;
-  background: #d96a1d;
+  border-color: #0f5dcc;
+  background: #0f5dcc;
   color: #ffffff;
   box-shadow: none;
   outline: none;
@@ -424,17 +424,17 @@
 .applicants-primary-action {
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid #e8752f;
+  border: 1px solid #1877f2;
   border-radius: 4px;
-  background: #e8752f;
+  background: #1877f2;
   color: #ffffff;
   box-shadow: none;
 }
 
 .applicants-primary-action:hover,
 .applicants-primary-action:focus-visible {
-  background: #d96a1d;
-  border-color: #d96a1d;
+  background: #0f5dcc;
+  border-color: #0f5dcc;
   color: #ffffff;
   box-shadow: none;
   outline: none;
@@ -458,7 +458,7 @@
   height: 42px;
   padding: 11px;
   border-radius: 6px;
-  background: #e8752f;
+  background: #1877f2;
   color: #ffffff;
   stroke: currentColor;
 }
@@ -521,7 +521,7 @@
   height: 38px;
   border-radius: 4px;
   background: #fff1e8;
-  color: #e8752f;
+  color: #1877f2;
 }
 
 .applicant-status,
@@ -540,7 +540,7 @@
 }
 
 .applicant-approve {
-  border-color: #e8752f;
+  border-color: #1877f2;
   color: #cf5f22;
 }
 
