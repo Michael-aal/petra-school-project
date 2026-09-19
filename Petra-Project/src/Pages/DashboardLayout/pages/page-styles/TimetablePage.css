@@ -1,86 +1,142 @@
+
 .timetable-page {
-  background: var(--app-bg);
-  color: var(--app-text);
+  --timetable-white: #ffffff;
+  --timetable-bg: #f8fafc;
+
+  --timetable-blue: #2563eb;
+  --timetable-blue-dark: #1d4ed8;
+  --timetable-blue-soft: #eff6ff;
+  --timetable-blue-border: #dbeafe;
+
+  --timetable-red: #dc2626;
+  --timetable-red-dark: #b91c1c;
+  --timetable-red-soft: #fef2f2;
+  --timetable-red-border: #fecaca;
+
+  --timetable-text: #172033;
+  --timetable-muted: #64748b;
+  --timetable-border: #e5e7eb;
+
+  min-height: 100%;
+  padding: 24px;
+  background: var(--timetable-bg);
+  color: var(--timetable-text);
 }
 
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .timetable-page .dashboard-home-header {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  box-shadow: none;
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  background: var(--timetable-white);
+  border: 1px solid var(--timetable-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
 }
 
 .timetable-page .dashboard-home-header h1 {
   margin: 0;
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: var(--app-text);
+  color: var(--timetable-text);
+  font-size: clamp(1.55rem, 2vw, 1.9rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
 }
 
 .timetable-page .dashboard-home-header p {
   margin: 8px 0 0;
-  color: var(--app-text-muted);
+  color: var(--timetable-muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
+
+/* =========================================================
+   PANELS
+   ========================================================= */
 
 .timetable-page .timetable-form-panel,
 .timetable-page .timetable-list-panel {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  box-shadow: none;
+  background: var(--timetable-white);
+  border: 1px solid var(--timetable-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
 }
+
+/* =========================================================
+   FORM
+   ========================================================= */
 
 .timetable-page .timetable-form {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .timetable-page .timetable-form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .timetable-page input,
 .timetable-page select {
   width: 100%;
-  min-height: 42px;
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
-  background: #ffffff;
-  color: var(--app-text);
+  min-height: 44px;
   padding: 10px 12px;
+  border: 1px solid var(--timetable-border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--timetable-white);
+  color: var(--timetable-text);
   font: inherit;
-  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.timetable-page input::placeholder {
+  color: #94a3b8;
+}
+
+.timetable-page input:hover,
+.timetable-page select:hover {
+  border-color: #cbd5e1;
 }
 
 .timetable-page input:focus,
 .timetable-page select:focus {
-  border-color: var(--app-accent);
-  outline: none;
-  box-shadow: none;
+  border-color: var(--timetable-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+/* =========================================================
+   PRIMARY ACTION
+   ========================================================= */
 
 .timetable-page .timetable-page-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid #1877f2 !important;
-  border-radius: 8px;
-  background: #1877f2 !important;
-  color: #ffffff !important;
   padding: 10px 14px;
-  font-weight: 600;
+  border: 1px solid var(--timetable-blue) !important;
+  border-radius: 10px;
+  background: var(--timetable-blue) !important;
+  color: var(--timetable-white) !important;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
   box-shadow: none !important;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .timetable-page .timetable-page-action:hover {
-  background: #0f5dcc !important;
-  border-color: #0f5dcc !important;
-  color: #ffffff !important;
+  background: var(--timetable-blue-dark) !important;
+  border-color: var(--timetable-blue-dark) !important;
+  color: var(--timetable-white) !important;
+  transform: translateY(-1px);
   box-shadow: none !important;
 }
 
@@ -88,6 +144,10 @@
   justify-self: start;
   min-width: 220px;
 }
+
+/* =========================================================
+   TIMETABLE LIST
+   ========================================================= */
 
 .timetable-page .timetable-list {
   display: grid;
@@ -98,52 +158,116 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  background: #f8f8f6;
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
-  padding: 14px 16px;
+  gap: 16px;
+  padding: 15px 16px;
+  background: var(--timetable-white);
+  border: 1px solid var(--timetable-border);
+  border-radius: 13px;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.timetable-page .timetable-item:hover {
+  border-color: var(--timetable-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
 }
 
 .timetable-page .timetable-item-main {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .timetable-page .timetable-item strong {
-  color: var(--app-text);
-  font-size: 1rem;
+  color: var(--timetable-text);
+  font-size: 0.98rem;
+  font-weight: 750;
 }
 
-.timetable-page .timetable-item p,
+.timetable-page .timetable-item p {
+  margin: 0;
+  color: var(--timetable-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
 .timetable-page .timetable-empty-state {
   margin: 0;
-  color: var(--app-text-muted);
+  color: var(--timetable-muted);
+  font-size: 0.88rem;
 }
+
+/* =========================================================
+   DELETE BUTTON
+   ========================================================= */
 
 .timetable-page .timetable-delete-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text);
+  border: 1px solid var(--timetable-border);
+  border-radius: 9px;
+  background: var(--timetable-white);
+  color: var(--timetable-muted);
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .timetable-page .timetable-delete-btn:hover {
-  background: #fff3ee;
-  border-color: rgba(24, 119, 242, 0.3);
-  color: #0f5dcc;
+  background: var(--timetable-red-soft);
+  border-color: var(--timetable-red-border);
+  color: var(--timetable-red);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   OPTIONAL STATUS COLORS
+   ========================================================= */
+
+.timetable-page .status-active {
+  color: var(--timetable-blue);
+}
+
+.timetable-page .status-warning {
+  color: var(--timetable-red);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .timetable-page {
+    padding: 18px;
+  }
 }
 
 @media (max-width: 640px) {
+  .timetable-page {
+    padding: 14px;
+  }
+
+  .timetable-page .dashboard-home-header {
+    padding: 18px;
+  }
+
   .timetable-page .timetable-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .timetable-page .timetable-delete-btn {
+    align-self: flex-end;
   }
 
   .timetable-page .timetable-submit-btn {
@@ -151,3 +275,4 @@
     min-width: 0;
   }
 }
+
