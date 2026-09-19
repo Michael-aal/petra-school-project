@@ -1,427 +1,758 @@
-/* Styles for GatePage */
-/* =========================================
-   1. PAGE LAYOUT & HEADER
-   ========================================= */
+
+/* =========================================================
+   PETRA SCHOOL SYSTEM — GATE MONITORING
+   White dominant / Blue primary / Red for alerts & destructive states
+   ========================================================= */
+
 .gate-monitoring-page {
-  background: var(--app-bg);
-  color: var(--app-text);
-  padding: 32px;
-  min-height: 100vh;
+  --gate-bg: #f8fafc;
+  --gate-surface: #ffffff;
+  --gate-surface-soft: #f1f5f9;
+
+  --gate-ink: #0f172a;
+  --gate-muted: #64748b;
+
+  --gate-blue: #2563eb;
+  --gate-blue-dark: #1d4ed8;
+  --gate-blue-soft: #eff6ff;
+  --gate-blue-border: #bfdbfe;
+
+  --gate-red: #dc2626;
+  --gate-red-dark: #b91c1c;
+  --gate-red-soft: #fef2f2;
+  --gate-red-border: #fecaca;
+
+  --gate-green: #15803d;
+  --gate-green-soft: #f0fdf4;
+  --gate-green-border: #bbf7d0;
+
+  --gate-line: #e2e8f0;
+  --gate-radius: 12px;
+  --gate-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+
+  min-height: 100%;
+  padding: 28px clamp(16px, 3vw, 36px) 36px;
+
+  background: var(--gate-bg);
+  color: var(--gate-ink);
+  font-family: "Manrope", sans-serif;
 }
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .gate-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .gate-header-left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 18px;
+  min-width: 0;
 }
 
 .gate-title-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 13px;
+  min-width: 0;
 }
 
 .gate-title-group svg {
-  color: var(--app-accent);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--gate-blue);
 }
 
 .gate-title-group h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
   margin: 0;
-  color: var(--app-text);
+  color: var(--gate-ink);
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 }
 
 .gate-title-group p {
-  font-size: 0.875rem;
-  margin: 4px 0 0 0;
-  color: var(--app-text-muted);
+  margin: 4px 0 0;
+  color: var(--gate-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
-/* Pulsing Live Badge */
+/* =========================================================
+   LIVE BADGE
+   ========================================================= */
+
 .live-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(24, 119, 242, 0.12);
-  color: #1565c0;
-  padding: 6px 14px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--gate-blue-border);
   border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue-dark);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .live-dot {
-  width: 8px;
-  height: 8px;
-  background: #1877F2;
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  background: var(--gate-blue);
+  animation: gatePulse 2s infinite;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(24, 119, 242, 0.55); }
-  70% { box-shadow: 0 0 0 10px rgba(24, 119, 242, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(24, 119, 242, 0); }
+@keyframes gatePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45);
+  }
+
+  70% {
+    box-shadow: 0 0 0 9px rgba(37, 99, 235, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
 }
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 .gate-search {
   position: relative;
   display: flex;
   align-items: center;
+  min-width: 240px;
 }
 
 .gate-search svg {
   position: absolute;
-  left: 14px;
-  color: var(--app-text-muted);
+  left: 12px;
+  width: 17px;
+  height: 17px;
+  color: var(--gate-muted);
   pointer-events: none;
 }
 
 .gate-search input {
-  background: var(--surface-muted);
-  border: 1px solid var(--app-border);
-  color: var(--app-text);
-  padding: 10px 16px 10px 42px;
-  border-radius: 8px;
-  font-size: 0.875rem;
   width: 280px;
+  min-height: 40px;
+  padding: 0 13px 0 39px;
+  border: 1px solid var(--gate-line);
+  border-radius: 9px;
   outline: none;
-  transition: border-color 0.2s;
+  background: var(--gate-surface);
+  color: var(--gate-ink);
+  font: inherit;
+  font-size: 0.75rem;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.gate-search input::placeholder {
+  color: #94a3b8;
 }
 
 .gate-search input:focus {
-  border-color: var(--app-accent);
+  border-color: var(--gate-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* =========================================
-   2. STATS CARDS
-   ========================================= */
+/* =========================================================
+   STATS
+   ========================================================= */
+
 .gate-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .gate-stat-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: none;
+  gap: 13px;
+  min-height: 108px;
+  padding: 15px;
+  border: 1px solid var(--gate-line);
+  border-radius: var(--gate-radius);
+  background: var(--gate-surface);
+  box-shadow: var(--gate-shadow);
 }
 
 .gate-stat-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
-  background: rgba(24, 119, 242, 0.1);
-  color: #1565c0;
+  border-radius: 10px;
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue);
 }
 
-.entry-icon { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.exit-icon { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
-.campus-icon { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
+.entry-icon,
+.exit-icon,
+.campus-icon {
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue);
+}
+
+.gate-stat-card.alert .gate-stat-icon {
+  background: var(--gate-red-soft);
+  color: var(--gate-red);
+}
 
 .gate-stat-value {
   display: block;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--app-text);
-  line-height: 1.2;
+  color: var(--gate-ink);
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
 }
 
 .gate-stat-label {
   display: block;
-  font-size: 0.8rem;
-  color: var(--app-text-muted);
-  font-weight: 500;
+  margin-top: 3px;
+  color: var(--gate-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
-/* =========================================
-   3. MAIN CONTENT GRID
-   ========================================= */
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
 .gate-content-grid {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: 16px;
+  align-items: start;
 }
 
-@media (max-width: 1024px) {
-  .gate-content-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* Generic names are now scoped to the gate page so they
+   don't mess with other dashboard pages. */
 
-.panel-header {
+.gate-monitoring-page .panel-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.panel-header h3 {
+.gate-monitoring-page .panel-header h3 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 1.125rem;
-  font-weight: 600;
+  gap: 9px;
   margin: 0;
-  color: var(--app-text);
+  color: var(--gate-ink);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.gate-monitoring-page .panel-header h3 svg {
+  color: var(--gate-blue);
 }
 
 .feed-count {
-  font-size: 0.8rem;
-  color: var(--app-text-muted);
-  background: var(--surface-muted);
-  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border: 1px solid var(--gate-line);
   border-radius: 999px;
+  background: var(--gate-surface-soft);
+  color: var(--gate-muted);
+  font-size: 0.63rem;
+  font-weight: 800;
 }
 
-/* =========================================
-   4. LIVE FEED LIST
-   ========================================= */
+/* =========================================================
+   LIVE FEED
+   ========================================================= */
+
 .gate-feed-panel {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  padding: 24px;
-  box-shadow: none;
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--gate-line);
+  border-radius: var(--gate-radius);
+  background: var(--gate-surface);
+  box-shadow: var(--gate-shadow);
 }
 
 .gate-feed-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 9px;
   max-height: 600px;
   overflow-y: auto;
-  padding-right: 8px;
+  padding-right: 4px;
+}
+
+.gate-feed-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gate-feed-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #cbd5e1;
 }
 
 .gate-event-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: #f7f7f5;
-  border-radius: 8px;
-  border-left: 4px solid transparent;
-  box-shadow: none;
-  transition: transform 0.2s, background 0.2s;
+  gap: 13px;
+  padding: 12px;
+  border: 1px solid var(--gate-line);
+  border-left: 3px solid var(--gate-blue);
+  border-radius: 10px;
+  background: var(--gate-surface);
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .gate-event-item:hover {
-  background: #f1f3f0;
+  border-color: var(--gate-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
 }
 
-.event-entry { border-left-color: #0f9a6f; }
-.event-exit { border-left-color: #1565c0; }
+/* Entry / exit retain a blue system rather than inventing
+   another brand color. */
+
+.event-entry {
+  border-left-color: var(--gate-blue);
+}
+
+.event-exit {
+  border-left-color: #60a5fa;
+}
+
+.event-alert,
+.event-blocked,
+.event-denied {
+  border-left-color: var(--gate-red);
+  background: var(--gate-red-soft);
+}
 
 .event-direction-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 10px;
   flex-shrink: 0;
-  background: rgba(24, 119, 242, 0.1);
-  color: #1565c0;
+  border-radius: 9px;
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue);
 }
 
-.icon-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.icon-exit { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
+.icon-entry,
+.icon-exit {
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue);
+}
+
+.icon-alert,
+.icon-denied {
+  background: var(--gate-red-soft);
+  color: var(--gate-red);
+}
 
 .event-details {
-  flex: 1;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
 .event-student-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .event-student-name {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--app-text);
+  overflow: hidden;
+  color: var(--gate-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .event-student-class {
-  font-size: 0.8rem;
-  color: var(--app-text-muted);
+  margin-top: 3px;
+  color: var(--gate-muted);
+  font-size: 0.65rem;
 }
 
 .event-meta {
   display: flex;
-  gap: 12px;
-  font-size: 0.8rem;
-  color: var(--app-text-muted);
+  align-items: center;
+  gap: 9px;
+  color: var(--gate-muted);
+  font-size: 0.64rem;
+  flex-wrap: wrap;
 }
 
 .event-time {
-  font-weight: 500;
-  color: var(--app-accent);
+  color: var(--gate-blue-dark);
+  font-weight: 800;
 }
 
 .event-status-badge {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.59rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-.badge-entry { background: rgba(16, 185, 129, 0.12); color: #0f9a6f; }
-.badge-exit { background: rgba(24, 119, 242, 0.12); color: #1565c0; }
+.badge-entry,
+.badge-exit {
+  border: 1px solid var(--gate-blue-border);
+  background: var(--gate-blue-soft);
+  color: var(--gate-blue-dark);
+}
+
+.badge-alert,
+.badge-denied {
+  border: 1px solid var(--gate-red-border);
+  background: var(--gate-red-soft);
+  color: var(--gate-red);
+}
 
 .empty-feed {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px;
-  color: var(--app-text-muted);
+  min-height: 210px;
+  padding: 36px 24px;
+  color: var(--gate-muted);
   text-align: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-/* =========================================
-   5. MANUAL OVERRIDE PANEL
-   ========================================= */
+.empty-feed svg {
+  width: 34px;
+  height: 34px;
+  color: var(--gate-blue);
+}
+
+/* =========================================================
+   MANUAL OVERRIDE
+   ========================================================= */
+
 .gate-manual-panel {
-  background: #ffffff;
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  padding: 24px;
-  height: fit-content;
   position: sticky;
-  top: 32px;
-  box-shadow: none;
+  top: 24px;
+  height: fit-content;
+  padding: 18px;
+  border: 1px solid var(--gate-line);
+  border-radius: var(--gate-radius);
+  background: var(--gate-surface);
+  box-shadow: var(--gate-shadow);
 }
 
 .manual-description {
-  font-size: 0.875rem;
-  color: #5d625f;
-  margin: 0 0 24px 0;
-  line-height: 1.5;
-  font-weight: 500;
+  margin: 0 0 20px;
+  color: var(--gate-muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
 }
 
-.manual-log-form {
+.gate-manual-panel .manual-log-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
-.form-group {
+.gate-manual-panel .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .gate-manual-panel .form-group label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #6f7570;
-  letter-spacing: 0.01em;
+  color: var(--gate-muted);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .gate-manual-panel .form-group input,
 .gate-manual-panel .form-group select {
-  background: #ffffff;
-  border: 1px solid #dfe3df;
-  color: #1f2321;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--gate-line);
+  border-radius: 9px;
   outline: none;
-  transition: border-color 0.2s;
-  box-shadow: none;
+  background: var(--gate-surface);
+  color: var(--gate-ink);
+  font: inherit;
+  font-size: 0.74rem;
   font-weight: 500;
-  opacity: 1;
-  -webkit-text-fill-color: #1f2321;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .gate-manual-panel .form-group input::placeholder {
-  color: #9aa09c;
-  opacity: 1;
+  color: #94a3b8;
 }
 
 .gate-manual-panel .form-group input:focus,
 .gate-manual-panel .form-group select:focus {
-  border-color: var(--app-accent);
-  box-shadow: none;
-  color: #1f2321;
-  -webkit-text-fill-color: #1f2321;
+  border-color: var(--gate-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.form-row {
+.gate-manual-panel .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
+
 .gate-manual-panel .manual-submit-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: #1877F2 !important;
-  color: #ffffff !important;
-  border: 1px solid #1877F2 !important;
-  border-radius: 8px;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 5px;
+  padding: 0 14px;
+
+  border: 1px solid var(--gate-blue);
+  border-radius: 9px;
+  background: var(--gate-blue);
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
-  margin-top: 8px;
-  box-shadow: none;
-  font-weight: 600;
+
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
 }
 
 .gate-manual-panel .manual-submit-btn:hover {
-  background: #d95f1f !important;
-  border-color: #d95f1f !important;
-  color: #ffffff !important;
-  opacity: 1;
-  box-shadow: none;
-  transform: none;
+  background: var(--gate-blue-dark);
+  border-color: var(--gate-blue-dark);
+  transform: translateY(-1px);
+}
+
+.gate-manual-panel .manual-submit-btn.danger,
+.gate-manual-panel .manual-submit-btn.danger:hover {
+  background: var(--gate-red);
+  border-color: var(--gate-red);
+  color: #ffffff;
+}
+
+.gate-manual-panel .manual-submit-btn.danger:hover {
+  background: var(--gate-red-dark);
+  border-color: var(--gate-red-dark);
 }
 
 .gate-manual-panel .security-notice {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  padding: 12px;
-  background: rgba(24, 119, 242, 0.08);
-  border: 1px solid rgba(24, 119, 242, 0.18);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  color: #3b2d26;
-  box-shadow: none;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 19px;
+  padding: 11px;
+  border: 1px solid var(--gate-blue-border);
+  border-radius: 9px;
+  background: var(--gate-blue-soft);
+  color: var(--gate-muted);
+  font-size: 0.67rem;
+  line-height: 1.5;
   font-weight: 700;
 }
+
+.gate-manual-panel .security-notice svg {
+  flex-shrink: 0;
+  color: var(--gate-blue);
+}
+
+/* =========================================================
+   WARNING / ERROR STATES
+   ========================================================= */
+
+.gate-monitoring-page .gate-alert {
+  border-color: var(--gate-red-border);
+  background: var(--gate-red-soft);
+  color: var(--gate-red);
+}
+
+.gate-monitoring-page .gate-alert-text {
+  color: var(--gate-red);
+  font-weight: 800;
+}
+
+.gate-monitoring-page .gate-error {
+  padding: 12px 13px;
+  border: 1px solid var(--gate-red-border);
+  border-radius: 9px;
+  background: var(--gate-red-soft);
+  color: var(--gate-red);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .gate-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gate-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gate-manual-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .gate-monitoring-page {
+    padding: 18px 13px 28px;
+  }
+
+  .gate-header {
+    align-items: stretch;
+    flex-direction: column;
+    margin-bottom: 18px;
+  }
+
+  .gate-header-left {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gate-search {
+    width: 100%;
+  }
+
+  .gate-search input {
+    width: 100%;
+  }
+
+  .gate-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .gate-feed-panel,
+  .gate-manual-panel {
+    padding: 14px;
+  }
+
+  .gate-event-item {
+    align-items: flex-start;
+  }
+
+  .event-details {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .event-meta {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .gate-title-group {
+    align-items: flex-start;
+  }
+
+  .gate-title-group svg {
+    margin-top: 2px;
+  }
+
+  .gate-monitoring-page .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gate-manual-panel .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .gate-event-item {
+    gap: 10px;
+    padding: 11px;
+  }
+
+  .event-direction-icon {
+    width: 33px;
+    height: 33px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+
+  .gate-search input,
+  .gate-event-item,
+  .gate-manual-panel .form-group input,
+  .gate-manual-panel .form-group select,
+  .gate-manual-panel .manual-submit-btn {
+    transition: none;
+  }
+
+  .gate-event-item:hover,
+  .gate-manual-panel .manual-submit-btn:hover {
+    transform: none;
+  }
+}
+
