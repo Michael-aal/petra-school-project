@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   CheckCircle2, Clock, XCircle, CreditCard, GraduationCap, 
-  FileText, ArrowRight, Download, AlertTriangle, CheckCircle2 
+  FileText, ArrowRight, Download, AlertTriangle 
 } from "lucide-react";
 import "./ApplicationStatusPage.css";
 
