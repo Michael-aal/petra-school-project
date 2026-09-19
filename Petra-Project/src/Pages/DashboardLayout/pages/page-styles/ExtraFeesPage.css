@@ -1,4 +1,637 @@
+
 @import "./InvoicesPage.css";
 
-/* Styles for ExtraFeesPage */
-.extrafees-page{ padding:18px; }
+/* --------------------------------------------------
+   EXTRA FEES PAGE
+-------------------------------------------------- */
+
+.extrafees-page {
+  --extra-bg: #f8fafc;
+  --extra-surface: #ffffff;
+  --extra-surface-soft: #f1f5f9;
+
+  --extra-ink: #0f172a;
+  --extra-muted: #64748b;
+
+  --extra-blue: #2563eb;
+  --extra-blue-dark: #1d4ed8;
+  --extra-blue-soft: #eff6ff;
+  --extra-blue-border: #bfdbfe;
+
+  --extra-red: #dc2626;
+  --extra-red-dark: #b91c1c;
+  --extra-red-soft: #fef2f2;
+  --extra-red-border: #fecaca;
+
+  --extra-green: #15803d;
+  --extra-green-soft: #f0fdf4;
+  --extra-green-border: #bbf7d0;
+
+  --extra-line: #e2e8f0;
+  --extra-radius: 12px;
+  --extra-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 100%;
+  padding: 22px clamp(16px, 3vw, 36px) 36px;
+
+  background: var(--extra-bg);
+  color: var(--extra-ink);
+  font-family: "Manrope", sans-serif;
+}
+
+/* --------------------------------------------------
+   HEADER
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--extra-line);
+}
+
+.extrafees-page .extra-fees-header-copy {
+  min-width: 0;
+}
+
+.extrafees-page .extra-fees-eyebrow {
+  margin: 0 0 6px;
+  color: var(--extra-blue);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.extrafees-page h1 {
+  margin: 0;
+  color: var(--extra-ink);
+  font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.extrafees-page .extra-fees-header-copy p {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: var(--extra-muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.extrafees-page .extra-fees-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.extrafees-page button,
+.extrafees-page .extra-fees-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.extrafees-page button:hover,
+.extrafees-page .extra-fees-button:hover {
+  transform: translateY(-1px);
+}
+
+.extrafees-page .extra-fees-button-primary {
+  background: var(--extra-blue);
+  border-color: var(--extra-blue);
+  color: #ffffff;
+}
+
+.extrafees-page .extra-fees-button-primary:hover {
+  background: var(--extra-blue-dark);
+  border-color: var(--extra-blue-dark);
+}
+
+.extrafees-page .extra-fees-button-secondary {
+  background: var(--extra-surface);
+  border-color: var(--extra-line);
+  color: var(--extra-ink);
+}
+
+.extrafees-page .extra-fees-button-secondary:hover {
+  background: var(--extra-blue-soft);
+  border-color: var(--extra-blue-border);
+  color: var(--extra-blue-dark);
+}
+
+.extrafees-page .extra-fees-button-danger {
+  background: var(--extra-red);
+  border-color: var(--extra-red);
+  color: #ffffff;
+}
+
+.extrafees-page .extra-fees-button-danger:hover {
+  background: var(--extra-red-dark);
+  border-color: var(--extra-red-dark);
+}
+
+/* --------------------------------------------------
+   SUMMARY
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.extrafees-page .extra-fees-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 130px;
+  padding: 15px;
+  border: 1px solid var(--extra-line);
+  border-radius: var(--extra-radius);
+  background: var(--extra-surface);
+  box-shadow: var(--extra-shadow);
+}
+
+.extrafees-page .extra-fees-stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.extrafees-page .extra-fees-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 9px;
+  background: var(--extra-blue-soft);
+  color: var(--extra-blue);
+}
+
+.extrafees-page .extra-fees-stat-label {
+  color: var(--extra-muted);
+  font-size: 0.67rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.extrafees-page .extra-fees-stat-value {
+  color: var(--extra-ink);
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.extrafees-page .extra-fees-stat-meta {
+  margin-top: auto;
+  color: var(--extra-muted);
+  font-size: 0.66rem;
+}
+
+/* --------------------------------------------------
+   MAIN CARD
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-card {
+  overflow: hidden;
+  border: 1px solid var(--extra-line);
+  border-radius: var(--extra-radius);
+  background: var(--extra-surface);
+  box-shadow: var(--extra-shadow);
+}
+
+.extrafees-page .extra-fees-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--extra-line);
+}
+
+.extrafees-page .extra-fees-card-header h2 {
+  margin: 0;
+  color: var(--extra-ink);
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.extrafees-page .extra-fees-card-header p {
+  margin: 5px 0 0;
+  color: var(--extra-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.extrafees-page .extra-fees-card-body {
+  padding: 18px;
+}
+
+/* --------------------------------------------------
+   FORM
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.extrafees-page .extra-fees-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extrafees-page .extra-fees-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.extrafees-page .extra-fees-field label {
+  color: var(--extra-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.extrafees-page .extra-fees-field input,
+.extrafees-page .extra-fees-field select,
+.extrafees-page .extra-fees-field textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--extra-line);
+  border-radius: 9px;
+  outline: none;
+  background: var(--extra-surface);
+  color: var(--extra-ink);
+  font: inherit;
+  font-size: 0.75rem;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.extrafees-page .extra-fees-field textarea {
+  min-height: 100px;
+  padding: 10px 11px;
+  resize: vertical;
+}
+
+.extrafees-page .extra-fees-field input::placeholder,
+.extrafees-page .extra-fees-field textarea::placeholder {
+  color: #94a3b8;
+}
+
+.extrafees-page .extra-fees-field input:focus,
+.extrafees-page .extra-fees-field select:focus,
+.extrafees-page .extra-fees-field textarea:focus {
+  border-color: var(--extra-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.extrafees-page .extra-fees-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  grid-column: 1 / -1;
+  padding-top: 2px;
+}
+
+/* --------------------------------------------------
+   FILTER BAR
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-filters {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--extra-line);
+  background: var(--extra-surface-soft);
+}
+
+.extrafees-page .extra-fees-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.extrafees-page .extra-fees-filter label {
+  color: var(--extra-muted);
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.extrafees-page .extra-fees-filter input,
+.extrafees-page .extra-fees-filter select {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--extra-line);
+  border-radius: 8px;
+  outline: none;
+  background: var(--extra-surface);
+  color: var(--extra-ink);
+  font: inherit;
+  font-size: 0.73rem;
+}
+
+.extrafees-page .extra-fees-filter input:focus,
+.extrafees-page .extra-fees-filter select:focus {
+  border-color: var(--extra-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* --------------------------------------------------
+   TABLE
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.extrafees-page .extra-fees-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.extrafees-page .extra-fees-table th {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--extra-line);
+  background: var(--extra-surface-soft);
+  color: var(--extra-muted);
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.extrafees-page .extra-fees-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--extra-line);
+  color: var(--extra-ink);
+  font-size: 0.72rem;
+}
+
+.extrafees-page .extra-fees-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.extrafees-page .extra-fees-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.extrafees-page .extra-fees-table .muted {
+  color: var(--extra-muted);
+}
+
+.extrafees-page .extra-fees-table .amount {
+  color: var(--extra-blue-dark);
+  font-weight: 800;
+}
+
+.extrafees-page .extra-fees-table .negative {
+  color: var(--extra-red);
+  font-weight: 800;
+}
+
+/* --------------------------------------------------
+   STATUS
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.extrafees-page .extra-fees-status-paid,
+.extrafees-page .extra-fees-status-active,
+.extrafees-page .extra-fees-status-success {
+  border: 1px solid var(--extra-green-border);
+  background: var(--extra-green-soft);
+  color: var(--extra-green);
+}
+
+.extrafees-page .extra-fees-status-pending,
+.extrafees-page .extra-fees-status-draft {
+  border: 1px solid var(--extra-blue-border);
+  background: var(--extra-blue-soft);
+  color: var(--extra-blue-dark);
+}
+
+.extrafees-page .extra-fees-status-failed,
+.extrafees-page .extra-fees-status-overdue,
+.extrafees-page .extra-fees-status-cancelled {
+  border: 1px solid var(--extra-red-border);
+  background: var(--extra-red-soft);
+  color: var(--extra-red);
+}
+
+/* --------------------------------------------------
+   ACTIONS
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.extrafees-page .extra-fees-icon-button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: 1px solid var(--extra-line);
+  border-radius: 8px;
+  background: var(--extra-surface);
+  color: var(--extra-muted);
+}
+
+.extrafees-page .extra-fees-icon-button:hover {
+  border-color: var(--extra-blue-border);
+  background: var(--extra-blue-soft);
+  color: var(--extra-blue);
+}
+
+.extrafees-page .extra-fees-icon-button.danger:hover {
+  border-color: var(--extra-red-border);
+  background: var(--extra-red-soft);
+  color: var(--extra-red);
+}
+
+/* --------------------------------------------------
+   EMPTY / ERROR
+-------------------------------------------------- */
+
+.extrafees-page .extra-fees-empty,
+.extrafees-page .extra-fees-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 24px;
+  text-align: center;
+}
+
+.extrafees-page .extra-fees-empty-icon,
+.extrafees-page .extra-fees-error-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 10px;
+  border-radius: 11px;
+}
+
+.extrafees-page .extra-fees-empty-icon {
+  background: var(--extra-blue-soft);
+  color: var(--extra-blue);
+}
+
+.extrafees-page .extra-fees-error-icon {
+  background: var(--extra-red-soft);
+  color: var(--extra-red);
+}
+
+.extrafees-page .extra-fees-empty strong,
+.extrafees-page .extra-fees-error strong {
+  color: var(--extra-ink);
+  font-size: 0.8rem;
+}
+
+.extrafees-page .extra-fees-empty p,
+.extrafees-page .extra-fees-error p {
+  max-width: 420px;
+  margin: 5px 0 0;
+  color: var(--extra-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+
+@media (max-width: 1050px) {
+  .extrafees-page .extra-fees-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .extrafees-page .extra-fees-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .extrafees-page .extra-fees-header-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .extrafees-page {
+    gap: 15px;
+    padding: 16px 13px 28px;
+  }
+
+  .extrafees-page .extra-fees-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .extrafees-page .extra-fees-form {
+    grid-template-columns: 1fr;
+  }
+
+  .extrafees-page .extra-fees-field.full-width,
+  .extrafees-page .extra-fees-form-actions {
+    grid-column: auto;
+  }
+
+  .extrafees-page .extra-fees-header-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .extrafees-page .extra-fees-header-actions > * {
+    width: 100%;
+  }
+
+  .extrafees-page .extra-fees-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .extrafees-page .extra-fees-filter {
+    width: 100%;
+  }
+
+  .extrafees-page .extra-fees-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .extrafees-page .extra-fees-form-actions > * {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .extrafees-page button,
+  .extrafees-page .extra-fees-button,
+  .extrafees-page .extra-fees-icon-button {
+    transition: none;
+  }
+
+  .extrafees-page button:hover,
+  .extrafees-page .extra-fees-button:hover {
+    transform: none;
+  }
+}
+
