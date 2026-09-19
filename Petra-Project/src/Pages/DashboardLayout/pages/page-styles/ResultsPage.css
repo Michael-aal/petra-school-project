@@ -1,8 +1,3 @@
-```css
-/* =========================================================
-   RESULTS PAGE
-   White-dominant UI with blue primary and red alert accents
-   ========================================================= */
 
 .results-page {
   --results-bg: #f8fafc;
@@ -407,4 +402,4 @@
     transform: none;
   }
 }
-```
+
