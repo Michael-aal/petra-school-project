@@ -261,3 +261,170 @@
 .dashboard-shell [class*="text-orange"],.dashboard-shell [class*="text-amber"],.dashboard-shell [class*="bg-orange"],.dashboard-shell [class*="bg-amber"],.dashboard-shell [class*="border-orange"],.dashboard-shell [class*="border-amber"],.dashboard-shell [class*="from-orange"],.dashboard-shell [class*="to-orange"],.dashboard-shell [class*="from-amber"],.dashboard-shell [class*="to-amber"]{color:var(--nuvora-blue)!important;border-color:var(--nuvora-blue)!important;background-color:transparent!important;background-image:none!important}
 @media(max-width:900px){.dashboard-shell .top-navbar{height:60px!important;min-height:60px!important;padding:0 14px!important}}
 @media(prefers-reduced-motion:no-preference){.dashboard-shell .sidebar-link,.dashboard-shell .sidebar-group,.dashboard-shell .sidebar-child,.dashboard-shell .sidebar-assistant,.dashboard-shell .menu-btn,.dashboard-shell .icon-btn,.dashboard-shell .ask-nuvora-btn,.dashboard-shell .user-info{transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,transform 160ms ease,box-shadow 160ms ease!important}}
+
+
+/* =========================================================
+   NUVORA DASHBOARD COLOR CONTRACT
+   - Text/icons: black on light surfaces.
+   - Text/icons: white on blue/dark surfaces.
+   - Blue is reserved for solid actions/accents and light
+     blue surfaces; no navy/blue text on blue/dark surfaces.
+   ========================================================= */
+
+.dashboard-shell {
+  --nuvora-text: #000000 !important;
+  --nuvora-muted: #000000 !important;
+  --nuvora-blue: #1877F2 !important;
+  --nuvora-blue-dark: #1877F2 !important;
+  --nuvora-blue-soft: #EAF3FF !important;
+}
+
+/* Light surfaces use black for readable content. */
+.dashboard-shell,
+.dashboard-shell .dashboard-main,
+.dashboard-shell .dashboard-content,
+.dashboard-shell .dashboard-page,
+.dashboard-shell .card,
+.dashboard-shell .stat-card,
+.dashboard-shell .widget,
+.dashboard-shell .panel,
+.dashboard-shell .table-card,
+.dashboard-shell .section-card,
+.dashboard-shell .content-card {
+  color: #000000 !important;
+}
+
+.dashboard-shell .card *,
+.dashboard-shell .stat-card *,
+.dashboard-shell .widget *,
+.dashboard-shell .panel *,
+.dashboard-shell .table-card *,
+.dashboard-shell .section-card *,
+.dashboard-shell .content-card * {
+  color: #000000;
+}
+
+/* Primary/solid actions: blue background => white content. */
+.dashboard-shell button[class*="primary"],
+.dashboard-shell a[class*="primary"],
+.dashboard-shell [class*="btn-primary"],
+.dashboard-shell [class*="button-primary"],
+.dashboard-shell [class*="action-primary"],
+.dashboard-shell [class*="primary-action"],
+.dashboard-shell .dashboard-widget-action,
+.dashboard-shell .notification-action {
+  background: #1877F2 !important;
+  border-color: #1877F2 !important;
+  color: #FFFFFF !important;
+}
+
+.dashboard-shell button[class*="primary"] *,
+.dashboard-shell a[class*="primary"] *,
+.dashboard-shell [class*="btn-primary"] *,
+.dashboard-shell [class*="button-primary"] *,
+.dashboard-shell [class*="action-primary"] *,
+.dashboard-shell [class*="primary-action"] *,
+.dashboard-shell .dashboard-widget-action *,
+.dashboard-shell .notification-action * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Any explicitly solid blue/dark action gets white content. */
+.dashboard-shell .bg-blue,
+.dashboard-shell .bg-primary,
+.dashboard-shell .blue-button,
+.dashboard-shell .primary-button,
+.dashboard-shell .solid-button,
+.dashboard-shell .btn-blue {
+  background: #1877F2 !important;
+  color: #FFFFFF !important;
+}
+
+.dashboard-shell .bg-blue *,
+.dashboard-shell .bg-primary *,
+.dashboard-shell .blue-button *,
+.dashboard-shell .primary-button *,
+.dashboard-shell .solid-button *,
+.dashboard-shell .btn-blue * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Icons inherit black on light surfaces. */
+.dashboard-shell .card svg,
+.dashboard-shell .stat-card svg,
+.dashboard-shell .widget svg,
+.dashboard-shell .panel svg,
+.dashboard-shell .table-card svg,
+.dashboard-shell .section-card svg,
+.dashboard-shell .content-card svg {
+  color: #000000;
+  stroke: currentColor;
+}
+
+/* Solid blue/dark surfaces always use white icons. */
+.dashboard-shell .bg-blue svg,
+.dashboard-shell .bg-primary svg,
+.dashboard-shell .blue-button svg,
+.dashboard-shell .primary-button svg,
+.dashboard-shell .solid-button svg,
+.dashboard-shell .btn-blue svg,
+.dashboard-shell button[class*="primary"] svg,
+.dashboard-shell a[class*="primary"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Remove navy/slate text from dashboard utility components. */
+.dashboard-shell .text-blue-900,
+.dashboard-shell .text-blue-800,
+.dashboard-shell .text-blue-700,
+.dashboard-shell .text-slate-900,
+.dashboard-shell .text-slate-800,
+.dashboard-shell .text-slate-700,
+.dashboard-shell .text-slate-600,
+.dashboard-shell .text-slate-500 {
+  color: #000000 !important;
+}
+
+/* Light blue backgrounds may keep blue as an accent. */
+.dashboard-shell .bg-blue-50,
+.dashboard-shell .bg-blue-100,
+.dashboard-shell [class*="blue-soft"] {
+  color: #000000 !important;
+}
+
+/* Status/solid dark surfaces: white content for contrast. */
+.dashboard-shell .status-active,
+.dashboard-shell .status-partial,
+.dashboard-shell .status-paid,
+.dashboard-shell .badge-primary,
+.dashboard-shell .badge-blue {
+  color: #FFFFFF !important;
+}
+
+.dashboard-shell .status-active *,
+.dashboard-shell .status-partial *,
+.dashboard-shell .status-paid *,
+.dashboard-shell .badge-primary *,
+.dashboard-shell .badge-blue * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Keep disabled controls readable without introducing another color. */
+.dashboard-shell button:disabled,
+.dashboard-shell [aria-disabled="true"] {
+  color: #000000 !important;
+  opacity: 0.55;
+}
+
+/* Focus rings stay neutral/white-blue rather than navy. */
+.dashboard-shell button:focus-visible,
+.dashboard-shell a:focus-visible,
+.dashboard-shell input:focus-visible,
+.dashboard-shell select:focus-visible,
+.dashboard-shell textarea:focus-visible {
+  outline-color: #1877F2 !important;
+}
