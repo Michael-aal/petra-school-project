@@ -4,7 +4,7 @@ export default function UnauthorizedPage() {
       <section className="dashboard-home-header">
         <div>
           <h1>Unauthorized</h1>
-          <p>You do not have access to this dashboard.</p>
+          <p>You  have no access to this dashboard.</p>
         </div>
       </section>
     </div>
