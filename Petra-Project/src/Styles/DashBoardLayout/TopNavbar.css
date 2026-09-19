@@ -1,178 +1,272 @@
 .top-navbar {
   --topbar-height: 64px;
+  --nav-blue: #1877f2;
+  --nav-blue-dark: #0f5dcc;
+  --nav-blue-soft: #eaf3ff;
+  --nav-text: #0f172a;
+  --nav-muted: #64748b;
+  --nav-border: #e2e8f0;
+  --nav-surface: #ffffff;
   position: sticky;
   top: 0;
-  z-index: 25;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: var(--topbar-height);
-  padding: 0 clamp(16px, 2vw, 28px);
-  background: var(--dashboard-topbar-bg);
-  color: var(--dashboard-topbar-text);
-  border-bottom: 1px solid var(--app-border);
-  backdrop-filter: blur(14px) saturate(130%);
-  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.12);
+  min-height: var(--topbar-height);
+  padding: 0 clamp(14px, 2.2vw, 30px);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--nav-text);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02), 0 8px 24px rgba(15, 23, 42, 0.04);
+  backdrop-filter: blur(18px) saturate(140%);
 }
 
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.menu-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  color: var(--dashboard-topbar-text);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease;
-}
-
-.menu-btn:hover {
-  background: rgba(24,119,242,0.08);
-  border-color: rgba(24,119,242,0.2);
-}
-
-.top-welcome {
-  font-weight: 700;
-  font-size: 0.9rem;
-  letter-spacing: -0.01em;
-  color: var(--dashboard-topbar-text);
-  white-space: nowrap;
-}
-
+.top-left,
 .top-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+}
+
+.top-left {
+  min-width: 0;
+  gap: 12px;
+}
+
+.top-right {
+  gap: 8px;
   margin-left: auto;
 }
 
+.top-welcome {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--nav-text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-btn,
+.icon-btn,
 .ask-nuvora-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
   padding: 0;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--app-text);
+  border: 1px solid var(--nav-border);
+  border-radius: 12px;
+  background: var(--nav-surface);
+  color: var(--nav-blue);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    transform 180ms cubic-bezier(.2,.8,.2,1),
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.menu-btn:hover,
+.icon-btn:hover,
+.ask-nuvora-btn:hover {
+  background: var(--nav-blue-soft);
+  border-color: #bfdbfe;
+  box-shadow: 0 5px 14px rgba(24, 119, 242, 0.10);
+  transform: translateY(-1px);
+}
+
+.menu-btn:active,
+.icon-btn:active,
+.ask-nuvora-btn:active {
+  transform: scale(0.95);
+}
+
+.menu-btn:focus-visible,
+.icon-btn:focus-visible,
+.ask-nuvora-btn:focus-visible,
+.user-info:focus-visible {
+  outline: 3px solid rgba(24, 119, 242, 0.18);
+  outline-offset: 2px;
+}
+
+.top-navbar svg.lucide,
+.top-navbar .menu-btn svg,
+.top-navbar .icon-btn svg,
+.top-navbar .ask-nuvora-btn svg,
+.top-navbar .user-info svg {
+  display: block !important;
+  flex: 0 0 auto;
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  stroke-width: 2 !important;
+}
+
+.menu-btn svg {
+  transition: transform 180ms ease;
+}
+
+.menu-btn:hover svg {
+  transform: rotate(-4deg) scale(1.05);
+}
+
+/* Ask Nuvora: compact blue tile + white human glyph */
+.ask-nuvora-btn {
+  border-color: transparent;
+  background: transparent;
   box-shadow: none;
 }
 
 .ask-nuvora-btn:hover {
-  background: rgba(24,119,242,0.08);
-  border-color: rgba(24,119,242,0.2);
+  border-color: transparent;
+  background: var(--nav-blue-soft);
+  box-shadow: none;
 }
 
 .ask-nuvora-icon-wrap {
-  display: inline-flex;
+  position: relative;
+  z-index: 1;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #1877F2 0%, #0F5DCC 100%);
-  color: #fff;
-  flex-shrink: 0;
-}
-
-.icon-btn {
-  background: transparent;
-  border: 1px solid transparent;
-  color: inherit;
-  padding: 8px;
+  width: 30px;
+  height: 30px;
   border-radius: 10px;
-  cursor: pointer;
-  position: relative;
-  transition: background 160ms ease, border-color 160ms ease;
+  background: var(--nav-blue);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.18);
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
 }
 
-.icon-btn:hover {
-  background: rgba(15, 23, 42, 0.03);
-  border-color: rgba(15, 23, 42, 0.06);
+.ask-nuvora-btn:hover .ask-nuvora-icon-wrap {
+  transform: scale(1.05);
+  box-shadow: 0 7px 17px rgba(24, 119, 242, 0.25);
+}
+
+.ask-nuvora-icon-wrap svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: #fff !important;
+  stroke: #fff !important;
+  stroke-width: 2.2 !important;
+}
+
+/* Notification: blue control, white bell, restrained count animation */
+.notification-menu,
+.user-menu {
+  position: relative;
+}
+
+.notification-menu .icon-btn {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.notification-menu .icon-btn::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 0;
+  border-radius: 10px;
+  background: var(--nav-blue);
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.16);
+  transform: scale(0.96);
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
+}
+
+.notification-menu .icon-btn > svg {
+  position: relative;
+  z-index: 1;
+  color: #fff !important;
+  stroke: #fff !important;
+  stroke-width: 2.1 !important;
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1);
+}
+
+.notification-menu .icon-btn:hover::before {
+  transform: scale(1);
+  box-shadow: 0 7px 17px rgba(24, 119, 242, 0.24);
+}
+
+.notification-menu .icon-btn:hover > svg {
+  transform: scale(1.07);
+  animation: nuvoraBell 700ms ease-in-out;
+}
+
+@keyframes nuvoraBell {
+  0%, 100% { transform: scale(1.07) rotate(0); }
+  25% { transform: scale(1.07) rotate(-7deg); }
+  50% { transform: scale(1.07) rotate(7deg); }
+  75% { transform: scale(1.07) rotate(-3deg); }
 }
 
 .nav-badge {
   position: absolute;
-  top: -3px;
-  right: -2px;
-  min-width: 16px;
-  height: 16px;
+  top: 0;
+  right: -1px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
   padding: 0 4px;
+  border: 2px solid #fff;
   border-radius: 999px;
-  background: #ef4444;
+  background: var(--nav-blue);
   color: #fff;
-  font-size: 10px;
-  line-height: 16px;
-  font-weight: 700;
-  text-align: center;
-  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55), 0 0 10px 2px rgba(239, 68, 68, 0.38);
-  animation: navBadgeGlow 1.5s ease-in-out infinite;
-  transform-origin: center;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 2px 7px rgba(24, 119, 242, 0.25);
+  animation: nuvoraBadgePop 240ms cubic-bezier(.2,.8,.2,1);
 }
 
-@keyframes navBadgeGlow {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55), 0 0 10px 2px rgba(239, 68, 68, 0.38);
-  }
-
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.06), 0 0 18px 6px rgba(239, 68, 68, 0.55);
-  }
+@keyframes nuvoraBadgePop {
+  0% { opacity: 0; transform: scale(.55); }
+  70% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .nav-badge {
-    animation: none;
-  }
-}
-
+/* User account control */
 .user-info {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 12px;
   padding: 4px 10px 4px 6px;
-  color: inherit;
+  border-color: var(--nav-border);
+  border-radius: 13px;
+  background: var(--nav-surface);
+  color: var(--nav-text);
   cursor: pointer;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .user-info:hover {
-  border-color: rgba(24,119,242,0.2);
-  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.16);
+  border-color: #bfdbfe;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  transform: translateY(-1px);
 }
 
 .greets {
+  color: var(--nav-muted);
   font-size: 12px;
-  color: var(--dashboard-topbar-muted);
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: var(--primary-foreground);
-  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
 }
 
 .user-meta {
@@ -183,177 +277,33 @@
 }
 
 .user-name {
-  font-weight: 700;
   display: flex;
-  width: fit-content;
   align-items: center;
   gap: 6px;
-  color: var(--dashboard-topbar-text);
+  width: fit-content;
+  color: var(--nav-text);
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .user-caret {
-  opacity: 0.8;
-  color: var(--dashboard-topbar-text);
+  display: inline-flex;
+  color: var(--nav-muted);
 }
 
-.notification-menu,
-.user-menu {
-  position: relative;
-}
-
-.notification-dropdown {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  min-width: 300px;
-  max-width: 340px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
-  padding: 18px;
-  z-index: 20;
-}
-
-.notification-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.notification-header strong {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--app-text);
-}
-
-.notification-close {
-  background: transparent;
-  border: none;
-  font-size: 1.1rem;
-  line-height: 1;
-  color: var(--app-text-muted);
-  cursor: pointer;
-  padding: 4px;
-}
-
-.notification-close:hover {
-  color: var(--app-text);
-}
-
-.notification-body {
-  padding: 10px 0 18px;
-}
-
-.notification-empty {
-  margin: 0;
-  color: var(--app-text-muted);
-  font-size: 0.95rem;
-}
-
-.notification-action {
-  width: 100%;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
-  font-weight: 700;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.notification-action:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
-}
-
-.account-dropdown {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  width: 280px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.12);
-  padding: 14px;
-  z-index: 20;
-}
-
-.account-dropdown-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-}
-
-.account-dropdown-header strong,
-.account-dropdown-header span,
-.account-dropdown-body span,
-.account-dropdown-body strong {
-  display: block;
-  color: var(--app-text);
-}
-
-.account-dropdown-header span,
-.account-dropdown-body span {
-  font-size: 12px;
-  color: var(--app-text-muted);
-}
-
-.account-dropdown-body {
-  display: grid;
-  gap: 10px;
-  color: var(--app-text);
-  padding: 12px 0;
-}
-
-.account-dropdown-body div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--app-text);
-}
-
-.account-dropdown-actions {
-  display: grid;
-  gap: 8px;
-  color: var(--app-text);
-}
-
-.account-dropdown-actions button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(15, 23, 42, 0.02);
-  color: var(--app-text);
-  text-align: left;
-  cursor: pointer;
-  transition: background 160ms ease, color 160ms ease;
-}
-
-.account-dropdown-actions button:hover {
-  background: linear-gradient(135deg, rgba(24,119,242,0.12), rgba(24,119,242,0.08));
-  color: var(--app-text);
-}
-
+.avatar,
 .user-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
-  flex-shrink: 0;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: var(--nav-blue);
+  color: #fff;
 }
 
 .user-avatar-image {
@@ -363,48 +313,162 @@
 }
 
 .user-avatar-initials {
-  font-weight: 700;
   font-size: 0.9rem;
-  letter-spacing: 0.04em;
+  font-weight: 800;
   line-height: 1;
+  letter-spacing: 0.04em;
 }
 
-.top-navbar {
-  min-height: 58px;
-  padding: 8px clamp(16px, 2vw, 28px);
+/* Dropdowns */
+.notification-dropdown,
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  border: 1px solid var(--nav-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13);
+  backdrop-filter: blur(18px);
 }
 
-.menu-btn,
-.icon-btn {
-  min-width: 38px;
-  min-height: 38px;
-  border: 1px solid transparent;
+.notification-dropdown {
+  width: min(340px, calc(100vw - 24px));
+  padding: 16px;
 }
 
-.menu-btn:hover,
-.icon-btn:hover {
-  border-color: rgba(15, 23, 42, 0.08);
-  background: rgba(15, 23, 42, 0.03);
+.account-dropdown {
+  width: 280px;
+  padding: 14px;
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.notification-header strong,
+.account-dropdown-header strong {
+  color: var(--nav-text);
+  font-weight: 750;
+}
+
+.notification-close {
+  padding: 5px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--nav-muted);
+  cursor: pointer;
+}
+
+.notification-close:hover {
+  background: var(--nav-blue-soft);
+  color: var(--nav-blue);
+}
+
+.notification-body {
+  padding: 10px 0 16px;
+}
+
+.notification-empty {
+  margin: 0;
+  color: var(--nav-muted);
+  font-size: 0.92rem;
+}
+
+.notification-action {
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--nav-blue);
+  color: #fff;
+  font-weight: 750;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.notification-action:hover {
+  background: var(--nav-blue-dark);
+  box-shadow: 0 6px 15px rgba(24, 119, 242, 0.18);
+  transform: translateY(-1px);
+}
+
+.account-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.account-dropdown-header span,
+.account-dropdown-body span {
+  color: var(--nav-muted);
+  font-size: 12px;
+}
+
+.account-dropdown-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px 0;
+  color: var(--nav-text);
+}
+
+.account-dropdown-body div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.account-dropdown-actions {
+  display: grid;
+  gap: 7px;
+}
+
+.account-dropdown-actions button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--nav-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--nav-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.account-dropdown-actions button:hover {
+  border-color: #bfdbfe;
+  background: var(--nav-blue-soft);
+  color: var(--nav-blue);
+  transform: translateX(2px);
 }
 
 @media (max-width: 640px) {
   .top-navbar {
     min-height: 58px;
-    padding: 8px 12px;
+    padding: 0 12px;
+  }
+
+  .top-left {
+    gap: 8px;
   }
 
   .top-welcome {
     max-width: 42vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
-  .ask-nuvora-btn {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-    padding: 0;
+  .top-right {
+    gap: 4px;
   }
 
   .user-meta,
@@ -412,415 +476,26 @@
     display: none;
   }
 
+  .user-info {
+    padding-right: 5px;
+  }
+
   .notification-dropdown,
   .account-dropdown {
     position: fixed;
     top: 68px;
     right: 12px;
-    width: min(320px, calc(100vw - 24px));
+    width: min(340px, calc(100vw - 24px));
     max-width: none;
   }
 }
 
-.top-navbar {
-  --topbar-height: 64px;
-  min-height: var(--topbar-height);
-  padding: 0 clamp(16px, 2.4vw, 32px);
-  background: var(--dashboard-topbar-bg);
-  color: var(--dashboard-topbar-text);
-  border-bottom: 1px solid var(--app-border);
-  box-shadow: 0 1px 0 rgba(32, 35, 33, 0.02);
-  backdrop-filter: none;
-}
-
-.menu-btn,
-.icon-btn,
-.ask-nuvora-btn {
-  width: 38px;
-  min-width: 38px;
-  height: 38px;
-  min-height: 38px;
-  border-radius: var(--radius-md);
-  border-color: var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text-muted);
-}
-
-.menu-btn:hover,
-.icon-btn:hover,
-.ask-nuvora-btn:hover {
-  background: #eff6ff;
-  border-color: #BFDBFE;
-  color: #1877F2;
-}
-
-@media (max-width: 480px) {
-  .top-right {
-    gap: 4px;
-  }
-
-  .user-info {
-    padding-right: 5px;
-  }
-}
-
-.ask-nuvora-btn:focus-visible {
-  border-color: #BFDBFE;
-  background: var(--surface-accent);
-  color: var(--app-accent);
-}
-
-.ask-nuvora-icon-wrap {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: var(--app-accent);
-}
-
-.top-welcome {
-  color: var(--app-text);
-  font-size: 0.92rem;
-}
-
-.user-info {
-  border-color: var(--app-border);
-  border-radius: var(--radius-md);
-  background: var(--app-surface);
-  color: var(--app-text);
-}
-
-.user-info:hover {
-  border-color: #BFDBFE;
-  box-shadow: none;
-}
-
-.avatar {
-  background: var(--app-accent);
-}
-
-.notification-dropdown,
-.account-dropdown {
-  background: var(--app-surface);
-  border-color: var(--app-border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 12px 28px rgba(32, 35, 33, 0.12);
-}
-
-.notification-action {
-  background: var(--app-accent);
-  border-radius: var(--radius-md);
-}
-
-.account-dropdown-actions button {
-  border-color: var(--app-border);
-  border-radius: var(--radius-md);
-  background: var(--app-surface);
-}
-
-.account-dropdown-actions button:hover {
-  background: var(--surface-accent);
-  color: var(--app-accent);
-}
-
-/* Keep dashboard controls aligned with the Scholarly Navy theme. */
-.top-navbar {
-  box-shadow: 0 1px 0 rgba(20, 33, 61, 0.06);
-  backdrop-filter: blur(16px) saturate(140%);
-}
-
-.menu-btn:hover,
-.icon-btn:hover,
-.ask-nuvora-btn:hover {
-  background: var(--surface-accent);
-  border-color: color-mix(in srgb, var(--app-accent) 28%, var(--app-border));
-  color: var(--app-accent);
-}
-
-.ask-nuvora-icon-wrap,
-.notification-action {
-  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-2));
-}
-
-.user-info:hover {
-  border-color: color-mix(in srgb, var(--app-accent) 30%, var(--app-border));
-  box-shadow: 0 8px 20px rgba(20, 33, 61, 0.07);
-}
-
-
-
-/* Topbar icon visibility and strict palette. */
-.top-navbar svg.lucide,
-.menu-btn svg.lucide,
-.icon-btn svg.lucide,
-.ask-nuvora-btn svg.lucide,
-.user-info svg.lucide {
-  display: inline-block;
-  width: 1.125rem;
-  height: 1.125rem;
-  min-width: 1.125rem;
-  min-height: 1.125rem;
-  flex: 0 0 auto;
-  color: currentColor;
-  stroke: currentColor;
-  fill: none;
-  opacity: 1;
-  visibility: visible;
-  stroke-width: 2;
-}
-.top-navbar {
-  background: #FFFFFF;
-  color: #000000;
-  border-color: color-mix(in srgb, #000000 10%, transparent);
-}
-.menu-btn,
-.icon-btn,
-.ask-nuvora-btn,
-.user-info {
-  color: #000000;
-  background: #FFFFFF;
-  border-color: color-mix(in srgb, #000000 10%, transparent);
-}
-.menu-btn:hover,
-.icon-btn:hover,
-.ask-nuvora-btn:hover,
-.user-info:hover {
-  color: #1877F2;
-  background: color-mix(in srgb, #1877F2 8%, #FFFFFF);
-  border-color: color-mix(in srgb, #1877F2 28%, transparent);
-}
-.ask-nuvora-icon-wrap,
-.notification-action {
-  background: #1877F2;
-  color: #FFFFFF;
-}
-.nav-badge {
-  background: #1877F2;
-  color: #FFFFFF;
-  box-shadow: none;
-}
-
-
-/* Final topbar palette: navbar icons are monochrome Nuvora blue. */
-.top-navbar { --app-accent:#1877F2 !important; --app-accent-2:#0F5DCC !important; }
-.top-navbar svg.lucide, .menu-btn svg.lucide, .icon-btn svg.lucide, .ask-nuvora-btn svg.lucide, .user-info svg.lucide { color:#1877F2 !important; stroke:#1877F2 !important; }
-.menu-btn, .icon-btn, .ask-nuvora-btn, .user-info { color:#1877F2 !important; }
-.menu-btn:hover, .icon-btn:hover, .ask-nuvora-btn:hover, .user-info:hover { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
-.ask-nuvora-icon-wrap, .notification-action { background:#1877F2 !important; color:#FFFFFF !important; }
-.ask-nuvora-icon-wrap svg, .notification-action svg { color:#FFFFFF !important; stroke:#FFFFFF !important; }
-.user-name, .top-welcome { color:#0F172A !important; }
-
-
-/* NUVORA TOPBAR ICON FIX — single visible Lucide treatment */
-.top-navbar .menu-btn,
-.top-navbar .icon-btn,
-.top-navbar .ask-nuvora-btn,
-.top-navbar .user-info {
-  color: #1877F2 !important;
-}
-
-.top-navbar .menu-btn svg,
-.top-navbar .icon-btn svg,
-.top-navbar .ask-nuvora-btn svg,
-.top-navbar .user-info svg,
-.top-navbar svg.lucide {
-  display: block !important;
-  width: 18px !important;
-  height: 18px !important;
-  min-width: 18px !important;
-  min-height: 18px !important;
-  color: #1877F2 !important;
-  stroke: #1877F2 !important;
-  fill: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  stroke-width: 2 !important;
-  flex-shrink: 0;
-}
-
-.top-navbar .menu-btn,
-.top-navbar .icon-btn,
-.top-navbar .ask-nuvora-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  line-height: 0 !important;
-}
-
-.top-navbar .ask-nuvora-icon-wrap {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: #1877F2 !important;
-  color: #FFFFFF !important;
-}
-
-.top-navbar .ask-nuvora-icon-wrap svg {
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
-}
-
-.top-navbar .icon-btn:hover svg,
-.top-navbar .menu-btn:hover svg,
-.top-navbar .ask-nuvora-btn:hover svg,
-.top-navbar .user-info:hover svg {
-  color: #0F5DCC !important;
-  stroke: #0F5DCC !important;
-}
-
-@media (max-width: 640px) {
-  .top-navbar .menu-btn svg,
-  .top-navbar .icon-btn svg,
-  .top-navbar .ask-nuvora-btn svg,
-  .top-navbar .user-info svg {
-    width: 18px !important;
-    height: 18px !important;
-  }
-}
-
-
-/* NUVORA ICON SYSTEM — centered blue control / white glyph */
-.top-navbar .icon-btn,
-.top-navbar .ask-nuvora-btn {
-  position: relative;
-  width: 40px !important;
-  min-width: 40px !important;
-  height: 40px !important;
-  min-height: 40px !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 12px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: transparent !important;
-  color: #1877F2 !important;
-  overflow: visible;
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1), background 180ms ease, box-shadow 180ms ease;
-}
-
-.top-navbar .icon-btn::before {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 10px;
-  background: #1877F2;
-  box-shadow: 0 3px 10px rgba(24,119,242,.16);
-  transform: scale(.94);
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
-}
-
-.top-navbar .icon-btn > svg {
-  position: relative;
-  z-index: 1;
-  width: 18px !important;
-  height: 18px !important;
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
-  stroke-width: 2.1 !important;
-  fill: none !important;
-  transform: translateZ(0);
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1);
-}
-
-.top-navbar .icon-btn:hover::before,
-.top-navbar .ask-nuvora-btn:hover .ask-nuvora-icon-wrap {
-  transform: scale(1);
-  box-shadow: 0 6px 16px rgba(24,119,242,.22);
-}
-
-.top-navbar .icon-btn:hover > svg {
-  transform: scale(1.08);
-}
-
-.top-navbar .icon-btn:active {
-  transform: scale(.94);
-}
-
-.top-navbar .icon-btn:focus-visible,
-.top-navbar .ask-nuvora-btn:focus-visible {
-  outline: 3px solid rgba(24,119,242,.18);
-  outline-offset: 2px;
-}
-
-/* Ask Nuvora: centered blue tile with a white inner glyph */
-.top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap {
-  position: relative;
-  z-index: 1;
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 10px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: #1877F2 !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 3px 10px rgba(24,119,242,.16);
-  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
-}
-
-.top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap svg {
-  width: 15px !important;
-  height: 15px !important;
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
-  stroke-width: 2.2 !important;
-  fill: none !important;
-}
-
-/* Notification count: compact blue badge, white number, anchored cleanly */
-.top-navbar .nav-badge {
-  z-index: 3;
-  top: 0 !important;
-  right: -1px !important;
-  min-width: 17px !important;
-  height: 17px !important;
-  padding: 0 4px !important;
-  border: 2px solid #FFFFFF;
-  border-radius: 999px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: #1877F2 !important;
-  color: #FFFFFF !important;
-  font-size: 9px !important;
-  line-height: 1 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 7px rgba(24,119,242,.25) !important;
-  animation: nuvoraBadgePop 240ms cubic-bezier(.2,.8,.2,1);
-}
-
-@keyframes nuvoraBadgePop {
-  0% { transform: scale(.55); opacity: 0; }
-  70% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Small, deliberate motion inspired by modern dashboard micro-interactions. */
-@keyframes nuvoraIconPulse {
-  0%, 100% { transform: scale(1); }
-  45% { transform: scale(1.06); }
-}
-
-.top-navbar .notification-menu .icon-btn:hover > svg {
-  animation: nuvoraIconPulse 900ms ease-in-out;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .top-navbar .icon-btn,
-  .top-navbar .ask-nuvora-btn,
-  .top-navbar .icon-btn::before,
-  .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap,
-  .top-navbar .icon-btn > svg {
-    transition: none !important;
+  .top-navbar *,
+  .top-navbar *::before,
+  .top-navbar *::after {
+    scroll-behavior: auto !important;
     animation: none !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .top-navbar .icon-btn,
-  .top-navbar .ask-nuvora-btn {
-    width: 40px !important;
-    min-width: 40px !important;
-    height: 40px !important;
+    transition-duration: 0.01ms !important;
   }
 }
