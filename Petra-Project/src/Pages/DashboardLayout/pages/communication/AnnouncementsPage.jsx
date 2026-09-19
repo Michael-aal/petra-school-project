@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Plus, Search, Sparkles, Clock, CheckCircle2, AlertTriangle, Send } from "lucide-react";
+import { Bell, Plus, Search, Bell, Clock, CheckCircle2, AlertTriangle, Send } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import "../page-styles/AnnouncementsPage.css";
 
@@ -139,7 +139,7 @@ export default function AnnouncementsPage() {
               <p>Send a new announcement to teachers, parents, or both groups.</p>
             </div>
             <div className="announcement-badge">
-              <Sparkles size={16} />
+              <Bell size={16} />
               <span>New release</span>
             </div>
           </div>
