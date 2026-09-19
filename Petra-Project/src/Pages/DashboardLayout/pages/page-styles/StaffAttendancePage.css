@@ -1,17 +1,102 @@
+```css id="xj2kq9"
+/* =========================================================
+   STAFF ATTENDANCE PAGE
+   White-dominant UI with blue primary and red alert accents
+   ========================================================= */
+
 .staff-attendance-page {
-  padding: 20px 18px 24px;
+  --attendance-bg: #f8fafc;
+  --attendance-surface: #ffffff;
+  --attendance-surface-soft: #f1f5f9;
+
+  --attendance-text: #0f172a;
+  --attendance-muted: #64748b;
+
+  --attendance-blue: #2563eb;
+  --attendance-blue-dark: #1d4ed8;
+  --attendance-blue-soft: #eff6ff;
+  --attendance-blue-border: #bfdbfe;
+
+  --attendance-red: #dc2626;
+  --attendance-red-dark: #b91c1c;
+  --attendance-red-soft: #fef2f2;
+  --attendance-red-border: #fecaca;
+
+  --attendance-border: #e2e8f0;
+  --attendance-radius: 14px;
+  --attendance-radius-lg: 18px;
+  --attendance-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+
+  min-height: 100%;
+  padding: 20px clamp(14px, 2.5vw, 30px) 32px;
+  background: var(--attendance-bg);
+  color: var(--attendance-text);
 }
+
+
+/* =========================================================
+   ATTENDANCE PANEL
+   ========================================================= */
 
 .staff-attendance-panel {
-  padding: 18px;
-  border-radius: 14px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
+  padding: 20px;
+  border: 1px solid var(--attendance-border);
+  border-radius: var(--attendance-radius-lg);
+  background: var(--attendance-surface);
+  box-shadow: var(--attendance-shadow);
 }
 
-.dashboard-page-copy {
+
+/* =========================================================
+   PAGE COPY
+   ========================================================= */
+
+.staff-attendance-page .dashboard-page-copy {
   margin: 0;
-  color: var(--app-text-muted);
+  color: var(--attendance-muted);
   font-size: 0.92rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
+
+
+/* =========================================================
+   OPTIONAL STATES
+   Keep these scoped so they cannot affect other pages.
+   ========================================================= */
+
+.staff-attendance-page .attendance-info {
+  padding: 12px 14px;
+  border: 1px solid var(--attendance-blue-border);
+  border-radius: var(--attendance-radius);
+  background: var(--attendance-blue-soft);
+  color: var(--attendance-blue-dark);
+}
+
+.staff-attendance-page .attendance-error {
+  padding: 12px 14px;
+  border: 1px solid var(--attendance-red-border);
+  border-radius: var(--attendance-radius);
+  background: var(--attendance-red-soft);
+  color: var(--attendance-red-dark);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .staff-attendance-page {
+    padding: 16px 12px 24px;
+  }
+
+  .staff-attendance-panel {
+    padding: 16px;
+    border-radius: var(--attendance-radius);
+  }
+
+  .staff-attendance-page .dashboard-page-copy {
+    font-size: 0.88rem;
+  }
+}
+```
