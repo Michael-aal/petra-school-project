@@ -1,36 +1,92 @@
-/* Parent fees page spacing and responsive layout */
+
+
+.parent-fees-page {
+  --fees-white: #ffffff;
+  --fees-bg: #f8fafc;
+
+  --fees-blue: #2563eb;
+  --fees-blue-dark: #1d4ed8;
+  --fees-blue-soft: #eff6ff;
+  --fees-blue-border: #dbeafe;
+
+  --fees-red: #dc2626;
+  --fees-red-dark: #b91c1c;
+  --fees-red-soft: #fef2f2;
+  --fees-red-border: #fecaca;
+
+  --fees-amber: #b45309;
+  --fees-amber-soft: #fffbeb;
+  --fees-amber-border: #fde68a;
+
+  --fees-text: #172033;
+  --fees-muted: #64748b;
+  --fees-border: #e5e7eb;
+  --fees-muted-surface: #f1f5f9;
+
+  min-height: 100%;
+  padding: 24px;
+  background: var(--fees-bg);
+  color: var(--fees-text);
+}
+
+/* =========================================================
+   CHILD / ACCOUNT CHIPS
+   ========================================================= */
 
 .parent-chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 8px;
 }
 
 .parent-chip {
   display: inline-flex;
   align-items: center;
-  padding: 10px 14px;
+
+  padding: 8px 12px;
+
+  border: 1px solid var(--fees-blue-border);
   border-radius: 999px;
-  background: var(--surface-accent);
-  color: var(--app-accent);
-  font-size: 0.82rem;
+
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
+
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
+/* =========================================================
+   PARENT LIST
+   ========================================================= */
+
 .parent-list {
   display: grid;
-  gap: var(--space-4);
+  gap: 12px;
 }
 
 .parent-list-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border-radius: 18px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
+  gap: 16px;
+
+  padding: 15px 16px;
+
+  border: 1px solid var(--fees-border);
+  border-radius: 14px;
+
+  background: var(--fees-white);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.parent-list-item:hover {
+  border-color: var(--fees-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
 }
 
 .parent-list-item > div:first-child {
@@ -40,113 +96,319 @@
 .parent-list-item strong {
   display: block;
   margin-bottom: 4px;
+  color: var(--fees-text);
+  font-size: 0.9rem;
+  font-weight: 750;
 }
+
+.parent-list-item p {
+  margin: 0;
+  color: var(--fees-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   ACCOUNT ROW
+   ========================================================= */
 
 .dashboard-home-account-row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
   flex-wrap: wrap;
+  gap: 10px;
 }
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
 
 .parent-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: var(--surface-accent);
-  border: 1px solid var(--app-border);
-  color: var(--app-accent);
+
+  min-height: 40px;
+  padding: 9px 13px;
+
+  border: 1px solid var(--fees-blue-border);
+  border-radius: 10px;
+
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
+
   cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.parent-action-btn:hover {
+  border-color: var(--fees-blue);
+  background: var(--fees-blue);
+  color: var(--fees-white);
+  transform: translateY(-1px);
 }
 
 .parent-action-btn input {
   margin: 0;
 }
 
+/* =========================================================
+   FEES FORM
+   ========================================================= */
+
 .fees-form {
   display: grid;
-  gap: var(--space-4);
+  gap: 16px;
 }
 
 .fees-form label {
   display: grid;
-  gap: var(--space-2);
+  gap: 7px;
+
+  color: var(--fees-text);
+
   font-size: 0.85rem;
   font-weight: 700;
 }
 
-.fees-form input {
+.fees-form input,
+.fees-form select {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--app-border);
-  border-radius: 14px;
-  background: var(--app-surface);
-  color: var(--app-text);
+  min-height: 44px;
+  padding: 10px 13px;
+
+  border: 1px solid var(--fees-border);
+  border-radius: 10px;
+
+  outline: none;
+
+  background: var(--fees-white);
+  color: var(--fees-text);
+
+  font: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+.fees-form input::placeholder {
+  color: #94a3b8;
+}
+
+.fees-form input:focus,
+.fees-form select:focus {
+  border-color: var(--fees-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================================================
+   FEE ACTIONS
+   ========================================================= */
 
 .fees-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: 10px;
 }
 
 .module-button {
-  padding: 12px 16px;
-  border: none;
-  border-radius: 14px;
-  background: var(--app-accent);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 0 16px;
+
+  border: 1px solid var(--fees-blue);
+  border-radius: 10px;
+
+  background: var(--fees-blue);
+  color: var(--fees-white);
+
   cursor: pointer;
-  min-height: 46px;
-  font-weight: 700;
+
+  font-size: 0.84rem;
+  font-weight: 750;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.module-button:hover {
+  border-color: var(--fees-blue-dark);
+  background: var(--fees-blue-dark);
+  transform: translateY(-1px);
+}
+
+.module-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .module-button.ghost {
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  color: var(--app-text);
+  border-color: var(--fees-border);
+  background: var(--fees-white);
+  color: var(--fees-text);
 }
 
+.module-button.ghost:hover {
+  border-color: var(--fees-blue-border);
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
+}
+
+/* =========================================================
+   DASHBOARD ALERTS
+   ========================================================= */
+
 .dashboard-alert {
-  padding: var(--space-4) var(--space-5);
-  border-radius: 18px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
+  padding: 13px 15px;
+
+  border: 1px solid var(--fees-border);
+  border-radius: 12px;
+
+  background: var(--fees-white);
+  color: var(--fees-text);
+
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
 
 .dashboard-alert.success {
-  border-color: var(--surface-success);
+  border-color: var(--fees-blue-border);
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
 }
 
 .dashboard-alert.error {
-  border-color: var(--surface-danger);
+  border-color: var(--fees-red-border);
+  background: var(--fees-red-soft);
+  color: var(--fees-red-dark);
 }
+
+/* =========================================================
+   GENERAL STATUS PILL
+   ========================================================= */
 
 .parent-pill {
-  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  padding: 6px 10px;
+
+  border: 1px solid var(--fees-blue-border);
   border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  background: var(--surface-accent);
-  color: var(--app-accent);
+
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
+
+  font-size: 0.74rem;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
-.status-success { background: var(--surface-success); color: var(--success); }
-.status-pending { background: var(--surface-warning); color: var(--warning); }
-.status-failed { background: var(--surface-danger); color: var(--danger); }
-.status-refunded { background: var(--surface-muted); color: var(--info); }
-.status-default { background: var(--surface-muted); color: var(--app-text-muted); }
+/* =========================================================
+   PAYMENT STATUS
+   ========================================================= */
 
-@media (max-width: 640px) {
+.status-success,
+.status-pending,
+.status-failed,
+.status-refunded,
+.status-default {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 0.72rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.status-success {
+  border: 1px solid var(--fees-blue-border);
+  background: var(--fees-blue-soft);
+  color: var(--fees-blue-dark);
+}
+
+.status-pending {
+  border: 1px solid var(--fees-amber-border);
+  background: var(--fees-amber-soft);
+  color: var(--fees-amber);
+}
+
+.status-failed {
+  border: 1px solid var(--fees-red-border);
+  background: var(--fees-red-soft);
+  color: var(--fees-red-dark);
+}
+
+.status-refunded {
+  border: 1px solid var(--fees-border);
+  background: var(--fees-muted-surface);
+  color: var(--fees-muted);
+}
+
+.status-default {
+  border: 1px solid var(--fees-border);
+  background: var(--fees-muted-surface);
+  color: var(--fees-muted);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .parent-fees-page {
+    padding: 18px;
+  }
+
   .parent-list-item {
+    align-items: flex-start;
     flex-direction: column;
-    align-items: stretch;
+  }
+
+  .parent-action-btn {
+    width: 100%;
   }
 
   .dashboard-home-account-row {
     justify-content: space-between;
   }
 }
+
+@media (max-width: 640px) {
+  .parent-fees-page {
+    padding: 14px;
+  }
+
+  .fees-actions {
+    flex-direction: column;
+  }
+
+  .fees-actions .module-button {
+    width: 100%;
+  }
+}
+
