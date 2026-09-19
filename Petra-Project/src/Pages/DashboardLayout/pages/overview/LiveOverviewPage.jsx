@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Activity, BarChart3, CheckCircle2, FileText, Flag, LogIn, Sparkles, Users, Wallet } from "lucide-react";
+import { Activity, BarChart3, CheckCircle2, FileText, Flag, LogIn, MessageSquare, Users, Wallet } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import { academicApi } from "../../../../services/academicApi";
 import { admissionApi } from "../../../../services/admissionApi";
@@ -30,7 +30,7 @@ const getActivityPresentation = (item) => {
     if (details?.provider) metadata.push(String(details.provider));
     const duration = formatDuration(details?.durationMs);
     if (duration) metadata.push(duration);
-    return { title: "AI Query", description: details?.success === false ? "AI request failed" : "AI request completed successfully", metadata: metadata.join(" · "), Icon: Sparkles };
+    return { title: "AI Query", description: details?.success === false ? "AI request failed" : "AI request completed successfully", metadata: metadata.join(" · "), Icon: MessageSquare };
   }
   if (action === "auth.login") return { title: "User Login", description: "User successfully signed in", metadata: "", Icon: LogIn };
   const readableDetails = typeof item?.details === "string" && item.details.trim() && !details ? item.details.trim() : "Activity recorded successfully";
