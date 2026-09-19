@@ -49,11 +49,16 @@ export default function StaffRegister() {
       setInvitationLoading(true);
       try {
         const response = await authApi.staffInvitationDetails(code);
+        const invitationEmail = String(response?.invitation?.email || "");
+        const isPlaceholderEmail = invitationEmail.endsWith("@invitation.petra.local");
         setForm((current) => ({
           ...current,
           invitationCode: code,
           fullName: response?.invitation?.staffName || "",
-          email: response?.invitation?.email || "",
+          // Direct admin invitations use a temporary placeholder email. The teacher
+          // must be allowed to enter their real email during activation. Approved
+          // application invitations keep their existing email and remain locked.
+          email: isPlaceholderEmail ? "" : invitationEmail,
           department: response?.invitation?.department || "",
           position: response?.invitation?.role || "Teacher",
         }));
@@ -213,7 +218,7 @@ export default function StaffRegister() {
           <span>Your Email Address</span>
           <div className="auth-input-wrap">
             <Mail size={18} />
-            <input name="email" type="email" placeholder="Enter your email address" autoComplete="email" value={form.email} onChange={handleChange} readOnly={Boolean(form.email)} />
+            <input name="email" type="email" placeholder="Enter your real email address" autoComplete="email" value={form.email} onChange={handleChange} readOnly={Boolean(form.email && !String(form.email).endsWith("@invitation.petra.local"))} />
           </div>
           {errors.email ? <small>{errors.email}</small> : null}
         </label>
