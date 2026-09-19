@@ -1,0 +1,780 @@
+/*
+ * Nuvora Minimal UI System
+ * Final presentation layer: clean white surfaces, dark typography,
+ * restrained blue accents, subtle borders, responsive-first layouts.
+ */
+
+:root {
+  --nuvora-bg: #ffffff;
+  --nuvora-surface: #ffffff;
+  --nuvora-surface-muted: #f7f7f8;
+  --nuvora-text: #111111;
+  --nuvora-text-strong: #171717;
+  --nuvora-text-muted: #666666;
+  --nuvora-border: #e5e5e5;
+  --nuvora-blue: #2563eb;
+  --nuvora-blue-hover: #1d4ed8;
+  --nuvora-blue-soft: #eff6ff;
+  --nuvora-radius: 12px;
+  --nuvora-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  --nuvora-container: 1280px;
+
+  --app-bg: var(--nuvora-bg) !important;
+  --app-surface: var(--nuvora-surface) !important;
+  --app-surface-strong: var(--nuvora-surface-muted) !important;
+  --app-card: var(--nuvora-surface) !important;
+  --app-panel: var(--nuvora-surface) !important;
+  --app-text: var(--nuvora-text) !important;
+  --app-text-muted: var(--nuvora-text-muted) !important;
+  --app-border: var(--nuvora-border) !important;
+  --app-accent: var(--nuvora-blue) !important;
+  --app-accent-2: var(--nuvora-blue-hover) !important;
+  --background: var(--nuvora-bg) !important;
+  --foreground: var(--nuvora-text) !important;
+  --card: var(--nuvora-surface) !important;
+  --card-foreground: var(--nuvora-text) !important;
+  --popover: var(--nuvora-surface) !important;
+  --popover-foreground: var(--nuvora-text) !important;
+  --primary: var(--nuvora-blue) !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: #ffffff !important;
+  --secondary-foreground: var(--nuvora-text) !important;
+  --muted: var(--nuvora-surface-muted) !important;
+  --muted-foreground: var(--nuvora-text-muted) !important;
+  --border: var(--nuvora-border) !important;
+  --input: var(--nuvora-border) !important;
+  --ring: var(--nuvora-blue) !important;
+  --dashboard-page-bg: var(--nuvora-bg) !important;
+  --dashboard-topbar-bg: #ffffff !important;
+  --dashboard-topbar-text: var(--nuvora-text) !important;
+  --dashboard-topbar-muted: var(--nuvora-text-muted) !important;
+  --dashboard-card-bg: #ffffff !important;
+  --dashboard-card-text: var(--nuvora-text) !important;
+  --dashboard-card-muted: var(--nuvora-text-muted) !important;
+  --dashboard-panel-bg: #ffffff !important;
+  --dashboard-panel-text: var(--nuvora-text) !important;
+  --dashboard-panel-muted: var(--nuvora-text-muted) !important;
+  --dashboard-sidebar-bg: #ffffff !important;
+  --dashboard-sidebar-text: var(--nuvora-text) !important;
+  --dashboard-sidebar-muted: var(--nuvora-text-muted) !important;
+  --dashboard-muted-surface: var(--nuvora-surface-muted) !important;
+  --dashboard-accent-gradient: none !important;
+  --dashboard-accent-gradient-strong: none !important;
+  --shadow-soft: var(--nuvora-shadow) !important;
+}
+
+html,
+body,
+#root {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+body,
+body.light,
+body.dark {
+  background: #ffffff !important;
+  color: #111111 !important;
+  color-scheme: light !important;
+}
+
+body.dark::before,
+body.dark::after {
+  display: none !important;
+}
+
+body * {
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #111111 !important;
+  letter-spacing: -0.035em;
+}
+
+p,
+li,
+label {
+  color: #666666;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+main,
+section,
+article,
+form,
+.dashboard-page,
+.dashboard-content,
+.dashboard-main,
+.page-container,
+.content-container {
+  min-width: 0;
+}
+
+/* Neutral surfaces: structure comes from borders and spacing, not heavy shadows. */
+.card,
+.panel,
+.stat-card,
+.form-card,
+.settings-card,
+.wallet-panel,
+.payments-panel,
+.modal-content,
+.dashboard-home-panel,
+.dashboard-home-summary-card,
+.info-card,
+.feature-card,
+.step-card,
+.testimonial-card,
+.dashboard-widget,
+.layout-card,
+.dashboard-page .table-container {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid #e5e5e5 !important;
+  border-radius: var(--nuvora-radius) !important;
+  box-shadow: none !important;
+}
+
+.card:hover,
+.panel:hover,
+.feature-card:hover,
+.step-card:hover,
+.layout-card:hover {
+  box-shadow: var(--nuvora-shadow) !important;
+}
+
+/* Remove decorative gradients and glow effects. */
+.landing-hero,
+body.light,
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content,
+.dashboard-page,
+.homeSection1,
+.homeSection2,
+.homeSection3,
+.homeSection4,
+.homeSection5,
+.homeSection7,
+.homeSection8,
+.homeSection9,
+.homeSection10,
+.homeSection11,
+.landing-page,
+.home-page,
+.ctc-page,
+.fsos,
+.fparent {
+  background-image: none !important;
+}
+
+[class*="gradient"],
+[class*="Gradient"] {
+  background-image: none !important;
+}
+
+/* Buttons. */
+.btn-primary,
+button[type="submit"],
+.landing-button-primary,
+.section5-btn,
+.section7-btn,
+.section11-btn {
+  background: var(--nuvora-blue) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: 1px solid var(--nuvora-blue) !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover,
+.landing-button-primary:hover,
+.section5-btn:hover,
+.section7-btn:hover,
+.section11-btn:hover {
+  background: var(--nuvora-blue-hover) !important;
+  border-color: var(--nuvora-blue-hover) !important;
+}
+
+.btn-secondary,
+.btn-ghost,
+.landing-button-secondary {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #171717 !important;
+  border: 1px solid #d4d4d4 !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+
+.btn-ghost:hover,
+.btn-secondary:hover,
+.landing-button-secondary:hover {
+  background: #f7f7f8 !important;
+  color: #111111 !important;
+}
+
+button,
+.btn,
+.landing-button,
+.cta-btn {
+  min-height: 40px;
+}
+
+/* Prevent the old global hover lift from making the interface feel noisy. */
+button:hover,
+a:hover {
+  transform: none;
+}
+
+@media (hover: hover) {
+  .card:hover,
+  .feature-card:hover,
+  .step-card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Inputs and forms. */
+input,
+select,
+textarea,
+.form-input,
+.form-select {
+  width: 100%;
+  min-width: 0;
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid #dcdcdc !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+input,
+select {
+  min-height: 44px;
+}
+
+textarea {
+  min-height: 112px;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--nuvora-blue) !important;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.10) !important;
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #737373 !important;
+  opacity: 1;
+}
+
+/* Tables stay inside their own scroll container on narrow screens. */
+.table-container,
+.table-wrapper,
+.data-table-wrapper,
+.dashboard-page .table-container {
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table,
+.payments-table,
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.payments-table th,
+.table-container th {
+  background: #fafafa !important;
+  color: #666666 !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+}
+
+.data-table td,
+.payments-table td,
+.table-container td {
+  color: #171717 !important;
+  border-bottom: 1px solid #ededed !important;
+}
+
+.data-table tbody tr:hover,
+.payments-table tbody tr:hover,
+.table-container tbody tr:hover {
+  background: #fafafa !important;
+}
+
+/* Dashboard shell: editorial, quiet, and spacious. */
+.dashboard-shell {
+  --sidebar-width: 248px !important;
+  --sidebar-collapsed-width: 72px !important;
+  display: flex;
+  min-height: 100dvh;
+  background: #ffffff !important;
+}
+
+.dashboard-main {
+  min-width: 0;
+  flex: 1 1 auto;
+  background: #ffffff !important;
+}
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 32px clamp(16px, 3vw, 48px) 56px !important;
+  background: #ffffff !important;
+}
+
+/* Sidebar becomes a quiet white navigation rail. */
+.sidebar-container {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-right: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+}
+
+.sidebar-header {
+  border-bottom: 1px solid #eeeeee !important;
+}
+
+.sidebar-contaner-logo {
+  background: #111111 !important;
+  border: 0 !important;
+  color: #ffffff !important;
+}
+
+.brand-title {
+  color: #111111 !important;
+}
+
+.brand-sub,
+.sidebar-section-label,
+.sidebar-user h4 {
+  color: #737373 !important;
+}
+
+.sidebar-link,
+.sidebar-group,
+.sidebar-assistant,
+.sidebar-child {
+  color: #555555 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.sidebar-link:hover,
+.sidebar-group:hover,
+.sidebar-assistant:hover,
+.sidebar-child:hover {
+  background: #f7f7f8 !important;
+  color: #111111 !important;
+}
+
+.sidebar-link.active,
+.sidebar-child.active,
+.sidebar-group.group-active,
+.sidebar-assistant.active {
+  background: #eff6ff !important;
+  color: var(--nuvora-blue) !important;
+  border-color: #dbeafe !important;
+}
+
+.sidebar-link.active::before,
+.sidebar-child.active::before,
+.sidebar-group.group-active::before {
+  background: var(--nuvora-blue) !important;
+}
+
+.sidebar-link .sidebar-icon,
+.sidebar-child .child-icon,
+.sidebar-assistant-icon,
+.sidebar-group .sidebar-icon,
+.arrow-icon {
+  color: currentColor !important;
+}
+
+.sidebar-footer {
+  border-top: 1px solid #eeeeee !important;
+}
+
+.sidebar-user h3 {
+  color: #171717 !important;
+}
+
+/* Top navbar. */
+.top-navbar {
+  min-width: 0;
+  background: rgb(255 255 255 / 0.96) !important;
+  color: #111111 !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+
+.top-welcome,
+.user-name {
+  color: #111111 !important;
+}
+
+.greets,
+.user-caret {
+  color: #737373 !important;
+}
+
+.menu-btn,
+.icon-btn,
+.ask-nuvora-btn,
+.user-info {
+  background: #ffffff !important;
+  color: #555555 !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+}
+
+.menu-btn:hover,
+.icon-btn:hover,
+.ask-nuvora-btn:hover,
+.user-info:hover {
+  background: #f7f7f8 !important;
+  color: #111111 !important;
+  border-color: #d4d4d4 !important;
+}
+
+.ask-nuvora-icon-wrap,
+.avatar {
+  background: var(--nuvora-blue) !important;
+  color: #ffffff !important;
+}
+
+.notification-dropdown,
+.account-dropdown {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.08) !important;
+}
+
+/* Dashboard hierarchy. */
+.dashboard-home-header h1 {
+  font-size: clamp(1.8rem, 3vw, 2.75rem);
+  line-height: 1.04;
+  font-weight: 700;
+}
+
+.dashboard-home-header p,
+.dashboard-page p {
+  color: #666666 !important;
+}
+
+.dashboard-home-session-pill,
+.dashboard-home-summary-icon {
+  background: #eff6ff !important;
+  color: var(--nuvora-blue) !important;
+  border-color: #dbeafe !important;
+}
+
+.dashboard-home-summary-card {
+  padding: clamp(16px, 2vw, 24px) !important;
+}
+
+.dashboard-home-summary-action {
+  background: transparent !important;
+  color: var(--nuvora-blue) !important;
+  border-top: 1px solid #eeeeee !important;
+}
+
+/* Status/tone surfaces stay neutral; blue is reserved for emphasis. */
+.status-badge.success,
+.status-badge.warning,
+.status-badge.danger,
+.badge,
+.tone-emerald,
+.tone-teal,
+.tone-amber,
+.tone-rose,
+.wallet-quick-stat-icon.success,
+.wallet-quick-stat-icon.warning,
+.wallet-quick-stat-icon.danger,
+.payments-action-button.success,
+.payments-action-button.warning,
+.payments-action-button.danger {
+  background: #f5f5f5 !important;
+  color: #555555 !important;
+  border-color: #e5e5e5 !important;
+}
+
+/* Public/marketing pages. */
+.landing-page,
+.home-page,
+.ctc-page,
+.fsos,
+.fparent {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+.landing-hero {
+  background: #ffffff !important;
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3,
+.home-page h1,
+.home-page h2,
+.home-page h3 {
+  color: #111111 !important;
+}
+
+.landing-text,
+.landing-page p,
+.home-page p {
+  color: #666666 !important;
+}
+
+.landing-badge,
+.landing-kicker,
+.feature-icon,
+.reassurance-icon,
+.section1-title-highlight,
+.section5-title-highlight,
+.section7-title-highlight,
+.section9-highlight {
+  color: var(--nuvora-blue) !important;
+}
+
+.landing-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+
+.landing-cta {
+  background: #111111 !important;
+  color: #ffffff !important;
+}
+
+.landing-cta h2,
+.landing-cta p {
+  color: #ffffff !important;
+}
+
+/* Public dashboard/product previews should look like real product surfaces. */
+.product-preview,
+.dashboard-preview,
+.hero-dashboard,
+.mock-dashboard,
+.preview-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.06) !important;
+  border-radius: 14px !important;
+}
+
+/* Full-width containers should never create accidental horizontal scrolling. */
+.w-full,
+.container,
+.container-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    padding-inline: clamp(28px, 4vw, 64px) !important;
+    padding-top: 40px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-content {
+    padding: 24px 20px 40px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-content {
+    padding: 18px 14px 32px !important;
+  }
+
+  .dashboard-home-header h1 {
+    font-size: clamp(1.55rem, 8vw, 2rem);
+  }
+
+  .dashboard-page h1 {
+    font-size: clamp(1.45rem, 7vw, 1.9rem);
+    line-height: 1.15;
+  }
+
+  .dashboard-page h2 {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-page .page-header,
+  .dashboard-page .dashboard-header,
+  .dashboard-page .section-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dashboard-page .toolbar,
+  .dashboard-page .filters,
+  .dashboard-page .actions,
+  .dashboard-page .form-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-page .toolbar > *,
+  .dashboard-page .filters > *,
+  .dashboard-page .actions > *,
+  .dashboard-page .form-actions > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .card,
+  .panel,
+  .stat-card,
+  .form-card,
+  .settings-card,
+  .wallet-panel,
+  .payments-panel {
+    border-radius: 12px !important;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  .data-table,
+  .payments-table,
+  .table-container table {
+    min-width: 580px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-content {
+    padding-inline: 10px !important;
+  }
+
+  .dashboard-page .form-card,
+  .dashboard-page .panel,
+  .dashboard-page .card {
+    padding: 14px !important;
+  }
+
+  .dashboard-page .form-actions > * {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .data-table,
+  .payments-table,
+  .table-container table {
+    min-width: 560px;
+  }
+
+  .top-navbar {
+    padding-inline: 10px !important;
+  }
+
+  .top-welcome {
+    max-width: 36vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 374px) {
+  .dashboard-content {
+    padding-inline: 8px !important;
+  }
+
+  .top-welcome {
+    display: none;
+  }
+
+  .user-meta {
+    display: none;
+  }
+
+  .dashboard-home-summary-card {
+    padding: 14px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-sidebar {
+    z-index: 60;
+  }
+
+  .dashboard-sidebar:not(.mobile-open) {
+    visibility: hidden;
+  }
+
+  .dashboard-sidebar.mobile-open {
+    visibility: visible;
+  }
+}
+
+@media (hover: none) {
+  button:hover,
+  a:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
