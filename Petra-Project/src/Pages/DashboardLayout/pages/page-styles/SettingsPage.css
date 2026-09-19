@@ -1,8 +1,4 @@
-```css
-/* =========================================================
-   SETTINGS PAGE
-   White-dominant UI with blue primary and red danger accents
-   ========================================================= */
+====================================================== */
 
 .settings-page {
   --settings-bg: #f8fafc;
@@ -664,4 +660,4 @@
     animation: none;
   }
 }
-```
+
