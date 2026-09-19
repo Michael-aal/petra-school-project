@@ -10,7 +10,7 @@ import {
   MessageSquare,
   School,
   Settings,
-  Sparkles,
+  BookOpen,
   UserCircle2,
   Users,
 } from "lucide-react";
@@ -68,7 +68,7 @@ const routeConfig = {
     description: "Track assigned classes, learners, and the topics you are covering this term.",
     summary: [
       { label: "Assigned Classes", value: "5", icon: BookOpen, tone: "tone-blue" },
-      { label: "Active Topics", value: "6", icon: Sparkles, tone: "tone-teal" },
+      { label: "Active Topics", value: "6", icon: BookOpen, tone: "tone-teal" },
       { label: "Students", value: "184", icon: GraduationCap, tone: "tone-rose" },
     ],
     toolbar: [
@@ -162,7 +162,7 @@ const routeConfig = {
     summary: [
       { label: "Pending", value: "12", icon: ClipboardList, tone: "tone-blue" },
       { label: "Submitted", value: "48", icon: FileText, tone: "tone-teal" },
-      { label: "Needs Review", value: "5", icon: Sparkles, tone: "tone-rose" },
+      { label: "Needs Review", value: "5", icon: BookOpen, tone: "tone-rose" },
     ],
     toolbar: [
       { title: "Create Assignment", value: "New task" },
@@ -192,7 +192,7 @@ const routeConfig = {
     description: "Enter, edit, and save student results with simple class and subject filters.",
     summary: [
       { label: "Recent Tests", value: "3", icon: FileText, tone: "tone-blue" },
-      { label: "Average", value: "78%", icon: Sparkles, tone: "tone-teal" },
+      { label: "Average", value: "78%", icon: BookOpen, tone: "tone-teal" },
       { label: "Needs Support", value: "6", icon: Users, tone: "tone-rose" },
     ],
     toolbar: [
@@ -224,7 +224,7 @@ const routeConfig = {
     summary: [
       { label: "Planned", value: "8", icon: BookOpen, tone: "tone-blue" },
       { label: "Reviewing", value: "2", icon: CalendarDays, tone: "tone-teal" },
-      { label: "Ready", value: "6", icon: Sparkles, tone: "tone-rose" },
+      { label: "Ready", value: "6", icon: BookOpen, tone: "tone-rose" },
     ],
     toolbar: [
       { title: "Create Lesson Plan", value: "New plan" },
@@ -254,7 +254,7 @@ const routeConfig = {
     description: "Review your weekly schedule, today’s lessons, and the next class in line.",
     summary: [
       { label: "Periods", value: "6", icon: CalendarDays, tone: "tone-blue" },
-      { label: "Free Slots", value: "2", icon: Sparkles, tone: "tone-teal" },
+      { label: "Free Slots", value: "2", icon: BookOpen, tone: "tone-teal" },
       { label: "Meetings", value: "1", icon: Bell, tone: "tone-rose" },
     ],
     toolbar: [
@@ -286,7 +286,7 @@ const routeConfig = {
     summary: [
       { label: "New", value: "3", icon: Bell, tone: "tone-blue" },
       { label: "Class", value: "2", icon: BookOpen, tone: "tone-teal" },
-      { label: "Important", value: "1", icon: Sparkles, tone: "tone-rose" },
+      { label: "Important", value: "1", icon: BookOpen, tone: "tone-rose" },
     ],
     toolbar: [
       { title: "School Announcements", value: "Live" },
@@ -317,7 +317,7 @@ const routeConfig = {
     summary: [
       { label: "Inbox", value: "7", icon: MessageSquare, tone: "tone-blue" },
       { label: "Unread", value: "3", icon: Bell, tone: "tone-teal" },
-      { label: "Pending", value: "2", icon: Sparkles, tone: "tone-rose" },
+      { label: "Pending", value: "2", icon: BookOpen, tone: "tone-rose" },
     ],
     toolbar: [
       { title: "Inbox", value: "Active" },
@@ -348,7 +348,7 @@ const routeConfig = {
     summary: [
       { label: "Teaching Materials", value: "18", icon: BookOpen, tone: "tone-blue" },
       { label: "Downloads", value: "6", icon: FileText, tone: "tone-teal" },
-      { label: "Uploaded Files", value: "11", icon: Sparkles, tone: "tone-rose" },
+      { label: "Uploaded Files", value: "11", icon: BookOpen, tone: "tone-rose" },
     ],
     toolbar: [
       { title: "Teaching Materials", value: "Available" },
@@ -405,7 +405,7 @@ const routeConfig = {
     summary: [
       { label: "Theme", value: "System", icon: Settings, tone: "tone-blue" },
       { label: "Alerts", value: "On", icon: Bell, tone: "tone-teal" },
-      { label: "Layout", value: "Compact", icon: Sparkles, tone: "tone-rose" },
+      { label: "Layout", value: "Compact", icon: BookOpen, tone: "tone-rose" },
     ],
     focusTitle: "Workspace Preferences",
     focusItems: [
