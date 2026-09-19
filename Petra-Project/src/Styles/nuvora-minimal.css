@@ -778,3 +778,199 @@ textarea::placeholder {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Authentication: same white/black/blue system, including small screens. */
+.auth-page {
+  --auth-ink: #111111 !important;
+  --auth-muted: #666666 !important;
+  --auth-paper: #ffffff !important;
+  --auth-surface: #ffffff !important;
+  --auth-line: #e5e5e5 !important;
+  --auth-accent: #2563eb !important;
+  --auth-accent-soft: #eff6ff !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+.auth-page::before,
+.auth-page::after {
+  display: none !important;
+  content: none !important;
+}
+.auth-form {
+  background: #ffffff !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+.auth-form-kicker,
+.auth-link,
+.auth-switch a,
+.auth-field small,
+.auth-security-note svg {
+  color: #2563eb !important;
+}
+.auth-input-wrap {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+}
+.auth-input-wrap:focus-within {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.10) !important;
+}
+.auth-submit {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.auth-submit:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: none !important;
+}
+.auth-alert {
+  background: #f5f5f5 !important;
+  border-color: #e5e5e5 !important;
+  color: #555555 !important;
+}
+.auth-theme-btn {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+  color: #666666 !important;
+}
+.auth-theme-btn:hover,
+.auth-eye-btn:hover {
+  color: #2563eb !important;
+}
+.auth-page .registration-choice-card {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+  box-shadow: none !important;
+}
+.auth-page .registration-choice-icon {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #dbeafe !important;
+}
+
+/* Wallet: remove the legacy brown/orange hero and oversized visual effects. */
+.wallet-page .wallet-hero {
+  background: #111111 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 1px solid #222222 !important;
+  border-radius: 16px !important;
+}
+.wallet-page .wallet-hero-orb,
+.wallet-page .wallet-hero-orb-one,
+.wallet-page .wallet-hero-orb-two {
+  display: none !important;
+}
+.wallet-page .wallet-button-primary,
+.wallet-page .wallet-empty-card button {
+  background: #2563eb !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+.wallet-page .wallet-button-light {
+  color: #111111 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+.wallet-page .wallet-button-ghost {
+  color: #ffffff !important;
+  background: transparent !important;
+  border-color: rgb(255 255 255 / 0.28) !important;
+}
+.wallet-page .wallet-sidebar,
+.wallet-page .wallet-metric,
+.wallet-page .wallet-card,
+.wallet-page .wallet-form-card,
+.wallet-page .wallet-connected-panel,
+.wallet-page .wallet-security-card {
+  background: #ffffff !important;
+  border-color: #e5e5e5 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+.wallet-page .wallet-sidebar-logo,
+.wallet-page .wallet-metric-icon,
+.wallet-page .wallet-security-card-icon {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+.wallet-page .wallet-nav button.active {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+}
+.wallet-page .wallet-nav button:hover {
+  color: #111111 !important;
+  background: #f7f7f8 !important;
+}
+.wallet-page .wallet-live-dot,
+.wallet-page .wallet-metric-positive .wallet-metric-icon,
+.wallet-page .wallet-connected-icon,
+.wallet-page .wallet-security-mini {
+  background: #f5f5f5 !important;
+  color: #555555 !important;
+}
+.wallet-page .wallet-setup-banner,
+.wallet-page .wallet-connected-hero {
+  background: #f7f7f8 !important;
+  background-image: none !important;
+  border-color: #e5e5e5 !important;
+}
+.wallet-page .wallet-setup-icon,
+.wallet-page .wallet-link-button,
+.wallet-page .wallet-form-heading span,
+.wallet-page .wallet-balance-mini strong {
+  color: #2563eb !important;
+}
+.wallet-page .wallet-account-visual {
+  background: #171717 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+.wallet-page .wallet-account-visual > strong,
+.wallet-page .wallet-account-visual > span,
+.wallet-page .wallet-account-chip {
+  color: #ffffff !important;
+}
+.wallet-page [class*="hero"],
+.wallet-page [class*="setup"] {
+  box-shadow: none !important;
+}
+.wallet-page .wallet-tool-grid button {
+  background: #f7f7f8 !important;
+  border-color: #e5e5e5 !important;
+}
+.wallet-page .wallet-tool-grid button svg {
+  color: #2563eb !important;
+}
+
+/* Neutralize common legacy colored surfaces while preserving semantic content. */
+.dashboard-page [class*="tone-"],
+.dashboard-page [class*="status-"] {
+  box-shadow: none !important;
+}
+.dashboard-page [class*="tone-"] {
+  border-color: #e5e5e5 !important;
+}
+.dashboard-page .tone-blue,
+.dashboard-page .tone-indigo,
+.dashboard-page .tone-purple,
+.dashboard-page .tone-cyan,
+.dashboard-page .tone-emerald,
+.dashboard-page .tone-teal,
+.dashboard-page .tone-rose,
+.dashboard-page .tone-amber {
+  background: #f5f5f5 !important;
+  color: #555555 !important;
+}
+
+/* Keep the whole product visually quiet: no decorative giant shadows. */
+.dashboard-page [class*="shadow-"],
+.landing-page [class*="shadow-"] {
+  box-shadow: none !important;
+}
