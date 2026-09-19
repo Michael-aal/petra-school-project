@@ -3,7 +3,7 @@ import {
   BookOpen,
   CheckCircle2,
   Layers3,
-  Sparkles,
+  MessageCircle,
   Users,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -162,7 +162,7 @@ function CTA({ data }) {
   return (
     <section className="marketing-section marketing-cta fparent-cta">
       <div className="cta-badge">
-        <Sparkles size={16} />
+        <MessageCircle size={16} />
         <span>{data.badge}</span>
       </div>
       <h2 className="marketing-cta-title">Ready to explore {data.title}?</h2>
