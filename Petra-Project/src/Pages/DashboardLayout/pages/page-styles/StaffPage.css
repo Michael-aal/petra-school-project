@@ -97,9 +97,6 @@
 }
 
 
-/* =========================================================
-   HOVER / FOCUS
-   ========================================================= */
 
 .staff-page-list li {
   transition:
@@ -115,11 +112,6 @@
 }
 
 
-/* =========================================================
-   OPTIONAL STATUS STATES
-   Scoped to staff page only.
-   ========================================================= */
-
 .staff-page .staff-success {
   border-color: var(--staff-blue-border);
   background: var(--staff-blue-soft);
@@ -132,10 +124,6 @@
   color: var(--staff-red-dark);
 }
 
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
 
 @media (max-width: 640px) {
   .staff-page {
@@ -153,9 +141,6 @@
 }
 
 
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .staff-page-list li {
