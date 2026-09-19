@@ -608,3 +608,71 @@
 .ask-nuvora-icon-wrap, .notification-action { background:#1877F2 !important; color:#FFFFFF !important; }
 .ask-nuvora-icon-wrap svg, .notification-action svg { color:#FFFFFF !important; stroke:#FFFFFF !important; }
 .user-name, .top-welcome { color:#0F172A !important; }
+
+
+/* NUVORA TOPBAR ICON FIX — single visible Lucide treatment */
+.top-navbar .menu-btn,
+.top-navbar .icon-btn,
+.top-navbar .ask-nuvora-btn,
+.top-navbar .user-info {
+  color: #1877F2 !important;
+}
+
+.top-navbar .menu-btn svg,
+.top-navbar .icon-btn svg,
+.top-navbar .ask-nuvora-btn svg,
+.top-navbar .user-info svg,
+.top-navbar svg.lucide {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  color: #1877F2 !important;
+  stroke: #1877F2 !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  stroke-width: 2 !important;
+  flex-shrink: 0;
+}
+
+.top-navbar .menu-btn,
+.top-navbar .icon-btn,
+.top-navbar .ask-nuvora-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 0 !important;
+}
+
+.top-navbar .ask-nuvora-icon-wrap {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #1877F2 !important;
+  color: #FFFFFF !important;
+}
+
+.top-navbar .ask-nuvora-icon-wrap svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+.top-navbar .icon-btn:hover svg,
+.top-navbar .menu-btn:hover svg,
+.top-navbar .ask-nuvora-btn:hover svg,
+.top-navbar .user-info:hover svg {
+  color: #0F5DCC !important;
+  stroke: #0F5DCC !important;
+}
+
+@media (max-width: 640px) {
+  .top-navbar .menu-btn svg,
+  .top-navbar .icon-btn svg,
+  .top-navbar .ask-nuvora-btn svg,
+  .top-navbar .user-info svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
