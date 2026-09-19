@@ -9,7 +9,6 @@ import {
   CircleHelp,
   FileCheck2,
   Landmark,
-  Building2,
 } from "lucide-react";
 
 import { UserContext } from "../../../context/UserContext";
