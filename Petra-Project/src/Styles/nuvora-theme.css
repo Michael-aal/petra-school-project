@@ -304,3 +304,150 @@ textarea{min-height:96px}
 .dashboard-content .text-secondary {
   color: #64748b !important;
 }
+
+
+/* =========================================================
+   NUVORA ADMIN SYSTEM — final consistency layer
+   Clean Django-admin-inspired information hierarchy:
+   white surfaces, restrained blue, neutral controls, no gradients.
+   ========================================================= */
+:root{
+  --nuvora-blue:#1877f2!important;
+  --nuvora-blue-dark:#0f5dcc!important;
+  --nuvora-blue-soft:#eaf3ff!important;
+  --nuvora-bg:#f7f9fc!important;
+  --nuvora-surface:#ffffff!important;
+  --nuvora-text:#0f172a!important;
+  --nuvora-muted:#64748b!important;
+  --nuvora-border:#e2e8f0!important;
+  --nuvora-shadow:0 4px 18px rgb(15 23 42 / 6%)!important;
+}
+.dashboard-page,.dashboard-content,.dashboard-main,.role-dashboard,.page-content{
+  background:#f7f9fc!important;
+  color:#0f172a!important;
+}
+.dashboard-page [class*="gradient"],
+.dashboard-content [class*="gradient"],
+.dashboard-page [style*="linear-gradient"],
+.dashboard-content [style*="linear-gradient"]{
+  background-image:none!important;
+}
+.dashboard-page .card,.dashboard-page .panel,.dashboard-page .stat-card,
+.dashboard-content .card,.dashboard-content .panel,.dashboard-content .stat-card,
+.dashboard-page .table-container,.dashboard-content .table-container,
+.dashboard-page .modal-content,.dashboard-content .modal-content{
+  background:#fff!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:12px!important;
+  box-shadow:var(--nuvora-shadow)!important;
+}
+.dashboard-page h1,.dashboard-page h2,.dashboard-page h3,
+.dashboard-content h1,.dashboard-content h2,.dashboard-content h3{
+  color:#0f172a!important;
+  letter-spacing:-.02em;
+}
+.dashboard-page p,.dashboard-content p,.dashboard-page .muted,.dashboard-content .muted{
+  color:#64748b;
+}
+.dashboard-page button,.dashboard-content button{
+  border-radius:9px;
+}
+.dashboard-page button.primary,.dashboard-page .btn-primary,
+.dashboard-content button.primary,.dashboard-content .btn-primary{
+  background:#1877f2!important;
+  background-image:none!important;
+  color:#fff!important;
+  border-color:#1877f2!important;
+}
+.dashboard-page button.primary:hover,.dashboard-page .btn-primary:hover,
+.dashboard-content button.primary:hover,.dashboard-content .btn-primary:hover{
+  background:#0f5dcc!important;
+}
+.dashboard-page .icon-button,.dashboard-content .icon-button,
+.dashboard-page button[aria-label],.dashboard-content button[aria-label]{
+  display:inline-grid;
+  place-items:center;
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
+  padding:0!important;
+  border:1px solid #e2e8f0!important;
+  background:#fff!important;
+  color:#475569!important;
+}
+.dashboard-page .icon-button:hover,.dashboard-content .icon-button:hover,
+.dashboard-page button[aria-label]:hover,.dashboard-content button[aria-label]:hover{
+  background:#eaf3ff!important;
+  border-color:#bfdbfe!important;
+  color:#1877f2!important;
+}
+.dashboard-page svg,.dashboard-content svg{
+  visibility:visible!important;
+  opacity:1!important;
+  flex-shrink:0;
+}
+.dashboard-page .icon-button svg,.dashboard-content .icon-button svg,
+.dashboard-page button[aria-label] svg,.dashboard-content button[aria-label] svg{
+  width:18px!important;height:18px!important;
+  stroke:currentColor!important;
+}
+.dashboard-page [class*="orange"],
+.dashboard-page [class*="amber"],
+.dashboard-content [class*="orange"],
+.dashboard-content [class*="amber"]{
+  color:#475569!important;
+  background:#f8fafc!important;
+  border-color:#e2e8f0!important;
+}
+.dashboard-page [class*="orange"] svg,
+.dashboard-page [class*="amber"] svg,
+.dashboard-content [class*="orange"] svg,
+.dashboard-content [class*="amber"] svg{
+  color:#64748b!important;
+  stroke:currentColor!important;
+}
+.dashboard-page .status-warning,.dashboard-content .status-warning,
+.dashboard-page .warning,.dashboard-content .warning{
+  background:#f8fafc!important;
+  color:#475569!important;
+  border-color:#e2e8f0!important;
+}
+.dashboard-page .table-container,.dashboard-content .table-container{
+  overflow-x:auto;
+}
+.dashboard-page table,.dashboard-content table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.dashboard-page th,.dashboard-content th{
+  background:#f8fafc!important;
+  color:#64748b!important;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.dashboard-page td,.dashboard-content td{
+  color:#334155!important;
+  border-color:#e2e8f0!important;
+}
+.dashboard-page tbody tr:hover,.dashboard-content tbody tr:hover{
+  background:#f8fbff!important;
+}
+@media (max-width:900px){
+  .dashboard-page,.dashboard-content{padding-left:16px!important;padding-right:16px!important}
+}
+@media (max-width:640px){
+  .dashboard-page,.dashboard-content{padding-left:12px!important;padding-right:12px!important}
+  .dashboard-page .card,.dashboard-content .card{border-radius:10px!important}
+}
+@media(prefers-reduced-motion:no-preference){
+  .dashboard-page button,.dashboard-content button,.dashboard-page .card,.dashboard-content .card{
+    transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-page *,.dashboard-content *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
