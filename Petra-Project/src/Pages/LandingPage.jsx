@@ -12,7 +12,6 @@ import {
   MessageCircle,
   School,
   ShieldCheck,
-  Sparkles,
   Users
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -61,7 +60,7 @@ export default function LandingPage() {
 
         <div className="landing-hero-copy">
           <div className="landing-badge">
-            <Sparkles size={14} />
+            <ShieldCheck size={14} />
             <span>The connected school platform</span>
           </div>
 
@@ -157,7 +156,7 @@ export default function LandingPage() {
             <span className="story-number">03</span>
             <h3>Make progress visible</h3>
             <p>From attendance to assessments, Nuvora turns school activity into useful signals that help people act sooner.</p>
-            <div className="story-line"><Sparkles size={18} /><span>Progress you can understand</span></div>
+            <div className="story-line"><ShieldCheck size={18} /><span>Progress you can understand</span></div>
           </article>
         </div>
       </section>
@@ -305,7 +304,7 @@ export default function LandingPage() {
               <div className="pulse-metric"><span>Active resources</span><b>318</b></div>
             </div>
             <div className="pulse-side-card pulse-side-blue">
-              <Sparkles size={22}/>
+              <ShieldCheck size={22}/>
               <strong>Small moments add up.</strong>
               <p>Nuvora connects them so the people responsible can act without losing context.</p>
             </div>
