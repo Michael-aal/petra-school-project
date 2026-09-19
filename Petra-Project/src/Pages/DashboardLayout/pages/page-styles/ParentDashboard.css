@@ -1,8 +1,3 @@
-```css
-/* =========================================================
-   PETRA SCHOOL SYSTEM — PARENT DASHBOARD
-   White dominant / Blue primary / Red for negative states
-   ========================================================= */
 
 .parent-dashboard {
   --parent-white: #ffffff;
@@ -393,4 +388,4 @@
     transform: none;
   }
 }
-```
+
