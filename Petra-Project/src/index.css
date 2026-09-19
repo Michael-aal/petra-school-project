@@ -1866,7 +1866,7 @@ body.light {
   color: #64748b !important;
 }
 
-/* ---------- Primary blue actions ---------- */
+
 
 .dashboard-shell .btn-primary,
 .dashboard-shell button[type="submit"],
@@ -1901,8 +1901,6 @@ body.light {
   border-color: #93c5fd !important;
 }
 
-/* ---------- Forms ---------- */
-
 .dashboard-shell input,
 .dashboard-shell select,
 .dashboard-shell textarea,
@@ -1930,7 +1928,7 @@ body.light {
   outline: none !important;
 }
 
-/* ---------- Tables ---------- */
+
 
 .dashboard-shell table th {
   color: #475569 !important;
@@ -1947,7 +1945,7 @@ body.light {
   background: #f8fbff !important;
 }
 
-/* ---------- Blue utility states ---------- */
+
 
 .dashboard-shell .dashboard-stat-card-icon,
 .dashboard-shell .dashboard-quick-action-icon,
@@ -1965,7 +1963,7 @@ body.light {
   color: #2563eb !important;
 }
 
-/* ---------- Red: alerts / overdue / destructive ---------- */
+
 
 .dashboard-shell .status-badge.danger,
 .dashboard-shell .badge.danger,
