@@ -7,7 +7,7 @@
   min-height: 100vh;
   background:
     radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 30%),
-    #f6f8fc;
+    #f7f9fc;
   color: #0f172a;
   font-family:
     Inter,
@@ -48,15 +48,15 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #0a192f;
+  background: #1e3a8a;
   color: #ffffff;
   font-size: 21px;
   font-weight: 800;
-  box-shadow: 0 8px 20px rgba(10, 25, 47, 0.18);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
 }
 
 .payment-brand-name {
-  color: #0a192f;
+  color: #1e3a8a;
   font-size: 17px;
   font-weight: 850;
   letter-spacing: 0.08em;
@@ -109,7 +109,7 @@
 
 .payment-heading h1 {
   margin: 0;
-  color: #0a192f;
+  color: #1e3a8a;
   font-size: clamp(30px, 4vw, 42px);
   line-height: 1.1;
   letter-spacing: -0.035em;
@@ -139,8 +139,8 @@
 
 .payment-alert-error {
   border-color: #fecaca;
-  background: #fff7f7;
-  color: #991b1b;
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
 .payment-alert-success {
@@ -264,7 +264,7 @@
   flex: 1;
   height: 50px;
   padding: 0 15px;
-  border: 1px solid #d7dee9;
+  border: 1px solid #cbd5e1;
   border-radius: 11px;
   outline: none;
   background: #ffffff;
@@ -285,7 +285,7 @@
 }
 
 .verification-input-wrapper input:hover {
-  border-color: #b8c3d3;
+  border-color: #94a3b8;
 }
 
 .verification-input-wrapper input:focus {
@@ -368,7 +368,7 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #0a192f;
+  background: #1e3a8a;
   color: #ffffff;
   font-size: 16px;
   font-weight: 800;
@@ -448,7 +448,7 @@
 
 .fee-card:hover {
   border-color: #bfdbfe;
-  background: #fbfdff;
+  background: #f8fbff;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
   transform: translateY(-1px);
 }
@@ -548,7 +548,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  border: 1px solid #dbe3ee;
+  border: 1px solid #e2e8f0;
   border-radius: 9px;
   background: #ffffff;
 }
@@ -565,7 +565,7 @@
 }
 
 .quantity-input button:hover:not(:disabled) {
-  background: #eaf2ff;
+  background: #eff6ff;
   color: #2563eb;
 }
 
@@ -608,7 +608,7 @@
 
 .empty-state {
   padding: 36px 20px;
-  border: 1px dashed #d8e0eb;
+  border: 1px dashed #cbd5e1;
   border-radius: 14px;
   background: #f8fafc;
   text-align: center;
@@ -621,7 +621,7 @@
   place-items: center;
   margin: 0 auto 12px;
   border-radius: 13px;
-  background: #eaf2ff;
+  background: #eff6ff;
   color: #2563eb;
   font-size: 18px;
   font-weight: 800;
@@ -682,7 +682,7 @@
 .summary-card {
   overflow: hidden;
   padding: 22px;
-  border: 1px solid #dbe3ee;
+  border: 1px solid #e2e8f0;
   border-radius: 18px;
   background: #ffffff;
   box-shadow: 0 14px 38px rgba(15, 23, 42, 0.08);
@@ -725,7 +725,7 @@
 .summary-divider {
   height: 1px;
   margin: 20px 0;
-  background: #e8edf4;
+  background: #e2e8f0;
 }
 
 /* =========================================================
@@ -838,7 +838,7 @@
   gap: 15px;
   margin-top: 20px;
   padding-top: 18px;
-  border-top: 1px solid #e8edf4;
+  border-top: 1px solid #e2e8f0;
 }
 
 .summary-total span {
@@ -848,7 +848,7 @@
 }
 
 .summary-total strong {
-  color: #0a192f;
+  color: #1e3a8a;
   font-size: 23px;
   font-weight: 850;
   letter-spacing: -0.03em;
@@ -1095,4 +1095,149 @@
   .summary-card {
     padding: 18px;
   }
+}
+
+
+
+.payment-page {
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.06), transparent 30%),
+    #f7f9fc !important;
+  color: #0f172a !important;
+}
+
+.payment-brand-mark {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18) !important;
+}
+
+.payment-brand-name {
+  color: #0f172a !important;
+}
+
+.payment-eyebrow,
+.summary-label,
+.selected-student-info small {
+  color: #2563eb !important;
+}
+
+.payment-alert-error {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+.payment-alert-success {
+  border-color: #bbf7d0 !important;
+  background: #f0fdf4 !important;
+  color: #166534 !important;
+}
+
+.payment-section,
+.summary-card,
+.fee-card,
+.verification-input-wrapper input,
+.quantity-input {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.section-number,
+.summary-count,
+.empty-icon {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.verification-input-wrapper input:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10) !important;
+}
+
+.verification-input-wrapper button,
+.pay-button {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.verification-input-wrapper button:hover:not(:disabled),
+.pay-button:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+}
+
+.selected-student {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+}
+
+.student-avatar {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+}
+
+.fee-card:hover {
+  border-color: #bfdbfe !important;
+  background: #f8fbff !important;
+}
+
+.fee-card-selected {
+  border-color: #60a5fa !important;
+  background: #eff6ff !important;
+}
+
+.custom-checkbox.checked {
+  border-color: #2563eb !important;
+  background: #2563eb !important;
+}
+
+.quantity-input button:hover:not(:disabled) {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.summary-card {
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.065) !important;
+}
+
+.summary-total strong {
+  color: #0f172a !important;
+}
+
+.pay-button:disabled {
+  background: #cbd5e1 !important;
+}
+
+.loading-spinner {
+  border-color: #dbeafe !important;
+  border-top-color: #2563eb !important;
+}
+
+/* Red is reserved for payment problems, overdue items, and destructive states. */
+.payment-alert-error,
+.payment-error,
+.payment-overdue,
+.payment-danger,
+.payment-page [class*="danger"],
+.payment-page [class*="error"] {
+  color: #b91c1c;
+}
+
+.payment-page .danger,
+.payment-page .error {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.payment-page button[class*="danger"],
+.payment-page button[class*="delete"] {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.payment-page button[class*="danger"]:hover,
+.payment-page button[class*="delete"]:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
 }
