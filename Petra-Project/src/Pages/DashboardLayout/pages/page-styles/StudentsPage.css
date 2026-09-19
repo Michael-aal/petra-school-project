@@ -129,9 +129,6 @@
   font-weight: 750;
 }
 
-/* =========================================================
-   OPTIONAL STUDENT STATUS
-   ========================================================= */
 
 .students-page .student-status {
   display: inline-flex;
@@ -157,10 +154,6 @@
   background: var(--students-red-soft);
   color: var(--students-red-dark);
 }
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
 
 @media (max-width: 640px) {
   .students-page {
