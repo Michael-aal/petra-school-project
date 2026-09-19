@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   CheckCircle2, Copy, GraduationCap, CreditCard, 
-  Download, GraduationCap, ArrowRight, School 
+  Download, ArrowRight, School 
 } from "lucide-react";
 import "./AdmissionPassScreen.css";
 
