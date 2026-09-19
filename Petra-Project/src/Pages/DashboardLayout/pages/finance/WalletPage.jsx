@@ -15,7 +15,7 @@ import {
   RefreshCw,
   Send,
   ShieldCheck,
-  Sparkles,
+  WalletCards,
   WalletCards,
 } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
@@ -170,7 +170,7 @@ export default function WalletPage() {
           {error && <div className="wallet-alert wallet-alert-error"><span>{error}</span></div>}
 
           {activeView === "overview" && <div className="wallet-view">
-            {!connected && <section className="wallet-setup-banner"><div className="wallet-setup-icon"><Sparkles size={21} /></div><div className="wallet-setup-copy"><span>Finish your payment setup</span><strong>Connect the school settlement account</strong><p>Use the school's verified bank details to connect the payment account.</p></div><button type="button" className="wallet-button wallet-button-primary" onClick={() => setActiveView("setup")}>Set up <ChevronRight size={17} /></button></section>}
+            {!connected && <section className="wallet-setup-banner"><div className="wallet-setup-icon"><WalletCards size={21} /></div><div className="wallet-setup-copy"><span>Finish your payment setup</span><strong>Connect the school settlement account</strong><p>Use the school's verified bank details to connect the payment account.</p></div><button type="button" className="wallet-button wallet-button-primary" onClick={() => setActiveView("setup")}>Set up <ChevronRight size={17} /></button></section>}
             <div className="wallet-section-heading"><div><span>Today</span><h2>Money at a glance</h2></div><button type="button" className="wallet-link-button" onClick={() => setActiveView("transactions")}>View all activity <ChevronRight size={16} /></button></div>
             <div className="wallet-overview-grid">
               <section className="wallet-card wallet-account-card"><div className="wallet-card-heading"><div><span className="wallet-eyebrow">School account</span><h3>{connected ? "Connected & ready" : "Not connected yet"}</h3></div><span className={`wallet-status ${connected ? "success" : "pending"}`}><i /> {connected ? "Active" : "Setup needed"}</span></div>{connected ? <><div className="wallet-account-visual"><div className="wallet-account-chip"><Landmark size={20} /><span>{paymentAccount?.dva?.bankName || "Dedicated account"}</span></div><strong>{paymentAccount?.dva?.accountNumber || "Account ready"}</strong><span>{paymentAccount?.dva?.accountName || schoolName}</span></div><div className="wallet-account-details"><div><span>Settlement bank</span><strong>{paymentAccount?.settlement?.bankName || "Configured"}</strong></div><div><span>Settlement account</span><strong>{maskAccount(paymentAccount?.settlement?.accountNumber)}</strong></div><div><span>Schedule</span><strong>{paymentAccount?.settlement?.schedule || "Automatic"}</strong></div></div></> : <div className="wallet-empty-card"><Building2 size={25} /><div><strong>Connect the school's bank account</strong><p>Connect the school's settlement account to activate the payment setup.</p></div><button type="button" onClick={() => setActiveView("setup")}><Plus size={17} /> Connect</button></div>}</section>
