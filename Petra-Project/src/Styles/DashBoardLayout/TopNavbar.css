@@ -676,3 +676,151 @@
     height: 18px !important;
   }
 }
+
+
+/* NUVORA ICON SYSTEM — centered blue control / white glyph */
+.top-navbar .icon-btn,
+.top-navbar .ask-nuvora-btn {
+  position: relative;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  color: #1877F2 !important;
+  overflow: visible;
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), background 180ms ease, box-shadow 180ms ease;
+}
+
+.top-navbar .icon-btn::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 10px;
+  background: #1877F2;
+  box-shadow: 0 3px 10px rgba(24,119,242,.16);
+  transform: scale(.94);
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
+}
+
+.top-navbar .icon-btn > svg {
+  position: relative;
+  z-index: 1;
+  width: 18px !important;
+  height: 18px !important;
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2.1 !important;
+  fill: none !important;
+  transform: translateZ(0);
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1);
+}
+
+.top-navbar .icon-btn:hover::before,
+.top-navbar .ask-nuvora-btn:hover .ask-nuvora-icon-wrap {
+  transform: scale(1);
+  box-shadow: 0 6px 16px rgba(24,119,242,.22);
+}
+
+.top-navbar .icon-btn:hover > svg {
+  transform: scale(1.08);
+}
+
+.top-navbar .icon-btn:active {
+  transform: scale(.94);
+}
+
+.top-navbar .icon-btn:focus-visible,
+.top-navbar .ask-nuvora-btn:focus-visible {
+  outline: 3px solid rgba(24,119,242,.18);
+  outline-offset: 2px;
+}
+
+/* Ask Nuvora: centered blue tile with a white inner glyph */
+.top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap {
+  position: relative;
+  z-index: 1;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #1877F2 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 10px rgba(24,119,242,.16);
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
+}
+
+.top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 2.2 !important;
+  fill: none !important;
+}
+
+/* Notification count: compact blue badge, white number, anchored cleanly */
+.top-navbar .nav-badge {
+  z-index: 3;
+  top: 0 !important;
+  right: -1px !important;
+  min-width: 17px !important;
+  height: 17px !important;
+  padding: 0 4px !important;
+  border: 2px solid #FFFFFF;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #1877F2 !important;
+  color: #FFFFFF !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 7px rgba(24,119,242,.25) !important;
+  animation: nuvoraBadgePop 240ms cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes nuvoraBadgePop {
+  0% { transform: scale(.55); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Small, deliberate motion inspired by modern dashboard micro-interactions. */
+@keyframes nuvoraIconPulse {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.06); }
+}
+
+.top-navbar .notification-menu .icon-btn:hover > svg {
+  animation: nuvoraIconPulse 900ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-navbar .icon-btn,
+  .top-navbar .ask-nuvora-btn,
+  .top-navbar .icon-btn::before,
+  .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap,
+  .top-navbar .icon-btn > svg {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-navbar .icon-btn,
+  .top-navbar .ask-nuvora-btn {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+  }
+}
