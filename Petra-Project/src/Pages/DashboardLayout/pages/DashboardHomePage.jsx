@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   CreditCard,
   GraduationCap,
+  School,
   Landmark,
   TrendingUp,
   UserRoundCheck,
