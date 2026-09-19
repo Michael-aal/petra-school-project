@@ -1036,3 +1036,243 @@ textarea::placeholder {
   color: #2563eb !important;
   background: #eff6ff !important;
 }
+
+
+/* -------------------------------------------------------------------------
+   NUVORA ICON SYSTEM
+   One icon language across the entire product.
+   ------------------------------------------------------------------------- */
+
+:root {
+  --nuvora-icon: #525252;
+  --nuvora-icon-strong: #171717;
+  --nuvora-icon-active: #2563eb;
+  --nuvora-icon-muted: #737373;
+  --nuvora-icon-bg: #f5f5f5;
+  --nuvora-icon-active-bg: #eff6ff;
+}
+
+/* All SVG icons inherit a controlled neutral tone by default. */
+svg {
+  color: var(--nuvora-icon) !important;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+/* Lucide and inline SVGs: never allow legacy fill/stroke colors to leak. */
+svg:not([data-chart]),
+svg.lucide,
+svg[class*="lucide"] {
+  color: var(--nuvora-icon) !important;
+  stroke: currentColor;
+}
+
+/* Keep actual illustrations/charts intact where explicitly marked. */
+svg[data-chart],
+.chart svg,
+.recharts-wrapper svg,
+.recharts-surface {
+  color: inherit !important;
+}
+
+/* One consistent icon size hierarchy. Components can override with their
+   existing sizing classes; these are safe defaults for un-sized SVGs. */
+button > svg,
+a > svg {
+  width: 18px;
+  height: 18px;
+}
+
+button > svg.lucide,
+a > svg.lucide {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+.sidebar-link svg,
+.sidebar-child svg,
+.sidebar-group svg,
+.sidebar-assistant svg,
+.sidebar-icon,
+.child-icon {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 1.8 !important;
+  color: var(--nuvora-icon) !important;
+}
+
+.sidebar-link:hover svg,
+.sidebar-child:hover svg,
+.sidebar-group:hover svg,
+.sidebar-assistant:hover svg {
+  color: var(--nuvora-icon-strong) !important;
+}
+
+.sidebar-link.active svg,
+.sidebar-child.active svg,
+.sidebar-group.group-active svg,
+.sidebar-assistant.active svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+.top-navbar svg,
+.navbar svg,
+.mobile-menu svg {
+  color: var(--nuvora-icon) !important;
+  stroke-width: 1.8 !important;
+}
+
+.top-navbar button:hover svg,
+.navbar a:hover svg,
+.mobile-menu a:hover svg {
+  color: var(--nuvora-icon-strong) !important;
+}
+
+.top-navbar .ask-nuvora-icon-wrap svg,
+.top-navbar .avatar svg {
+  color: #ffffff !important;
+}
+
+.menu-btn svg,
+.icon-btn svg,
+.mobile-menu-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Cards/stat icons use the same neutral treatment. Blue is reserved for
+   active/primary meaning, not decorative variety. */
+.card > svg,
+.panel > svg,
+.stat-card > svg,
+.stat-card svg,
+.dashboard-widget svg,
+.dashboard-home-summary-icon svg,
+.dashboard-quick-action > svg,
+.feature-icon svg,
+.reassurance-icon svg,
+.summary-icon svg,
+.metric-icon svg {
+  color: var(--nuvora-icon) !important;
+  stroke-width: 1.8 !important;
+}
+
+.dashboard-home-summary-card:hover .dashboard-home-summary-icon svg,
+.dashboard-quick-action:hover > svg,
+.stat-card:hover svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+/* Explicitly normalize legacy tone classes. */
+[class*="tone-"] svg,
+[class*="status-"] svg,
+[class*="color-"] svg {
+  color: var(--nuvora-icon) !important;
+}
+
+/* Icon wrappers: quiet neutral surface instead of a rainbow of backgrounds. */
+[class*="icon-wrap"],
+[class*="icon-wrapper"],
+[class*="icon-container"],
+.stat-icon,
+.feature-icon,
+.summary-icon,
+.metric-icon {
+  background: var(--nuvora-icon-bg) !important;
+  color: var(--nuvora-icon) !important;
+  border-color: var(--nuvora-border) !important;
+  box-shadow: none !important;
+}
+
+[class*="icon-wrap"] svg,
+[class*="icon-wrapper"] svg,
+[class*="icon-container"] svg,
+.stat-icon svg,
+.feature-icon svg,
+.summary-icon svg,
+.metric-icon svg {
+  color: var(--nuvora-icon) !important;
+  stroke-width: 1.8 !important;
+}
+
+/* Active/selected icon containers are the only colored icon treatment. */
+.sidebar-link.active .sidebar-icon,
+.sidebar-child.active .child-icon,
+.nav-item.active svg,
+.tab.active svg,
+[aria-current="page"] svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+.sidebar-link.active .sidebar-icon,
+.sidebar-child.active .child-icon {
+  background: transparent !important;
+}
+
+/* Decorative emoji/icon glyphs should not introduce a second visual language. */
+.icon-emoji,
+.emoji-icon,
+[class*="emoji"] {
+  filter: grayscale(1);
+}
+
+/* Wallet and finance icons follow the same rule. */
+.wallet-page svg,
+.wallet-page .wallet-nav svg,
+.wallet-page .wallet-tool-grid svg {
+  color: var(--nuvora-icon) !important;
+  stroke-width: 1.8 !important;
+}
+
+.wallet-page .wallet-nav button.active svg,
+.wallet-page .wallet-tool-grid button:hover svg,
+.wallet-page .wallet-link-button svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+/* Auth icons: neutral by default, blue only for focused/important actions. */
+.auth-page svg {
+  color: var(--nuvora-icon) !important;
+  stroke-width: 1.8 !important;
+}
+
+.auth-page .auth-link svg,
+.auth-page .auth-submit svg,
+.auth-page .auth-security-note svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+.auth-page .auth-submit svg {
+  color: #ffffff !important;
+}
+
+/* Never use the old orange/coral icon treatment. */
+[class*="coral"] svg,
+[class*="orange"] svg,
+[class*="amber"] svg {
+  color: var(--nuvora-icon) !important;
+}
+
+.dashboard-landing-kicker svg {
+  color: var(--nuvora-icon-active) !important;
+}
+
+/* Touch targets remain comfortable on small phones. */
+@media (max-width: 640px) {
+  button > svg,
+  a > svg,
+  button > svg.lucide,
+  a > svg.lucide {
+    width: 17px;
+    height: 17px;
+  }
+
+  .sidebar-link svg,
+  .sidebar-child svg,
+  .sidebar-group svg,
+  .sidebar-assistant svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
