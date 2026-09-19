@@ -146,3 +146,161 @@ textarea{min-height:96px}
 }
 .overview-chart-line.expenses i{background:#1877F2!important}
 .generic-list-page{background:linear-gradient(180deg,#FFFFFF 0%,#FFFFFF 100%)!important}
+
+
+/* Administration form system: the field wrapper owns the border.
+   Inputs/icons never create a second inner box, while focus remains visible. */
+.dashboard-page form .form-group,
+.dashboard-page form .input-group,
+.dashboard-page form .input-wrapper,
+.dashboard-page form .field,
+.dashboard-page form .form-field,
+.dashboard-content form .form-group,
+.dashboard-content form .input-group,
+.dashboard-content form .input-wrapper,
+.dashboard-content form .field,
+.dashboard-content form .form-field {
+  position: relative;
+  min-width: 0;
+}
+
+.dashboard-page form .input-group,
+.dashboard-page form .input-wrapper,
+.dashboard-content form .input-group,
+.dashboard-content form .input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  background: #fff !important;
+  border: 1px solid #dbe3ee !important;
+  border-radius: 10px !important;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.dashboard-page form .input-group:focus-within,
+.dashboard-page form .input-wrapper:focus-within,
+.dashboard-content form .input-group:focus-within,
+.dashboard-content form .input-wrapper:focus-within {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 3px rgb(24 119 242 / 10%) !important;
+}
+
+.dashboard-page form .input-group > svg,
+.dashboard-page form .input-wrapper > svg,
+.dashboard-content form .input-group > svg,
+.dashboard-content form .input-wrapper > svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-right: 9px;
+  color: #64748b !important;
+  stroke: currentColor !important;
+}
+
+.dashboard-page form .input-group > input,
+.dashboard-page form .input-group > select,
+.dashboard-page form .input-group > textarea,
+.dashboard-page form .input-wrapper > input,
+.dashboard-page form .input-wrapper > select,
+.dashboard-page form .input-wrapper > textarea,
+.dashboard-content form .input-group > input,
+.dashboard-content form .input-group > select,
+.dashboard-content form .input-group > textarea,
+.dashboard-content form .input-wrapper > input,
+.dashboard-content form .input-wrapper > select,
+.dashboard-content form .input-wrapper > textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: #172033 !important;
+}
+
+.dashboard-page form .input-group > input:focus,
+.dashboard-page form .input-group > select:focus,
+.dashboard-page form .input-group > textarea:focus,
+.dashboard-page form .input-wrapper > input:focus,
+.dashboard-page form .input-wrapper > select:focus,
+.dashboard-page form .input-wrapper > textarea:focus,
+.dashboard-content form .input-group > input:focus,
+.dashboard-content form .input-group > select:focus,
+.dashboard-content form .input-group > textarea:focus,
+.dashboard-content form .input-wrapper > input:focus,
+.dashboard-content form .input-wrapper > select:focus,
+.dashboard-content form .input-wrapper > textarea:focus {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.dashboard-page form input:not(.input-group input):not(.input-wrapper input),
+.dashboard-page form select:not(.input-group select):not(.input-wrapper select),
+.dashboard-page form textarea:not(.input-group textarea):not(.input-wrapper textarea),
+.dashboard-content form input:not(.input-group input):not(.input-wrapper input),
+.dashboard-content form select:not(.input-group select):not(.input-wrapper select),
+.dashboard-content form textarea:not(.input-group textarea):not(.input-wrapper textarea) {
+  border: 1px solid #dbe3ee !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: #172033 !important;
+  box-shadow: none !important;
+}
+
+.dashboard-page form label,
+.dashboard-content form label {
+  color: #475569 !important;
+}
+
+.dashboard-page form input::placeholder,
+.dashboard-page form textarea::placeholder,
+.dashboard-content form input::placeholder,
+.dashboard-content form textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.dashboard-page form input:focus-visible,
+.dashboard-page form select:focus-visible,
+.dashboard-page form textarea:focus-visible,
+.dashboard-content form input:focus-visible,
+.dashboard-content form select:focus-visible,
+.dashboard-content form textarea:focus-visible {
+  outline: 3px solid rgb(24 119 242 / 12%) !important;
+  outline-offset: 0;
+}
+
+/* Blue surfaces always use white iconography. */
+.dashboard-page .bg-blue-500 svg,
+.dashboard-page .bg-blue-600 svg,
+.dashboard-page .bg-blue-700 svg,
+.dashboard-page [class*="bg-blue"] svg,
+.dashboard-content .bg-blue-500 svg,
+.dashboard-content .bg-blue-600 svg,
+.dashboard-content .bg-blue-700 svg,
+.dashboard-content [class*="bg-blue"] svg {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+
+.dashboard-page .bg-blue-500,
+.dashboard-page .bg-blue-600,
+.dashboard-page .bg-blue-700,
+.dashboard-content .bg-blue-500,
+.dashboard-content .bg-blue-600,
+.dashboard-content .bg-blue-700 {
+  color: #fff !important;
+}
+
+/* Secondary copy is soft gray rather than near-black. */
+.dashboard-page .text-muted,
+.dashboard-page .text-secondary,
+.dashboard-content .text-muted,
+.dashboard-content .text-secondary {
+  color: #64748b !important;
+}
