@@ -1,49 +1,140 @@
-/* Admin assignment controls feed the relational teacher workspace. */
+
+.teachers-page {
+  --teacher-white: #ffffff;
+  --teacher-bg: #f8fafc;
+
+  --teacher-blue: #2563eb;
+  --teacher-blue-dark: #1d4ed8;
+  --teacher-blue-soft: #eff6ff;
+  --teacher-blue-border: #dbeafe;
+
+  --teacher-red: #dc2626;
+  --teacher-red-dark: #b91c1c;
+  --teacher-red-soft: #fef2f2;
+  --teacher-red-border: #fecaca;
+
+  --teacher-text: #172033;
+  --teacher-muted: #64748b;
+  --teacher-border: #e5e7eb;
+
+  min-height: 100%;
+  padding: 24px;
+  background: var(--teacher-bg);
+  color: var(--teacher-text);
+}
+
+/* =========================================================
+   TEACHER ASSIGNMENT CONTROLS
+   ========================================================= */
+
 .teacher-assignment-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
   justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .teacher-assignment-controls select,
 .teacher-assignment-controls button {
-  min-height: 34px;
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
-  background: var(--app-surface-strong);
-  color: var(--app-text);
-  padding: 0 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--teacher-border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--teacher-white);
+  color: var(--teacher-text);
   font-size: 0.76rem;
+  font-weight: 600;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.teacher-assignment-controls select:focus {
+  border-color: var(--teacher-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .teacher-assignment-controls button {
-  background: var(--surface-accent);
-  color: var(--app-accent);
-  font-weight: 800;
+  border-color: var(--teacher-blue);
+  background: var(--teacher-blue);
+  color: var(--teacher-white);
+  font-weight: 750;
   cursor: pointer;
 }
 
-@media (max-width: 760px) {
-  .teacher-assignment-controls {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
+.teacher-assignment-controls button:hover {
+  border-color: var(--teacher-blue-dark);
+  background: var(--teacher-blue-dark);
 }
-.teachers-page {
-  padding: 20px 18px 24px;
+
+.teacher-assignment-controls button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
+
+/* =========================================================
+   ADMIN / TEACHER ACTION PANEL
+   ========================================================= */
 
 .admins-actions-panel {
   display: grid;
   gap: 16px;
+  padding: 20px;
+  background: var(--teacher-white);
+  border: 1px solid var(--teacher-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
 }
 
 .admins-toolbar {
   display: grid;
   gap: 12px;
 }
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--teacher-border);
+  border-radius: 11px;
+  background: var(--teacher-white);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--teacher-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.search-box input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--teacher-text);
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.search-box input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================================
+   ADMIN / TEACHER LIST
+   ========================================================= */
 
 .admin-list {
   display: grid;
@@ -52,40 +143,118 @@
 
 .admin-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 16px;
+  border: 1px solid var(--teacher-border);
+  border-radius: 13px;
+  background: var(--teacher-white);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-row:hover {
+  border-color: var(--teacher-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
 }
 
 .admin-row strong {
   display: block;
   margin-bottom: 4px;
+  color: var(--teacher-text);
+  font-size: 0.92rem;
+  font-weight: 750;
 }
 
 .admin-row p {
   margin: 0;
-  color: var(--app-text-muted);
-  font-size: 0.84rem;
+  color: var(--teacher-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
-.search-box {
-  display: flex;
+/* =========================================================
+   OPTIONAL TEACHER STATUS
+   ========================================================= */
+
+.teacher-status {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
+  justify-content: center;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 750;
 }
 
-.search-box input {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: var(--app-text);
-  outline: none;
+.teacher-status.active,
+.teacher-status.assigned {
+  border: 1px solid var(--teacher-blue-border);
+  background: var(--teacher-blue-soft);
+  color: var(--teacher-blue-dark);
 }
+
+.teacher-status.warning,
+.teacher-status.unassigned {
+  border: 1px solid var(--teacher-red-border);
+  background: var(--teacher-red-soft);
+  color: var(--teacher-red-dark);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .teachers-page {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .teacher-assignment-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .teacher-assignment-controls select,
+  .teacher-assignment-controls button {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .admin-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .teachers-page {
+    padding: 14px;
+  }
+
+  .admins-actions-panel {
+    padding: 16px;
+  }
+
+  .teacher-assignment-controls {
+    width: 100%;
+  }
+
+  .teacher-assignment-controls select,
+  .teacher-assignment-controls button {
+    width: 100%;
+    flex: none;
+  }
+
+  .search-box {
+    min-height: 42px;
+  }
+}
+
