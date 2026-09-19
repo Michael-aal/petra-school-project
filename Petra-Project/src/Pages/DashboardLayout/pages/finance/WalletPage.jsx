@@ -16,7 +16,6 @@ import {
   Send,
   ShieldCheck,
   WalletCards,
-  WalletCards,
 } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
 import { walletApi } from "../../../../services/walletApi";
