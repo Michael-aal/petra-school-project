@@ -1,11 +1,11 @@
 .top-navbar {
   --topbar-height: 64px;
-  --nav-blue: #1877f2;
-  --nav-blue-dark: #0f5dcc;
-  --nav-blue-soft: #eaf3ff;
-  --nav-text: #0f172a;
-  --nav-muted: #64748b;
-  --nav-border: #e2e8f0;
+  --nav-white: #ffffff;
+  --nav-white-dark: #ffffff;
+  --nav-white-soft: #ffffff;
+  --nav-text: #ffffff;
+  --nav-muted: #ffffff;
+  --nav-border: #ffffff;
   --nav-surface: #ffffff;
   position: sticky;
   top: 0;
@@ -16,10 +16,10 @@
   width: 100%;
   min-height: var(--topbar-height);
   padding: 0 clamp(14px, 2.2vw, 30px);
-  background: rgba(255, 255, 255, 0.94);
+  background: #ffffff;
   color: var(--nav-text);
   border-bottom: 1px solid var(--nav-border);
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02), 0 8px 24px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 0 #ffffff, 0 8px 24px #ffffff;
   backdrop-filter: blur(18px) saturate(140%);
 }
 
@@ -65,7 +65,7 @@
   border: 1px solid var(--nav-border);
   border-radius: 12px;
   background: var(--nav-surface);
-  color: var(--nav-blue);
+  color: var(--nav-white);
   cursor: pointer;
   line-height: 0;
   transition:
@@ -78,9 +78,9 @@
 .menu-btn:hover,
 .icon-btn:hover,
 .ask-nuvora-btn:hover {
-  background: var(--nav-blue-soft);
-  border-color: #bfdbfe;
-  box-shadow: 0 5px 14px rgba(24, 119, 242, 0.10);
+  background: var(--nav-white-soft);
+  border-color: #ffffff;
+  box-shadow: 0 5px 14px #ffffff;
   transform: translateY(-1px);
 }
 
@@ -94,7 +94,7 @@
 .icon-btn:focus-visible,
 .ask-nuvora-btn:focus-visible,
 .user-info:focus-visible {
-  outline: 3px solid rgba(24, 119, 242, 0.18);
+  outline: 3px solid #ffffff;
   outline-offset: 2px;
 }
 
@@ -109,8 +109,8 @@
   min-width: 18px !important;
   height: 18px !important;
   min-height: 18px !important;
-  color: currentColor !important;
-  stroke: currentColor !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
   fill: none !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -125,16 +125,16 @@
   transform: rotate(-4deg) scale(1.05);
 }
 
-/* Ask Nuvora: compact blue tile + white human glyph */
+/* Ask Nuvora: compact white tile + white human glyph */
 .ask-nuvora-btn {
-  border-color: transparent;
-  background: transparent;
+  border-color: #ffffff;
+  background: #ffffff;
   box-shadow: none;
 }
 
 .ask-nuvora-btn:hover {
-  border-color: transparent;
-  background: var(--nav-blue-soft);
+  border-color: #ffffff;
+  background: var(--nav-white-soft);
   box-shadow: none;
 }
 
@@ -147,34 +147,34 @@
   width: 30px;
   height: 30px;
   border-radius: 10px;
-  background: var(--nav-blue);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.18);
+  background: var(--nav-white);
+  color: #ffffff;
+  box-shadow: 0 4px 12px #ffffff;
   transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
 }
 
 .ask-nuvora-btn:hover .ask-nuvora-icon-wrap {
   transform: scale(1.05);
-  box-shadow: 0 7px 17px rgba(24, 119, 242, 0.25);
+  box-shadow: 0 7px 17px #ffffff;
 }
 
 .ask-nuvora-icon-wrap svg {
   width: 15px !important;
   height: 15px !important;
-  color: #fff !important;
-  stroke: #fff !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
   stroke-width: 2.2 !important;
 }
 
-/* Notification: blue control, white bell, restrained count animation */
+/* Notification: white control, white bell, restrained count animation */
 .notification-menu,
 .user-menu {
   position: relative;
 }
 
 .notification-menu .icon-btn {
-  border-color: transparent;
-  background: transparent;
+  border-color: #ffffff;
+  background: #ffffff;
   box-shadow: none;
 }
 
@@ -184,8 +184,8 @@
   inset: 4px;
   z-index: 0;
   border-radius: 10px;
-  background: var(--nav-blue);
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.16);
+  background: var(--nav-white);
+  box-shadow: 0 4px 12px #ffffff;
   transform: scale(0.96);
   transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
 }
@@ -193,15 +193,15 @@
 .notification-menu .icon-btn > svg {
   position: relative;
   z-index: 1;
-  color: #fff !important;
-  stroke: #fff !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
   stroke-width: 2.1 !important;
   transition: transform 180ms cubic-bezier(.2,.8,.2,1);
 }
 
 .notification-menu .icon-btn:hover::before {
   transform: scale(1);
-  box-shadow: 0 7px 17px rgba(24, 119, 242, 0.24);
+  box-shadow: 0 7px 17px #ffffff;
 }
 
 .notification-menu .icon-btn:hover > svg {
@@ -227,14 +227,14 @@
   min-width: 17px;
   height: 17px;
   padding: 0 4px;
-  border: 2px solid #fff;
+  border: 2px solid #ffffff;
   border-radius: 999px;
-  background: var(--nav-blue);
-  color: #fff;
+  background: var(--nav-white);
+  color: #ffffff;
   font-size: 9px;
   font-weight: 800;
   line-height: 1;
-  box-shadow: 0 2px 7px rgba(24, 119, 242, 0.25);
+  box-shadow: 0 2px 7px #ffffff;
   animation: nuvoraBadgePop 240ms cubic-bezier(.2,.8,.2,1);
 }
 
@@ -259,8 +259,8 @@
 }
 
 .user-info:hover {
-  border-color: #bfdbfe;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  border-color: #ffffff;
+  box-shadow: 0 6px 18px #ffffff;
   transform: translateY(-1px);
 }
 
@@ -300,10 +300,10 @@
   width: 34px;
   height: 34px;
   overflow: hidden;
-  border: 1px solid #dbeafe;
+  border: 1px solid #ffffff;
   border-radius: 10px;
-  background: var(--nav-blue);
-  color: #fff;
+  background: var(--nav-white);
+  color: #ffffff;
 }
 
 .user-avatar-image {
@@ -328,8 +328,8 @@
   z-index: 60;
   border: 1px solid var(--nav-border);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.13);
+  background: #ffffff;
+  box-shadow: 0 18px 42px #ffffff;
   backdrop-filter: blur(18px);
 }
 
@@ -361,14 +361,14 @@
   padding: 5px;
   border: 0;
   border-radius: 8px;
-  background: transparent;
+  background: #ffffff;
   color: var(--nav-muted);
   cursor: pointer;
 }
 
 .notification-close:hover {
-  background: var(--nav-blue-soft);
-  color: var(--nav-blue);
+  background: var(--nav-white-soft);
+  color: var(--nav-white);
 }
 
 .notification-body {
@@ -386,16 +386,16 @@
   padding: 11px 14px;
   border: 0;
   border-radius: 11px;
-  background: var(--nav-blue);
-  color: #fff;
+  background: var(--nav-white);
+  color: #ffffff;
   font-weight: 750;
   cursor: pointer;
   transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 
 .notification-action:hover {
-  background: var(--nav-blue-dark);
-  box-shadow: 0 6px 15px rgba(24, 119, 242, 0.18);
+  background: var(--nav-white-dark);
+  box-shadow: 0 6px 15px #ffffff;
   transform: translateY(-1px);
 }
 
@@ -439,7 +439,7 @@
   padding: 10px 12px;
   border: 1px solid var(--nav-border);
   border-radius: 10px;
-  background: #fff;
+  background: #ffffff;
   color: var(--nav-text);
   text-align: left;
   cursor: pointer;
@@ -447,9 +447,9 @@
 }
 
 .account-dropdown-actions button:hover {
-  border-color: #bfdbfe;
-  background: var(--nav-blue-soft);
-  color: var(--nav-blue);
+  border-color: #ffffff;
+  background: var(--nav-white-soft);
+  color: var(--nav-white);
   transform: translateX(2px);
 }
 
