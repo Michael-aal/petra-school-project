@@ -3,7 +3,7 @@ import {
   BookOpen,
   Building2,
   HeartHandshake,
-  Sparkles,
+  TrendingUp,
   Wallet,
   Users,
   Target,
@@ -51,7 +51,7 @@ const aboutHighlights = [
     info: "Give school leaders the visibility they need to make faster, more informed choices.",
   },
   {
-    icon: Sparkles,
+    icon: TrendingUp,
     title: "Made to Scale",
     info: "Whether you run one campus or many, Nuvora grows with you without adding complexity.",
   },
@@ -154,7 +154,7 @@ export default function About() {
       {/* FOOTER CTA */}
       <section className="marketing-section marketing-cta fparent-cta">
         <div className="cta-badge">
-          <Sparkles size={16} />
+          <TrendingUp size={16} />
           <span>Built for real schools</span>
         </div>
         <h2 className="marketing-cta-title">Education Technology Should Feel Calm, Clear, and Useful</h2>

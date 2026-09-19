@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   CheckCircle2, Copy, GraduationCap, CreditCard, 
-  Download, Sparkles, ArrowRight, School 
+  Download, ArrowRight, School 
 } from "lucide-react";
 import "./AdmissionPassScreen.css";
 
@@ -39,10 +39,10 @@ export default function AdmissionPassScreen() {
               <CheckCircle2 size={48} />
             </div>
           </div>
-          <div className="pass-sparkles">
-            <Sparkles size={24} className="sparkle s1" />
-            <Sparkles size={16} className="sparkle s2" />
-            <Sparkles size={20} className="sparkle s3" />
+          <div className="pass-decoration">
+            <GraduationCap size={24} className="pass-mark s1" />
+            <GraduationCap size={16} className="sparkle s2" />
+            <GraduationCap size={20} className="sparkle s3" />
           </div>
           
           <h1 className="pass-title">Congratulations!</h1>

@@ -1,8 +1,8 @@
 import { useState, useContext, useRef, useEffect } from "react";
 import {
-  Sparkles,
+  MessageCircle,
   Send,
-  Bot,
+  UserRound,
   User,
   Trash2,
   Copy,
@@ -197,7 +197,7 @@ export default function AskNuvoraPage() {
 
       <header className="ask-nuvora-header">
         <div className="ask-nuvora-header-left">
-          <div className="ask-nuvora-icon-badge"><Sparkles size={22} /></div>
+          <div className="ask-nuvora-icon-badge"><MessageCircle size={22} /></div>
           <div>
             <h1 className="ask-nuvora-title">Nuvora <span className="ask-nuvora-tag">{role}</span></h1>
             <p className="ask-nuvora-subtitle">Secure AI copilot for your authorized school data</p>
@@ -247,20 +247,20 @@ export default function AskNuvoraPage() {
       <div className="ask-nuvora-messages-container">
         {messages.length === 0 ? (
           <div className="ask-nuvora-empty-state">
-            <div className="ask-nuvora-empty-icon"><Sparkles size={36} /></div>
+            <div className="ask-nuvora-empty-icon"><MessageCircle size={36} /></div>
             <h2 className="ask-nuvora-empty-title">What would you like to know?</h2>
             <p className="ask-nuvora-empty-desc">Your Nuvora conversations are saved to your account. You can reopen or permanently delete them from History.</p>
             <div className="ask-nuvora-suggestions">
               {suggestions.map((text) => (
                 <button key={text} type="button" className="ask-nuvora-suggestion-btn" onClick={() => setInput(text)}>
-                  <span>{text}</span><Sparkles size={14} />
+                  <span>{text}</span><MessageCircle size={14} />
                 </button>
               ))}
             </div>
           </div>
         ) : messages.map((msg, idx) => (
           <div key={`${msg.timestamp || "message"}-${idx}`} className={`ask-nuvora-msg-row ${msg.role === "user" ? "user" : "ai"}`}>
-            <div className={`ask-nuvora-avatar ${msg.role === "user" ? "user" : "ai"}`}>{msg.role === "user" ? <User size={18} /> : <Bot size={18} />}</div>
+            <div className={`ask-nuvora-avatar ${msg.role === "user" ? "user" : "ai"}`}>{msg.role === "user" ? <User size={18} /> : <UserRound size={18} />}</div>
             <div className="ask-nuvora-bubble">
               <div className="whitespace-pre-wrap">{msg.content}</div>
               {msg.data && (
@@ -288,7 +288,7 @@ export default function AskNuvoraPage() {
           </div>
         ))}
 
-        {loading && <div className="ask-nuvora-msg-row ai"><div className="ask-nuvora-avatar ai"><Bot size={18} /></div><div className="ask-nuvora-bubble ask-nuvora-loading"><span>Nuvora is checking school records</span><div className="ask-nuvora-typing-dots"><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /></div></div></div>}
+        {loading && <div className="ask-nuvora-msg-row ai"><div className="ask-nuvora-avatar ai"><UserRound size={18} /></div><div className="ask-nuvora-bubble ask-nuvora-loading"><span>Nuvora is checking school records</span><div className="ask-nuvora-typing-dots"><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /><div className="ask-nuvora-typing-dot" /></div></div></div>}
         {error && <div className="ask-nuvora-error-banner"><div className="flex items-center gap-2"><AlertCircle size={16} /><span>{error}</span></div></div>}
         <div ref={messagesEndRef} />
       </div>
