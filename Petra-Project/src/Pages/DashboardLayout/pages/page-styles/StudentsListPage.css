@@ -1,2 +1,55 @@
-/* Styles for StudentsListPage */
-.students-list-page{ padding:18px; }
+```css
+/* =========================================================
+   STUDENTS LIST PAGE
+   White-dominant UI with blue primary and red alert accents
+   ========================================================= */
+
+.students-list-page {
+  --students-bg: #f8fafc;
+  --students-surface: #ffffff;
+  --students-surface-soft: #f1f5f9;
+
+  --students-text: #0f172a;
+  --students-muted: #64748b;
+
+  --students-blue: #2563eb;
+  --students-blue-dark: #1d4ed8;
+  --students-blue-soft: #eff6ff;
+  --students-blue-border: #bfdbfe;
+
+  --students-red: #dc2626;
+  --students-red-dark: #b91c1c;
+  --students-red-soft: #fef2f2;
+  --students-red-border: #fecaca;
+
+  --students-border: #e2e8f0;
+  --students-radius: 14px;
+
+  width: 100%;
+  min-height: 100%;
+  padding: 20px clamp(14px, 2.5vw, 30px) 32px;
+  background: var(--students-bg);
+  color: var(--students-text);
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE CONTENT
+   ========================================================= */
+
+.students-list-page > * {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .students-list-page {
+    padding: 16px 12px 24px;
+  }
+}
+
