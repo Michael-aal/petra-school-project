@@ -1,10 +1,40 @@
+
 .announcements-page {
-  padding: 20px 18px 24px;
+  --announcement-white: #ffffff;
+  --announcement-bg: #f8fafc;
+
+  --announcement-blue: #2563eb;
+  --announcement-blue-dark: #1d4ed8;
+  --announcement-blue-soft: #eff6ff;
+  --announcement-blue-border: #dbeafe;
+
+  --announcement-red: #dc2626;
+  --announcement-red-dark: #b91c1c;
+  --announcement-red-soft: #fef2f2;
+  --announcement-red-border: #fecaca;
+
+  --announcement-text: #172033;
+  --announcement-muted: #64748b;
+  --announcement-border: #e5e7eb;
+
+  min-height: 100%;
+  padding: 24px;
+  background: var(--announcement-bg);
+  color: var(--announcement-text);
 }
 
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
 .announcements-summary {
+  display: grid;
   gap: 16px;
 }
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
 
 .announcements-grid {
   display: grid;
@@ -13,37 +43,69 @@
   margin-top: 20px;
 }
 
+/* =========================================================
+   PANELS
+   ========================================================= */
+
 .announcements-panel {
   padding: 24px;
-  border-radius: 20px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
+
+  border: 1px solid var(--announcement-border);
+  border-radius: 16px;
+
+  background: var(--announcement-white);
+
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
 }
 
 .announcements-panel-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
-  align-items: flex-start;
   margin-bottom: 20px;
 }
 
+.announcements-panel-header h2,
+.announcements-panel-header h3 {
+  margin: 0;
+  color: var(--announcement-text);
+  font-weight: 750;
+}
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
 .announcement-badge {
   display: inline-flex;
-  gap: 8px;
   align-items: center;
-  padding: 10px 14px;
+  gap: 8px;
+
+  padding: 9px 13px;
+
+  border: 1px solid var(--announcement-blue-border);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--app-accent) 10%, transparent);
-  color: var(--app-text);
+
+  background: var(--announcement-blue-soft);
+  color: var(--announcement-blue-dark);
+
+  font-size: 0.8rem;
+  font-weight: 700;
 }
+
+/* =========================================================
+   FORMS
+   ========================================================= */
 
 .announcement-form label,
 .compose-form label {
   display: block;
   margin-bottom: 14px;
-  font-size: 0.95rem;
-  color: var(--app-text);
+
+  color: var(--announcement-text);
+  font-size: 0.9rem;
+  font-weight: 650;
 }
 
 .announcement-form input,
@@ -54,108 +116,302 @@
 .compose-form select {
   width: 100%;
   margin-top: 8px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text);
+  padding: 11px 13px;
+
+  border: 1px solid var(--announcement-border);
+  border-radius: 10px;
+
+  outline: none;
+
+  background: var(--announcement-white);
+  color: var(--announcement-text);
+
+  font: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.announcement-form textarea,
+.compose-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.announcement-form input::placeholder,
+.announcement-form textarea::placeholder,
+.compose-form input::placeholder,
+.compose-form textarea::placeholder {
+  color: #94a3b8;
+}
+
+.announcement-form input:focus,
+.announcement-form textarea:focus,
+.announcement-form select:focus,
+.compose-form input:focus,
+.compose-form textarea:focus,
+.compose-form select:focus {
+  border-color: var(--announcement-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .announcement-form-row {
   display: grid;
-  gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
+
+/* =========================================================
+   ANNOUNCEMENT LIST
+   ========================================================= */
 
 .announcement-list {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .announcement-card {
-  padding: 20px;
-  border-radius: 18px;
-  border: 1px solid var(--app-border);
-  background: color-mix(in srgb, var(--app-surface) 98%, transparent);
+  padding: 18px;
+
+  border: 1px solid var(--announcement-border);
+  border-radius: 14px;
+
+  background: var(--announcement-white);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.announcement-card:hover {
+  border-color: var(--announcement-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
 }
 
 .announcement-card-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
-  align-items: center;
 }
 
+.announcement-card h3,
+.announcement-card h4 {
+  margin: 0;
+  color: var(--announcement-text);
+}
+
+/* =========================================================
+   TAGS
+   ========================================================= */
+
 .announcement-tag {
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 11px;
+
   border-radius: 999px;
+
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .tag-normal {
-  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
-  color: var(--app-text);
+  border: 1px solid var(--announcement-blue-border);
+  background: var(--announcement-blue-soft);
+  color: var(--announcement-blue-dark);
 }
 
 .tag-important {
-  background: color-mix(in srgb, var(--app-accent) 24%, transparent);
-  color: var(--app-text);
+  border: 1px solid #bfdbfe;
+  background: #eaf3ff;
+  color: var(--announcement-blue-dark);
 }
 
 .tag-urgent {
-  background: color-mix(in srgb, var(--app-accent) 32%, transparent);
-  color: var(--app-text);
+  border: 1px solid var(--announcement-red-border);
+  background: var(--announcement-red-soft);
+  color: var(--announcement-red-dark);
 }
+
+/* =========================================================
+   CARD META
+   ========================================================= */
 
 .announcement-card-meta {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+
   margin-top: 16px;
-  color: var(--app-text-muted);
-  font-size: 0.88rem;
+
+  color: var(--announcement-muted);
+  font-size: 0.82rem;
 }
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 .search-field {
   display: flex;
   align-items: center;
   gap: 10px;
-  border-radius: 18px;
-  border: 1px solid var(--app-border);
-  padding: 10px 14px;
-  background: var(--app-surface);
+
+  padding: 0 13px;
+  min-height: 42px;
+
+  border: 1px solid var(--announcement-border);
+  border-radius: 10px;
+
+  background: var(--announcement-white);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-field:focus-within {
+  border-color: var(--announcement-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.search-field svg {
+  flex-shrink: 0;
+  color: var(--announcement-muted);
 }
 
 .search-field input {
   flex: 1;
+  width: 100%;
+
   border: none;
   outline: none;
+
   background: transparent;
-  color: var(--app-text);
+  color: var(--announcement-text);
+
+  font: inherit;
+  font-size: 0.86rem;
 }
+
+/* =========================================================
+   ERROR
+   ========================================================= */
 
 .announcement-error {
   margin-bottom: 14px;
   padding: 12px 14px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--app-danger) 8%, transparent);
-  color: var(--app-danger);
+
+  border: 1px solid var(--announcement-red-border);
+  border-radius: 12px;
+
+  background: var(--announcement-red-soft);
+  color: var(--announcement-red-dark);
+
+  font-size: 0.84rem;
+  font-weight: 650;
 }
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
 .module-empty {
   padding: 32px;
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--app-surface) 98%, transparent);
+
+  border: 1px dashed var(--announcement-border);
+  border-radius: 14px;
+
+  background: var(--announcement-white);
+
+  color: var(--announcement-muted);
   text-align: center;
-  color: var(--app-text-muted);
 }
+
+/* =========================================================
+   OPTIONAL ACTION BUTTONS
+   ========================================================= */
+
+.announcements-page .announcement-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 0 14px;
+
+  border: 1px solid var(--announcement-blue);
+  border-radius: 10px;
+
+  background: var(--announcement-blue);
+  color: var(--announcement-white);
+
+  font-size: 0.82rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.announcements-page .announcement-primary-button:hover {
+  border-color: var(--announcement-blue-dark);
+  background: var(--announcement-blue-dark);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 1080px) {
   .announcements-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .announcements-page {
+    padding: 18px;
+  }
+
+  .announcements-panel {
+    padding: 18px;
+  }
+
+  .announcements-panel-header {
+    flex-direction: column;
+  }
+
+  .announcement-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .announcement-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .announcement-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .announcements-page {
+    padding: 14px;
   }
 }
