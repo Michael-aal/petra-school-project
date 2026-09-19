@@ -2014,7 +2014,7 @@ body.light {
   border-color: #fecaca !important;
 }
 
-/* Keep warning states red as requested instead of introducing orange/amber. */
+
 .dashboard-shell .status-badge.warning,
 .dashboard-shell .badge.warning,
 .dashboard-shell .tone-amber,
@@ -2035,7 +2035,7 @@ body.light {
   border-color: #fecaca !important;
 }
 
-/* ---------- Icons ---------- */
+
 
 .dashboard-shell svg {
   color: #2563eb;
@@ -2051,7 +2051,6 @@ body.light {
   stroke: currentColor !important;
 }
 
-/* ---------- Parent dashboard readability ---------- */
 
 .parent-dashboard,
 .parent-dashboard .dashboard-content,
@@ -2098,14 +2097,14 @@ body.light {
   border-color: #fecaca !important;
 }
 
-/* ---------- Global focus state ---------- */
+
 
 :focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.28) !important;
   outline-offset: 2px;
 }
 
-/* ---------- Motion stays restrained ---------- */
+
 
 .dashboard-shell .card:hover,
 .dashboard-shell .panel:hover,
@@ -2114,7 +2113,7 @@ body.light {
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
 }
 
-/* Never animate for users who request reduced motion. */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
