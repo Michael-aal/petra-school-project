@@ -1,9 +1,9 @@
 
 .dashboard-shell .sidebar-container {
-  background: #0f2747 !important;
+  background: #1877F2 !important;
   color: #f8fbff !important;
   border-right: 0 !important;
-  box-shadow: 8px 0 28px rgba(15, 39, 71, 0.08) !important;
+  box-shadow: 8px 0 28px rgba(24, 119, 242, 0.12) !important;
 }
 
 .dashboard-shell .sidebar-header,
@@ -26,14 +26,14 @@
 .dashboard-shell .sidebar-section-label,
 .dashboard-shell .sidebar-user h4,
 .dashboard-shell .sidebar-child {
-  color: #aebfd5 !important;
+  color: #ffffff !important;
 }
 
 .dashboard-shell .sidebar-link,
 .dashboard-shell .sidebar-group,
 .dashboard-shell .sidebar-assistant,
 .dashboard-shell .sidebar-child {
-  color: #dbe7f5 !important;
+  color: #ffffff !important;
   background: transparent !important;
   border-color: transparent !important;
 }
@@ -51,22 +51,22 @@
 .dashboard-shell .sidebar-group.group-active,
 .dashboard-shell .sidebar-assistant.active {
   color: #ffffff !important;
-  background: rgba(37, 99, 235, 0.24) !important;
-  border-color: rgba(96, 165, 250, 0.16) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
   box-shadow: none !important;
 }
 
 .dashboard-shell .sidebar-link.active::before,
 .dashboard-shell .sidebar-child.active::before,
 .dashboard-shell .sidebar-group.group-active::before {
-  background: #2563eb !important;
+  background: #1877F2 !important;
 }
 
 .dashboard-shell .sidebar-icon,
 .dashboard-shell .child-icon,
 .dashboard-shell .sidebar-assistant-icon {
-  color: #60a5fa !important;
-  stroke: #60a5fa !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 .dashboard-shell .sidebar-children {
@@ -74,20 +74,20 @@
 }
 
 .dashboard-shell .arrow-icon {
-  color: #aebfd5 !important;
-  stroke: #aebfd5 !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 .dashboard-shell .sidebar-close {
-  color: #aebfd5 !important;
+  color: #ffffff !important;
   background: rgba(255, 255, 255, 0.06) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .dashboard-shell .sidebar-close:hover {
   color: #ffffff !important;
-  background: rgba(37, 99, 235, 0.2) !important;
-  border-color: rgba(96, 165, 250, 0.24) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
 }
 
 
@@ -98,7 +98,7 @@
 
 .dashboard-shell .top-navbar {
   background: rgba(255, 255, 255, 0.96) !important;
-  color: #10233f !important;
+  color: #000000 !important;
   border-bottom: 1px solid #e2e8f0 !important;
   box-shadow: 0 1px 8px rgba(15, 39, 71, 0.04) !important;
   backdrop-filter: blur(12px) !important;
@@ -108,7 +108,7 @@
 .dashboard-shell .icon-btn,
 .dashboard-shell .ask-nuvora-btn,
 .dashboard-shell .user-info {
-  color: #64748b !important;
+  color: #000000 !important;
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: none !important;
@@ -131,13 +131,13 @@
 .dashboard-shell .icon-btn:hover,
 .dashboard-shell .ask-nuvora-btn:hover,
 .dashboard-shell .user-info:hover {
-  color: #2563eb !important;
+  color: #1877F2 !important;
   background: #eff6ff !important;
   border-color: #bfdbfe !important;
 }
 
 .dashboard-shell .ask-nuvora-icon-wrap {
-  background: #2563eb !important;
+  background: #1877F2 !important;
   color: #ffffff !important;
   border-radius: 8px !important;
 }
@@ -149,16 +149,16 @@
 
 .dashboard-shell .top-welcome,
 .dashboard-shell .user-name {
-  color: #10233f !important;
+  color: #000000 !important;
 }
 
 .dashboard-shell .greets,
 .dashboard-shell .user-caret {
-  color: #64748b !important;
+  color: #000000 !important;
 }
 
 .dashboard-shell .nav-badge {
-  background: #2563eb !important;
+  background: #1877F2 !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -169,20 +169,20 @@
    ========================================================= */
 
 .dashboard-shell .notification-action {
-  background: #2563eb !important;
+  background: #1877F2 !important;
   color: #ffffff !important;
-  border-color: #2563eb !important;
+  border-color: #1877F2 !important;
 }
 
 .dashboard-shell .account-dropdown-actions button {
   background: #ffffff !important;
-  color: #334155 !important;
+  color: #000000 !important;
   border-color: #e2e8f0 !important;
 }
 
 .dashboard-shell .account-dropdown-actions button:hover {
   background: #eff6ff !important;
-  color: #1d4ed8 !important;
+  color: #1877F2 !important;
   border-color: #bfdbfe !important;
 }
 
