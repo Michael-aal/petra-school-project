@@ -10,7 +10,6 @@ import {
   MessageSquare,
   School,
   Settings,
-  BookOpen,
   UserCircle2,
   Users,
 } from "lucide-react";
