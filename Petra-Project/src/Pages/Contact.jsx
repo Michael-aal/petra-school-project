@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, MapPin, ArrowRight, Sparkles, Info, MessageSquareText } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight, MessageCircle, Info, MessageSquareText } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Forschool.css";
 import "../Styles/Contact.css";
@@ -171,7 +171,7 @@ export default function ContactPage() {
 
       <section className="marketing-section marketing-cta fparent-cta">
         <div className="cta-badge">
-          <Sparkles size={16} />
+          <MessageCircle size={16} />
           <span>We’re here to help</span>
         </div>
         <h2 className="marketing-cta-title">Need a quick walkthrough or a tailored solution for your school?</h2>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Bell, ChevronDown, LogOut, Menu, Settings, Sparkles, User as UserIcon, X } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Settings, UserRound, User as UserIcon, X } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { notificationApi } from "../../services/notificationApi";
@@ -143,7 +143,7 @@ export default function TopNavbar({ onToggle }) {
       </div>
 
       <div className="top-right">
-        <button type="button" className="ask-nuvora-btn icon-btn" onClick={handleNuvoraClick} title="Nuvora AI" aria-label="Nuvora"><span className="ask-nuvora-icon-wrap"><Sparkles size={14} /></span></button>
+        <button type="button" className="ask-nuvora-btn icon-btn" onClick={handleNuvoraClick} title="Nuvora AI" aria-label="Nuvora"><span className="ask-nuvora-icon-wrap"><UserRound size={14} /></span></button>
         <div className="notification-menu" ref={notifRef}>
           <button className="icon-btn" aria-label="Notifications" onClick={() => setShowNotifications((current) => !current)} aria-expanded={showNotifications} aria-haspopup="menu">
             <Bell size={20} />{unreadCount > 0 ? <span className="nav-badge">{unreadCount > 9 ? "9+" : unreadCount}</span> : null}

@@ -1,6 +1,6 @@
 
 import { NavLink } from "react-router-dom";
-import { ArrowRight, BookOpen, Building2, Layers3, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Building2, Layers3, TrendingUp, Users } from "lucide-react";
 import { solutionGroups } from "./solutions/solutionData";
 
 const solutionBenefits = [
@@ -20,7 +20,7 @@ const solutionBenefits = [
     info: "Every module is structured around how schools actually work in day-to-day operations.",
   },
   {
-    icon: Sparkles,
+    icon: TrendingUp,
     title: "Built to grow",
     info: "Start simple, add more functionality as your school needs evolve.",
   },
@@ -119,7 +119,7 @@ export default function Solution() {
 
       <section className="marketing-section marketing-cta fparent-cta">
         <div className="cta-badge">
-          <Sparkles size={16} />
+          <TrendingUp size={16} />
           <span>Built for real schools</span>
         </div>
         <h2 className="marketing-cta-title">Need a platform that fits your school, not the other way around?</h2>

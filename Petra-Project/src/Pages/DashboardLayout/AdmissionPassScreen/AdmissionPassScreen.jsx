@@ -1,17 +1,21 @@
 import { useState } from "react";
-import { 
-  CheckCircle2, Copy, GraduationCap, CreditCard, 
-  Download, Sparkles, ArrowRight, School 
+import {
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  Copy,
+  CreditCard,
+  Download,
+  School,
 } from "lucide-react";
 import "./AdmissionPassScreen.css";
 
 export default function AdmissionPassScreen() {
   const [copied, setCopied] = useState(false);
 
-  // TODO: Replace with real data from backend (e.g., userInfo.applicationResult)
   const admissionData = {
     studentName: "Ayo Ogunleye",
-    studentCode: "PTR-2024-88392", // The official generated code
+    studentCode: "PTR-2024-88392",
     appliedClass: "JSS 1",
     academicSession: "2024/2025",
     schoolFeesAmount: "₦150,000",
@@ -25,39 +29,36 @@ export default function AdmissionPassScreen() {
 
   return (
     <div className="pass-screen-page">
-      
-      {/* Decorative Background Elements */}
-      <div className="pass-bg-glow glow-1"></div>
-      <div className="pass-bg-glow glow-2"></div>
+      <div className="pass-bg-glow glow-1" aria-hidden="true" />
+      <div className="pass-bg-glow glow-2" aria-hidden="true" />
 
       <div className="pass-container">
-        
-        {/* 1. Celebration Header */}
-        <div className="pass-hero">
-          <div className="pass-checkmark-ring">
+        <header className="pass-hero">
+          <div className="pass-checkmark-ring" aria-hidden="true">
             <div className="pass-checkmark-inner">
-              <CheckCircle2 size={48} />
+              <CheckCircle2 size={44} strokeWidth={2} />
             </div>
           </div>
-          <div className="pass-sparkles">
-            <Sparkles size={24} className="sparkle s1" />
-            <Sparkles size={16} className="sparkle s2" />
-            <Sparkles size={20} className="sparkle s3" />
+
+          <div className="pass-book-mark" aria-hidden="true">
+            <BookOpen size={22} strokeWidth={1.9} />
           </div>
-          
+
+          <p className="pass-eyebrow">Admission confirmed</p>
           <h1 className="pass-title">Congratulations!</h1>
           <p className="pass-subtitle">
-            Your ward has successfully passed the entrance examination and has been offered admission into <strong>{admissionData.appliedClass}</strong>.
+            Your ward has successfully passed the entrance examination and has
+            been offered admission into{" "}
+            <strong>{admissionData.appliedClass}</strong>.
           </p>
-        </div>
+        </header>
 
-        {/* 2. Official Student Code Card */}
-        <div className="pass-code-card">
+        <section className="pass-code-card" aria-labelledby="student-code-title">
           <div className="code-card-header">
-            <School size={20} />
-            <span>Official Student Identity</span>
+            <School size={19} aria-hidden="true" />
+            <span id="student-code-title">Official Student Identity</span>
           </div>
-          
+
           <div className="code-card-body">
             <span className="code-label">Student Code / ID</span>
             <div className="code-value-wrapper">
@@ -68,21 +69,26 @@ export default function AdmissionPassScreen() {
               </button>
             </div>
             <p className="code-disclaimer">
-              Please save this code. You will need it to pay school fees and log into the parent portal.
+              Keep this code safe. You will need it to pay school fees and log
+              into the parent portal.
             </p>
           </div>
-        </div>
+        </section>
 
-        {/* 3. Next Steps & Action */}
-        <div className="pass-next-steps">
-          <h3>Next Step: Secure the Admission</h3>
-          <p>
-            To confirm your ward's spot for the <strong>{admissionData.academicSession}</strong> academic session, please proceed to pay the school fees.
-          </p>
-          
+        <section className="pass-next-steps" aria-labelledby="next-step-title">
+          <div className="pass-section-heading">
+            <p className="pass-section-kicker">Next step</p>
+            <h2 id="next-step-title">Secure the admission</h2>
+            <p>
+              Confirm your ward&apos;s place for the{" "}
+              <strong>{admissionData.academicSession}</strong> academic session
+              by completing the school-fee payment.
+            </p>
+          </div>
+
           <div className="pass-fee-summary">
             <div className="fee-row">
-              <span>Tuition & Development Levy</span>
+              <span>Tuition &amp; Development Levy</span>
               <strong>{admissionData.schoolFeesAmount}</strong>
             </div>
             <div className="fee-row total">
@@ -92,17 +98,16 @@ export default function AdmissionPassScreen() {
           </div>
 
           <button className="pass-pay-btn">
-            <CreditCard size={20} />
+            <CreditCard size={19} aria-hidden="true" />
             <span>Pay School Fees Now</span>
-            <ArrowRight size={18} />
+            <ArrowRight size={18} aria-hidden="true" />
           </button>
-          
+
           <button className="pass-receipt-btn">
-            <Download size={16} />
+            <Download size={16} aria-hidden="true" />
             Download Admission Letter (PDF)
           </button>
-        </div>
-
+        </section>
       </div>
     </div>
   );

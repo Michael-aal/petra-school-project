@@ -9,7 +9,6 @@ import {
   CircleHelp,
   FileCheck2,
   Landmark,
-  Sparkles,
 } from "lucide-react";
 
 import { UserContext } from "../../../context/UserContext";
@@ -68,7 +67,7 @@ function OnboardingHero({ firstName, firstStep }) {
     <section className="gs-intro" aria-labelledby="get-started-title">
       <div className="gs-intro-copy">
         <p className="gs-eyebrow">
-          <Sparkles size={14} aria-hidden="true" />
+          <Building2 size={14} aria-hidden="true" />
           {PAGE_COPY.eyebrow}
         </p>
 

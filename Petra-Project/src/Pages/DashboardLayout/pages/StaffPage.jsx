@@ -1,4 +1,4 @@
-import { ArrowRight, BookCheck, ShieldCheck, Sparkles, UserCog } from "lucide-react";
+import { ArrowRight, BookCheck, ShieldCheck, Users, UserCog } from "lucide-react";
 import "./page-styles/StaffPage.css";
 
 const highlights = [
@@ -42,7 +42,7 @@ export default function StaffPage() {
           <h2>Staff coverage</h2>
           <div className="staff-page-card">
             <div className="staff-page-icon">
-              <Sparkles size={18} />
+              <Users size={18} />
             </div>
             <div>
               <strong>Balanced staffing visibility</strong>

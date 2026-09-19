@@ -9,8 +9,8 @@ import {
   CheckCircle2,
   CreditCard,
   GraduationCap,
+  School,
   Landmark,
-  Sparkles,
   TrendingUp,
   UserRoundCheck,
   Users,
@@ -74,7 +74,7 @@ export default function DashboardHomePage() {
       <section className="dashboard-landing-hero">
         <div className="dashboard-landing-copy">
           <div className="dashboard-landing-kicker">
-            <Sparkles size={14} />
+            <School size={14} />
             <span>School operations</span>
           </div>
           <h2>
@@ -109,7 +109,7 @@ export default function DashboardHomePage() {
 
           <div className="landing-preview-body">
             <aside className="preview-sidebar">
-              <div className="preview-sidebar-mark"><Sparkles size={15} /></div>
+              <div className="preview-sidebar-mark"><School size={15} /></div>
               <i />
               <i />
               <i />

@@ -15,7 +15,6 @@ import {
   RefreshCw,
   Send,
   ShieldCheck,
-  Sparkles,
   WalletCards,
 } from "lucide-react";
 import { UserContext } from "../../../../context/UserContext";
@@ -170,7 +169,7 @@ export default function WalletPage() {
           {error && <div className="wallet-alert wallet-alert-error"><span>{error}</span></div>}
 
           {activeView === "overview" && <div className="wallet-view">
-            {!connected && <section className="wallet-setup-banner"><div className="wallet-setup-icon"><Sparkles size={21} /></div><div className="wallet-setup-copy"><span>Finish your payment setup</span><strong>Connect the school settlement account</strong><p>Use the school's verified bank details to connect the payment account.</p></div><button type="button" className="wallet-button wallet-button-primary" onClick={() => setActiveView("setup")}>Set up <ChevronRight size={17} /></button></section>}
+            {!connected && <section className="wallet-setup-banner"><div className="wallet-setup-icon"><WalletCards size={21} /></div><div className="wallet-setup-copy"><span>Finish your payment setup</span><strong>Connect the school settlement account</strong><p>Use the school's verified bank details to connect the payment account.</p></div><button type="button" className="wallet-button wallet-button-primary" onClick={() => setActiveView("setup")}>Set up <ChevronRight size={17} /></button></section>}
             <div className="wallet-section-heading"><div><span>Today</span><h2>Money at a glance</h2></div><button type="button" className="wallet-link-button" onClick={() => setActiveView("transactions")}>View all activity <ChevronRight size={16} /></button></div>
             <div className="wallet-overview-grid">
               <section className="wallet-card wallet-account-card"><div className="wallet-card-heading"><div><span className="wallet-eyebrow">School account</span><h3>{connected ? "Connected & ready" : "Not connected yet"}</h3></div><span className={`wallet-status ${connected ? "success" : "pending"}`}><i /> {connected ? "Active" : "Setup needed"}</span></div>{connected ? <><div className="wallet-account-visual"><div className="wallet-account-chip"><Landmark size={20} /><span>{paymentAccount?.dva?.bankName || "Dedicated account"}</span></div><strong>{paymentAccount?.dva?.accountNumber || "Account ready"}</strong><span>{paymentAccount?.dva?.accountName || schoolName}</span></div><div className="wallet-account-details"><div><span>Settlement bank</span><strong>{paymentAccount?.settlement?.bankName || "Configured"}</strong></div><div><span>Settlement account</span><strong>{maskAccount(paymentAccount?.settlement?.accountNumber)}</strong></div><div><span>Schedule</span><strong>{paymentAccount?.settlement?.schedule || "Automatic"}</strong></div></div></> : <div className="wallet-empty-card"><Building2 size={25} /><div><strong>Connect the school's bank account</strong><p>Connect the school's settlement account to activate the payment setup.</p></div><button type="button" onClick={() => setActiveView("setup")}><Plus size={17} /> Connect</button></div>}</section>
@@ -193,26 +192,3 @@ export default function WalletPage() {
     </div>
   );
 }
-
-
-/* Nuvora wallet visual cleanup: blue/white/black only, crisp text, no orange. */
-.wallet-page,
-.wallet-page * { text-shadow:none !important; filter:none !important; }
-.wallet-page { --wallet-accent:#1877F2 !important; --wallet-accent-strong:#2563EB !important; --wallet-surface:#FFFFFF !important; --wallet-bg:#F5F8FC !important; --wallet-text:#0F172A !important; --wallet-muted:#475569 !important; --wallet-border:#E2E8F0 !important; }
-.wallet-page [class*="orange"], .wallet-page [class*="amber"], .wallet-page [class*="rose"] { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
-.wallet-page button, .wallet-page .btn, .wallet-page button[type="submit"] { background:#1877F2 !important; border-color:#1877F2 !important; color:#FFFFFF !important; }
-.wallet-page button:hover, .wallet-page .btn:hover { background:#2563EB !important; border-color:#2563EB !important; }
-.wallet-page input, .wallet-page select, .wallet-page textarea { background:#FFFFFF !important; color:#0F172A !important; border-color:#CBD5E1 !important; }
-.wallet-page input:focus, .wallet-page select:focus, .wallet-page textarea:focus { border-color:#1877F2 !important; box-shadow:0 0 0 3px #EAF3FF !important; }
-.wallet-page svg { opacity:1 !important; filter:none !important; }
-
-
-/* Nuvora wallet visual cleanup: blue/white/black only, crisp text, no orange. */
-.wallet-page, .wallet-page * { text-shadow:none !important; filter:none !important; }
-.wallet-page { --wallet-accent:#1877F2 !important; --wallet-accent-strong:#2563EB !important; --wallet-surface:#FFFFFF !important; --wallet-bg:#F5F8FC !important; --wallet-text:#0F172A !important; --wallet-muted:#475569 !important; --wallet-border:#E2E8F0 !important; }
-.wallet-page [class*="orange"], .wallet-page [class*="amber"], .wallet-page [class*="rose"] { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
-.wallet-page button, .wallet-page .btn, .wallet-page button[type="submit"] { background:#1877F2 !important; border-color:#1877F2 !important; color:#FFFFFF !important; }
-.wallet-page button:hover, .wallet-page .btn:hover { background:#2563EB !important; border-color:#2563EB !important; }
-.wallet-page input, .wallet-page select, .wallet-page textarea { background:#FFFFFF !important; color:#0F172A !important; border-color:#CBD5E1 !important; }
-.wallet-page input:focus, .wallet-page select:focus, .wallet-page textarea:focus { border-color:#1877F2 !important; box-shadow:0 0 0 3px #EAF3FF !important; }
-.wallet-page svg { opacity:1 !important; filter:none !important; }
