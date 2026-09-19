@@ -10,7 +10,6 @@ import {
   CreditCard,
   GraduationCap,
   Landmark,
-  School,
   TrendingUp,
   UserRoundCheck,
   Users,
