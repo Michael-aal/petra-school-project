@@ -1,4 +1,4 @@
-      import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
+      import { Notebook, Users, Building2, Book, Send, Mail,  Play ,Smartphone, Quote, ArrowRight, Brain, Target, Map, CheckCircle, Shield, Zap, TrendingUp, TrendingDown, Clock, GraduationCap, Award, MessageCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "../Styles/Home.css";
 import MarqueeModule from "react-fast-marquee";
@@ -186,7 +186,7 @@ function HomeSection2() {
 
         <div className="section2-text">
           <div className="recognition-badge">
-            <Sparkles size={16} />
+            <Award size={16} />
             Recognition
           </div>
 
@@ -463,7 +463,7 @@ function HomeSection7(){
       <div className="section7-left">
         <div className="section7-header">
           <h2 className="section7-badge">
-            <Sparkles /> FOR STUDENTS
+            <Award /> FOR STUDENTS
           </h2>
           <h3 className="section7-title">
             MASTERY <span className="section7-title-highlight">IN MOTION.</span>
