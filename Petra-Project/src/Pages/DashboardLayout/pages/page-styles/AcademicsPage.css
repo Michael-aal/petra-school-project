@@ -1,6 +1,325 @@
-/* Styles for AcademicsPage */
+
 .academics-page {
+  --academics-white: #ffffff;
+  --academics-bg: #f8fafc;
+
+  --academics-blue: #2563eb;
+  --academics-blue-dark: #1d4ed8;
+  --academics-blue-soft: #eff6ff;
+  --academics-blue-border: #dbeafe;
+
+  --academics-red: #dc2626;
+  --academics-red-dark: #b91c1c;
+  --academics-red-soft: #fef2f2;
+  --academics-red-border: #fecaca;
+
+  --academics-text: #172033;
+  --academics-muted: #64748b;
+  --academics-border: #e5e7eb;
+
+  min-height: 100%;
   padding: 24px;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--academics-bg);
+  color: var(--academics-text);
 }
+
+/* =========================================================
+   GENERIC ACADEMIC CARDS
+   ========================================================= */
+
+.academics-page .academics-card {
+  padding: 18px;
+  border: 1px solid var(--academics-border);
+  border-radius: 16px;
+  background: var(--academics-white);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.academics-page .academics-card:hover {
+  border-color: var(--academics-blue-border);
+}
+
+/* =========================================================
+   HEADERS
+   ========================================================= */
+
+.academics-page .academics-header {
+  margin-bottom: 20px;
+}
+
+.academics-page .academics-header h1,
+.academics-page h1 {
+  margin: 0;
+  color: var(--academics-text);
+  font-size: clamp(1.55rem, 2vw, 2rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.academics-page .academics-header p,
+.academics-page .academics-description {
+  margin: 8px 0 0;
+  color: var(--academics-muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   SECTION HEADERS
+   ========================================================= */
+
+.academics-page .academics-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.academics-page .academics-section-header h2,
+.academics-page .academics-section-header h3 {
+  margin: 0;
+  color: var(--academics-text);
+  font-weight: 750;
+}
+
+/* =========================================================
+   CONTENT GRID
+   ========================================================= */
+
+.academics-page .academics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.academics-page .academics-primary-button,
+.academics-page button.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 0 14px;
+
+  border: 1px solid var(--academics-blue);
+  border-radius: 10px;
+
+  background: var(--academics-blue);
+  color: var(--academics-white);
+
+  font-size: 0.82rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.academics-page .academics-primary-button:hover,
+.academics-page button.primary:hover {
+  border-color: var(--academics-blue-dark);
+  background: var(--academics-blue-dark);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.academics-page .academics-secondary-button,
+.academics-page button.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 0 14px;
+
+  border: 1px solid var(--academics-border);
+  border-radius: 10px;
+
+  background: var(--academics-white);
+  color: var(--academics-text);
+
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.academics-page .academics-secondary-button:hover,
+.academics-page button.secondary:hover {
+  border-color: var(--academics-blue-border);
+  background: var(--academics-blue-soft);
+  color: var(--academics-blue-dark);
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.academics-page input,
+.academics-page select,
+.academics-page textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--academics-border);
+  border-radius: 10px;
+
+  outline: none;
+
+  background: var(--academics-white);
+  color: var(--academics-text);
+
+  font: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.academics-page textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.academics-page input::placeholder,
+.academics-page textarea::placeholder {
+  color: #94a3b8;
+}
+
+.academics-page input:focus,
+.academics-page select:focus,
+.academics-page textarea:focus {
+  border-color: var(--academics-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================================================
+   LISTS
+   ========================================================= */
+
+.academics-page .academics-list {
+  display: grid;
+  gap: 10px;
+}
+
+.academics-page .academics-list-item {
+  padding: 14px;
+
+  border: 1px solid var(--academics-border);
+  border-radius: 12px;
+
+  background: var(--academics-white);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.academics-page .academics-list-item:hover {
+  border-color: var(--academics-blue-border);
+  background: #fbfdff;
+  transform: translateY(-1px);
+}
+
+.academics-page .academics-list-item strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--academics-text);
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.academics-page .academics-list-item p {
+  margin: 0;
+  color: var(--academics-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.academics-page .academics-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: var(--academics-blue-soft);
+  border: 1px solid var(--academics-blue-border);
+
+  color: var(--academics-blue-dark);
+
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.academics-page .academics-status.warning,
+.academics-page .academics-status.error {
+  background: var(--academics-red-soft);
+  border-color: var(--academics-red-border);
+  color: var(--academics-red-dark);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.academics-page .academics-empty-state {
+  padding: 28px;
+  border: 1px dashed var(--academics-border);
+  border-radius: 14px;
+  background: var(--academics-white);
+  color: var(--academics-muted);
+  text-align: center;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .academics-page {
+    padding: 18px;
+  }
+
+  .academics-page .academics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .academics-page {
+    padding: 14px;
+  }
+
+  .academics-page .academics-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
