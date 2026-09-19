@@ -193,26 +193,3 @@ export default function WalletPage() {
     </div>
   );
 }
-
-
-/* Nuvora wallet visual cleanup: blue/white/black only, crisp text, no orange. */
-.wallet-page,
-.wallet-page * { text-shadow:none !important; filter:none !important; }
-.wallet-page { --wallet-accent:#1877F2 !important; --wallet-accent-strong:#2563EB !important; --wallet-surface:#FFFFFF !important; --wallet-bg:#F5F8FC !important; --wallet-text:#0F172A !important; --wallet-muted:#475569 !important; --wallet-border:#E2E8F0 !important; }
-.wallet-page [class*="orange"], .wallet-page [class*="amber"], .wallet-page [class*="rose"] { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
-.wallet-page button, .wallet-page .btn, .wallet-page button[type="submit"] { background:#1877F2 !important; border-color:#1877F2 !important; color:#FFFFFF !important; }
-.wallet-page button:hover, .wallet-page .btn:hover { background:#2563EB !important; border-color:#2563EB !important; }
-.wallet-page input, .wallet-page select, .wallet-page textarea { background:#FFFFFF !important; color:#0F172A !important; border-color:#CBD5E1 !important; }
-.wallet-page input:focus, .wallet-page select:focus, .wallet-page textarea:focus { border-color:#1877F2 !important; box-shadow:0 0 0 3px #EAF3FF !important; }
-.wallet-page svg { opacity:1 !important; filter:none !important; }
-
-
-/* Nuvora wallet visual cleanup: blue/white/black only, crisp text, no orange. */
-.wallet-page, .wallet-page * { text-shadow:none !important; filter:none !important; }
-.wallet-page { --wallet-accent:#1877F2 !important; --wallet-accent-strong:#2563EB !important; --wallet-surface:#FFFFFF !important; --wallet-bg:#F5F8FC !important; --wallet-text:#0F172A !important; --wallet-muted:#475569 !important; --wallet-border:#E2E8F0 !important; }
-.wallet-page [class*="orange"], .wallet-page [class*="amber"], .wallet-page [class*="rose"] { color:#1877F2 !important; background:#EAF3FF !important; border-color:#BFDBFE !important; }
-.wallet-page button, .wallet-page .btn, .wallet-page button[type="submit"] { background:#1877F2 !important; border-color:#1877F2 !important; color:#FFFFFF !important; }
-.wallet-page button:hover, .wallet-page .btn:hover { background:#2563EB !important; border-color:#2563EB !important; }
-.wallet-page input, .wallet-page select, .wallet-page textarea { background:#FFFFFF !important; color:#0F172A !important; border-color:#CBD5E1 !important; }
-.wallet-page input:focus, .wallet-page select:focus, .wallet-page textarea:focus { border-color:#1877F2 !important; box-shadow:0 0 0 3px #EAF3FF !important; }
-.wallet-page svg { opacity:1 !important; filter:none !important; }
