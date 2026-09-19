@@ -974,3 +974,65 @@ textarea::placeholder {
 .landing-page [class*="shadow-"] {
   box-shadow: none !important;
 }
+
+
+/* Public navbar: clean reference-style navigation with no colored chrome. */
+.navbar {
+  background: rgba(255,255,255,.96) !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+.navbar-container {
+  width: min(100%, 1280px) !important;
+  min-height: 72px !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(14px, 3vw, 32px) !important;
+}
+.navbar-logo,
+.navbar-brand,
+.navbar-link,
+.nav-links a,
+.navbar-left,
+.navbar-right {
+  color: #111111 !important;
+}
+.navbar-link:hover,
+.nav-links a:hover {
+  color: #2563eb !important;
+  background: transparent !important;
+}
+.navbar-cta,
+.navbar-mobile-cta {
+  background: #2563eb !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: 1px solid #2563eb !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+.navbar-cta:hover,
+.navbar-mobile-cta:hover {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+.mobile-menu-btn {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid #e5e5e5 !important;
+  border-radius: 10px !important;
+}
+.mobile-menu {
+  background: #ffffff !important;
+  border-top: 1px solid #e5e5e5 !important;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 0.06) !important;
+}
+.mobile-menu-link {
+  color: #555555 !important;
+  background: transparent !important;
+}
+.mobile-menu-link:hover,
+.mobile-menu-link.active {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+}
