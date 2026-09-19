@@ -1,128 +1,221 @@
-/* Nuvora dashboard shell polish — restrained white/blue system */
-.dashboard-shell .sidebar-container{
-  background:#fff !important;
-  color:#0f172a !important;
-  border-right:1px solid #e5e7eb !important;
-  box-shadow:4px 0 18px rgba(15,23,42,.045) !important;
+
+.dashboard-shell .sidebar-container {
+  background: #0f2747 !important;
+  color: #f8fbff !important;
+  border-right: 0 !important;
+  box-shadow: 8px 0 28px rgba(15, 39, 71, 0.08) !important;
 }
+
 .dashboard-shell .sidebar-header,
-.dashboard-shell .sidebar-footer{border-color:#e5e7eb !important}
-.dashboard-shell .sidebar-contaner-logo{
-  background:#eff6ff !important;
-  border:1px solid #dbeafe !important;
-  color:#2563eb !important;
+.dashboard-shell .sidebar-footer {
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
+
+.dashboard-shell .sidebar-contaner-logo {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
 .dashboard-shell .brand-title,
-.dashboard-shell .sidebar-user h3{color:#0f172a !important}
+.dashboard-shell .sidebar-user h3 {
+  color: #ffffff !important;
+}
+
 .dashboard-shell .brand-sub,
 .dashboard-shell .sidebar-section-label,
-.dashboard-shell .sidebar-user h4{color:#64748b !important}
+.dashboard-shell .sidebar-user h4,
+.dashboard-shell .sidebar-child {
+  color: #aebfd5 !important;
+}
+
 .dashboard-shell .sidebar-link,
 .dashboard-shell .sidebar-group,
 .dashboard-shell .sidebar-assistant,
-.dashboard-shell .sidebar-child{
-  color:#334155 !important;
-  background:transparent !important;
-  border-color:transparent !important;
+.dashboard-shell .sidebar-child {
+  color: #dbe7f5 !important;
+  background: transparent !important;
+  border-color: transparent !important;
 }
+
 .dashboard-shell .sidebar-link:hover,
 .dashboard-shell .sidebar-group:hover,
 .dashboard-shell .sidebar-assistant:hover,
-.dashboard-shell .sidebar-child:hover{
-  color:#1d4ed8 !important;
-  background:#f8fafc !important;
+.dashboard-shell .sidebar-child:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.07) !important;
 }
+
 .dashboard-shell .sidebar-link.active,
 .dashboard-shell .sidebar-child.active,
 .dashboard-shell .sidebar-group.group-active,
-.dashboard-shell .sidebar-assistant.active{
-  color:#1d4ed8 !important;
-  background:#eff6ff !important;
-  border-color:#dbeafe !important;
-  box-shadow:none !important;
-}
-.dashboard-shell .sidebar-icon,
-.dashboard-shell .child-icon,
-.dashboard-shell .sidebar-assistant-icon{
-  color:#2563eb !important;
-  stroke:#2563eb !important;
-}
-.dashboard-shell .sidebar-children{border-left-color:#e2e8f0 !important}
-.dashboard-shell .arrow-icon{color:#64748b !important;stroke:#64748b !important}
-.dashboard-shell .sidebar-close{
-  color:#64748b !important;
-  background:#fff !important;
-  border-color:#e2e8f0 !important;
-}
-.dashboard-shell .sidebar-close:hover{
-  color:#2563eb !important;
-  background:#eff6ff !important;
-  border-color:#bfdbfe !important;
+.dashboard-shell .sidebar-assistant.active {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.24) !important;
+  border-color: rgba(96, 165, 250, 0.16) !important;
+  box-shadow: none !important;
 }
 
-/* Top bar: white, quiet controls, guaranteed visible SVG glyphs. */
-.dashboard-shell .top-navbar{
-  background:#fff !important;
-  color:#0f172a !important;
-  border-bottom:1px solid #e5e7eb !important;
-  box-shadow:0 1px 8px rgba(15,23,42,.04) !important;
-  backdrop-filter:none !important;
+.dashboard-shell .sidebar-link.active::before,
+.dashboard-shell .sidebar-child.active::before,
+.dashboard-shell .sidebar-group.group-active::before {
+  background: #2563eb !important;
 }
+
+.dashboard-shell .sidebar-icon,
+.dashboard-shell .child-icon,
+.dashboard-shell .sidebar-assistant-icon {
+  color: #60a5fa !important;
+  stroke: #60a5fa !important;
+}
+
+.dashboard-shell .sidebar-children {
+  border-left-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dashboard-shell .arrow-icon {
+  color: #aebfd5 !important;
+  stroke: #aebfd5 !important;
+}
+
+.dashboard-shell .sidebar-close {
+  color: #aebfd5 !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dashboard-shell .sidebar-close:hover {
+  color: #ffffff !important;
+  background: rgba(37, 99, 235, 0.2) !important;
+  border-color: rgba(96, 165, 250, 0.24) !important;
+}
+
+
+/* =========================================================
+   TOP NAVIGATION
+   White surface with restrained controls.
+   ========================================================= */
+
+.dashboard-shell .top-navbar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #10233f !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 8px rgba(15, 39, 71, 0.04) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
 .dashboard-shell .menu-btn,
 .dashboard-shell .icon-btn,
 .dashboard-shell .ask-nuvora-btn,
-.dashboard-shell .user-info{
-  color:#2563eb !important;
-  background:#fff !important;
-  border:1px solid #e2e8f0 !important;
-  box-shadow:none !important;
+.dashboard-shell .user-info {
+  color: #64748b !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
 }
+
 .dashboard-shell .menu-btn svg,
 .dashboard-shell .icon-btn svg,
 .dashboard-shell .ask-nuvora-btn svg,
-.dashboard-shell .user-info svg{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  color:#2563eb !important;
-  stroke:#2563eb !important;
-  fill:none !important;
-  stroke-width:2.2 !important;
+.dashboard-shell .user-info svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  stroke-width: 2.2 !important;
 }
+
 .dashboard-shell .menu-btn:hover,
 .dashboard-shell .icon-btn:hover,
 .dashboard-shell .ask-nuvora-btn:hover,
-.dashboard-shell .user-info:hover{
-  color:#1d4ed8 !important;
-  background:#f8fafc !important;
-  border-color:#bfdbfe !important;
+.dashboard-shell .user-info:hover {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
 }
-.dashboard-shell .ask-nuvora-icon-wrap{
-  background:#2563eb !important;
-  color:#fff !important;
-  border-radius:7px !important;
-}
-.dashboard-shell .ask-nuvora-icon-wrap svg{
-  color:#fff !important;
-  stroke:#fff !important;
-}
-.dashboard-shell .top-welcome,
-.dashboard-shell .user-name{color:#0f172a !important}
-.dashboard-shell .greets{color:#64748b !important}
-.dashboard-shell .user-caret{color:#64748b !important}
-.dashboard-shell .nav-badge{background:#2563eb !important;color:#fff !important;box-shadow:none !important}
 
-/* Keep dropdown actions mixed instead of making every action blue. */
-.dashboard-shell .notification-action{
-  background:#2563eb !important;
-  color:#fff !important;
+.dashboard-shell .ask-nuvora-icon-wrap {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
 }
-.dashboard-shell .account-dropdown-actions button{
-  background:#fff !important;
-  color:#334155 !important;
-  border-color:#e2e8f0 !important;
+
+.dashboard-shell .ask-nuvora-icon-wrap svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
-.dashboard-shell .account-dropdown-actions button:hover{
-  background:#eff6ff !important;
-  color:#1d4ed8 !important;
+
+.dashboard-shell .top-welcome,
+.dashboard-shell .user-name {
+  color: #10233f !important;
 }
+
+.dashboard-shell .greets,
+.dashboard-shell .user-caret {
+  color: #64748b !important;
+}
+
+.dashboard-shell .nav-badge {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+
+/* =========================================================
+   DROPDOWN ACTIONS
+   ========================================================= */
+
+.dashboard-shell .notification-action {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.dashboard-shell .account-dropdown-actions button {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.dashboard-shell .account-dropdown-actions button:hover {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}
+
+
+/* =========================================================
+   DASHBOARD STRUCTURE
+   ========================================================= */
+
+.dashboard-shell {
+  background: #f7f9fc !important;
+}
+
+.dashboard-shell .dashboard-main,
+.dashboard-shell .dashboard-content,
+.dashboard-shell .dashboard-page {
+  background: #f7f9fc !important;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell .menu-btn,
+  .dashboard-shell .icon-btn,
+  .dashboard-shell .ask-nuvora-btn,
+  .dashboard-shell .user-info,
+  .dashboard-shell .sidebar-link,
+  .dashboard-shell .sidebar-group,
+  .dashboard-shell .sidebar-assistant,
+  .dashboard-shell .sidebar-child {
+    transition: none !important;
+  }
+}
+
