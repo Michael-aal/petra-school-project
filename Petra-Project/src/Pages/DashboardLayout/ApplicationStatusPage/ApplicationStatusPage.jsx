@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   CheckCircle2, Clock, XCircle, CreditCard, GraduationCap, 
-  FileText, ArrowRight, Download, AlertTriangle, Sparkles 
+  FileText, ArrowRight, Download, AlertTriangle, CheckCircle2 
 } from "lucide-react";
 import "./ApplicationStatusPage.css";
 
@@ -32,7 +32,7 @@ export default function ApplicationStatusPage() {
     },
     passed: {
       label: "Passed Exam",
-      icon: Sparkles,
+      icon: CheckCircle2,
       colorClass: "status-passed",
       title: "Congratulations! You passed the entrance exam.",
       description: "Your ward has successfully met the academic requirements for admission. To secure this spot, please proceed to pay the school fees for the upcoming term.",
