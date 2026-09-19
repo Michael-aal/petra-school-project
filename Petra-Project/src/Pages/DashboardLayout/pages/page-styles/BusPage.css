@@ -1,32 +1,73 @@
+
 .bus-page {
+  --bus-white: #ffffff;
+  --bus-bg: #f8fafc;
+
+  --bus-blue: #2563eb;
+  --bus-blue-dark: #1d4ed8;
+  --bus-blue-soft: #eff6ff;
+  --bus-blue-border: #dbeafe;
+
+  --bus-red: #dc2626;
+  --bus-red-dark: #b91c1c;
+  --bus-red-soft: #fef2f2;
+  --bus-red-border: #fecaca;
+
+  --bus-text: #172033;
+  --bus-muted: #64748b;
+  --bus-border: #e5e7eb;
+
   display: grid;
-  gap: 18px;
+  gap: 20px;
+  min-height: 100%;
+  padding: 24px;
+  background: var(--bus-bg);
+  color: var(--bus-text);
 }
+
+/* =========================================================
+   HERO
+   ========================================================= */
 
 .bus-hero {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
-  padding: 26px;
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  background: var(--app-surface);
-  box-shadow: none;
+  gap: 20px;
+
+  padding: 24px;
+
+  border: 1px solid var(--bus-border);
+  border-radius: 16px;
+
+  background: var(--bus-white);
+
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
 }
 
 .bus-hero h1 {
   margin: 8px 0 6px;
+
+  color: var(--bus-text);
+
   font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 750;
   letter-spacing: -0.05em;
-  color: var(--app-text);
+  line-height: 1.1;
 }
 
 .bus-hero p:not(.dashboard-page-label) {
-  margin: 0;
-  color: var(--app-text-muted);
   max-width: 650px;
+  margin: 0;
+
+  color: var(--bus-muted);
+
+  line-height: 1.6;
 }
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .bus-primary-action,
 .bus-secondary-action {
@@ -34,29 +75,56 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+
   min-height: 42px;
   padding: 0 15px;
-  border-radius: 8px;
-  font-weight: 700;
+
+  border-radius: 10px;
+
+  font-size: 0.84rem;
+  font-weight: 750;
+
   cursor: pointer;
-  box-shadow: none !important;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .bus-primary-action {
-  border: 1px solid #1877f2 !important;
-  background: #1877f2 !important;
-  color: #ffffff !important;
+  border: 1px solid var(--bus-blue);
+  background: var(--bus-blue);
+  color: var(--bus-white);
+}
+
+.bus-primary-action:hover {
+  border-color: var(--bus-blue-dark);
+  background: var(--bus-blue-dark);
+  transform: translateY(-1px);
 }
 
 .bus-secondary-action {
-  border: 1px solid #1877f2 !important;
-  background: #1877f2 !important;
-  color: #ffffff !important;
+  border: 1px solid var(--bus-border);
+  background: var(--bus-white);
+  color: var(--bus-text);
 }
+
+.bus-secondary-action:hover {
+  border-color: var(--bus-blue-border);
+  background: var(--bus-blue-soft);
+  color: var(--bus-blue-dark);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
 
 .bus-stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -65,79 +133,151 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+
   min-height: 120px;
   padding: 20px 18px;
-  border: 1px solid var(--app-border);
-  border-radius: 10px;
-  background: var(--app-surface);
-  box-shadow: none;
+
+  border: 1px solid var(--bus-border);
+  border-radius: 14px;
+
+  background: var(--bus-white);
+
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bus-stat-grid article:hover {
+  border-color: var(--bus-blue-border);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
 }
 
 .bus-stat-grid .stat-copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
+  justify-content: center;
   gap: 6px;
 }
 
 .bus-stat-grid svg {
-  color: var(--app-accent);
   flex-shrink: 0;
+  color: var(--bus-blue);
 }
 
 .bus-stat-grid strong {
+  color: var(--bus-text);
   font-size: 2rem;
+  font-weight: 750;
   line-height: 1;
-  color: var(--app-text);
-  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .bus-stat-grid span {
-  color: var(--app-text-muted);
+  color: var(--bus-muted);
   font-size: 0.82rem;
 }
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
 .bus-empty-panel {
   display: grid;
   justify-items: center;
   gap: 10px;
+
   padding: 58px 24px;
-  border: 1px dashed var(--app-border);
-  border-radius: 10px;
-  background: var(--app-surface);
+
+  border: 1px dashed var(--bus-border);
+  border-radius: 16px;
+
+  background: var(--bus-white);
+
   text-align: center;
+
   box-shadow: none;
 }
 
 .bus-empty-icon {
   display: grid;
   place-items: center;
+
   width: 52px;
   height: 52px;
-  border-radius: 12px;
-  background: rgba(24, 119, 242, 0.12);
-  color: var(--app-accent);
+
+  border: 1px solid var(--bus-blue-border);
+  border-radius: 14px;
+
+  background: var(--bus-blue-soft);
+  color: var(--bus-blue);
 }
 
 .bus-empty-panel h2 {
   margin: 4px 0 0;
-  color: var(--app-text);
+  color: var(--bus-text);
+  font-size: 1.15rem;
+  font-weight: 750;
 }
 
 .bus-empty-panel p {
   max-width: 480px;
   margin: 0 0 8px;
-  color: var(--app-text-muted);
+
+  color: var(--bus-muted);
+
   line-height: 1.6;
 }
 
-@media (max-width: 720px) {
-  .bus-hero {
-    flex-direction: column;
+/* =========================================================
+   OPTIONAL WARNING / ERROR
+   ========================================================= */
+
+.bus-page .bus-warning,
+.bus-page .bus-error {
+  padding: 12px 14px;
+
+  border: 1px solid var(--bus-red-border);
+  border-radius: 12px;
+
+  background: var(--bus-red-soft);
+  color: var(--bus-red-dark);
+
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .bus-page {
+    padding: 18px;
   }
 
   .bus-stat-grid {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 720px) {
+  .bus-page {
+    padding: 16px 14px 24px;
+  }
+
+  .bus-hero {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .bus-primary-action,
+  .bus-secondary-action {
+    width: 100%;
+  }
+}
+
