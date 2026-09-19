@@ -48,6 +48,9 @@ const runPrisma = (args) => {
     return execFileSync(prismaBin, args, {
       cwd: backendRoot,
       env: process.env,
+      // npm exposes Prisma as a .cmd shim on Windows. Node's execFileSync
+      // needs a shell to execute that shim; without it Windows returns EINVAL.
+      shell: process.platform === "win32",
       stdio: ["inherit", "inherit", "pipe"],
       encoding: "utf8",
     });
