@@ -1,9 +1,42 @@
+```css
+/* =========================================================
+   SETTINGS PAGE
+   White-dominant UI with blue primary and red danger accents
+   ========================================================= */
+
 .settings-page {
+  --settings-bg: #f8fafc;
+  --settings-surface: #ffffff;
+  --settings-surface-soft: #f1f5f9;
+
+  --settings-text: #0f172a;
+  --settings-muted: #64748b;
+
+  --settings-blue: #2563eb;
+  --settings-blue-dark: #1d4ed8;
+  --settings-blue-soft: #eff6ff;
+  --settings-blue-border: #bfdbfe;
+
+  --settings-red: #dc2626;
+  --settings-red-dark: #b91c1c;
+  --settings-red-soft: #fef2f2;
+  --settings-red-border: #fecaca;
+
+  --settings-border: #e2e8f0;
+  --settings-radius: 12px;
+  --settings-radius-lg: 16px;
+  --settings-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+
   min-height: 100%;
-  padding: 20px 18px 24px;
-  color: var(--app-text);
-  background: var(--app-bg);
+  padding: 20px clamp(14px, 2.5vw, 30px) 32px;
+  background: var(--settings-bg);
+  color: var(--settings-text);
 }
+
+
+/* =========================================================
+   PAGE HERO
+   ========================================================= */
 
 .settings-page-hero {
   display: flex;
@@ -13,30 +46,37 @@
 }
 
 .settings-page-hero-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
   display: grid;
   place-items: center;
-  color: var(--app-accent);
-  background: var(--surface-accent);
-  border: 1px solid color-mix(in srgb, var(--app-accent) 14%, transparent);
-  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid var(--settings-blue-border);
+  border-radius: 12px;
+  background: var(--settings-blue-soft);
+  color: var(--settings-blue);
 }
 
 .settings-page-hero h1 {
   margin: 0;
-  font-size: clamp(1.4rem, 1.8vw, 1.75rem);
+  color: var(--settings-text);
+  font-size: clamp(1.45rem, 2vw, 1.8rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--app-text);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 }
 
 .settings-page-hero p {
   margin: 4px 0 0;
-  color: var(--app-text-muted);
-  font-size: 0.95rem;
+  color: var(--settings-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
+
+
+/* =========================================================
+   SETTINGS GRID
+   ========================================================= */
 
 .settings-grid {
   display: grid;
@@ -45,31 +85,76 @@
 }
 
 .settings-card {
-  min-height: 280px;
-  padding: 18px;
-  border-radius: 18px;
-  background: var(--app-surface);
-  border: 1px solid var(--app-border);
-  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
+  min-height: 280px;
+  padding: 20px;
+  border: 1px solid var(--settings-border);
+  border-radius: var(--settings-radius-lg);
+  background: var(--settings-surface);
+  box-shadow: var(--settings-shadow);
 }
 
 .settings-card-head h2 {
-  margin: 0 0 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin: 0 0 16px;
+  color: var(--settings-text);
   font-size: 1rem;
   font-weight: 800;
-  color: var(--app-text);
+  line-height: 1.3;
 }
+
+
+/* =========================================================
+   FIELDS
+   ========================================================= */
 
 .settings-field {
   display: grid;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
+
+.settings-field > span {
+  color: var(--settings-text);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.settings-field input,
+.settings-field select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--settings-border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--settings-surface);
+  color: var(--settings-text);
+  font: inherit;
+  font-size: 0.9rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.settings-field input::placeholder {
+  color: #94a3b8;
+}
+
+.settings-field input:focus,
+.settings-field select:focus {
+  border-color: var(--settings-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================================
+   THEME SETTING
+   ========================================================= */
 
 .settings-theme-card {
   display: flex;
@@ -82,101 +167,115 @@
 .settings-theme-copy {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .settings-theme-copy strong {
+  color: var(--settings-text);
   font-size: 0.92rem;
   font-weight: 800;
-  color: var(--app-text);
 }
 
 .settings-theme-copy span {
-  font-size: 0.84rem;
-  color: var(--app-text-muted);
+  color: var(--settings-muted);
+  font-size: 0.82rem;
   font-weight: 600;
+  line-height: 1.45;
 }
 
 .settings-theme-toggle {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  height: 30px;
+  min-height: 32px;
   padding: 0 12px;
-  border: 0;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
-  font-size: 0.84rem;
-  font-weight: 700;
+  border: 1px solid var(--settings-blue);
+  border-radius: 8px;
+  background: var(--settings-blue);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: var(--shadow-soft);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .settings-theme-toggle:hover {
-  filter: brightness(1.05);
+  border-color: var(--settings-blue-dark);
+  background: var(--settings-blue-dark);
   transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.16);
 }
 
-.settings-field span {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--app-text);
+.settings-theme-toggle:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.16);
+  outline-offset: 2px;
 }
 
-.settings-field input,
-.settings-field select {
-  width: 100%;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 4px;
-  border: 1px solid var(--app-border);
-  background: var(--app-card);
-  color: var(--app-text);
-  outline: none;
-  font-size: 0.92rem;
-}
+
+/* =========================================================
+   PRIMARY ACTION
+   ========================================================= */
 
 .settings-button {
-  margin-top: auto;
-  width: max-content;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  height: 36px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 8px;
-  background: linear-gradient(90deg, var(--app-accent), var(--app-accent-2));
-  color: var(--primary-foreground);
+  width: max-content;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 15px;
+  border: 1px solid var(--settings-blue);
+  border-radius: 9px;
+  background: var(--settings-blue);
+  color: #ffffff;
+  font: inherit;
   font-size: 0.86rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1;
   white-space: nowrap;
-  letter-spacing: 0;
-  box-shadow: var(--shadow-soft);
   cursor: pointer;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.14);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.settings-button:hover:not(:disabled) {
+  border-color: var(--settings-blue-dark);
+  background: var(--settings-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.18);
 }
 
 .settings-button:disabled {
-  opacity: 0.7;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+.settings-button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.16);
+  outline-offset: 2px;
 }
 
 .settings-button span {
   line-height: 1;
 }
 
-.settings-button:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
 
-.settings-delete-button {
-  margin-top: 10px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--primary)));
-}
+/* =========================================================
+   DANGER / DELETE
+   ========================================================= */
 
 .settings-danger-card {
   justify-content: flex-start;
@@ -185,10 +284,28 @@
 
 .settings-danger-copy {
   margin: 0;
-  color: var(--muted-foreground);
-  font-size: 0.92rem;
+  color: var(--settings-muted);
+  font-size: 0.9rem;
   line-height: 1.6;
 }
+
+.settings-delete-button {
+  margin-top: 8px;
+  border-color: var(--settings-red);
+  background: var(--settings-red);
+  color: #ffffff;
+  box-shadow: 0 5px 14px rgba(220, 38, 38, 0.12);
+}
+
+.settings-delete-button:hover:not(:disabled) {
+  border-color: var(--settings-red-dark);
+  background: var(--settings-red-dark);
+}
+
+
+/* =========================================================
+   INFORMATION LIST
+   ========================================================= */
 
 .settings-info-list {
   display: grid;
@@ -200,24 +317,32 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 10px 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--settings-border);
   border-radius: 10px;
-  background: var(--surface-muted);
+  background: var(--settings-surface-soft);
 }
 
 .settings-info-item span {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--app-text-muted);
+  color: var(--settings-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .settings-info-item strong {
-  font-size: 0.92rem;
-  color: var(--app-text);
+  color: var(--settings-text);
+  font-size: 0.88rem;
+  font-weight: 700;
   text-align: right;
+  overflow-wrap: anywhere;
 }
+
+
+/* =========================================================
+   SELECT WRAPPER
+   ========================================================= */
 
 .settings-select-wrap {
   display: flex;
@@ -228,42 +353,61 @@
   min-width: 160px;
   min-height: 38px;
   padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid var(--input);
-  background: var(--background);
-  color: var(--foreground);
+  border: 1px solid var(--settings-border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--settings-surface);
+  color: var(--settings-text);
+  font: inherit;
+  font-size: 0.88rem;
 }
 
+.settings-select-wrap select:focus {
+  border-color: var(--settings-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================================
+   STATUS / ERRORS
+   ========================================================= */
+
 .settings-error {
-  color: var(--destructive);
+  color: var(--settings-red-dark);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .settings-status {
   margin: 14px 2px 0;
-  color: var(--muted-foreground);
-  font-size: 0.92rem;
+  color: var(--settings-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 .settings-modal-backdrop {
   position: fixed;
   inset: 0;
+  z-index: 100;
   display: grid;
   place-items: center;
   padding: 18px;
-  background: color-mix(in srgb, var(--app-bg) 72%, #000 28%);
-  backdrop-filter: blur(8px);
-  z-index: 100;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(6px);
 }
 
 .settings-modal {
   width: min(100%, 520px);
+  padding: 20px;
+  border: 1px solid var(--settings-border);
   border-radius: 18px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  box-shadow: var(--shadow-soft);
-  padding: 18px;
+  background: var(--settings-surface);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
 }
 
 .settings-modal-header {
@@ -276,26 +420,44 @@
 
 .settings-modal-header h3 {
   margin: 0;
+  color: var(--settings-text);
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--app-text);
+  line-height: 1.3;
 }
 
 .settings-modal-header p {
   margin: 6px 0 0;
-  color: var(--app-text-muted);
+  color: var(--settings-muted);
   line-height: 1.5;
 }
 
 .settings-modal-close {
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  color: var(--app-text);
-  border-radius: 10px;
-  width: 36px;
-  height: 36px;
   display: inline-grid;
   place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border: 1px solid var(--settings-border);
+  border-radius: 9px;
+  background: var(--settings-surface);
+  color: var(--settings-text);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.settings-modal-close:hover {
+  border-color: var(--settings-blue-border);
+  background: var(--settings-blue-soft);
+  color: var(--settings-blue-dark);
+}
+
+.settings-modal-close:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.16);
+  outline-offset: 2px;
 }
 
 .settings-modal-body {
@@ -307,55 +469,100 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
+  min-height: 42px;
   padding: 0 12px;
-  border-radius: 8px;
-  border: 1px solid var(--app-border);
-  background: var(--app-card);
+  border: 1px solid var(--settings-border);
+  border-radius: 9px;
+  background: var(--settings-surface);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.settings-password-wrap:focus-within {
+  border-color: var(--settings-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .settings-password-wrap input {
   width: 100%;
+  min-width: 0;
   border: 0;
   outline: none;
   background: transparent;
-  color: var(--app-text);
+  color: var(--settings-text);
+  font: inherit;
+}
+
+.settings-password-wrap input::placeholder {
+  color: #94a3b8;
 }
 
 .settings-delete-error {
   margin: 0;
-  color: var(--destructive);
-  font-size: 0.92rem;
-  font-weight: 600;
+  color: var(--settings-red-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .settings-modal-actions {
   display: flex;
-  gap: 10px;
   justify-content: flex-end;
   flex-wrap: wrap;
+  gap: 10px;
   padding-top: 4px;
 }
 
 .settings-modal-cancel,
 .settings-modal-delete {
-  min-height: 38px;
+  min-height: 40px;
   padding: 0 14px;
-  border-radius: 8px;
-  border: 1px solid var(--app-border);
-  font-weight: 700;
+  border-radius: 9px;
+  border: 1px solid var(--settings-border);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
 }
 
 .settings-modal-cancel {
-  background: var(--app-surface);
-  color: var(--app-text);
+  background: var(--settings-surface);
+  color: var(--settings-text);
+}
+
+.settings-modal-cancel:hover {
+  border-color: var(--settings-blue-border);
+  background: var(--settings-blue-soft);
+  color: var(--settings-blue-dark);
 }
 
 .settings-modal-delete {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--destructive) 88%, transparent), color-mix(in srgb, var(--destructive) 72%, var(--app-accent)));
-  color: var(--primary-foreground);
-  border-color: transparent;
+  border-color: var(--settings-red);
+  background: var(--settings-red);
+  color: #ffffff;
 }
+
+.settings-modal-delete:hover {
+  border-color: var(--settings-red-dark);
+  background: var(--settings-red-dark);
+  transform: translateY(-1px);
+}
+
+.settings-modal-cancel:focus-visible,
+.settings-modal-delete:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.16);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   SPINNER
+   ========================================================= */
 
 .settings-spinner {
   animation: settings-spin 1s linear infinite;
@@ -367,48 +574,10 @@
   }
 }
 
-body.dark .settings-page {
-  color: var(--app-text);
-  background: var(--app-bg);
-}
 
-body.dark .settings-page-hero p,
-body.dark .settings-status {
-  color: var(--app-text-muted);
-}
-
-body.dark .settings-page-hero-icon {
-  color: var(--app-accent);
-  background: color-mix(in srgb, var(--app-accent) 18%, transparent);
-  border-color: color-mix(in srgb, var(--app-accent) 22%, transparent);
-}
-
-body.dark .settings-card {
-  background: var(--app-surface);
-  border-color: var(--app-border);
-  box-shadow: var(--shadow-soft-dark);
-}
-
-body.dark .settings-card-head h2,
-body.dark .settings-field span,
-body.dark .settings-theme-copy strong {
-  color: var(--app-text);
-}
-
-body.dark .settings-theme-copy span {
-  color: var(--app-text-muted);
-}
-
-body.dark .settings-field input,
-body.dark .settings-field select {
-  background: var(--app-card);
-  color: var(--app-text);
-  border-color: var(--app-border);
-}
-
-body.dark .settings-info-item {
-  background: var(--surface-muted-strong);
-}
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 900px) {
   .settings-grid {
@@ -418,20 +587,81 @@ body.dark .settings-info-item {
 
 @media (max-width: 640px) {
   .settings-page {
-    padding: 16px;
+    padding: 16px 12px 24px;
   }
 
-  .settings-modal {
-    padding: 16px;
+  .settings-card {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .settings-theme-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-theme-toggle {
+    width: 100%;
   }
 
   .settings-info-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 5px;
   }
 
   .settings-info-item strong {
     text-align: left;
   }
+
+  .settings-select-wrap select {
+    width: 100%;
+  }
+
+  .settings-modal-backdrop {
+    padding: 12px;
+  }
+
+  .settings-modal {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .settings-modal-actions {
+    flex-direction: column;
+  }
+
+  .settings-modal-cancel,
+  .settings-modal-delete {
+    width: 100%;
+  }
 }
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-theme-toggle,
+  .settings-button,
+  .settings-modal-close,
+  .settings-modal-cancel,
+  .settings-modal-delete,
+  .settings-field input,
+  .settings-field select,
+  .settings-password-wrap {
+    transition: none;
+  }
+
+  .settings-theme-toggle:hover,
+  .settings-button:hover:not(:disabled),
+  .settings-modal-delete:hover {
+    transform: none;
+  }
+
+  .settings-spinner {
+    animation: none;
+  }
+}
+```
