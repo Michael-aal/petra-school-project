@@ -8,6 +8,7 @@ import { getDisplayName, getFirstName, normalizeUser } from "../../utils/userPro
 import UserAvatar from "../../components/UserAvatar";
 import { useToasts } from "../../context/ToastContext";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
+import "../../Styles/DashBoardLayout/NuvoraShellPolish.css";
 
 const POLL_MS = 3000;
 const getTime = (item) => { const value = Date.parse(item?.createdAt || item?.created_at || item?.sentAt || item?.publishedAt || ""); return Number.isFinite(value) ? value : 0; };
