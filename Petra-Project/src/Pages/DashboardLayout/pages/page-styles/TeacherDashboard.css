@@ -1,27 +1,27 @@
 
 .teacher-page {
   --teacher-white: #ffffff;
-  --teacher-bg: #f8fafc;
+  --teacher-bg: #f4f7fb;
 
-  --teacher-blue: #2563eb;
-  --teacher-blue-dark: #1d4ed8;
-  --teacher-blue-soft: #eff6ff;
-  --teacher-blue-border: #dbeafe;
+  --teacher-blue: #1769e0;
+  --teacher-blue-dark: #0f4fb5;
+  --teacher-blue-soft: #edf5ff;
+  --teacher-blue-border: #cfe1fb;
 
   --teacher-red: #dc2626;
   --teacher-red-dark: #b91c1c;
   --teacher-red-soft: #fef2f2;
   --teacher-red-border: #fecaca;
 
-  --teacher-ink: #172033;
-  --teacher-muted: #64748b;
-  --teacher-line: #e5e7eb;
+  --teacher-ink: #12233f;
+  --teacher-muted: #607089;
+  --teacher-line: #dfe7f1;
 
   width: 100%;
   min-height: 100%;
   display: grid;
-  gap: 22px;
-  padding: 24px;
+  gap: 20px;
+  padding: 28px;
   background: var(--teacher-bg);
   color: var(--teacher-ink);
 }
@@ -43,10 +43,10 @@
   padding: 28px 30px;
 
   border: 1px solid var(--teacher-line);
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--teacher-white);
 
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 8px 24px rgba(25, 55, 95, 0.06);
 }
 
 .teacher-page .dashboard-home-header::after {
@@ -71,8 +71,9 @@
 
 .teacher-page .dashboard-home-header h1 {
   margin: 0;
+  font-size: clamp(1.45rem, 2vw, 2rem);
   color: var(--teacher-ink);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 .teacher-page .dashboard-home-header p {
@@ -138,9 +139,16 @@
 .teacher-page .teacher-panel {
   min-height: auto;
   border: 1px solid var(--teacher-line);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--teacher-white);
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 6px 20px rgba(25, 55, 95, 0.045);
+}
+
+.teacher-page .dashboard-home-panel > h2,
+.teacher-page .teacher-panel > h2 {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
 }
 
 .teacher-page .dashboard-home-panel h2,
@@ -227,7 +235,7 @@
   border-radius: 14px;
   background: var(--teacher-white);
 
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 5px 16px rgba(25, 55, 95, 0.04);
 
   transition:
     transform 160ms ease,
@@ -542,6 +550,35 @@
   outline: 3px solid rgba(37, 99, 235, 0.12);
 }
 
+/* Keep the teacher workspace controls consistent across data-entry views. */
+.teacher-page .teacher-stack > input,
+.teacher-page .teacher-stack > select,
+.teacher-page .teacher-stack > textarea,
+.teacher-page .teacher-stack > input[type="date"] {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--teacher-line);
+  border-radius: 10px;
+  background: var(--teacher-white);
+  color: var(--teacher-ink);
+  font: inherit;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.teacher-page .teacher-stack > textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.teacher-page .teacher-stack > input:focus,
+.teacher-page .teacher-stack > select:focus,
+.teacher-page .teacher-stack > textarea:focus {
+  border-color: var(--teacher-blue);
+  box-shadow: 0 0 0 3px rgba(23, 105, 224, 0.12);
+}
+
 /* =========================================================
    TABLE
    ========================================================= */
@@ -549,6 +586,13 @@
 .teacher-page .teacher-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 620px;
+}
+
+.teacher-page .teacher-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--teacher-line);
+  border-radius: 12px;
 }
 
 .teacher-page .teacher-table th,
@@ -739,6 +783,10 @@
   .teacher-page .teacher-filter-bar select {
     width: 100%;
     min-width: 0;
+  }
+
+  .teacher-page .teacher-table {
+    min-width: 560px;
   }
 }
 

@@ -214,6 +214,12 @@
   background: linear-gradient(180deg, #f9e5d1 0%, var(--sidebar-accent) 100%);
 }
 
+.sidebar-container-teacher .sidebar-link.active::before,
+.sidebar-container-teacher .sidebar-child.active::before,
+.sidebar-container-teacher .sidebar-group.group-active::before {
+  background: var(--sidebar-accent);
+}
+
 .sidebar-link.active .sidebar-icon,
 .sidebar-child.active .child-icon,
 .sidebar-assistant.active .sidebar-assistant-icon,

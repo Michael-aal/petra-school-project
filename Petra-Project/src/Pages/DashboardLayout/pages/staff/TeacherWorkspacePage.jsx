@@ -704,7 +704,8 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
               <option value="Promoted">Promoted</option>
             </select>
           </div>
-          <table className="teacher-table">
+          <div className="teacher-table-wrap">
+            <table className="teacher-table">
             <thead>
               <tr>
                 <th>Student</th>
@@ -741,7 +742,8 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
                 );
               }) : <tr><td colSpan="6" className="teacher-empty-copy">No students match the selected search or filters.</td></tr>}
             </tbody>
-          </table>
+            </table>
+          </div>
         </section>
       </div>
     );
@@ -753,7 +755,8 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
         <div><h1>Students</h1><p>Only students from your assigned classes are shown.</p></div>
       </section>
       <section className="dashboard-home-panel teacher-panel">
-        <table className="teacher-table">
+        <div className="teacher-table-wrap">
+          <table className="teacher-table">
           <thead>
             <tr>
               <th>Student</th>
@@ -774,7 +777,8 @@ export default function TeacherWorkspacePage({ activeView = "dashboard" }) {
               );
             }) : <tr><td colSpan="4" className="teacher-empty-copy">No students available.</td></tr>}
           </tbody>
-        </table>
+          </table>
+        </div>
       </section>
     </div>
   );
