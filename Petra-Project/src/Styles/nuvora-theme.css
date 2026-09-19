@@ -451,3 +451,266 @@ textarea{min-height:96px}
 @media(prefers-reduced-motion:reduce){
   .dashboard-page *,.dashboard-content *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* =========================================================
+   NUVORA ADMIN REFERENCE SYSTEM
+   Visual direction: compact SaaS/admin workspace, strong
+   hierarchy, generous white surfaces, restrained blue.
+   ========================================================= */
+:root {
+  --nuvora-blue: #1877f2 !important;
+  --nuvora-blue-dark: #0f5dcc !important;
+  --nuvora-blue-soft: #eaf3ff !important;
+  --nuvora-bg: #f7f9fc !important;
+  --nuvora-surface: #ffffff !important;
+  --nuvora-text: #0f172a !important;
+  --nuvora-muted: #64748b !important;
+  --nuvora-border: #e2e8f0 !important;
+  --nuvora-shadow: 0 4px 18px rgb(15 23 42 / 6%) !important;
+}
+
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content,
+.dashboard-page,
+.page-content,
+.role-dashboard {
+  background: var(--nuvora-bg) !important;
+  color: var(--nuvora-text) !important;
+}
+
+.dashboard-page,
+.dashboard-content {
+  min-width: 0;
+}
+
+.dashboard-page > *,
+.dashboard-content > * {
+  max-width: 100%;
+}
+
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page h3,
+.dashboard-content h1,
+.dashboard-content h2,
+.dashboard-content h3 {
+  color: var(--nuvora-text) !important;
+  letter-spacing: -.025em;
+}
+
+.dashboard-page h1,
+.dashboard-content h1 {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  font-weight: 800;
+}
+
+.dashboard-page p,
+.dashboard-content p,
+.dashboard-page .muted,
+.dashboard-content .muted {
+  color: var(--nuvora-muted);
+}
+
+.dashboard-page .card,
+.dashboard-page .panel,
+.dashboard-page .stat-card,
+.dashboard-page .table-container,
+.dashboard-page .modal-content,
+.dashboard-page .dashboard-widget,
+.dashboard-page .form-card,
+.dashboard-page .settings-card,
+.dashboard-content .card,
+.dashboard-content .panel,
+.dashboard-content .stat-card,
+.dashboard-content .table-container,
+.dashboard-content .modal-content,
+.dashboard-content .dashboard-widget,
+.dashboard-content .form-card,
+.dashboard-content .settings-card {
+  background: #fff !important;
+  border: 1px solid var(--nuvora-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--nuvora-shadow) !important;
+}
+
+.dashboard-page .card:hover,
+.dashboard-content .card:hover {
+  box-shadow: 0 8px 24px rgb(15 23 42 / 8%) !important;
+}
+
+.dashboard-page button,
+.dashboard-content button,
+.dashboard-page .btn,
+.dashboard-content .btn {
+  border-radius: 9px;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.dashboard-page button.primary,
+.dashboard-page .btn-primary,
+.dashboard-content button.primary,
+.dashboard-content .btn-primary,
+.dashboard-page .create-btn,
+.dashboard-content .create-btn {
+  background: var(--nuvora-blue) !important;
+  background-image: none !important;
+  border-color: var(--nuvora-blue) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgb(24 119 242 / 14%) !important;
+}
+
+.dashboard-page button.primary:hover,
+.dashboard-page .btn-primary:hover,
+.dashboard-content button.primary:hover,
+.dashboard-content .btn-primary:hover,
+.dashboard-page .create-btn:hover,
+.dashboard-content .create-btn:hover {
+  background: var(--nuvora-blue-dark) !important;
+  transform: translateY(-1px);
+}
+
+.dashboard-page .icon-button,
+.dashboard-content .icon-button {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border: 1px solid var(--nuvora-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: #475569 !important;
+}
+
+.dashboard-page .icon-button:hover,
+.dashboard-content .icon-button:hover {
+  background: var(--nuvora-blue-soft) !important;
+  border-color: #bfdbfe !important;
+  color: var(--nuvora-blue) !important;
+}
+
+.dashboard-page table,
+.dashboard-content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dashboard-page th,
+.dashboard-content th {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border-bottom: 1px solid var(--nuvora-border) !important;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.dashboard-page td,
+.dashboard-content td {
+  color: #334155 !important;
+  border-bottom: 1px solid var(--nuvora-border) !important;
+}
+
+.dashboard-page tbody tr:hover,
+.dashboard-content tbody tr:hover {
+  background: #f8fbff !important;
+}
+
+.dashboard-page input,
+.dashboard-page select,
+.dashboard-page textarea,
+.dashboard-content input,
+.dashboard-content select,
+.dashboard-content textarea {
+  border-color: var(--nuvora-border) !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+  color: var(--nuvora-text) !important;
+  box-shadow: none !important;
+}
+
+.dashboard-page input:focus,
+.dashboard-page select:focus,
+.dashboard-page textarea:focus,
+.dashboard-content input:focus,
+.dashboard-content select:focus,
+.dashboard-content textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 3px rgb(24 119 242 / 10%) !important;
+  outline: none !important;
+}
+
+.dashboard-page [class*="orange"],
+.dashboard-page [class*="amber"],
+.dashboard-content [class*="orange"],
+.dashboard-content [class*="amber"] {
+  color: #475569 !important;
+  background: #f8fafc !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+.dashboard-page [class*="orange"] svg,
+.dashboard-page [class*="amber"] svg,
+.dashboard-content [class*="orange"] svg,
+.dashboard-content [class*="amber"] svg {
+  color: #64748b !important;
+  stroke: currentColor !important;
+}
+
+.dashboard-page [class*="gradient"],
+.dashboard-content [class*="gradient"] {
+  background-image: none !important;
+}
+
+.dashboard-page .dashboard-stat,
+.dashboard-content .dashboard-stat,
+.dashboard-page .metric-card,
+.dashboard-content .metric-card {
+  background: #fff !important;
+  border: 1px solid var(--nuvora-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--nuvora-shadow) !important;
+}
+
+.dashboard-page svg,
+.dashboard-content svg {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@media (max-width: 900px) {
+  .dashboard-page,
+  .dashboard-content {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page,
+  .dashboard-content {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .dashboard-page .card,
+  .dashboard-content .card,
+  .dashboard-page .panel,
+  .dashboard-content .panel {
+    border-radius: 10px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-page *,
+  .dashboard-content * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
