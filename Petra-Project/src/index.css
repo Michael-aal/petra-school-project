@@ -1630,3 +1630,497 @@ button:active:not(:disabled),
     scroll-behavior: auto !important;
   }
 }
+/* =========================================================
+   PETRA SCHOOL SYSTEM — BRAND THEME
+   Visual ratio: ~70% white, ~20% blue, ~10% red.
+   Blue = navigation / primary actions
+   Red  = warnings / overdue / destructive states
+   ========================================================= */
+
+:root,
+html,
+body,
+body.light,
+html.light,
+.dashboard-shell,
+.dashboard-page,
+.dashboard-home,
+.gs,
+.auth-page {
+  color-scheme: light;
+
+  /* Core surfaces: white-first */
+  --app-bg: #f7f9fc !important;
+  --app-surface: #ffffff !important;
+  --app-surface-strong: #eef4ff !important;
+  --app-card: #ffffff !important;
+  --app-panel: #ffffff !important;
+
+  /* Text */
+  --app-text: #0f172a !important;
+  --app-text-muted: #64748b !important;
+  --foreground: #0f172a !important;
+  --muted-foreground: #64748b !important;
+
+  /* Blue brand */
+  --app-accent: #2563eb !important;
+  --app-accent-2: #1d4ed8 !important;
+  --primary: #2563eb !important;
+  --primary-foreground: #ffffff !important;
+  --color-brand-primary: #2563eb !important;
+  --color-brand-accent: #2563eb !important;
+
+  /* Blue surfaces */
+  --surface-accent: #eff6ff !important;
+  --dashboard-muted-surface: #f1f5f9 !important;
+
+  /* Red semantic system */
+  --danger: #dc2626 !important;
+  --warning: #dc2626 !important;
+  --color-danger: #dc2626 !important;
+  --color-warning: #dc2626 !important;
+  --surface-danger: #fef2f2 !important;
+  --surface-warning: #fef2f2 !important;
+
+  /* Success stays semantic */
+  --success: #15803d !important;
+  --surface-success: #f0fdf4 !important;
+
+  /* Borders / focus */
+  --app-border: #e2e8f0 !important;
+  --border: #e2e8f0 !important;
+  --input: #cbd5e1 !important;
+  --ring: #2563eb !important;
+
+  /* Dashboard */
+  --dashboard-page-bg: #f7f9fc !important;
+  --dashboard-topbar-bg: rgba(255, 255, 255, 0.96) !important;
+  --dashboard-topbar-text: #0f172a !important;
+  --dashboard-topbar-muted: #64748b !important;
+  --dashboard-card-bg: #ffffff !important;
+  --dashboard-card-text: #0f172a !important;
+  --dashboard-card-muted: #64748b !important;
+  --dashboard-panel-bg: #ffffff !important;
+  --dashboard-panel-text: #0f172a !important;
+  --dashboard-panel-muted: #64748b !important;
+
+  /* Blue navigation */
+  --dashboard-sidebar-bg: linear-gradient(180deg, #1e3a8a 0%, #2563eb 100%) !important;
+  --dashboard-sidebar-text: #ffffff !important;
+  --dashboard-sidebar-muted: #dbeafe !important;
+
+  --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+html,
+body,
+#root {
+  background: var(--app-bg) !important;
+  color: var(--app-text) !important;
+}
+
+body.light {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%) !important;
+  color: #0f172a !important;
+}
+
+/* ---------- Navigation ---------- */
+
+.dashboard-shell .sidebar-container {
+  background: linear-gradient(180deg, #1e3a8a 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  border-right: 0 !important;
+  box-shadow: 4px 0 18px rgba(37, 99, 235, 0.14) !important;
+}
+
+.dashboard-shell .sidebar-header,
+.dashboard-shell .sidebar-footer {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.dashboard-shell .sidebar-contaner-logo {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .brand-title,
+.dashboard-shell .sidebar-user h3,
+.dashboard-shell .sidebar-section-label,
+.dashboard-shell .sidebar-user h4,
+.dashboard-shell .brand-sub {
+  color: #ffffff !important;
+}
+
+.dashboard-shell .sidebar-section-label,
+.dashboard-shell .brand-sub,
+.dashboard-shell .sidebar-user h4 {
+  opacity: 0.78;
+}
+
+.dashboard-shell .sidebar-link,
+.dashboard-shell .sidebar-group,
+.dashboard-shell .sidebar-assistant,
+.dashboard-shell .sidebar-child {
+  color: #dbeafe !important;
+  background: transparent !important;
+}
+
+.dashboard-shell .sidebar-link:hover,
+.dashboard-shell .sidebar-group:hover,
+.dashboard-shell .sidebar-assistant:hover,
+.dashboard-shell .sidebar-child:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .sidebar-link.active,
+.dashboard-shell .sidebar-child.active,
+.dashboard-shell .sidebar-group.group-active,
+.dashboard-shell .sidebar-assistant.active {
+  background: #ffffff !important;
+  color: #1d4ed8 !important;
+  border-color: transparent !important;
+}
+
+.dashboard-shell .sidebar-link.active::before,
+.dashboard-shell .sidebar-child.active::before,
+.dashboard-shell .sidebar-group.group-active::before {
+  background: #ffffff !important;
+}
+
+.dashboard-shell .sidebar-link.active .sidebar-icon,
+.dashboard-shell .sidebar-child.active .child-icon,
+.dashboard-shell .sidebar-assistant.active .sidebar-assistant-icon,
+.dashboard-shell .sidebar-group.group-active .sidebar-icon {
+  color: #1d4ed8 !important;
+  stroke: #1d4ed8 !important;
+}
+
+.dashboard-shell .sidebar-children {
+  border-left-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* ---------- Main layout ---------- */
+
+.dashboard-shell .dashboard-content,
+.dashboard-shell .dashboard-main,
+.dashboard-shell .dashboard-page,
+.dashboard-home {
+  background: var(--dashboard-page-bg) !important;
+  color: #0f172a !important;
+}
+
+.dashboard-shell .dashboard-topbar,
+.dashboard-shell .topbar,
+.dashboard-shell header {
+  background: var(--dashboard-topbar-bg) !important;
+  color: var(--dashboard-topbar-text) !important;
+  border-bottom: 1px solid var(--app-border) !important;
+}
+
+/* ---------- White cards ---------- */
+
+.dashboard-shell .card,
+.dashboard-shell .panel,
+.dashboard-shell .stat-card,
+.dashboard-shell .dashboard-widget,
+.dashboard-shell .dashboard-stat-card,
+.dashboard-shell .dashboard-home-panel,
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .form-card,
+.dashboard-shell .settings-card,
+.dashboard-shell .wallet-panel,
+.dashboard-shell .payments-panel,
+.dashboard-shell .table-container,
+.dashboard-shell .modal-content,
+.dashboard-shell .dashboard-widget-card,
+.dashboard-shell [class*="card"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.055) !important;
+}
+
+.dashboard-shell .card h1,
+.dashboard-shell .card h2,
+.dashboard-shell .card h3,
+.dashboard-shell .card h4,
+.dashboard-shell .panel h1,
+.dashboard-shell .panel h2,
+.dashboard-shell .panel h3,
+.dashboard-shell .panel h4,
+.dashboard-shell [class*="card"] h1,
+.dashboard-shell [class*="card"] h2,
+.dashboard-shell [class*="card"] h3,
+.dashboard-shell [class*="card"] h4 {
+  color: #0f172a !important;
+}
+
+.dashboard-shell .card p,
+.dashboard-shell .panel p,
+.dashboard-shell [class*="card"] p,
+.dashboard-shell .muted,
+.dashboard-shell [class*="muted"] {
+  color: #64748b !important;
+}
+
+/* ---------- Primary blue actions ---------- */
+
+.dashboard-shell .btn-primary,
+.dashboard-shell button[type="submit"],
+.dashboard-shell .primary-button,
+.dashboard-shell [class*="primary"][class*="button"] {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18) !important;
+}
+
+.dashboard-shell .btn-primary:hover,
+.dashboard-shell button[type="submit"]:hover,
+.dashboard-shell .primary-button:hover,
+.dashboard-shell [class*="primary"][class*="button"]:hover {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .btn-secondary,
+.dashboard-shell .btn-ghost {
+  background: #ffffff !important;
+  color: #2563eb !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.dashboard-shell .btn-secondary:hover,
+.dashboard-shell .btn-ghost:hover {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #93c5fd !important;
+}
+
+/* ---------- Forms ---------- */
+
+.dashboard-shell input,
+.dashboard-shell select,
+.dashboard-shell textarea,
+.dashboard-shell .form-input,
+.dashboard-shell .form-select {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.dashboard-shell input::placeholder,
+.dashboard-shell textarea::placeholder,
+.dashboard-shell select::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+.dashboard-shell input:focus,
+.dashboard-shell select:focus,
+.dashboard-shell textarea:focus,
+.dashboard-shell .form-input:focus,
+.dashboard-shell .form-select:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px #dbeafe !important;
+  outline: none !important;
+}
+
+/* ---------- Tables ---------- */
+
+.dashboard-shell table th {
+  color: #475569 !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.dashboard-shell table td {
+  color: #0f172a !important;
+  border-bottom: 1px solid #eef2f7 !important;
+}
+
+.dashboard-shell table tbody tr:hover {
+  background: #f8fbff !important;
+}
+
+/* ---------- Blue utility states ---------- */
+
+.dashboard-shell .dashboard-stat-card-icon,
+.dashboard-shell .dashboard-quick-action-icon,
+.dashboard-shell .dashboard-empty-icon,
+.dashboard-shell .dashboard-stat-card-trend {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: #dbeafe !important;
+}
+
+.dashboard-shell a,
+.dashboard-page a,
+.dashboard-home a,
+.dashboard-widget-action {
+  color: #2563eb !important;
+}
+
+/* ---------- Red: alerts / overdue / destructive ---------- */
+
+.dashboard-shell .status-badge.danger,
+.dashboard-shell .badge.danger,
+.dashboard-shell .tone-rose,
+.dashboard-shell .wallet-quick-stat-icon.danger,
+.dashboard-shell .payments-action-button.danger,
+.dashboard-shell .text-danger,
+.dashboard-shell .text-red,
+.dashboard-shell [class*="text-red"],
+.dashboard-shell [class*="text-danger"] {
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.dashboard-shell .status-badge.danger,
+.dashboard-shell .badge.danger,
+.dashboard-shell .text-danger,
+.dashboard-shell .text-red {
+  border: 1px solid #fecaca !important;
+}
+
+.dashboard-shell .btn-danger,
+.dashboard-shell .danger-button,
+.dashboard-shell button[class*="danger"],
+.dashboard-shell [class*="delete"][class*="button"] {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .btn-danger:hover,
+.dashboard-shell .danger-button:hover,
+.dashboard-shell button[class*="danger"]:hover,
+.dashboard-shell [class*="delete"][class*="button"]:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+
+.dashboard-shell [class*="bg-red"],
+.dashboard-shell [class*="bg-danger"] {
+  background: #fef2f2 !important;
+}
+
+.dashboard-shell [class*="border-red"],
+.dashboard-shell [class*="border-danger"] {
+  border-color: #fecaca !important;
+}
+
+/* Keep warning states red as requested instead of introducing orange/amber. */
+.dashboard-shell .status-badge.warning,
+.dashboard-shell .badge.warning,
+.dashboard-shell .tone-amber,
+.dashboard-shell [class*="text-amber"],
+.dashboard-shell [class*="text-orange"] {
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+.dashboard-shell [class*="bg-amber"],
+.dashboard-shell [class*="bg-orange"] {
+  background: #fef2f2 !important;
+}
+
+.dashboard-shell [class*="border-amber"],
+.dashboard-shell [class*="border-orange"] {
+  border-color: #fecaca !important;
+}
+
+/* ---------- Icons ---------- */
+
+.dashboard-shell svg {
+  color: #2563eb;
+  stroke: currentColor;
+  opacity: 1;
+}
+
+.dashboard-shell .danger svg,
+.dashboard-shell .text-danger svg,
+.dashboard-shell [class*="danger"] svg,
+.dashboard-shell [class*="red"] svg {
+  color: #dc2626 !important;
+  stroke: currentColor !important;
+}
+
+/* ---------- Parent dashboard readability ---------- */
+
+.parent-dashboard,
+.parent-dashboard .dashboard-content,
+.parent-dashboard .dashboard-main,
+.parent-page,
+.parent-page .dashboard-content,
+.parent-page .dashboard-main {
+  color: #0f172a !important;
+}
+
+.parent-dashboard .card,
+.parent-page .card,
+.parent-dashboard .panel,
+.parent-page .panel {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.parent-dashboard .section-title,
+.parent-page .section-title {
+  color: #0f172a !important;
+}
+
+.parent-dashboard .section-subtitle,
+.parent-page .section-subtitle {
+  color: #64748b !important;
+}
+
+.parent-dashboard .primary-action,
+.parent-page .primary-action {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.parent-dashboard .alert,
+.parent-page .alert,
+.parent-dashboard .overdue,
+.parent-page .overdue,
+.parent-dashboard .fee-overdue,
+.parent-page .fee-overdue {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+}
+
+/* ---------- Global focus state ---------- */
+
+:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.28) !important;
+  outline-offset: 2px;
+}
+
+/* ---------- Motion stays restrained ---------- */
+
+.dashboard-shell .card:hover,
+.dashboard-shell .panel:hover,
+.dashboard-shell .dashboard-stat-card:hover,
+.dashboard-shell .dashboard-widget:hover {
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Never animate for users who request reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
