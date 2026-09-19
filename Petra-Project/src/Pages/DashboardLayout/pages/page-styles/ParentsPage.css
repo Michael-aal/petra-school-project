@@ -1,8 +1,3 @@
-```css
-/* =========================================================
-   PETRA SCHOOL SYSTEM — PARENT PAGE
-   White dominant / Blue primary / Red for negative states
-   ========================================================= */
 
 .parent-page {
   --parent-white: #ffffff;
@@ -618,4 +613,4 @@
     transform: none;
   }
 }
-```
+
