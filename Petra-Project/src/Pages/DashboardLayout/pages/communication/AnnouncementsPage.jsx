@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Plus, Search, Bell, Clock, CheckCircle2, AlertTriangle, Send } from "lucide-react";
+import { Bell, Plus, Search, Clock, CheckCircle2, AlertTriangle, Send } from "lucide-react";
 import { adminApi } from "../../../../services/adminApi";
 import "../page-styles/AnnouncementsPage.css";
 
