@@ -6,6 +6,10 @@ import {
   Check,
   ChevronDown,
   CreditCard,
+  Command,
+  Moon,
+  Search,
+  Sun,
   LogOut,
   Menu,
   Settings,
@@ -55,6 +59,9 @@ export default function TopNavbar({ onToggle }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [incoming, setIncoming] = useState(null);
   const [notifications, setNotifications] = useState(mockNotifications);
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem("petra_theme") || "light"; } catch { return "light"; }
+  });
   const menuRef = useRef(null);
   const menuTriggerRef = useRef(null);
   const notificationRef = useRef(null);
@@ -79,7 +86,17 @@ export default function TopNavbar({ onToggle }) {
   }, [theme]);
 
   useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem("petra_theme", theme); } catch {}
+  }, [theme]);
+
+  useEffect(() => {
     const handleKeyDown = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+
       if (event.key === "Escape") {
         if (showMenu) {
           setShowMenu(false);
@@ -285,9 +302,18 @@ export default function TopNavbar({ onToggle }) {
         <div className="tn-greeting">
           <span>Welcome, <strong>{firstName}</strong></span>
           <small><CalendarDays size={12} aria-hidden="true" />{formatToday()}</small>
+          <div className="tn-search-wrap">
+          <Search size={16} aria-hidden="true" />
+          <input ref={searchRef} type="search" className="tn-search-input" placeholder="Search anything..." aria-label="Search anything" />
+          <kbd><Command size={11} aria-hidden="true" />K</kbd>
         </div>
+        <button type="button" className="tn-search-mobile" aria-label="Search" title="Search" onClick={() => searchRef.current?.focus()}><Search size={18} aria-hidden="true" /></button>
+      </div>
 
       <div className="tn-right">
+        <button type="button" className="tn-icon-btn tn-theme-btn" onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
         <button type="button" className="tn-icon-btn" onClick={handleNuvoraClick} aria-label="Nuvora" title="Nuvora">
           <UserRound size={18} />
         </button>
