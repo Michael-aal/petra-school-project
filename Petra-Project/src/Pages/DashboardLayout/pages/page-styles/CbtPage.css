@@ -695,3 +695,24 @@
   }
 }
 
+
+
+/* NUVORA REFERENCE SKIN — page-level consistency */
+:root{--page-blue:#1877f2;--page-blue-dark:#0f5dcc;--page-blue-soft:#eaf3ff;--page-bg:#f7f9fc;--page-surface:#fff;--page-border:#e2e8f0;--page-text:#0f172a;--page-muted:#64748b}
+.dashboard-page,.dashboard-content{background:var(--page-bg)!important;color:var(--page-text)!important}
+.dashboard-page [class*="card"],.dashboard-page [class*="panel"],.dashboard-page [class*="stat"],
+.dashboard-content [class*="card"],.dashboard-content [class*="panel"],.dashboard-content [class*="stat"]{
+background:#fff!important;border:1px solid #e2e8f0!important;border-radius:12px!important;box-shadow:0 4px 18px rgb(15 23 42 / 6%)!important}
+.dashboard-page button,.dashboard-content button{border-radius:9px;transition:all .16s ease}
+.dashboard-page input,.dashboard-page select,.dashboard-page textarea,.dashboard-content input,.dashboard-content select,.dashboard-content textarea{
+background:#fff!important;border:1px solid #e2e8f0!important;border-radius:9px!important;color:#0f172a!important;box-shadow:none!important}
+.dashboard-page input:focus,.dashboard-page select:focus,.dashboard-page textarea:focus,.dashboard-content input:focus,.dashboard-content select:focus,.dashboard-content textarea:focus{
+border-color:#93c5fd!important;box-shadow:0 0 0 3px rgb(24 119 242 / 10%)!important;outline:0!important}
+.dashboard-page table,.dashboard-content table{border-collapse:separate;border-spacing:0}
+.dashboard-page th,.dashboard-content th{background:#f8fafc!important;color:#64748b!important;border-color:#e2e8f0!important}
+.dashboard-page td,.dashboard-content td{color:#334155!important;border-color:#e2e8f0!important}
+.dashboard-page tbody tr:hover,.dashboard-content tbody tr:hover{background:#f8fbff!important}
+.dashboard-page svg,.dashboard-content svg{opacity:1!important;visibility:visible!important}
+.dashboard-page [class*="orange"],.dashboard-page [class*="amber"],.dashboard-content [class*="orange"],.dashboard-content [class*="amber"]{color:#64748b!important;background:#f8fafc!important;border-color:#e2e8f0!important}
+.dashboard-page [class*="gradient"],.dashboard-content [class*="gradient"]{background-image:none!important}
+@media(max-width:640px){.dashboard-page,.dashboard-content{padding-left:12px!important;padding-right:12px!important}.dashboard-page [class*="card"],.dashboard-content [class*="card"]{border-radius:10px!important}}
