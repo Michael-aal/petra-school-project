@@ -1,6 +1,6 @@
 .generic-list-page {
-  background: linear-gradient(180deg, #f7f4ef 0%, #edf4ee 100%);
-  color: var(--app-text);
+  background: var(--app-bg, #f7f9fc);
+  color: var(--app-text, #10233f);
   padding: 22px;
   min-height: 100vh;
 }
@@ -26,9 +26,9 @@
   width: 52px;
   height: 52px;
   border-radius: 12px;
-  background: var(--surface-accent);
-  color: var(--app-accent);
-  box-shadow: 0 10px 24px rgba(240, 107, 78, 0.12);
+  background: var(--surface-accent, #eff6ff);
+  color: var(--app-accent, #2563eb);
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
 }
 
 .page-title-group h3 {

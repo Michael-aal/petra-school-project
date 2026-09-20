@@ -1,14 +1,14 @@
 :root {
-  --about-bg: #f5f4f1;
-  --about-surface: #ffffff;
-  --about-soft: #f2efe9;
-  --about-text: #1d1d1b;
-  --about-text-soft: #4c4a45;
-  --about-muted: #7b766f;
-  --about-border: #e6e0d8;
-  --about-brand: #d66a4b;
-  --about-brand-soft: #fbe5dd;
-  --about-shadow: 0 18px 45px rgba(34, 27, 19, 0.08);
+  --about-bg: var(--petra-canvas, #f7f9fc);
+  --about-surface: var(--petra-white, #ffffff);
+  --about-soft: var(--petra-blue-soft, #eff6ff);
+  --about-text: var(--petra-ink, #10233f);
+  --about-text-soft: var(--petra-muted, #64748b);
+  --about-muted: var(--petra-muted, #64748b);
+  --about-border: var(--petra-border, #e2e8f0);
+  --about-brand: var(--petra-blue, #2563eb);
+  --about-brand-soft: var(--petra-blue-soft, #eff6ff);
+  --about-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
 }
 
 .nuvora-about {
@@ -116,7 +116,7 @@
 .about-button--primary {
   background: var(--about-brand);
   color: #fff;
-  box-shadow: 0 12px 22px rgba(214, 106, 75, 0.2);
+  box-shadow: 0 12px 22px rgba(37, 99, 235, 0.2);
 }
 
 .about-button--secondary {

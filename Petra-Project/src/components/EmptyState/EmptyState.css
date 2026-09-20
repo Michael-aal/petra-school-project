@@ -1,0 +1,71 @@
+/* =========================================================
+   PETRA DESIGN SYSTEM — EMPTY STATE COMPONENT
+   ========================================================= */
+
+.petra-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: 16px;
+  border: 1px dashed var(--petra-border, #e2e8f0);
+  background: var(--petra-canvas, #f7f9fc);
+  margin: 16px 0;
+  animation: petraFadeIn 0.2s ease;
+}
+
+@keyframes petraFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.petra-empty-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
+  margin-bottom: 16px;
+  border: 1px solid #bfdbfe;
+}
+
+.petra-empty-title {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--petra-ink, #10233f);
+  letter-spacing: -0.02em;
+}
+
+.petra-empty-desc {
+  max-width: 440px;
+  margin: 0 0 20px 0;
+  font-size: 0.88rem;
+  color: var(--petra-muted, #64748b);
+  line-height: 1.55;
+}
+
+.petra-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--petra-blue, #2563eb);
+  color: #ffffff;
+  border: 0;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+  transition: all 0.2s ease;
+}
+
+.petra-empty-btn:hover {
+  background: var(--petra-blue-hover, #1d4ed8);
+  transform: translateY(-1px);
+}

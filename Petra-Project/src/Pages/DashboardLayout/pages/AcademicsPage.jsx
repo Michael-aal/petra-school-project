@@ -45,7 +45,7 @@ const sessionsConfig = {
       label: "Start Date",
       // Custom render to format the date nicely
       render: (item) => (
-        <span style={{ fontSize: "0.85rem", color: "oklch(0.85 0.05 264)" }}>
+        <span style={{ fontSize: "0.85rem", color: "var(--petra-ink, #10233f)" }}>
           {new Date(item.startDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
         </span>
       )
@@ -54,7 +54,7 @@ const sessionsConfig = {
       key: "endDate", 
       label: "End Date",
       render: (item) => (
-        <span style={{ fontSize: "0.85rem", color: "oklch(0.85 0.05 264)" }}>
+        <span style={{ fontSize: "0.85rem", color: "var(--petra-ink, #10233f)" }}>
           {new Date(item.endDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
         </span>
       )
@@ -65,9 +65,9 @@ const sessionsConfig = {
       // Custom render for beautiful status pills
       render: (item) => {
         const colors = {
-          Current: { bg: "oklch(0.7 0.18 140 / 15%)", text: "oklch(0.7 0.18 140)", icon: CheckCircle2 },
-          Upcoming: { bg: "oklch(0.72 0.18 60 / 15%)", text: "oklch(0.72 0.18 60)", icon: Clock },
-          Completed: { bg: "oklch(0.25 0.04 260)", text: "oklch(0.6 0.02 250)", icon: AlertCircle },
+          Current: { bg: "#ecfdf3", text: "var(--petra-success, #16a34a)", icon: CheckCircle2 },
+          Upcoming: { bg: "var(--petra-blue-soft, #eff6ff)", text: "var(--petra-blue, #2563eb)", icon: Clock },
+          Completed: { bg: "#f1f5f9", text: "var(--petra-muted, #64748b)", icon: AlertCircle },
         };
         const style = colors[item.status] || colors.Completed;
         const Icon = style.icon;
@@ -75,7 +75,7 @@ const sessionsConfig = {
         return (
           <span style={{
             display: "inline-flex", alignItems: "center", gap: "6px",
-            padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "600",
+            padding: "4px 12px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: "700",
             background: style.bg, color: style.text
           }}>
             <Icon size={12} /> {item.status}

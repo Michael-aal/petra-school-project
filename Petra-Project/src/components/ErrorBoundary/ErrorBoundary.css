@@ -1,0 +1,107 @@
+.petra-error-boundary-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2.5rem 1.5rem;
+  background: var(--petra-canvas, #f7f9fc);
+}
+
+.petra-error-card {
+  max-width: 520px;
+  width: 100%;
+  background: var(--petra-card-bg, #ffffff);
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: var(--petra-radius-xl, 20px);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 20px 40px -15px rgba(15, 39, 71, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.petra-error-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  border: 1px solid #fee2e2;
+}
+
+.petra-error-card h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--petra-navy, #0f2747);
+  margin: 0 0 0.5rem;
+}
+
+.petra-error-message {
+  font-size: 0.92rem;
+  color: var(--petra-text-muted, #64748b);
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+}
+
+.petra-error-details {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  overflow-x: auto;
+}
+
+.petra-error-details code {
+  font-size: 0.82rem;
+  color: #ef4444;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.petra-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+
+.petra-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: var(--petra-radius-md, 10px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.petra-btn-primary {
+  background: var(--petra-blue, #2563eb);
+  color: #ffffff;
+}
+
+.petra-btn-primary:hover {
+  background: var(--petra-blue-hover, #1d4ed8);
+}
+
+.petra-btn-outline {
+  background: transparent;
+  color: var(--petra-navy, #0f2747);
+  border-color: var(--petra-border, #e2e8f0);
+}
+
+.petra-btn-outline:hover {
+  background: var(--petra-canvas, #f7f9fc);
+}

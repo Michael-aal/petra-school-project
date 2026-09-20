@@ -158,30 +158,55 @@ input:focus, select:focus, textarea:focus,
   box-shadow: var(--petra-shadow-lg) !important;
 }
 
-/* Tables */
-.data-table th, .payments-table th, .table-container th {
+/* Tables & High-Density Lists */
+.data-table, .payments-table, .petra-data-table, table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.data-table th, .payments-table th, .table-container th, .petra-data-table th {
   color: #52647d !important;
   background: #f8fafc !important;
-  border-bottom-color: var(--petra-border) !important;
+  border-bottom: 1px solid var(--petra-border) !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-weight: 800;
+  letter-spacing: 0.05em;
 }
-.data-table td, .payments-table td, .table-container td {
+.data-table td, .payments-table td, .table-container td, .petra-data-table td {
   color: var(--petra-ink) !important;
-  border-bottom-color: var(--petra-border) !important;
+  border-bottom: 1px solid var(--petra-border) !important;
+  transition: background-color 0.15s ease;
 }
 .data-table tbody tr:hover, .payments-table tbody tr:hover,
-.table-container tbody tr:hover {
+.table-container tbody tr:hover, .petra-data-table tbody tr:hover {
   background: var(--petra-blue-soft) !important;
 }
 
-/* Status language */
-.status-badge.success, .tone-emerald, .tone-teal {
+/* Semantic Status Badges */
+.status-pill, .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-transform: capitalize;
+}
+.status-badge.success, .status-pill.success, .status-pill.paid, .status-pill.active, .status-pill.present, .status-pill.approved, .tone-emerald, .tone-teal {
   background: #ecfdf3 !important; color: var(--petra-success) !important;
 }
-.status-badge.warning, .tone-amber {
-  background: #eff6ff !important; color: var(--petra-warning) !important;
+.status-badge.warning, .status-pill.warning, .status-pill.pending, .status-pill.late, .status-pill.in-review, .tone-amber {
+  background: #fffbeb !important; color: #d97706 !important;
 }
-.status-badge.danger, .tone-rose {
+.status-badge.danger, .status-pill.danger, .status-pill.overdue, .status-pill.absent, .status-pill.rejected, .status-pill.failed, .tone-rose {
   background: #fef2f2 !important; color: var(--petra-danger) !important;
+}
+.status-badge.info, .status-pill.info, .status-pill.upcoming, .status-pill.current, .status-pill.published, .tone-blue {
+  background: var(--petra-blue-soft) !important; color: var(--petra-blue) !important;
 }
 
 /* Dashboard shell */
@@ -293,8 +318,11 @@ input:focus, select:focus, textarea:focus,
 }
 
 /* Public / marketing pages */
-.landing-page, .home-page, .ctc-page, .fsos, .fparent {
-  background: var(--petra-white) !important;
+.landing-page, .home-page, .ctc-page, .fsos, .fparent,
+.nuvora-about, .contact-page, .solution-index-page, .solution-template-page,
+.company-page, .teacher-application-page, .teacher-applications-page,
+.generic-list-page, .app-status-page, .pass-screen-page, .admin-pay-page {
+  background: var(--petra-canvas) !important;
   color: var(--petra-ink) !important;
 }
 .landing-hero {
@@ -366,3 +394,192 @@ input:focus, select:focus, textarea:focus,
   .dashboard-home-summary { grid-template-columns: 1fr !important; }
   .dashboard-content { padding: 16px 12px !important; }
 }
+
+/* ----------------------------------------------------
+   PETRA TOAST NOTIFICATIONS
+   ---------------------------------------------------- */
+.petra-toast-viewport {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.petra-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--petra-card-bg, #ffffff);
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: var(--petra-radius-lg, 16px);
+  box-shadow: 0 16px 36px -8px rgba(15, 39, 71, 0.14);
+  backdrop-filter: blur(8px);
+  animation: petraToastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
+}
+
+@keyframes petraToastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.petra-toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  margin-top: 1px;
+}
+
+.petra-toast-success .petra-toast-icon {
+  background: #ecfdf5;
+  color: var(--petra-green, #10b981);
+}
+.petra-toast-warning .petra-toast-icon {
+  background: #fffbeb;
+  color: var(--petra-amber, #f59e0b);
+}
+.petra-toast-error .petra-toast-icon {
+  background: #fef2f2;
+  color: var(--petra-rose, #ef4444);
+}
+.petra-toast-info .petra-toast-icon {
+  background: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
+}
+
+.petra-toast-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.petra-toast-copy strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--petra-navy, #0f2747);
+  margin-bottom: 2px;
+}
+
+.petra-toast-copy p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--petra-text-muted, #64748b);
+  line-height: 1.4;
+}
+
+.petra-toast-close {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--petra-text-muted, #94a3b8);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.petra-toast-close:hover {
+  background: var(--petra-canvas, #f7f9fc);
+  color: var(--petra-navy, #0f2747);
+}
+
+/* ----------------------------------------------------
+   PAGE TRANSITION MICRO-INTERACTIONS
+   ---------------------------------------------------- */
+@keyframes petraPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-content {
+  animation: petraPageEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ----------------------------------------------------
+   PRINT ENGINE (@media print)
+   ---------------------------------------------------- */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  /* Hide navigation chrome, sidebars, buttons, toolbars, and toasts */
+  .dashboard-sidebar,
+  .sidebar-backdrop,
+  .top-navbar,
+  .navbar,
+  .footer,
+  .petra-toast-viewport,
+  .toast-viewport,
+  .command-palette-backdrop,
+  .btn,
+  .petra-btn,
+  .action-btn,
+  .no-print,
+  button:not(.allow-print) {
+    display: none !important;
+  }
+
+  .dashboard-shell,
+  .dashboard-main,
+  .dashboard-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    background: #ffffff !important;
+  }
+
+  .petra-card,
+  .admission-pass-card,
+  .app-status-card,
+  .invoice-card,
+  .receipt-card,
+  .table-container {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 6px 10px !important;
+    color: #000000 !important;
+  }
+}
+

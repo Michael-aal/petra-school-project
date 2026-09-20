@@ -106,24 +106,24 @@
 }
 
 .fsu-btnPrimary:hover {
-  background: #e65c00 !important;
-  background-color: #e65c00 !important;
+  background: var(--petra-blue-hover, #1d4ed8) !important;
+  background-color: var(--petra-blue-hover, #1d4ed8) !important;
   color: #ffffff !important;
-  box-shadow: none !important;
+  box-shadow: 0 6px 18px rgba(37,99,235,.16) !important;
   opacity: 1 !important;
 }
 
 .fsu-btnSecondary {
   background: transparent !important;
-  border: 1.5px solid #1877F2 !important;
-  color: #1877F2 !important;
+  border: 1.5px solid var(--petra-blue, #2563eb) !important;
+  color: var(--petra-blue, #2563eb) !important;
   box-shadow: none !important;
 }
 
 .fsu-btnSecondary:hover {
-  background: rgba(24,119,242, 0.08) !important;
-  border-color: #e65c00 !important;
-  color: #1877F2 !important;
+  background: var(--petra-blue-soft, #eff6ff) !important;
+  border-color: var(--petra-blue-hover, #1d4ed8) !important;
+  color: var(--petra-blue-hover, #1d4ed8) !important;
   box-shadow: none !important;
   opacity: 1 !important;
 }
