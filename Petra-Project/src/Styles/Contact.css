@@ -1,13 +1,13 @@
 .contact-page {
-  --contact-bg: #f5f4f1;
-  --contact-surface: #ffffff;
-  --contact-soft: #f8f2ed;
-  --contact-brand: #d66a4b;
-  --contact-brand-soft: #fbe5dd;
-  --contact-border: #e7dfd6;
-  --contact-text: #1d1d1b;
-  --contact-muted: #4c4a45;
-  --contact-dark: #1d2430;
+  --contact-bg: var(--petra-canvas, #f7f9fc);
+  --contact-surface: var(--petra-white, #ffffff);
+  --contact-soft: var(--petra-blue-soft, #eff6ff);
+  --contact-brand: var(--petra-blue, #2563eb);
+  --contact-brand-soft: var(--petra-blue-soft, #eff6ff);
+  --contact-border: var(--petra-border, #e2e8f0);
+  --contact-text: var(--petra-ink, #10233f);
+  --contact-muted: var(--petra-muted, #64748b);
+  --contact-dark: var(--petra-navy, #0f2747);
 
   background: var(--contact-bg);
   color: var(--contact-text);
@@ -19,19 +19,19 @@
 }
 
 .contact-page .marketing-title span {
-  background: linear-gradient(135deg, #d66a4b, #b87459);
+  background: linear-gradient(135deg, var(--petra-blue, #2563eb), var(--petra-blue-hover, #1d4ed8));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .contact-page .marketing-btn-primary {
-  background: linear-gradient(135deg, var(--contact-brand), #c35b39) !important;
-  box-shadow: 0 12px 22px rgba(214, 106, 75, 0.2) !important;
+  background: var(--petra-blue, #2563eb) !important;
+  box-shadow: 0 12px 22px rgba(37, 99, 235, 0.2) !important;
 }
 
 .contact-page .marketing-btn-primary:hover {
-  background: linear-gradient(135deg, #c35b39, #a84c2d) !important;
+  background: var(--petra-blue-hover, #1d4ed8) !important;
 }
 
 .contact-page .marketing-btn-secondary {
