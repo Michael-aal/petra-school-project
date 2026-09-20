@@ -1,318 +1,34 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  BellRing,
-  BookOpen,
-  BriefcaseBusiness,
-  CalendarCheck2,
-  CheckCircle2,
-  CreditCard,
-  GraduationCap,
-  School,
-  Landmark,
-  TrendingUp,
-  UserRoundCheck,
-  Users,
-  WalletCards,
-} from "lucide-react";
-import { UserContext } from "../../../context/UserContext";
-import { getFirstName } from "../../../utils/userProfile";
+import { useEffect, useRef, useState } from "react";
+import { Activity, ArrowDownRight, ArrowUpRight, Calendar, ChevronDown, Download, Eye, FileText, GripVertical, Headphones, Menu, Mic, MoreHorizontal, MousePointer2, Paperclip, Plus, Send, ShoppingBag, Smartphone, Star, Users, Watch, X } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
+import { BRAND_NAME, customers, dayActivity, periods, products, profitData, stats, widgetItems } from "./dashboard-data";
 import "./page-styles/DashboardHomePage.css";
-import "../../../components/dashboard/dashboard.css";
 
-const overviewMetrics = [
-  { label: "Collected this term", value: "₦48.6m", delta: "+12.8%", tone: "blue" },
-  { label: "Student attendance", value: "94.8%", delta: "+4.2%", tone: "mint" },
-  { label: "Active learners", value: "2,841", delta: "+8.4%", tone: "blue" },
-];
+const iconMap = { eye: Eye, users: Users, mouse: MousePointer2, shopping: ShoppingBag };
+function Card({ className = "", children }) { return <section className={"shopeers-card " + className}>{children}</section>; }
+function Pill({ children, positive = true }) { return <span className={"shopeers-pill " + (positive ? "positive" : "negative")}>{positive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}{children}</span>; }
+function StatCard({ item }) { const Icon = iconMap[item.icon] || Activity; return <Card className="stat-card"><div className="stat-card-head"><div><span className="stat-title">{item.title}</span><strong>{item.value}</strong></div><span className="stat-icon"><Icon size={17} /></span></div><div className="stat-foot"><Pill positive={item.positive}>{item.delta}</Pill><span>{item.period}</span></div></Card>; }
+function MoreButton({ label }) { return <button type="button" className="more-button" aria-label={label || "More options"}><MoreHorizontal size={18} /></button>; }
 
-const summaryCards = [
-  { id: 1, label: "School revenue", value: "₦4.2m", delta: "+15.1%", icon: WalletCards, tone: "blue", link: "/dashboard/finance" },
-  { id: 2, label: "Fee collection", value: "86.4%", delta: "+9.8%", icon: CreditCard, tone: "blue", link: "/dashboard/finance/payments" },
-  { id: 3, label: "Class attendance", value: "92.7%", delta: "+2.3%", icon: CalendarCheck2, tone: "mint", link: "/dashboard/academics/attendance" },
-  { id: 4, label: "Staff active", value: "148", delta: "+6", icon: Users, tone: "blue", link: "/dashboard/staff/management" },
-];
-
-const quickActions = [
-  { label: "Enroll student", meta: "Add a new learner", icon: GraduationCap, link: "/dashboard/students/enrollment/create" },
-  { label: "Manage staff", meta: "Review roster", icon: UserRoundCheck, link: "/dashboard/staff/management" },
-  { label: "Create report", meta: "Publish weekly summary", icon: BookOpen, link: "/dashboard/overview/daily" },
-  { label: "Review fees", meta: "Track collections", icon: Landmark, link: "/dashboard/finance/payments" },
-];
-
-const liveFeed = [
-  { title: "Assessment uploaded", meta: "Term 2 exam • 12 mins ago" },
-  { title: "Fees were posted", meta: "5 parents just paid • 26 mins ago" },
-  { title: "Attendance trend updated", meta: "Primary wing • 1 hour ago" },
-];
-
-export default function DashboardHomePage() {
-  const { userInfo } = useContext(UserContext);
-  const firstName = getFirstName(userInfo) || "Admin";
-  const sessionLabel = userInfo?.activeSession || "2025/2026 Session";
-
-  return (
-    <div className="school-admin-dashboard">
-      <header className="dashboard-shell-header dashboard-landing-header">
-        <div className="dashboard-shell-header-copy">
-          <p className="dashboard-shell-eyebrow">School administration</p>
-          <h1>Good morning, {firstName}.</h1>
-          <p>
-            Keep the school moving with one calm view of finance, people, learning, and operations.
-          </p>
-        </div>
-        <div className="dashboard-shell-header-actions">
-          <span className="dashboard-shell-pill">{sessionLabel}</span>
-          <Link to="/dashboard/overview/live" className="dashboard-shell-link">
-            <span>Open overview</span>
-            <ArrowRight size={14} />
-          </Link>
-        </div>
-      </header>
-
-      <section className="dashboard-landing-hero">
-        <div className="dashboard-landing-copy">
-          <div className="dashboard-landing-kicker">
-            <School size={14} />
-            <span>School operations</span>
-          </div>
-          <h2>
-            Give your school <span>room to grow.</span>
-          </h2>
-          <p>
-            Admissions, attendance, finance, and academic progress come together in a single operating rhythm for the entire community.
-          </p>
-          <div className="dashboard-landing-actions">
-            <Link to="/dashboard/students/enrollment" className="landing-button landing-button-primary">
-              Review enrolments
-              <ArrowRight size={17} />
-            </Link>
-            <Link to="/dashboard/overview/live" className="landing-button landing-button-quiet">
-              <span className="play-icon"><TrendingUp size={13} /></span>
-              View reports
-            </Link>
-          </div>
-          <div className="landing-proof">
-            <CheckCircle2 size={16} />
-            <span>Built for school leaders</span>
-            <i />
-            <span>Priority updates are visible at a glance</span>
-          </div>
-        </div>
-
-        <div className="dashboard-landing-preview" aria-label="School admin dashboard preview">
-          <div className="landing-preview-topbar">
-            <div className="preview-brand"><span />Nuvora OS</div>
-            <div className="preview-top-actions"><span /> <span /> <b>AD</b></div>
-          </div>
-
-          <div className="landing-preview-body">
-            <aside className="preview-sidebar">
-              <div className="preview-sidebar-mark"><School size={15} /></div>
-              <i />
-              <i />
-              <i />
-              <i />
-              <i />
-            </aside>
-
-            <div className="preview-content">
-              <div className="preview-heading">
-                <div>
-                  <small>MONDAY, 10 FEBRUARY 2025</small>
-                  <h3>Good morning, {firstName}.</h3>
-                </div>
-                <span>{sessionLabel}</span>
-              </div>
-
-              <div className="preview-stats">
-                {overviewMetrics.map((metric) => (
-                  <div key={metric.label} className={`preview-stat preview-stat-${metric.tone}`}>
-                    <small>{metric.label}</small>
-                    <strong>{metric.value}</strong>
-                    <em>{metric.delta}</em>
-                  </div>
-                ))}
-              </div>
-
-              <div className="preview-lower">
-                <div className="preview-chart">
-                  <div className="preview-line" />
-                  <div className="chart-labels">
-                    <span>SEP</span>
-                    <span>OCT</span>
-                    <span>NOV</span>
-                    <span>DEC</span>
-                    <span>JAN</span>
-                    <span>FEB</span>
-                  </div>
-                </div>
-
-                <div className="preview-feed">
-                  <strong>Recent status</strong>
-                  <p><BellRing size={13} /> 42 fee reminders sent</p>
-                  <p><CheckCircle2 size={13} /> 18 admissions approved</p>
-                  <p><TrendingUp size={13} /> Weekly report ready</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="dashboard-landing-summary">
-        {summaryCards.map((card) => {
-          const Icon = card.icon;
-
-          return (
-            <article key={card.id} className={`dashboard-shell-stat tone-${card.tone}`}>
-              <div className="dashboard-shell-stat-head">
-                <div className="dashboard-shell-stat-icon">
-                  <Icon size={16} />
-                </div>
-                <span className="dashboard-shell-stat-trend">{card.delta}</span>
-              </div>
-              <div className="dashboard-shell-stat-copy">
-                <span>{card.label}</span>
-                <strong>{card.value}</strong>
-              </div>
-              <Link to={card.link} className="dashboard-shell-stat-link">
-                <span>View</span>
-                <ArrowRight size={14} />
-              </Link>
-            </article>
-          );
-        })}
-      </section>
-
-      <section className="dashboard-landing-lower">
-        <div className="dashboard-widget dashboard-landing-widget">
-          <div className="dashboard-widget-head">
-            <div>
-              <p className="dashboard-widget-kicker">Quick actions</p>
-              <h3>Admin shortcuts</h3>
-            </div>
-          </div>
-
-          <div className="dashboard-quick-actions-grid">
-            {quickActions.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <Link key={item.label} to={item.link} className="dashboard-quick-action">
-                  <div className="dashboard-quick-action-icon">
-                    <Icon size={16} />
-                  </div>
-                  <div>
-                    <strong>{item.label}</strong>
-                    <span>{item.meta}</span>
-                  </div>
-                  <ArrowRight size={14} />
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="dashboard-widget dashboard-landing-widget dashboard-landing-panel">
-          <div className="dashboard-widget-head">
-            <div>
-              <p className="dashboard-widget-kicker">This week</p>
-              <h3>Operational momentum</h3>
-            </div>
-          </div>
-
-          <div className="dashboard-ops-list">
-            <div className="dashboard-ops-item">
-              <div className="dashboard-ops-icon"><BookOpen size={14} /></div>
-              <div>
-                <strong>Academic performance</strong>
-                <p>Class averages are up 4.6% from last week.</p>
-              </div>
-            </div>
-
-            <div className="dashboard-ops-item">
-              <div className="dashboard-ops-icon"><BriefcaseBusiness size={14} /></div>
-              <div>
-                <strong>School operations</strong>
-                <p>11 pending approvals are ready for review.</p>
-              </div>
-            </div>
-
-            <div className="dashboard-ops-item">
-              <div className="dashboard-ops-icon"><WalletCards size={14} /></div>
-              <div>
-                <strong>Finance health</strong>
-                <p>Collections are trending ahead of budget plan.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="dashboard-landing-feed">
-        <div className="dashboard-widget dashboard-landing-widget">
-          <div className="dashboard-widget-head">
-            <div>
-              <p className="dashboard-widget-kicker">Overview</p>
-              <h3>School focus</h3>
-            </div>
-          </div>
-
-          <div className="dashboard-home-stats-grid">
-            <div className="dashboard-home-stat stat-green">
-              <div className="dashboard-home-stat-icon"><TrendingUp size={16} /></div>
-              <div>
-                <span>Expected income</span>
-                <strong>₦12.4m</strong>
-              </div>
-            </div>
-
-            <div className="dashboard-home-stat stat-green">
-              <div className="dashboard-home-stat-icon"><CheckCircle2 size={16} /></div>
-              <div>
-                <span>Paid so far</span>
-                <strong>₦10.8m</strong>
-              </div>
-            </div>
-
-            <div className="dashboard-home-stat stat-red">
-              <div className="dashboard-home-stat-icon"><BriefcaseBusiness size={16} /></div>
-              <div>
-                <span>Current debt</span>
-                <strong>₦1.6m</strong>
-              </div>
-            </div>
-
-            <div className="dashboard-home-stat stat-red">
-              <div className="dashboard-home-stat-icon"><BellRing size={16} /></div>
-              <div>
-                <span>Discounts</span>
-                <strong>₦520k</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-widget dashboard-landing-widget">
-          <div className="dashboard-widget-head">
-            <div>
-              <p className="dashboard-widget-kicker">Live feed</p>
-              <h3>Recent activity</h3>
-            </div>
-          </div>
-
-          <div className="dashboard-list-stack">
-            {liveFeed.map((item) => (
-              <div key={item.title} className="dashboard-list-item">
-                <strong>{item.title}</strong>
-                <p>{item.meta}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+function ProfitTooltip({ active, payload, label }) {
+  if (!active || !payload || !payload.length) return null;
+  const current = payload.find((item) => item.dataKey === "thisMonth")?.value;
+  const last = payload.find((item) => item.dataKey === "lastMonth")?.value;
+  return <div className="profit-tooltip"><strong>{label}, 2025</strong><span><i className="tooltip-dot blue" />{"$" + Number(current || 0).toLocaleString()} this month</span><span><i className="tooltip-dot gray" />{"$" + Number(last || 0).toLocaleString()} last month</span></div>;
 }
+function ProfitChart() { return <div className="profit-chart"><ResponsiveContainer width="100%" height={210}><AreaChart data={profitData} margin={{ top: 16, right: 8, left: -16, bottom: 0 }}><defs><linearGradient id="profitFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2563EB" stopOpacity={0.22} /><stop offset="100%" stopColor="#2563EB" stopOpacity={0.01} /></linearGradient></defs><CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="4 4" /><XAxis dataKey="date" tick={{ fontSize: 10, fill: "#94A3B8" }} tickLine={false} axisLine={false} /><YAxis ticks={[5000,10000,15000]} tickFormatter={(value) => (value / 1000) + "K"} tick={{ fontSize: 10, fill: "#94A3B8" }} tickLine={false} axisLine={false} width={34} /><Tooltip content={<ProfitTooltip />} cursor={{ stroke: "#CBD5E1", strokeDasharray: "4 4" }} /><Area type="monotone" dataKey="lastMonth" stroke="#94A3B8" strokeDasharray="5 5" fill="none" strokeWidth={2} dot={false} /><Area type="monotone" dataKey="thisMonth" stroke="#2563EB" fill="url(#profitFill)" strokeWidth={2.5} dot={false} /></AreaChart></ResponsiveContainer></div>; }
+function CustomersCard() { return <div className="customers-inner"><div className="inner-card-head"><div><span className="eyebrow">Customer mix</span><h3>Customers</h3></div><MoreButton label="Customer options" /></div><div className="customer-grid">{customers.map((item) => <div className={"customer-stat " + item.color} key={item.label}><span className="customer-icon"><Users size={15} /></span><strong>{item.value}</strong><span>{item.label}</span><i /></div>)}</div></div>; }
+function ProductIcon({ type }) { if (type === "headphones") return <Headphones size={17} />; if (type === "phone") return <Smartphone size={17} />; if (type === "controller") return <span className="gamepad-icon">⌁</span>; return <Watch size={17} />; }
+function ProductsTable() { return <Card className="products-card"><div className="section-head"><div><span className="eyebrow">Commerce</span><h2>Best Selling Products</h2></div><MoreButton label="Product options" /></div><div className="products-table-wrap"><table className="products-table"><thead><tr><th>ID</th><th>NAME</th><th>SOLD</th><th>REVENUE</th><th>RATING</th></tr></thead><tbody>{products.map((product, index) => <tr key={product.id + "-" + index}><td className="product-id">{product.id}</td><td><div className="product-name"><span className="product-icon"><ProductIcon type={product.icon} /></span><span>{product.name}</span></div></td><td>{product.sold}</td><td><span className={"revenue " + (product.positive ? "up" : "down")}>{product.positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}{product.revenue}</span></td><td><span className="rating"><Star size={13} fill="currentColor" />{product.rating}</span></td></tr>)}</tbody></table></div></Card>; }
+function DayActiveChart() { const max = Math.max(...dayActivity.map((item) => item.value)); return <Card className="day-card"><div className="section-head compact"><div><span className="eyebrow">Engagement</span><h2>Most Day Active</h2></div><MoreButton label="Activity options" /></div><div className="day-chart">{dayActivity.map((item) => <div className="day-column" key={item.day} title={item.day + ": " + item.value.toLocaleString()}>{item.day === "Tue" && <span className="day-value">{item.value.toLocaleString()}</span>}<div className={"day-bar " + (item.day === "Tue" ? "active" : "")} style={{ height: Math.max(25, (item.value / max) * 130) + "px" }} /><span>{item.day}</span></div>)}</div></Card>; }
+function GaugeChart() { const ticks = Array.from({ length: 30 }, (_, index) => index); return <Card className="gauge-card"><div className="section-head compact"><div><span className="eyebrow">Retention</span><h2>Repeat Customer Rate</h2></div><MoreButton label="Retention options" /></div><div className="gauge-wrap"><svg viewBox="0 0 240 135" role="img" aria-label="Repeat customer rate 68 percent">{ticks.map((tick) => { const angle = -180 + (tick / (ticks.length - 1)) * 180; const radians = angle * Math.PI / 180; const cx = 120 + Math.cos(radians) * 86; const cy = 111 + Math.sin(radians) * 86; const innerX = 120 + Math.cos(radians) * 74; const innerY = 111 + Math.sin(radians) * 74; return <line key={tick} x1={innerX} y1={innerY} x2={cx} y2={cy} stroke={tick / (ticks.length - 1) <= 0.68 ? "#16A34A" : "#E2E8F0"} strokeWidth="7" strokeLinecap="round" />; })}</svg><div className="gauge-center"><strong>68%</strong><span>On track for 80% target</span><button type="button">Show details</button></div></div></Card>; }
+function AiAssistant() { const [message, setMessage] = useState(""); const [messages, setMessages] = useState([]); const submit = () => { const value = message.trim(); if (!value) return; setMessages((current) => [...current, { role: "user", text: value }, { role: "assistant", text: "I’m ready to help you explore your store performance." }]); setMessage(""); }; return <Card className="ai-card"><div className="section-head compact"><div><span className="eyebrow">Shopeers AI</span><h2>AI Assistant</h2></div><button type="button" className="expand-button" aria-label="Expand assistant"><Menu size={17} /></button></div><div className="ai-conversation" aria-live="polite">{!messages.length ? <div className="ai-empty"><span>Ask about your dashboard, sales, or customers.</span></div> : messages.slice(-4).map((item, index) => <div key={index} className={"ai-message " + item.role}>{item.text}</div>)}</div><div className="ai-sphere" aria-hidden="true"><span className="sphere-halo" /><span className="sphere-core" /><span className="sphere-highlight" /></div><div className="ai-input-row"><button type="button" aria-label="Attach file"><Paperclip size={16} /></button><input value={message} onChange={(event) => setMessage(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") submit(); }} placeholder="Ask me anything..." aria-label="Ask me anything" /><button type="button" aria-label="Voice input"><Mic size={16} /></button><button type="button" className="send-button" onClick={submit} aria-label="Send"><Send size={15} /></button></div></Card>; }
+function WidgetPreview({ type }) { if (type === "donut") return <div className="mini-donut"><i /><span /><b /></div>; if (type === "bars") return <div className="mini-bars">{[45,72,54,88,62].map((height, index) => <i style={{ height: height + "%" }} key={index} />)}</div>; if (type === "line") return <div className="mini-line"><svg viewBox="0 0 120 70"><polyline points="0,58 20,44 38,48 58,25 76,35 96,16 120,22" fill="none" stroke="#2563EB" strokeWidth="4" /></svg></div>; return <div className="mini-kpi"><strong>1,682</strong><span>vs. 253 yesterday</span><i /></div>; }
+function DraggableWidget({ item, onSelect }) { const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: item.id }); const style = transform ? { transform: "translate3d(" + transform.x + "px, " + transform.y + "px, 0)" } : undefined; return <article ref={setNodeRef} style={style} className={"drawer-widget " + (isDragging ? "dragging" : "")} {...listeners} {...attributes}><div className="drawer-preview"><WidgetPreview type={item.preview} /></div><div className="drawer-widget-copy"><strong>{item.title}</strong><p>{item.description}</p><span>{item.tag}</span><button type="button" onClick={(event) => { event.stopPropagation(); onSelect(item); }}>Select</button></div><GripVertical className="drag-grip" size={15} /></article>; }
+function AddWidgetDrawer({ open, onClose, onAdd }) { const [activeId, setActiveId] = useState(null); const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } })); const { setNodeRef: setDropRef, isOver } = useDroppable({ id: "widget-drop-zone" }); if (!open) return null; return <DndContext sensors={sensors} onDragStart={({ active }) => setActiveId(active.id)} onDragCancel={() => setActiveId(null)} onDragEnd={({ active }) => { onAdd(widgetItems.find((item) => item.id === active.id)); setActiveId(null); }}><div className="drawer-backdrop" onMouseDown={onClose}><aside className="widget-drawer" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label="Add widget"><header><div><span className="eyebrow">Customize</span><h2>Add Widget</h2></div><button type="button" onClick={onClose} aria-label="Close drawer"><X size={18} /></button></header><div className={"drawer-list " + (isOver ? "drop-active" : "")} ref={setDropRef}>{widgetItems.map((item) => <DraggableWidget item={item} onSelect={onAdd} key={item.id} />)}<div className="drop-zone">{isOver ? "Drop to add widget" : "Drag a widget here to add it"}</div></div><DragOverlay>{activeId ? <div className="drag-overlay"><GripVertical size={15} />{widgetItems.find((item) => item.id === activeId)?.title}</div> : null}</DragOverlay></aside></div></DndContext>; }
+function DashboardHeader({ onAddWidget }) { const [period, setPeriod] = useState("Last 30 days"); const [periodOpen, setPeriodOpen] = useState(false); const [dateOpen, setDateOpen] = useState(false); const [exportOpen, setExportOpen] = useState(false); const [dateRange, setDateRange] = useState("Jan 1, 2025 - Feb, 1 2025"); const [fromDate, setFromDate] = useState("2025-01-01"); const [toDate, setToDate] = useState("2025-02-01"); const wrapRef = useRef(null);
+  useEffect(() => { const close = (event) => { if (wrapRef.current && !wrapRef.current.contains(event.target)) { setPeriodOpen(false); setDateOpen(false); setExportOpen(false); } }; document.addEventListener("mousedown", close); return () => document.removeEventListener("mousedown", close); }, []);
+  const exportCsv = () => { const rows = [["Metric","Value"], ...stats.map((item) => [item.title,item.value]), ["Total Profit","$446.7K"], ["Repeat Customer Rate","68%"]]; const blob = new Blob([rows.map((row) => row.join(",")).join("\\n")], { type: "text/csv;charset=utf-8" }); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = "shopeers-dashboard.csv"; anchor.click(); URL.revokeObjectURL(url); setExportOpen(false); };
+  return <div className="dashboard-page-head" ref={wrapRef}><div><h1>Dashboard</h1></div><div className="dashboard-head-actions"><div className="popover-wrap"><button type="button" className="control-button date-button" onClick={() => setDateOpen((v) => !v)}><Calendar size={15} />{dateRange}<ChevronDown size={14} /></button>{dateOpen && <div className="date-popover"><strong>Date range</strong><label>From<input type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} /></label><label>To<input type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} /></label><button type="button" onClick={() => { setDateRange(new Date(fromDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) + " - " + new Date(toDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})); setDateOpen(false); }}>Apply range</button></div>}</div><div className="popover-wrap"><button type="button" className="control-button" onClick={() => setPeriodOpen((v) => !v)}>{period}<ChevronDown size={14} /></button>{periodOpen && <div className="select-popover">{periods.map((item) => <button type="button" key={item} onClick={() => { setPeriod(item); setPeriodOpen(false); }}>{item}</button>)}</div>}</div><button type="button" className="control-button outlined" onClick={onAddWidget}><Plus size={15} />Add widget</button><div className="popover-wrap"><button type="button" className="control-button primary" onClick={() => setExportOpen((v) => !v)}><Download size={15} />Export<ChevronDown size={14} /></button>{exportOpen && <div className="select-popover export-popover"><button type="button" onClick={exportCsv}><FileText size={14} />Export CSV</button><button type="button" onClick={() => { setExportOpen(false); window.print(); }}><Download size={14} />Print / PDF</button></div>}</div></div></div>; }
+export default function DashboardHomePage() { const [drawerOpen, setDrawerOpen] = useState(false); const [addedWidgets, setAddedWidgets] = useState([]); const [dark, setDark] = useState(() => { try { return localStorage.getItem("shopeers-theme") === "dark"; } catch { return false; } }); useEffect(() => { document.documentElement.classList.toggle("shopeers-dark", dark); try { localStorage.setItem("shopeers-theme", dark ? "dark" : "light"); } catch {} window.dispatchEvent(new CustomEvent("shopeers-theme-change", { detail: dark })); }, [dark]); useEffect(() => { const sync = (event) => setDark(Boolean(event.detail)); window.addEventListener("shopeers-theme-change", sync); return () => window.removeEventListener("shopeers-theme-change", sync); }, []); const addWidget = (item) => { if (!item) return; setAddedWidgets((current) => current.some((entry) => entry.id === item.id) ? current : [...current,item]); }; return <div className={"shopeers-dashboard " + (dark ? "is-dark" : "")} data-brand={BRAND_NAME}><DashboardHeader onAddWidget={() => setDrawerOpen(true)} /><div className="stats-grid">{stats.map((item) => <StatCard item={item} key={item.title} />)}</div><div className="dashboard-main-grid"><div className="dashboard-left-column"><Card className="profit-card"><div className="profit-head"><div><span className="eyebrow">Performance</span><h2>Total Profit</h2><div className="profit-value-row"><strong>$446.7K</strong><Pill>+24,4%</Pill><span>vs. last period</span></div></div><div className="chart-legend"><span><i className="blue-line" />This month</span><span><i className="gray-line" />Last month</span></div></div><ProfitChart /><CustomersCard /></Card><ProductsTable />{addedWidgets.map((item) => <Card className="added-dashboard-widget" key={item.id}><WidgetPreview type={item.preview} /><div><strong>{item.title}</strong><span>{item.description}</span></div></Card>)}</div><div className="dashboard-right-column"><DayActiveChart /><GaugeChart /><AiAssistant /></div></div><AddWidgetDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onAdd={addWidget} /></div>; }
