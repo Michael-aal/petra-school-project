@@ -107,7 +107,7 @@ function DashboardLay() {
   const closeSidebar = () => setMobileOpen(false);
   if (!authReady) return null;
   if (!userInfo?.email) return <Navigate to="/signin" replace />;
-  return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onToggle={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
+  return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onMenuClick={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
 }
 
 function DynamicParentSection(props) {
