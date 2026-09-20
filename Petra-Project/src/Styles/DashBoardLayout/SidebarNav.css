@@ -513,3 +513,5 @@
 .shopeers-upgrade-card button{width:100%;border:1px solid rgba(255,255,255,.35);border-radius:9px;padding:8px;background:#2563EB;color:#fff;font-size:10px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(37,99,235,.3)}
 .shopeers-upgrade-card button:hover{background:#3B82F6}
 @media(max-width:900px){.shopeers-upgrade-card{display:none}}
+
+.shopeers-orders-badge{margin-left:auto;min-width:22px;height:19px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#DCFCE7;color:#16A34A;font-size:9px;font-weight:800}
