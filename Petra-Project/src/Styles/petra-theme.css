@@ -293,8 +293,11 @@ input:focus, select:focus, textarea:focus,
 }
 
 /* Public / marketing pages */
-.landing-page, .home-page, .ctc-page, .fsos, .fparent {
-  background: var(--petra-white) !important;
+.landing-page, .home-page, .ctc-page, .fsos, .fparent,
+.nuvora-about, .contact-page, .solution-index-page, .solution-template-page,
+.company-page, .teacher-application-page, .teacher-applications-page,
+.generic-list-page, .app-status-page, .pass-screen-page, .admin-pay-page {
+  background: var(--petra-canvas) !important;
   color: var(--petra-ink) !important;
 }
 .landing-hero {
