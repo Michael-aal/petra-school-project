@@ -22,29 +22,24 @@ import {
 
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
+import { notificationApi } from "../../services/notificationApi";
 import { getDisplayName, normalizeUser } from "../../utils/userProfile";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
 
-const MOCK_NOTIFICATIONS = [
-  {
-    id: "notification-1",
-    title: "New application received",
-    body: "A new student application is ready for review.",
-    unread: true,
-  },
-  {
-    id: "notification-2",
-    title: "Payment update",
-    body: "A recent school payment has been recorded.",
-    unread: true,
-  },
-  {
-    id: "notification-3",
-    title: "System reminder",
-    body: "Review your latest dashboard activity.",
-    unread: true,
-  },
-];
+const formatNotificationTime = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const diff = Math.max(0, Date.now() - date.getTime());
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+};
 
 const formatToday = () =>
   new Intl.DateTimeFormat("en-US", {
@@ -168,9 +163,9 @@ export default function TopNavbar({
   const notificationDropdown = useDropdown();
   const profileDropdown = useDropdown();
 
-  const [notifications, setNotifications] = useState(
-    MOCK_NOTIFICATIONS
-  );
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const displayName =
@@ -222,9 +217,25 @@ export default function TopNavbar({
     };
   }, []);
 
-  const unreadCount = notifications.filter(
-    (notification) => notification.unread
-  ).length;
+  const loadNotifications = useCallback(async () => {
+    setNotificationsLoading(true);
+    try {
+      const result = await notificationApi.list({ page: 1, limit: 6 });
+      const latest = Array.isArray(result?.notifications) ? result.notifications : [];
+      setNotifications(latest);
+      setUnreadCount(Number(result?.unread || 0));
+    } catch {
+      // Notification UI must never block the dashboard.
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadNotifications();
+    const interval = window.setInterval(loadNotifications, 30000);
+    return () => window.clearInterval(interval);
+  }, [loadNotifications]);
 
   const handleNotificationKeyDown = (event) => {
     if (event.key === "Escape") {
@@ -248,26 +259,43 @@ export default function TopNavbar({
     );
   };
 
-  const markNotificationRead = (id) => {
-    setNotifications((current) =>
-      current.map((notification) =>
-        notification.id === id
-          ? {
-              ...notification,
-              unread: false,
-            }
-          : notification
-      )
+  const handleNotificationClick = async (notification) => {
+    notificationDropdown.close(false);
+
+    if (!notification?.id) {
+      navigate("/dashboard/communication/notifications");
+      return;
+    }
+
+    try {
+      if (!notification.isRead) {
+        await notificationApi.markRead(notification.id);
+        setNotifications((current) =>
+          current.map((item) =>
+            item.id === notification.id ? { ...item, isRead: true } : item
+          )
+        );
+        setUnreadCount((count) => Math.max(0, count - 1));
+      }
+    } catch {
+      // Still take the user to the notification centre.
+    }
+
+    navigate(
+      `/dashboard/communication/notifications?notification=${encodeURIComponent(notification.id)}`
     );
   };
 
-  const markAllAsRead = () => {
-    setNotifications((current) =>
-      current.map((notification) => ({
-        ...notification,
-        unread: false,
-      }))
-    );
+  const markAllAsRead = async () => {
+    try {
+      await notificationApi.markAllRead();
+      setNotifications((current) =>
+        current.map((notification) => ({ ...notification, isRead: true }))
+      );
+      setUnreadCount(0);
+    } catch {
+      // Keep the dropdown usable if the API is temporarily unavailable.
+    }
   };
 
   const handleProfileNavigate = (id) => {
@@ -429,11 +457,7 @@ export default function TopNavbar({
                     Notifications
                   </strong>
 
-                  <span>
-                    {unreadCount > 0
-                      ? `${unreadCount} unread`
-                      : "All caught up"}
-                  </span>
+                  <span>{unreadCount > 0 ? `${unreadCount} unread` : notifications.length ? "Latest activity" : "All caught up"}</span>
                 </div>
 
                 <button
@@ -455,66 +479,72 @@ export default function TopNavbar({
               </div>
 
               <div className="tn-notification-list">
-                {notifications.map(
-                  (notification) => (
+                {notificationsLoading ? (
+                  <div className="tn-notification-loading">
+                    Loading latest notifications...
+                  </div>
+                ) : notifications.length ? (
+                  notifications.map((notification, index) => (
                     <button
                       key={notification.id}
                       type="button"
                       role="menuitem"
-                      className={`tn-notice${
-                        notification.unread
-                          ? " is-unread"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        markNotificationRead(
-                          notification.id
-                        )
-                      }
+                      className={`tn-notice${notification.isRead ? "" : " is-unread"}`}
+                      onClick={() => handleNotificationClick(notification)}
                     >
-                      <span
-                        className="tn-notice__icon"
-                        aria-hidden="true"
-                      >
+                      <span className="tn-notice__icon" aria-hidden="true">
                         <Bell size={15} />
                       </span>
 
                       <span className="tn-notice__copy">
-                        <strong>
-                          {notification.title}
-                        </strong>
-
-                        <span>
-                          {notification.body}
+                        <span className="tn-notice__meta">
+                          {index === 0 ? <strong className="tn-latest-label">Latest</strong> : null}
+                          {notification.section ? (
+                            <span className="tn-section-label">{notification.section}</span>
+                          ) : null}
+                          <span>{formatNotificationTime(notification.createdAt)}</span>
                         </span>
+                        <strong>{notification.title}</strong>
+                        <span>{notification.body}</span>
                       </span>
 
-                      {notification.unread ? (
-                        <span
-                          className="tn-unread-dot"
-                          aria-label="Unread"
-                        />
+                      {!notification.isRead ? (
+                        <span className="tn-unread-dot" aria-label="Unread" />
                       ) : (
-                        <Check
-                          className="tn-read-icon"
-                          size={15}
-                          aria-label="Read"
-                        />
+                        <Check className="tn-read-icon" size={15} aria-label="Read" />
                       )}
                     </button>
-                  )
+                  ))
+                ) : (
+                  <div className="tn-notification-empty">
+                    No new notifications yet.
+                  </div>
                 )}
               </div>
 
               <div className="tn-panel-footer">
-                <button
-                  type="button"
-                  className="tn-text-btn"
-                  onClick={markAllAsRead}
-                  role="menuitem"
-                >
-                  Mark all as read
-                </button>
+                <div className="tn-panel-footer__actions">
+                  <button
+                    type="button"
+                    className="tn-text-btn"
+                    onClick={markAllAsRead}
+                    role="menuitem"
+                    disabled={!unreadCount}
+                  >
+                    Mark all as read
+                  </button>
+                  <button
+                    type="button"
+                    className="tn-text-btn tn-view-all-btn"
+                    onClick={() => {
+                      notificationDropdown.close(false);
+                      navigate("/dashboard/communication/notifications");
+                    }}
+                    role="menuitem"
+                  >
+                    View all
+                  </button>
+                </div>
               </div>
             </div>
           )}
