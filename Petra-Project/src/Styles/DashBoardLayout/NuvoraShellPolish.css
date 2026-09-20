@@ -430,61 +430,95 @@
 }
 
 
-/* FINAL UI CONTRAST + COMPACTNESS FIX
-   Fixes the visible mobile/tablet issues:
-   - menu/notification controls must stay white, not blue
-   - notification bell and menu glyphs must never disappear
-   - Nuvora action keeps a deliberate blue treatment
-   - profile control is compact enough for ~680px viewports
+/* FINAL TOPBAR VISUAL CONTRACT
+   - Topbar background: soft grey
+   - Controls: white
+   - Main/navigation icons: black
+   - Nuvora action remains blue with white content
 */
+.dashboard-shell .top-navbar{
+  background:#f3f4f6!important;
+  color:#000!important;
+  border-bottom:1px solid #d1d5db!important;
+  box-shadow:0 1px 6px rgba(15,23,42,.06)!important;
+  backdrop-filter:none!important;
+}
+
 .dashboard-shell .top-navbar .menu-btn,
-.dashboard-shell .top-navbar .notification-menu .icon-btn{
+.dashboard-shell .top-navbar .icon-btn,
+.dashboard-shell .top-navbar .user-info{
   background:#fff!important;
-  color:#1877f2!important;
-  border-color:#e2e8f0!important;
+  color:#000!important;
+  border:1px solid #d1d5db!important;
   box-shadow:none!important;
 }
+
 .dashboard-shell .top-navbar .menu-btn svg,
-.dashboard-shell .top-navbar .notification-menu .icon-btn svg{
+.dashboard-shell .top-navbar .icon-btn svg,
+.dashboard-shell .top-navbar .user-info svg{
   display:block!important;
-  color:#1877f2!important;
-  stroke:#1877f2!important;
+  color:#000!important;
+  stroke:#000!important;
+  fill:none!important;
   opacity:1!important;
   visibility:visible!important;
 }
+
+.dashboard-shell .top-navbar .menu-btn:hover,
+.dashboard-shell .top-navbar .icon-btn:hover,
+.dashboard-shell .top-navbar .user-info:hover{
+  background:#fff!important;
+  color:#000!important;
+  border-color:#9ca3af!important;
+}
+
+.dashboard-shell .top-navbar .top-welcome,
+.dashboard-shell .top-navbar .user-name,
+.dashboard-shell .top-navbar .greets,
+.dashboard-shell .top-navbar .user-caret{
+  color:#000!important;
+}
+
 .dashboard-shell .top-navbar .ask-nuvora-btn{
   background:#1877f2!important;
   color:#fff!important;
   border-color:#1877f2!important;
 }
-.dashboard-shell .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
+
+.dashboard-shell .top-navbar .ask-nuvora-btn svg{
+  color:#fff!important;
+  stroke:#fff!important;
+}
+
+.dashboard-shell .top-navbar .ask-nuvora-icon-wrap{
   background:#fff!important;
-  color:#1877f2!important;
+  color:#000!important;
 }
-.dashboard-shell .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap svg{
-  color:#1877f2!important;
-  stroke:#1877f2!important;
+
+.dashboard-shell .top-navbar .ask-nuvora-icon-wrap svg{
+  color:#000!important;
+  stroke:#000!important;
 }
-.dashboard-shell .top-navbar .user-info{
-  min-height:40px!important;
-  padding:3px 8px 3px 4px!important;
-  border-radius:10px!important;
+
+.dashboard-shell .top-navbar .notification-action{
+  background:#1877f2!important;
+  color:#fff!important;
+  border-color:#1877f2!important;
 }
-.dashboard-shell .top-navbar .user-name{
-  font-size:.78rem!important;
-  white-space:nowrap;
+
+.dashboard-shell .top-navbar .nav-badge{
+  background:#1877f2!important;
+  color:#fff!important;
 }
-.dashboard-shell .top-navbar .greets{
-  font-size:10px!important;
+
+@media(max-width:900px){
+  .dashboard-shell .top-navbar{
+    height:60px!important;
+    min-height:60px!important;
+    padding:0 14px!important;
+  }
 }
-.dashboard-shell .top-navbar .user-avatar,
-.dashboard-shell .top-navbar .avatar{
-  width:34px!important;
-  height:34px!important;
-}
+
 @media(max-width:760px){
   .dashboard-shell .top-navbar{
     height:60px!important;
@@ -506,11 +540,22 @@
     max-width:31vw!important;
     font-size:.82rem!important;
   }
-  .dashboard-shell .ask-nuvora-btn .ask-nuvora-icon-wrap{
-    width:23px!important;
-    height:23px!important;
-  }
   .dashboard-shell .user-info{
     max-width:205px!important;
+    min-height:40px!important;
+    padding:3px 8px 3px 4px!important;
+    border-radius:10px!important;
+  }
+  .dashboard-shell .user-name{
+    font-size:.78rem!important;
+    white-space:nowrap;
+  }
+  .dashboard-shell .greets{
+    font-size:10px!important;
+  }
+  .dashboard-shell .user-avatar,
+  .dashboard-shell .avatar{
+    width:34px!important;
+    height:34px!important;
   }
 }
