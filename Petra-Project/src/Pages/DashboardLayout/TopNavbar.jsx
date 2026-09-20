@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   CalendarDays,
@@ -12,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
+import { authApi } from "../../services/authApi";
 
 const MOCK_NOTIFICATIONS = [
   {
@@ -115,14 +117,15 @@ function moveMenuFocus(event, menuRef) {
 }
 
 export default function TopNavbar({
-  onMenuClick = () => {},
+  onMenuClick,
   firstName = "Martince",
   fullName = "Martince Core",
   initials = "MC",
   role = "Administrator",
-  onNavigate = () => {},
-  onLogout = () => {},
+  onNavigate,
+  onLogout,
 }) {
+  const navigate = useNavigate();
   const notificationDropdown = useDropdown();
   const profileDropdown = useDropdown();
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
@@ -167,12 +170,31 @@ export default function TopNavbar({
 
   const handleProfileNavigate = (id) => {
     profileDropdown.close(false);
-    onNavigate(id);
+    if (onNavigate) {
+      onNavigate(id);
+      return;
+    }
+
+    const routes = {
+      profile: "/dashboard/setup/profile",
+      settings: "/dashboard/settings",
+      billing: "/dashboard/finance",
+    };
+    navigate(routes[id] || "/dashboard");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     profileDropdown.close(false);
-    onLogout();
+    if (onLogout) {
+      await onLogout();
+      return;
+    }
+
+    try {
+      await authApi.logout();
+    } finally {
+      navigate("/signin", { replace: true });
+    }
   };
 
   return (
@@ -184,7 +206,7 @@ export default function TopNavbar({
         <button
           type="button"
           className="tn-btn tn-menu-btn"
-          onClick={onMenuClick}
+          onClick={() => onMenuClick?.()}
           aria-label="Toggle sidebar"
           title="Toggle sidebar"
         >
