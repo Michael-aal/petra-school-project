@@ -1,34 +1,351 @@
-import { useEffect, useRef, useState } from "react";
-import { Activity, ArrowDownRight, ArrowUpRight, Calendar, ChevronDown, Download, Eye, FileText, GripVertical, Headphones, Menu, Mic, MoreHorizontal, MousePointer2, Paperclip, Plus, Send, ShoppingBag, Smartphone, Star, Users, Watch, X } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
-import { BRAND_NAME, customers, dayActivity, periods, products, profitData, stats, widgetItems } from "./dashboard-data";
+import { useState } from "react";
+import {
+  Users,
+  GraduationCap,
+  Wallet,
+  CalendarCheck,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  PlusCircle,
+  Bell,
+  CheckCircle2,
+  Clock,
+  ChevronRight,
+  Sparkles,
+  Search,
+  Filter,
+  Download,
+  BookOpen,
+  UserCheck,
+  ShieldCheck,
+  School
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
 import "./page-styles/DashboardHomePage.css";
 
-const iconMap = { eye: Eye, users: Users, mouse: MousePointer2, shopping: ShoppingBag };
-function Card({ className = "", children }) { return <section className={"shopeers-card " + className}>{children}</section>; }
-function Pill({ children, positive = true }) { return <span className={"shopeers-pill " + (positive ? "positive" : "negative")}>{positive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}{children}</span>; }
-function StatCard({ item }) { const Icon = iconMap[item.icon] || Activity; return <Card className="stat-card"><div className="stat-card-head"><div><span className="stat-title">{item.title}</span><strong>{item.value}</strong></div><span className="stat-icon"><Icon size={17} /></span></div><div className="stat-foot"><Pill positive={item.positive}>{item.delta}</Pill><span>{item.period}</span></div></Card>; }
-function MoreButton({ label }) { return <button type="button" className="more-button" aria-label={label || "More options"}><MoreHorizontal size={18} /></button>; }
+const schoolStats = [
+  {
+    title: "Total Students",
+    value: "1,248",
+    delta: "+6.4%",
+    positive: true,
+    period: "vs last term",
+    icon: GraduationCap,
+    tone: "blue"
+  },
+  {
+    title: "Today's Attendance",
+    value: "94.2%",
+    delta: "+2.1%",
+    positive: true,
+    period: "1,175 present",
+    icon: UserCheck,
+    tone: "green"
+  },
+  {
+    title: "Term Fees Collected",
+    value: "₦48.2M",
+    delta: "82% settled",
+    positive: true,
+    period: "₦10.5M outstanding",
+    icon: Wallet,
+    tone: "blue"
+  },
+  {
+    title: "Active Staff & Faculty",
+    value: "84",
+    delta: "100%",
+    positive: true,
+    period: "All classes covered",
+    icon: Users,
+    tone: "navy"
+  }
+];
 
-function ProfitTooltip({ active, payload, label }) {
-  if (!active || !payload || !payload.length) return null;
-  const current = payload.find((item) => item.dataKey === "thisMonth")?.value;
-  const last = payload.find((item) => item.dataKey === "lastMonth")?.value;
-  return <div className="profit-tooltip"><strong>{label}, 2025</strong><span><i className="tooltip-dot blue" />{"$" + Number(current || 0).toLocaleString()} this month</span><span><i className="tooltip-dot gray" />{"$" + Number(last || 0).toLocaleString()} last month</span></div>;
+const attendanceWeekly = [
+  { day: "Mon", attendance: 96, fees: 84 },
+  { day: "Tue", attendance: 95, fees: 90 },
+  { day: "Wed", attendance: 93, fees: 88 },
+  { day: "Thu", attendance: 97, fees: 92 },
+  { day: "Fri", attendance: 91, fees: 85 }
+];
+
+const recentTransactions = [
+  { id: "TX-9042", student: "Adebayo Ogunleye", class: "SS 3 Alpha", fee: "Tuition - Second Term", amount: "₦95,000", status: "Paid", date: "Today, 09:42 AM" },
+  { id: "TX-9041", student: "Fatima Abdullahi", class: "JSS 2 Gold", fee: "Science Lab & Library", amount: "₦25,000", status: "Paid", date: "Today, 08:30 AM" },
+  { id: "TX-9040", student: "Chinedu Okeke", class: "Primary 5 Diamond", fee: "Bus Route - Lekki", amount: "₦40,000", status: "Pending", date: "Yesterday, 04:15 PM" },
+  { id: "TX-9039", student: "Zainab Ibrahim", class: "SS 1 Silver", fee: "Uniform & Books Pack", amount: "₦35,000", status: "Paid", date: "Yesterday, 02:20 PM" },
+  { id: "TX-9038", student: "Emeka Nwosu", class: "JSS 1 Blue", fee: "Tuition - Second Term", amount: "₦90,000", status: "Overdue", date: "18 Sep 2026" }
+];
+
+const quickAnnouncements = [
+  { title: "Mid-Term Assessment Schedule", time: "2 hrs ago", author: "Academic Board", badge: "Academics" },
+  { title: "Parent-Teacher Association Meeting", time: "Yesterday", author: "Principal's Office", badge: "Notice" },
+  { title: "Inter-House Sports Competition Prep", time: "2 days ago", author: "Sports Dept", badge: "Event" }
+];
+
+export default function DashboardHomePage() {
+  const [selectedTerm, setSelectedTerm] = useState("2026/2027 • Second Term");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTransactions = recentTransactions.filter((tx) =>
+    tx.student.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tx.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tx.fee.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="petra-dashboard-page">
+      {/* Header Banner */}
+      <header className="petra-dash-header">
+        <div className="petra-dash-header-copy">
+          <div className="petra-dash-pill">
+            <span className="live-dot" />
+            <School size={14} />
+            <span>Academic Command Center • {selectedTerm}</span>
+          </div>
+          <h1>School Overview & Operations</h1>
+          <p>Real-time telemetry across academic progress, daily attendance, fee settlements, and campus workflows.</p>
+        </div>
+
+        <div className="petra-dash-header-actions">
+          <NavLink to="/dashboard/students/enrollment/create" className="btn-dash-primary">
+            <PlusCircle size={16} /> Enroll Learner
+          </NavLink>
+          <NavLink to="/dashboard/finance/payments" className="btn-dash-secondary">
+            <Wallet size={16} /> Collect Fees
+          </NavLink>
+        </div>
+      </header>
+
+      {/* KPI Stats Grid */}
+      <section className="petra-stats-grid">
+        {schoolStats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <article className={`petra-stat-card tone-${stat.tone}`} key={stat.title}>
+              <div className="petra-stat-card-head">
+                <span className="petra-stat-label">{stat.title}</span>
+                <div className="petra-stat-icon-wrap">
+                  <Icon size={18} />
+                </div>
+              </div>
+              <strong className="petra-stat-value">{stat.value}</strong>
+              <div className="petra-stat-foot">
+                <span className={`petra-stat-pill ${stat.positive ? "is-pos" : "is-neg"}`}>
+                  {stat.positive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                  {stat.delta}
+                </span>
+                <span className="petra-stat-period">{stat.period}</span>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+
+      {/* Main Grid: Charts & Panels */}
+      <div className="petra-dashboard-grid">
+        {/* Left Column (2fr): Attendance & Transactions */}
+        <div className="petra-grid-main">
+          {/* Weekly Attendance & Fee Trend Card */}
+          <section className="petra-card petra-trend-card">
+            <div className="petra-card-header">
+              <div>
+                <span className="petra-card-eyebrow">Weekly Telemetry</span>
+                <h2>Daily Attendance & Engagement</h2>
+              </div>
+              <div className="petra-chart-legend">
+                <span><i className="legend-dot blue" /> Attendance Rate</span>
+                <span><i className="legend-dot navy" /> Target (95%)</span>
+              </div>
+            </div>
+
+            {/* Custom SVG Responsive Chart */}
+            <div className="petra-svg-chart-wrap">
+              <svg viewBox="0 0 500 160" className="petra-svg-chart" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="attendanceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#2563eb" stopOpacity="0.01" />
+                  </linearGradient>
+                </defs>
+                {/* Horizontal Guide Lines */}
+                <line x1="0" y1="30" x2="500" y2="30" stroke="#e2e8f0" strokeDasharray="4 4" />
+                <line x1="0" y1="75" x2="500" y2="75" stroke="#e2e8f0" strokeDasharray="4 4" />
+                <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" strokeDasharray="4 4" />
+                
+                {/* Area and Line for Attendance */}
+                <polygon points="0,150 0,40 100,50 200,65 300,35 400,80 500,60 500,150" fill="url(#attendanceGradient)" />
+                <polyline points="0,40 100,50 200,65 300,35 400,80 500,60" fill="none" stroke="#2563eb" strokeWidth="3" />
+                {/* Target Line (95%) */}
+                <line x1="0" y1="42" x2="500" y2="42" stroke="#0f2747" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.4" />
+
+                {/* Data Points */}
+                <circle cx="0" cy="40" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="100" cy="50" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="200" cy="65" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="300" cy="35" r="5" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
+                <circle cx="400" cy="80" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="500" cy="60" r="4" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+              </svg>
+              <div className="petra-chart-x-labels">
+                {attendanceWeekly.map((item) => (
+                  <div key={item.day} className="chart-day-col">
+                    <strong>{item.attendance}%</strong>
+                    <span>{item.day}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Metrics Bar below chart */}
+            <div className="petra-metric-bar">
+              <div className="metric-col">
+                <span>Classrooms Active</span>
+                <strong>38 / 38</strong>
+              </div>
+              <div className="metric-col">
+                <span>Late Check-ins</span>
+                <strong>14</strong>
+              </div>
+              <div className="metric-col">
+                <span>Excused Absences</span>
+                <strong>12</strong>
+              </div>
+              <div className="metric-col">
+                <span>Unexcused</span>
+                <strong className="text-danger">3</strong>
+              </div>
+            </div>
+          </section>
+
+          {/* Recent Collections & Transactions Table */}
+          <section className="petra-card petra-table-card">
+            <div className="petra-card-header">
+              <div>
+                <span className="petra-card-eyebrow">Financial Flow</span>
+                <h2>Recent Student Payments</h2>
+              </div>
+              <div className="petra-table-search-wrap">
+                <Search size={15} />
+                <input
+                  type="text"
+                  placeholder="Filter student or fee..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="petra-table-responsive">
+              <table className="petra-data-table">
+                <thead>
+                  <tr>
+                    <th>Ref ID</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Fee Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTransactions.map((tx) => (
+                    <tr key={tx.id}>
+                      <td className="font-mono text-muted">{tx.id}</td>
+                      <td><strong>{tx.student}</strong></td>
+                      <td><span className="class-tag">{tx.class}</span></td>
+                      <td className="text-muted">{tx.fee}</td>
+                      <td><strong>{tx.amount}</strong></td>
+                      <td>
+                        <span className={`status-pill ${tx.status.toLowerCase()}`}>
+                          {tx.status}
+                        </span>
+                      </td>
+                      <td className="text-muted">{tx.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column (1fr): Quick Actions, Announcements, Ask Nuvora */}
+        <div className="petra-grid-sidebar">
+          {/* Ask Nuvora AI Assistant Widget */}
+          <section className="petra-card petra-ai-widget">
+            <div className="ai-widget-header">
+              <div className="ai-badge">
+                <Sparkles size={14} />
+                <span>Nuvora Intelligence</span>
+              </div>
+              <h3>Ask School OS</h3>
+            </div>
+            <p className="ai-widget-desc">
+              Get instant analytical queries, student academic reports, fee reconciliation, and timetable lookups.
+            </p>
+            <div className="ai-prompt-suggestions">
+              <button type="button" onClick={() => {}}>“Show outstanding fees for SS3”</button>
+              <button type="button" onClick={() => {}}>“Compare attendance with last term”</button>
+            </div>
+            <NavLink to="/dashboard/ask-nuvora" className="btn-ai-launch">
+              Launch Nuvora AI <ChevronRight size={15} />
+            </NavLink>
+          </section>
+
+          {/* School Announcements */}
+          <section className="petra-card petra-notice-card">
+            <div className="petra-card-header compact">
+              <div>
+                <span className="petra-card-eyebrow">Campus Broadcast</span>
+                <h2>Announcements</h2>
+              </div>
+              <NavLink to="/dashboard/communication/announcements" className="link-view-all">
+                View All
+              </NavLink>
+            </div>
+
+            <div className="petra-notices-list">
+              {quickAnnouncements.map((notice) => (
+                <article className="petra-notice-item" key={notice.title}>
+                  <div className="notice-head">
+                    <span className="notice-badge">{notice.badge}</span>
+                    <span className="notice-time"><Clock size={12} /> {notice.time}</span>
+                  </div>
+                  <h4>{notice.title}</h4>
+                  <span className="notice-author">By {notice.author}</span>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          {/* Quick Hub Links */}
+          <section className="petra-card petra-quicklinks-card">
+            <h3>Operational Modules</h3>
+            <div className="quicklinks-grid">
+              <NavLink to="/dashboard/academics/attendance" className="quicklink-item">
+                <CalendarCheck size={17} />
+                <span>Attendance Log</span>
+              </NavLink>
+              <NavLink to="/dashboard/examination/cbt" className="quicklink-item">
+                <BookOpen size={17} />
+                <span>CBT Engine</span>
+              </NavLink>
+              <NavLink to="/dashboard/students/gate" className="quicklink-item">
+                <ShieldCheck size={17} />
+                <span>Gate Pass</span>
+              </NavLink>
+              <NavLink to="/dashboard/finance/invoices" className="quicklink-item">
+                <Wallet size={17} />
+                <span>Invoicing</span>
+              </NavLink>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
 }
-function ProfitChart() { return <div className="profit-chart"><ResponsiveContainer width="100%" height={210}><AreaChart data={profitData} margin={{ top: 16, right: 8, left: -16, bottom: 0 }}><defs><linearGradient id="profitFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2563EB" stopOpacity={0.22} /><stop offset="100%" stopColor="#2563EB" stopOpacity={0.01} /></linearGradient></defs><CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="4 4" /><XAxis dataKey="date" tick={{ fontSize: 10, fill: "#94A3B8" }} tickLine={false} axisLine={false} /><YAxis ticks={[5000,10000,15000]} tickFormatter={(value) => (value / 1000) + "K"} tick={{ fontSize: 10, fill: "#94A3B8" }} tickLine={false} axisLine={false} width={34} /><Tooltip content={<ProfitTooltip />} cursor={{ stroke: "#CBD5E1", strokeDasharray: "4 4" }} /><Area type="monotone" dataKey="lastMonth" stroke="#94A3B8" strokeDasharray="5 5" fill="none" strokeWidth={2} dot={false} /><Area type="monotone" dataKey="thisMonth" stroke="#2563EB" fill="url(#profitFill)" strokeWidth={2.5} dot={false} /></AreaChart></ResponsiveContainer></div>; }
-function CustomersCard() { return <div className="customers-inner"><div className="inner-card-head"><div><span className="eyebrow">Customer mix</span><h3>Customers</h3></div><MoreButton label="Customer options" /></div><div className="customer-grid">{customers.map((item) => <div className={"customer-stat " + item.color} key={item.label}><span className="customer-icon"><Users size={15} /></span><strong>{item.value}</strong><span>{item.label}</span><i /></div>)}</div></div>; }
-function ProductIcon({ type }) { if (type === "headphones") return <Headphones size={17} />; if (type === "phone") return <Smartphone size={17} />; if (type === "controller") return <span className="gamepad-icon">⌁</span>; return <Watch size={17} />; }
-function ProductsTable() { return <Card className="products-card"><div className="section-head"><div><span className="eyebrow">Commerce</span><h2>Best Selling Products</h2></div><MoreButton label="Product options" /></div><div className="products-table-wrap"><table className="products-table"><thead><tr><th>ID</th><th>NAME</th><th>SOLD</th><th>REVENUE</th><th>RATING</th></tr></thead><tbody>{products.map((product, index) => <tr key={product.id + "-" + index}><td className="product-id">{product.id}</td><td><div className="product-name"><span className="product-icon"><ProductIcon type={product.icon} /></span><span>{product.name}</span></div></td><td>{product.sold}</td><td><span className={"revenue " + (product.positive ? "up" : "down")}>{product.positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}{product.revenue}</span></td><td><span className="rating"><Star size={13} fill="currentColor" />{product.rating}</span></td></tr>)}</tbody></table></div></Card>; }
-function DayActiveChart() { const max = Math.max(...dayActivity.map((item) => item.value)); return <Card className="day-card"><div className="section-head compact"><div><span className="eyebrow">Engagement</span><h2>Most Day Active</h2></div><MoreButton label="Activity options" /></div><div className="day-chart">{dayActivity.map((item) => <div className="day-column" key={item.day} title={item.day + ": " + item.value.toLocaleString()}>{item.day === "Tue" && <span className="day-value">{item.value.toLocaleString()}</span>}<div className={"day-bar " + (item.day === "Tue" ? "active" : "")} style={{ height: Math.max(25, (item.value / max) * 130) + "px" }} /><span>{item.day}</span></div>)}</div></Card>; }
-function GaugeChart() { const ticks = Array.from({ length: 30 }, (_, index) => index); return <Card className="gauge-card"><div className="section-head compact"><div><span className="eyebrow">Retention</span><h2>Repeat Customer Rate</h2></div><MoreButton label="Retention options" /></div><div className="gauge-wrap"><svg viewBox="0 0 240 135" role="img" aria-label="Repeat customer rate 68 percent">{ticks.map((tick) => { const angle = -180 + (tick / (ticks.length - 1)) * 180; const radians = angle * Math.PI / 180; const cx = 120 + Math.cos(radians) * 86; const cy = 111 + Math.sin(radians) * 86; const innerX = 120 + Math.cos(radians) * 74; const innerY = 111 + Math.sin(radians) * 74; return <line key={tick} x1={innerX} y1={innerY} x2={cx} y2={cy} stroke={tick / (ticks.length - 1) <= 0.68 ? "#16A34A" : "#E2E8F0"} strokeWidth="7" strokeLinecap="round" />; })}</svg><div className="gauge-center"><strong>68%</strong><span>On track for 80% target</span><button type="button">Show details</button></div></div></Card>; }
-function AiAssistant() { const [message, setMessage] = useState(""); const [messages, setMessages] = useState([]); const submit = () => { const value = message.trim(); if (!value) return; setMessages((current) => [...current, { role: "user", text: value }, { role: "assistant", text: "I’m ready to help you explore your store performance." }]); setMessage(""); }; return <Card className="ai-card"><div className="section-head compact"><div><span className="eyebrow">Shopeers AI</span><h2>AI Assistant</h2></div><button type="button" className="expand-button" aria-label="Expand assistant"><Menu size={17} /></button></div><div className="ai-conversation" aria-live="polite">{!messages.length ? <div className="ai-empty"><span>Ask about your dashboard, sales, or customers.</span></div> : messages.slice(-4).map((item, index) => <div key={index} className={"ai-message " + item.role}>{item.text}</div>)}</div><div className="ai-sphere" aria-hidden="true"><span className="sphere-halo" /><span className="sphere-core" /><span className="sphere-highlight" /></div><div className="ai-input-row"><button type="button" aria-label="Attach file"><Paperclip size={16} /></button><input value={message} onChange={(event) => setMessage(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") submit(); }} placeholder="Ask me anything..." aria-label="Ask me anything" /><button type="button" aria-label="Voice input"><Mic size={16} /></button><button type="button" className="send-button" onClick={submit} aria-label="Send"><Send size={15} /></button></div></Card>; }
-function WidgetPreview({ type }) { if (type === "donut") return <div className="mini-donut"><i /><span /><b /></div>; if (type === "bars") return <div className="mini-bars">{[45,72,54,88,62].map((height, index) => <i style={{ height: height + "%" }} key={index} />)}</div>; if (type === "line") return <div className="mini-line"><svg viewBox="0 0 120 70"><polyline points="0,58 20,44 38,48 58,25 76,35 96,16 120,22" fill="none" stroke="#2563EB" strokeWidth="4" /></svg></div>; return <div className="mini-kpi"><strong>1,682</strong><span>vs. 253 yesterday</span><i /></div>; }
-function DraggableWidget({ item, onSelect }) { const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: item.id }); const style = transform ? { transform: "translate3d(" + transform.x + "px, " + transform.y + "px, 0)" } : undefined; return <article ref={setNodeRef} style={style} className={"drawer-widget " + (isDragging ? "dragging" : "")} {...listeners} {...attributes}><div className="drawer-preview"><WidgetPreview type={item.preview} /></div><div className="drawer-widget-copy"><strong>{item.title}</strong><p>{item.description}</p><span>{item.tag}</span><button type="button" onClick={(event) => { event.stopPropagation(); onSelect(item); }}>Select</button></div><GripVertical className="drag-grip" size={15} /></article>; }
-function AddWidgetDrawer({ open, onClose, onAdd }) { const [activeId, setActiveId] = useState(null); const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } })); const { setNodeRef: setDropRef, isOver } = useDroppable({ id: "widget-drop-zone" }); if (!open) return null; return <DndContext sensors={sensors} onDragStart={({ active }) => setActiveId(active.id)} onDragCancel={() => setActiveId(null)} onDragEnd={({ active }) => { onAdd(widgetItems.find((item) => item.id === active.id)); setActiveId(null); }}><div className="drawer-backdrop" onMouseDown={onClose}><aside className="widget-drawer" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label="Add widget"><header><div><span className="eyebrow">Customize</span><h2>Add Widget</h2></div><button type="button" onClick={onClose} aria-label="Close drawer"><X size={18} /></button></header><div className={"drawer-list " + (isOver ? "drop-active" : "")} ref={setDropRef}>{widgetItems.map((item) => <DraggableWidget item={item} onSelect={onAdd} key={item.id} />)}<div className="drop-zone">{isOver ? "Drop to add widget" : "Drag a widget here to add it"}</div></div><DragOverlay>{activeId ? <div className="drag-overlay"><GripVertical size={15} />{widgetItems.find((item) => item.id === activeId)?.title}</div> : null}</DragOverlay></aside></div></DndContext>; }
-function DashboardHeader({ onAddWidget }) { const [period, setPeriod] = useState("Last 30 days"); const [periodOpen, setPeriodOpen] = useState(false); const [dateOpen, setDateOpen] = useState(false); const [exportOpen, setExportOpen] = useState(false); const [dateRange, setDateRange] = useState("Jan 1, 2025 - Feb, 1 2025"); const [fromDate, setFromDate] = useState("2025-01-01"); const [toDate, setToDate] = useState("2025-02-01"); const wrapRef = useRef(null);
-  useEffect(() => { const close = (event) => { if (wrapRef.current && !wrapRef.current.contains(event.target)) { setPeriodOpen(false); setDateOpen(false); setExportOpen(false); } }; document.addEventListener("mousedown", close); return () => document.removeEventListener("mousedown", close); }, []);
-  const exportCsv = () => { const rows = [["Metric","Value"], ...stats.map((item) => [item.title,item.value]), ["Total Profit","$446.7K"], ["Repeat Customer Rate","68%"]]; const blob = new Blob([rows.map((row) => row.join(",")).join("\\n")], { type: "text/csv;charset=utf-8" }); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = "shopeers-dashboard.csv"; anchor.click(); URL.revokeObjectURL(url); setExportOpen(false); };
-  return <div className="dashboard-page-head" ref={wrapRef}><div><h1>Dashboard</h1></div><div className="dashboard-head-actions"><div className="popover-wrap"><button type="button" className="control-button date-button" onClick={() => setDateOpen((v) => !v)}><Calendar size={15} />{dateRange}<ChevronDown size={14} /></button>{dateOpen && <div className="date-popover"><strong>Date range</strong><label>From<input type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} /></label><label>To<input type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} /></label><button type="button" onClick={() => { setDateRange(new Date(fromDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) + " - " + new Date(toDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})); setDateOpen(false); }}>Apply range</button></div>}</div><div className="popover-wrap"><button type="button" className="control-button" onClick={() => setPeriodOpen((v) => !v)}>{period}<ChevronDown size={14} /></button>{periodOpen && <div className="select-popover">{periods.map((item) => <button type="button" key={item} onClick={() => { setPeriod(item); setPeriodOpen(false); }}>{item}</button>)}</div>}</div><button type="button" className="control-button outlined" onClick={onAddWidget}><Plus size={15} />Add widget</button><div className="popover-wrap"><button type="button" className="control-button primary" onClick={() => setExportOpen((v) => !v)}><Download size={15} />Export<ChevronDown size={14} /></button>{exportOpen && <div className="select-popover export-popover"><button type="button" onClick={exportCsv}><FileText size={14} />Export CSV</button><button type="button" onClick={() => { setExportOpen(false); window.print(); }}><Download size={14} />Print / PDF</button></div>}</div></div></div>; }
-export default function DashboardHomePage() { const [drawerOpen, setDrawerOpen] = useState(false); const [addedWidgets, setAddedWidgets] = useState([]); const [dark, setDark] = useState(() => { try { return localStorage.getItem("shopeers-theme") === "dark"; } catch { return false; } }); useEffect(() => { document.documentElement.classList.toggle("shopeers-dark", dark); try { localStorage.setItem("shopeers-theme", dark ? "dark" : "light"); } catch {} window.dispatchEvent(new CustomEvent("shopeers-theme-change", { detail: dark })); }, [dark]); useEffect(() => { const sync = (event) => setDark(Boolean(event.detail)); window.addEventListener("shopeers-theme-change", sync); return () => window.removeEventListener("shopeers-theme-change", sync); }, []); const addWidget = (item) => { if (!item) return; setAddedWidgets((current) => current.some((entry) => entry.id === item.id) ? current : [...current,item]); }; return <div className={"shopeers-dashboard " + (dark ? "is-dark" : "")} data-brand={BRAND_NAME}><DashboardHeader onAddWidget={() => setDrawerOpen(true)} /><div className="stats-grid">{stats.map((item) => <StatCard item={item} key={item.title} />)}</div><div className="dashboard-main-grid"><div className="dashboard-left-column"><Card className="profit-card"><div className="profit-head"><div><span className="eyebrow">Performance</span><h2>Total Profit</h2><div className="profit-value-row"><strong>$446.7K</strong><Pill>+24,4%</Pill><span>vs. last period</span></div></div><div className="chart-legend"><span><i className="blue-line" />This month</span><span><i className="gray-line" />Last month</span></div></div><ProfitChart /><CustomersCard /></Card><ProductsTable />{addedWidgets.map((item) => <Card className="added-dashboard-widget" key={item.id}><WidgetPreview type={item.preview} /><div><strong>{item.title}</strong><span>{item.description}</span></div></Card>)}</div><div className="dashboard-right-column"><DayActiveChart /><GaugeChart /><AiAssistant /></div></div><AddWidgetDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onAdd={addWidget} /></div>; }
