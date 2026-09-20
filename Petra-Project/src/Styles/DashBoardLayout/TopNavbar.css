@@ -30,16 +30,10 @@
   letter-spacing:-.01em;text-overflow:ellipsis;white-space:nowrap;
 }
 .menu-btn,.icon-btn,.ask-nuvora-btn{
-  position:relative;display:inline-flex;align-items:center;justify-content:center;
-  width:40px;min-width:40px;height:40px;min-height:40px;padding:0;
-  border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--muted);
-  cursor:pointer;line-height:0;
-  transition:transform .16s ease,background-color .16s ease,border-color .16s ease,box-shadow .16s ease,color .16s ease;
+  width:auto;min-width:40px;padding:0 10px;gap:8px;
+  background:#fff;border-color:var(--border);color:#cbd5e1;
 }
-.menu-btn:hover,.icon-btn:hover,.ask-nuvora-btn:hover{
-  background:var(--blue-soft);border-color:#bfdbfe;color:var(--blue);
-  box-shadow:0 5px 14px rgb(15 23 42 / 7%);transform:translateY(-1px);
-}
+.menu-btn:hover,.icon-btn:hover,.ask-nuvora-btn:hover{background:#f8fafc;border-color:#cbd5e1;color:#cbd5e1}
 .menu-btn:active,.icon-btn:active,.ask-nuvora-btn:active{transform:scale(.96)}
 .menu-btn:focus-visible,.icon-btn:focus-visible,.ask-nuvora-btn:focus-visible,.user-info:focus-visible{
   outline:3px solid rgb(24 119 242 / 18%);outline-offset:2px;
@@ -47,7 +41,7 @@
 .top-navbar svg.lucide,.top-navbar .menu-btn svg,.top-navbar .icon-btn svg,
 .top-navbar .ask-nuvora-btn svg,.top-navbar .user-info svg{
   display:block!important;flex:0 0 auto;width:18px!important;height:18px!important;
-  color:currentColor!important;stroke:currentColor!important;fill:none!important;
+  color:#cbd5e1!important;stroke:#cbd5e1!important;fill:none!important;
   opacity:1!important;visibility:visible!important;stroke-width:2!important;
 }
 .ask-nuvora-btn{
@@ -57,12 +51,12 @@
 .ask-nuvora-btn:hover{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff}
 .ask-nuvora-icon-wrap{
   display:inline-flex!important;align-items:center;justify-content:center;
-  width:25px;height:25px;border-radius:8px;background:#fff;color:var(--blue);
+  width:25px;height:25px;border-radius:8px;background:#f8fafc;color:#cbd5e1;
 }
-.ask-nuvora-icon-wrap svg{width:15px!important;height:15px!important;color:var(--blue)!important;stroke:var(--blue)!important}
+.ask-nuvora-icon-wrap svg{width:15px!important;height:15px!important;color:#cbd5e1!important;stroke:#cbd5e1!important}
 .notification-menu,.user-menu{position:relative}
-.notification-menu .icon-btn{background:#fff;color:var(--blue)}
-.notification-menu .icon-btn:hover{background:var(--blue-soft)}
+.notification-menu .icon-btn{background:#fff;color:#cbd5e1}
+.notification-menu .icon-btn:hover{background:#f8fafc;color:#cbd5e1}
 .notification-menu .icon-btn > svg{transition:transform .18s ease}
 .notification-menu .icon-btn:hover > svg{animation:nuvoraBell .7s ease-in-out}
 @keyframes nuvoraBell{
