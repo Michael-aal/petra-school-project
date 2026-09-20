@@ -62,6 +62,7 @@ export default function TopNavbar({ onToggle }) {
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem("petra_theme") || "light"; } catch { return "light"; }
   });
+  const searchRef = useRef(null);
   const menuRef = useRef(null);
   const menuTriggerRef = useRef(null);
   const notificationRef = useRef(null);
@@ -83,11 +84,6 @@ export default function TopNavbar({ onToggle }) {
     } catch {
       // Theme persistence is best-effort.
     }
-  }, [theme]);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem("petra_theme", theme); } catch {}
   }, [theme]);
 
   useEffect(() => {
@@ -302,7 +298,8 @@ export default function TopNavbar({ onToggle }) {
         <div className="tn-greeting">
           <span>Welcome, <strong>{firstName}</strong></span>
           <small><CalendarDays size={12} aria-hidden="true" />{formatToday()}</small>
-          <div className="tn-search-wrap">
+          </div>
+        <div className="tn-search-wrap">
           <Search size={16} aria-hidden="true" />
           <input ref={searchRef} type="search" className="tn-search-input" placeholder="Search anything..." aria-label="Search anything" />
           <kbd><Command size={11} aria-hidden="true" />K</kbd>
