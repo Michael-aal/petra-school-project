@@ -440,3 +440,29 @@
     animation: none !important;
   }
 }
+
+/* Final Nuvora sidebar polish */
+.sidebar-container{
+  background:#fff!important;
+  border-right:1px solid #e2e8f0!important;
+}
+.sidebar-link,.sidebar-group,.sidebar-child,.sidebar-assistant{
+  transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+.sidebar-link:hover,.sidebar-group:hover,.sidebar-child:hover,.sidebar-assistant:hover{
+  background:#f8fbff!important;color:#0f172a!important;
+}
+.sidebar-link.active,.sidebar-group.group-active,.sidebar-child.active,.sidebar-assistant.active{
+  background:#eaf3ff!important;color:#1877f2!important;
+}
+.sidebar-link.active::before,.sidebar-group.group-active::before,.sidebar-child.active::before,.sidebar-assistant.active::before{
+  background:#1877f2!important;
+}
+.sidebar-icon,.child-icon,.arrow-icon,.sidebar-assistant-icon,.sidebar-container svg.lucide{
+  color:currentColor!important;stroke:currentColor!important;opacity:1!important;visibility:visible!important;
+}
+.sidebar-contaner-logo{background:#1877f2!important;box-shadow:0 5px 12px rgb(24 119 242 / 16%)!important}
+.sidebar-footer{border-top-color:#e2e8f0!important}
+@media(prefers-reduced-motion:reduce){
+ .sidebar-container *{transition:none!important;animation:none!important}
+}
