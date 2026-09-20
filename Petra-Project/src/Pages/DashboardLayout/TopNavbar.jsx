@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Bell, ChevronDown, LogOut, Moon, Search, Settings, Sun, User as UserIcon } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Moon, Search, Settings, Sun, User as UserIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
@@ -81,7 +81,7 @@ export default function TopNavbar({ onToggle }) {
 
   return <header className="top-navbar">
     <div className="top-left">
-      <button type="button" className="menu-btn" onClick={() => onToggle?.()} aria-label="Toggle sidebar"><span className="menu-bars">☰</span></button>
+      <button type="button" className="menu-btn" onClick={() => onToggle?.()} aria-label="Toggle sidebar"><Menu size={18} strokeWidth={2} /></button>
       <div className="top-search"><Search size={17} /><input ref={searchRef} placeholder="Search anything..." aria-label="Search anything" /><kbd>⌘K</kbd></div>
     </div>
     <div className="top-right">
