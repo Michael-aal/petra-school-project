@@ -1,9 +1,12 @@
 :root {
   --tn-bg: #ffffff;
-  --tn-hover: #f1f5f9;
-  --tn-border: #eef0f3;
-  --tn-primary: #2563eb;
-  --tn-primary-tint: #e8f0fe;
+  --tn-hover: #e2e8f0;
+  --tn-btn-bg: #f1f5f9;
+  --tn-icon: #334155;
+  --tn-focus: #0f172a;
+  --tn-border: #e5e7eb;
+  --tn-primary: #0f172a;
+  --tn-primary-tint: #ffffff;
   --tn-text: #0f172a;
   --tn-text-2: #64748b;
   --tn-text-muted: #94a3b8;
@@ -14,10 +17,13 @@
 
 [data-theme="dark"] {
   --tn-bg: #0f172a;
-  --tn-hover: #1e293b;
+  --tn-hover: #334155;
+  --tn-btn-bg: #1e293b;
+  --tn-icon: #e2e8f0;
+  --tn-focus: #f8fafc;
   --tn-border: #263449;
-  --tn-primary: #60a5fa;
-  --tn-primary-tint: #172554;
+  --tn-primary: #f8fafc;
+  --tn-primary-tint: #1e293b;
   --tn-text: #f8fafc;
   --tn-text-2: #cbd5e1;
   --tn-text-muted: #94a3b8;
@@ -108,9 +114,59 @@
 
 
 .tn-theme-btn,
+ .tn-theme-btn,
 .tn-bell-btn {
   border-radius: 50%;
 }
+
+.tn-search-wrap {
+  display: flex;
+  align-items: center;
+  width: min(360px, 30vw);
+  height: 40px;
+  margin-left: 8px;
+  padding: 0 10px 0 13px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--tn-btn-bg);
+  color: var(--tn-icon);
+}
+
+.tn-search-input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0 10px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--tn-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.tn-search-input::placeholder { color: var(--tn-text-muted); }
+
+.tn-search-wrap:focus-within {
+  background: var(--tn-bg);
+  border-color: var(--tn-border);
+  box-shadow: 0 0 0 2px var(--tn-focus);
+}
+
+.tn-search-wrap kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--tn-border);
+  border-radius: 7px;
+  background: var(--tn-bg);
+  color: var(--tn-text-muted);
+  font-size: 10px;
+}
+
+.tn-search-mobile { display: none; }
 
 .tn-badge {
   position: absolute;
@@ -508,6 +564,9 @@
 }
 
 @media (max-width: 900px) {
+  .tn-search-wrap { display: none; }
+  .tn-search-mobile { display: inline-flex; }
+
   .tn-greeting { min-width: 0; }
 }
 
