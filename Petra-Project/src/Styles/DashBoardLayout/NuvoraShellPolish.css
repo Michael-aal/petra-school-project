@@ -559,3 +559,8 @@
     height:34px!important;
   }
 }
+
+/* SHOPEERS REFERENCE OVERRIDE: the new admin topbar owns its surface. */
+.dashboard-shell .top-navbar{background:#fff!important;color:#0F172A!important;border-bottom:1px solid #EEF0F3!important;box-shadow:0 1px 8px rgba(15,23,42,.035)!important;backdrop-filter:none!important}
+.dashboard-shell .top-navbar .menu-btn,.dashboard-shell .top-navbar .icon-btn,.dashboard-shell .top-navbar .user-info{background:#fff!important;color:#0F172A!important;border:1px solid #EEF0F3!important}
+.dashboard-shell .top-navbar .menu-btn svg,.dashboard-shell .top-navbar .icon-btn svg,.dashboard-shell .top-navbar .user-info svg{color:currentColor!important;stroke:currentColor!important;fill:none!important}
