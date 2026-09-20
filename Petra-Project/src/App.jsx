@@ -160,9 +160,8 @@ function DashboardLay() {
 
   if (!authReady) return null;
   if (!userInfo?.email) return <Navigate to="/signin" replace />;
-// <<<<<<< ui/modern-nuvora-topbar
   return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onMenuClick={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
-=======
+
 
   return (
     <div className="dashboard-shell">
@@ -491,3 +490,6 @@ function App() {
 }
 
 export default App;
+
+
+
