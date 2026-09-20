@@ -428,3 +428,89 @@
 .dashboard-shell textarea:focus-visible {
   outline-color: #1877F2 !important;
 }
+
+
+/* FINAL UI CONTRAST + COMPACTNESS FIX
+   Fixes the visible mobile/tablet issues:
+   - menu/notification controls must stay white, not blue
+   - notification bell and menu glyphs must never disappear
+   - Nuvora action keeps a deliberate blue treatment
+   - profile control is compact enough for ~680px viewports
+*/
+.dashboard-shell .top-navbar .menu-btn,
+.dashboard-shell .top-navbar .notification-menu .icon-btn{
+  background:#fff!important;
+  color:#1877f2!important;
+  border-color:#e2e8f0!important;
+  box-shadow:none!important;
+}
+.dashboard-shell .top-navbar .menu-btn svg,
+.dashboard-shell .top-navbar .notification-menu .icon-btn svg{
+  display:block!important;
+  color:#1877f2!important;
+  stroke:#1877f2!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn{
+  background:#1877f2!important;
+  color:#fff!important;
+  border-color:#1877f2!important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#fff!important;
+  color:#1877f2!important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn .ask-nuvora-icon-wrap svg{
+  color:#1877f2!important;
+  stroke:#1877f2!important;
+}
+.dashboard-shell .top-navbar .user-info{
+  min-height:40px!important;
+  padding:3px 8px 3px 4px!important;
+  border-radius:10px!important;
+}
+.dashboard-shell .top-navbar .user-name{
+  font-size:.78rem!important;
+  white-space:nowrap;
+}
+.dashboard-shell .top-navbar .greets{
+  font-size:10px!important;
+}
+.dashboard-shell .top-navbar .user-avatar,
+.dashboard-shell .top-navbar .avatar{
+  width:34px!important;
+  height:34px!important;
+}
+@media(max-width:760px){
+  .dashboard-shell .top-navbar{
+    height:60px!important;
+    min-height:60px!important;
+    padding:0 12px!important;
+  }
+  .dashboard-shell .top-left{gap:9px!important}
+  .dashboard-shell .top-right{gap:6px!important}
+  .dashboard-shell .menu-btn,
+  .dashboard-shell .icon-btn,
+  .dashboard-shell .ask-nuvora-btn{
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    min-height:38px!important;
+    border-radius:9px!important;
+  }
+  .dashboard-shell .top-welcome{
+    max-width:31vw!important;
+    font-size:.82rem!important;
+  }
+  .dashboard-shell .ask-nuvora-btn .ask-nuvora-icon-wrap{
+    width:23px!important;
+    height:23px!important;
+  }
+  .dashboard-shell .user-info{
+    max-width:205px!important;
+  }
+}
