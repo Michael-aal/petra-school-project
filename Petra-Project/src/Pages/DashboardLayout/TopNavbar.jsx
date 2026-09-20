@@ -282,7 +282,8 @@ export default function TopNavbar({
     }
 
     navigate(
-      `/dashboard/communication/notifications?notification=${encodeURIComponent(notification.id)}`
+      notification.targetPath ||
+        `/dashboard/communication/notifications?notification=${encodeURIComponent(notification.id)}`
     );
   };
 
