@@ -206,7 +206,7 @@
 .contact-field select:focus {
   outline: none;
   border-color: var(--contact-brand);
-  box-shadow: 0 0 0 4px rgba(214, 106, 75, 0.12);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .contact-field textarea {

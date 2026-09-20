@@ -1,9 +1,9 @@
 /* =========================================
-   1. PAGE LAYOUT & PREVIEW BAR
+   PETRA DESIGN SYSTEM — APPLICATION STATUS PAGE
    ========================================= */
 .app-status-page {
-  background-color: oklch(0.12 0.02 260);
-  color: oklch(0.93 0.01 240);
+  background-color: var(--app-bg, #f7f9fc);
+  color: var(--app-text, #10233f);
   padding: 32px 16px;
   min-height: 100vh;
 }
@@ -15,17 +15,17 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background-color: oklch(0.25 0.04 260);
-  border: 1px dashed oklch(0.62 0.2 264);
-  border-radius: 8px;
+  background-color: var(--petra-blue-soft, #eff6ff);
+  border: 1px dashed var(--petra-blue, #2563eb);
+  border-radius: 10px;
   font-size: 0.85rem;
-  color: oklch(0.85 0.05 264);
+  color: var(--petra-blue, #2563eb);
 }
 
 .preview-bar select {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background-color: var(--app-surface, #ffffff);
+  border: 1px solid var(--app-border, #e2e8f0);
+  color: var(--app-text, #10233f);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -38,7 +38,7 @@
 }
 
 /* =========================================
-   2. STATUS HERO CARD
+   STATUS HERO CARD
    ========================================= */
 .status-hero {
   display: flex;
@@ -47,8 +47,9 @@
   padding: 32px;
   border-radius: 16px;
   margin-bottom: 32px;
-  border: 1px solid oklch(1 0 0 / 10%);
-  background-color: oklch(0.18 0.03 260);
+  border: 1px solid var(--app-border, #e2e8f0);
+  background-color: var(--app-surface, #ffffff);
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
   transition: all 0.3s ease;
 }
 
@@ -79,15 +80,15 @@
 
 .status-hero-content h2 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0 0 8px 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text, #10233f);
 }
 
 .status-hero-content p {
   font-size: 0.95rem;
   margin: 0;
-  color: oklch(0.75 0.02 250);
+  color: var(--app-text-muted, #64748b);
   line-height: 1.5;
 }
 
@@ -98,7 +99,7 @@
   padding: 12px 24px;
   border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
@@ -106,30 +107,30 @@
 }
 
 /* Dynamic Colors for Hero */
-.status-pending .status-hero-icon { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
-.status-pending .status-badge { background-color: oklch(0.72 0.18 60 / 15%); color: oklch(0.72 0.18 60); }
-.status-pending .status-action-btn { background-color: oklch(0.72 0.18 60); color: oklch(0.12 0.02 260); }
+.status-pending .status-hero-icon { background-color: #eff6ff; color: var(--petra-warning, #1877F2); }
+.status-pending .status-badge { background-color: #eff6ff; color: var(--petra-warning, #1877F2); }
+.status-pending .status-action-btn { background-color: var(--petra-warning, #1877F2); color: #ffffff; }
 
-.status-passed .status-hero-icon { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.status-passed .status-badge { background-color: oklch(0.7 0.18 140 / 15%); color: oklch(0.7 0.18 140); }
-.status-passed .status-action-btn { background-color: oklch(0.7 0.18 140); color: oklch(0.12 0.02 260); }
+.status-passed .status-hero-icon { background-color: #ecfdf3; color: var(--petra-success, #16a34a); }
+.status-passed .status-badge { background-color: #ecfdf3; color: var(--petra-success, #16a34a); }
+.status-passed .status-action-btn { background-color: var(--petra-success, #16a34a); color: #ffffff; }
 
-.status-failed .status-hero-icon { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
-.status-failed .status-badge { background-color: oklch(0.65 0.22 27 / 15%); color: oklch(0.65 0.22 27); }
-.status-failed .status-action-btn { background-color: oklch(0.65 0.22 27); color: oklch(0.98 0 0); }
+.status-failed .status-hero-icon { background-color: #fef2f2; color: var(--petra-danger, #dc2626); }
+.status-failed .status-badge { background-color: #fef2f2; color: var(--petra-danger, #dc2626); }
+.status-failed .status-action-btn { background-color: var(--petra-danger, #dc2626); color: #ffffff; }
 
-.status-completed .status-hero-icon { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
-.status-completed .status-badge { background-color: oklch(0.62 0.2 264 / 15%); color: oklch(0.62 0.2 264); }
-.status-completed .status-action-btn { background-color: oklch(0.62 0.2 264); color: oklch(0.98 0 0); }
+.status-completed .status-hero-icon { background-color: var(--petra-blue-soft, #eff6ff); color: var(--petra-blue, #2563eb); }
+.status-completed .status-badge { background-color: var(--petra-blue-soft, #eff6ff); color: var(--petra-blue, #2563eb); }
+.status-completed .status-action-btn { background-color: var(--petra-blue, #2563eb); color: #ffffff; box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16); }
 
 .status-action-btn:hover {
   transform: translateY(-2px);
-  filter: brightness(1.1);
-  box-shadow: 0 4px 12px oklch(0 0 0 / 20%);
+  filter: brightness(1.05);
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
 }
 
 /* =========================================
-   3. GRID & CARDS
+   GRID & CARDS
    ========================================= */
 .status-grid {
   display: grid;
@@ -138,23 +139,24 @@
 }
 
 .status-card {
-  background-color: oklch(0.18 0.03 260);
-  border: 1px solid oklch(1 0 0 / 10%);
+  background-color: var(--app-surface, #ffffff);
+  border: 1px solid var(--app-border, #e2e8f0);
   border-radius: 16px;
   padding: 24px;
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
 }
 
 .card-title {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 24px 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text, #10233f);
   padding-bottom: 16px;
-  border-bottom: 1px solid oklch(1 0 0 / 10%);
+  border-bottom: 1px solid var(--app-border, #e2e8f0);
 }
 
 /* =========================================
-   4. TIMELINE
+   TIMELINE
    ========================================= */
 .timeline {
   display: flex;
@@ -181,9 +183,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: oklch(0.25 0.04 260);
-  color: oklch(0.6 0.02 250);
-  border: 2px solid oklch(0.35 0.04 260);
+  background-color: #f1f5f9;
+  color: var(--app-text-muted, #64748b);
+  border: 2px solid var(--app-border, #e2e8f0);
   font-size: 0.8rem;
   font-weight: 700;
   flex-shrink: 0;
@@ -191,33 +193,33 @@
 }
 
 .timeline-step.completed .timeline-node {
-  background-color: oklch(0.7 0.18 140);
-  color: oklch(0.12 0.02 260);
-  border-color: oklch(0.7 0.18 140);
+  background-color: var(--petra-success, #16a34a);
+  color: #ffffff;
+  border-color: var(--petra-success, #16a34a);
 }
 
 .timeline-step.current .timeline-node {
-  background-color: oklch(0.62 0.2 264);
-  color: oklch(0.98 0 0);
-  border-color: oklch(0.62 0.2 264);
-  box-shadow: 0 0 12px oklch(0.62 0.2 264 / 40%);
+  background-color: var(--petra-blue, #2563eb);
+  color: #ffffff;
+  border-color: var(--petra-blue, #2563eb);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.35);
 }
 
 .timeline-content h4 {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 4px 0 4px 0;
-  color: oklch(0.93 0.01 240);
+  color: var(--app-text, #10233f);
 }
 
 .timeline-step:not(.completed):not(.current) .timeline-content h4 {
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted, #64748b);
 }
 
 .timeline-content p {
   font-size: 0.8rem;
   margin: 0;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted, #64748b);
 }
 
 .timeline-line {
@@ -226,16 +228,16 @@
   top: 32px;
   bottom: 0;
   width: 2px;
-  background-color: oklch(0.35 0.04 260);
+  background-color: var(--app-border, #e2e8f0);
   z-index: 1;
 }
 
 .timeline-step.completed .timeline-line {
-  background-color: oklch(0.7 0.18 140);
+  background-color: var(--petra-success, #16a34a);
 }
 
 /* =========================================
-   5. SUMMARY & RECEIPT
+   SUMMARY & RECEIPT
    ========================================= */
 .summary-list {
   display: flex;
@@ -249,7 +251,7 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid oklch(1 0 0 / 5%);
+  border-bottom: 1px solid var(--app-border, #e2e8f0);
 }
 
 .summary-item:last-child {
@@ -258,21 +260,23 @@
 
 .summary-label {
   font-size: 0.85rem;
-  color: oklch(0.6 0.02 250);
+  color: var(--app-text-muted, #64748b);
 }
 
 .summary-value {
   font-size: 0.9rem;
-  font-weight: 600;
-  color: oklch(0.93 0.01 240);
+  font-weight: 700;
+  color: var(--app-text, #10233f);
 }
 
 .summary-value.mono {
   font-family: monospace;
-  background-color: oklch(0.25 0.04 260);
+  background-color: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.8rem;
+  border: 1px solid #dbeafe;
 }
 
 .download-receipt-btn {
@@ -282,23 +286,24 @@
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background-color: oklch(0.25 0.04 260);
-  border: 1px solid oklch(1 0 0 / 10%);
-  color: oklch(0.93 0.01 240);
+  background-color: var(--app-surface, #ffffff);
+  border: 1px solid var(--app-border, #e2e8f0);
+  color: var(--app-text, #10233f);
   border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .download-receipt-btn:hover {
-  background-color: oklch(0.3 0.04 260);
-  border-color: oklch(0.62 0.2 264);
+  background-color: var(--petra-blue-soft, #eff6ff);
+  border-color: var(--petra-blue, #2563eb);
+  color: var(--petra-blue, #2563eb);
 }
 
 /* =========================================
-   6. RESPONSIVE DESIGN
+   RESPONSIVE DESIGN
    ========================================= */
 @media (max-width: 900px) {
   .status-grid {

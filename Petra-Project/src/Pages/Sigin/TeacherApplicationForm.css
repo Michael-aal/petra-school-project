@@ -1,1 +1,365 @@
-.teacher-application-page{min-height:100vh;background:#f6f8fb;padding:32px 18px;color:#172033}.teacher-application-shell{width:min(1050px,100%);margin:0 auto}.teacher-application-header{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #e7ebf1;border-radius:20px;padding:24px 28px;box-shadow:0 12px 35px rgba(17,24,39,.06)}.teacher-application-brand{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:#e8752f;color:#fff;font-weight:800;letter-spacing:.08em}.teacher-application-eyebrow{margin:0 0 5px;color:#d86120;font-size:.72rem;font-weight:800;letter-spacing:.12em}.teacher-application-header h1{margin:0;font-size:clamp(1.55rem,3vw,2.15rem);letter-spacing:-.03em}.teacher-application-header p:not(.teacher-application-eyebrow){margin:6px 0 0;color:#687386}.teacher-stepper{display:flex;align-items:flex-start;margin:24px 0}.teacher-step{display:flex;align-items:center;gap:9px;position:relative;flex:1;color:#7b8494;font-size:.82rem;font-weight:700}.teacher-step:last-child{flex:0 0 auto}.teacher-step-circle{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid #dfe4eb;z-index:2}.teacher-step-circle.active{background:#e8752f;color:#fff;border-color:#e8752f;box-shadow:0 6px 18px rgba(232,117,47,.24)}.teacher-step-circle.completed{background:#fff1e8;color:#d86120;border-color:#ffd7bd}.teacher-step-line{height:2px;background:#e1e5eb;flex:1;margin:18px 10px 0}.teacher-step-line.completed{background:#e8752f}.teacher-application-form{margin-top:4px}.teacher-form-card,.teacher-success-card{background:#fff;border:1px solid #e7ebf1;border-radius:20px;padding:28px;box-shadow:0 12px 35px rgba(17,24,39,.06)}.teacher-card-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:24px}.teacher-card-heading>svg{color:#e8752f;margin-top:2px}.teacher-card-heading h2{margin:0;font-size:1.25rem}.teacher-card-heading p{margin:5px 0 0;color:#7a8494;font-size:.9rem}.teacher-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.teacher-field{display:flex;flex-direction:column;gap:7px}.teacher-field.wide{grid-column:1/-1}.teacher-field span{font-size:.84rem;font-weight:700;color:#3c4657}.teacher-field input,.teacher-field select{width:100%;box-sizing:border-box;border:1px solid #dce1e8;border-radius:11px;background:#fff;padding:12px 13px;font:inherit;color:#172033;outline:none;transition:border-color .2s,box-shadow .2s}.teacher-field input:focus,.teacher-field select:focus{border-color:#e8752f;box-shadow:0 0 0 3px rgba(232,117,47,.12)}.teacher-form-alert{margin-bottom:18px;padding:12px 14px;border:1px solid #f0b7a5;background:#fff5f1;color:#a23b20;border-radius:11px;font-size:.9rem}.teacher-form-actions{display:flex;justify-content:space-between;gap:12px;margin-top:18px}.teacher-primary-btn,.teacher-secondary-btn{border:0;border-radius:11px;padding:12px 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font:inherit;cursor:pointer}.teacher-primary-btn{background:#e8752f;color:#fff;box-shadow:0 8px 18px rgba(232,117,47,.2)}.teacher-primary-btn:hover{background:#d86120}.teacher-secondary-btn{background:#fff;color:#4b5565;border:1px solid #dce1e8}.teacher-primary-btn:disabled,.teacher-secondary-btn:disabled{opacity:.55;cursor:not-allowed}.teacher-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:22px}.teacher-review-item{padding:14px;border:1px solid #e8ebf0;border-radius:12px;background:#fafbfc}.teacher-review-item span{display:block;color:#7a8494;font-size:.75rem;margin-bottom:4px}.teacher-review-item strong{font-size:.92rem;overflow-wrap:anywhere}.teacher-declaration{display:flex;align-items:flex-start;gap:11px;padding:16px;border:1px solid #e8ebf0;border-radius:12px;background:#fafbfc;line-height:1.55;color:#4f5968;font-size:.88rem}.teacher-declaration input{margin-top:4px;accent-color:#e8752f}.teacher-success-card{text-align:center;padding:54px 28px}.teacher-success-icon{width:62px;height:62px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:#fff1e8;color:#d86120}.teacher-success-card h2{margin:0;font-size:1.65rem}.teacher-success-card>p:not(.teacher-application-eyebrow){max-width:580px;margin:10px auto 20px;color:#6d7787;line-height:1.6}.teacher-application-number{display:inline-flex;flex-direction:column;gap:4px;padding:13px 20px;border:1px dashed #e5a77f;background:#fff9f5;border-radius:12px;margin-bottom:22px}.teacher-application-number span{font-size:.72rem;color:#7b8494}.teacher-application-number strong{color:#c65318;letter-spacing:.06em}.teacher-success-card .teacher-primary-btn{margin:0 auto}@media(max-width:720px){.teacher-application-page{padding:18px 12px}.teacher-application-header{padding:20px;align-items:flex-start}.teacher-application-brand{width:48px;height:48px;flex:0 0 48px}.teacher-stepper{overflow-x:auto;padding-bottom:4px}.teacher-step{min-width:116px;flex:0 0 auto}.teacher-step-line{display:none}.teacher-form-card{padding:20px}.teacher-form-grid,.teacher-review-grid{grid-template-columns:1fr}.teacher-field.wide{grid-column:auto}.teacher-form-actions{flex-direction:column-reverse}.teacher-primary-btn,.teacher-secondary-btn{width:100%}}
+/* =========================================
+   PETRA DESIGN SYSTEM — TEACHER APPLICATION FORM
+   ========================================= */
+.teacher-application-page {
+  min-height: 100vh;
+  background: var(--petra-canvas, #f7f9fc);
+  padding: 32px 18px;
+  color: var(--petra-ink, #10233f);
+  font-family: "Manrope", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+.teacher-application-shell {
+  width: min(1050px, 100%);
+  margin: 0 auto;
+}
+
+.teacher-application-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--petra-white, #ffffff);
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
+}
+
+.teacher-application-brand {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: var(--petra-blue, #2563eb);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.teacher-application-eyebrow {
+  margin: 0 0 5px;
+  color: var(--petra-blue, #2563eb);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teacher-application-header h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  letter-spacing: -0.03em;
+  color: var(--petra-ink, #10233f);
+}
+
+.teacher-application-header p:not(.teacher-application-eyebrow) {
+  margin: 6px 0 0;
+  color: var(--petra-muted, #64748b);
+}
+
+.teacher-stepper {
+  display: flex;
+  align-items: flex-start;
+  margin: 24px 0;
+}
+
+.teacher-step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  position: relative;
+  flex: 1;
+  color: var(--petra-muted, #64748b);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.teacher-step:last-child {
+  flex: 0 0 auto;
+}
+
+.teacher-step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  border: 1px solid var(--petra-border, #e2e8f0);
+  z-index: 2;
+}
+
+.teacher-step-circle.active {
+  background: var(--petra-blue, #2563eb);
+  color: #ffffff;
+  border-color: var(--petra-blue, #2563eb);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.24);
+}
+
+.teacher-step-circle.completed {
+  background: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
+  border-color: #bfdbfe;
+}
+
+.teacher-step-line {
+  height: 2px;
+  background: var(--petra-border, #e2e8f0);
+  flex: 1;
+  margin: 18px 10px 0;
+}
+
+.teacher-step-line.completed {
+  background: var(--petra-blue, #2563eb);
+}
+
+.teacher-application-form {
+  margin-top: 4px;
+}
+
+.teacher-form-card,
+.teacher-success-card {
+  background: var(--petra-white, #ffffff);
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--petra-shadow, 0 10px 30px rgba(15, 39, 71, 0.06));
+}
+
+.teacher-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.teacher-card-heading > svg {
+  color: var(--petra-blue, #2563eb);
+  margin-top: 2px;
+}
+
+.teacher-card-heading h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--petra-ink, #10233f);
+}
+
+.teacher-card-heading p {
+  margin: 5px 0 0;
+  color: var(--petra-muted, #64748b);
+  font-size: 0.9rem;
+}
+
+.teacher-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.teacher-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.teacher-field.wide {
+  grid-column: 1 / -1;
+}
+
+.teacher-field span {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--petra-ink, #10233f);
+}
+
+.teacher-field input,
+.teacher-field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: 11px;
+  background: #ffffff;
+  padding: 12px 13px;
+  font: inherit;
+  color: var(--petra-ink, #10233f);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.teacher-field input:focus,
+.teacher-field select:focus {
+  border-color: var(--petra-blue, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.teacher-form-alert {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: var(--petra-danger, #dc2626);
+  border-radius: 11px;
+  font-size: 0.9rem;
+}
+
+.teacher-form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.teacher-primary-btn,
+.teacher-secondary-btn {
+  border: 0;
+  border-radius: 11px;
+  padding: 12px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+  font: inherit;
+  cursor: pointer;
+}
+
+.teacher-primary-btn {
+  background: var(--petra-blue, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+.teacher-primary-btn:hover {
+  background: var(--petra-blue-hover, #1d4ed8);
+}
+
+.teacher-secondary-btn {
+  background: var(--petra-white, #ffffff);
+  color: var(--petra-ink, #10233f);
+  border: 1px solid var(--petra-border, #e2e8f0);
+}
+
+.teacher-secondary-btn:hover {
+  background: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
+}
+
+.teacher-primary-btn:disabled,
+.teacher-secondary-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.teacher-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.teacher-review-item {
+  padding: 14px;
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.teacher-review-item span {
+  display: block;
+  color: var(--petra-muted, #64748b);
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+}
+
+.teacher-review-item strong {
+  font-size: 0.92rem;
+  color: var(--petra-ink, #10233f);
+  overflow-wrap: anywhere;
+}
+
+.teacher-declaration {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid var(--petra-border, #e2e8f0);
+  border-radius: 12px;
+  background: #f8fafc;
+  line-height: 1.55;
+  color: var(--petra-ink, #10233f);
+  font-size: 0.88rem;
+}
+
+.teacher-declaration input {
+  margin-top: 4px;
+  accent-color: var(--petra-blue, #2563eb);
+}
+
+.teacher-success-card {
+  text-align: center;
+  padding: 54px 28px;
+}
+
+.teacher-success-icon {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--petra-blue-soft, #eff6ff);
+  color: var(--petra-blue, #2563eb);
+}
+
+.teacher-success-card h2 {
+  margin: 0;
+  font-size: 1.65rem;
+  color: var(--petra-ink, #10233f);
+}
+
+.teacher-success-card > p:not(.teacher-application-eyebrow) {
+  max-width: 580px;
+  margin: 10px auto 20px;
+  color: var(--petra-muted, #64748b);
+  line-height: 1.6;
+}
+
+.teacher-application-number {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 13px 20px;
+  border: 1px dashed var(--petra-blue, #2563eb);
+  background: var(--petra-blue-soft, #eff6ff);
+  border-radius: 12px;
+  margin-bottom: 22px;
+}
+
+.teacher-application-number span {
+  font-size: 0.72rem;
+  color: var(--petra-muted, #64748b);
+}
+
+.teacher-application-number strong {
+  color: var(--petra-blue, #2563eb);
+  letter-spacing: 0.06em;
+}
+
+.teacher-success-card .teacher-primary-btn {
+  margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+  .teacher-application-page { padding: 18px 12px; }
+  .teacher-application-header { padding: 20px; align-items: flex-start; }
+  .teacher-application-brand { width: 48px; height: 48px; flex: 0 0 48px; }
+  .teacher-stepper { overflow-x: auto; padding-bottom: 4px; }
+  .teacher-step { min-width: 116px; flex: 0 0 auto; }
+  .teacher-step-line { display: none; }
+  .teacher-form-card { padding: 20px; }
+  .teacher-form-grid, .teacher-review-grid { grid-template-columns: 1fr; }
+  .teacher-field.wide { grid-column: auto; }
+  .teacher-form-actions { flex-direction: column-reverse; }
+  .teacher-primary-btn, .teacher-secondary-btn { width: 100%; }
+}
