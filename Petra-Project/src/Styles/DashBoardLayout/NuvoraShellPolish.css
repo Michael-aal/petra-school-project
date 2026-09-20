@@ -564,3 +564,312 @@
 .dashboard-shell .top-navbar{background:#fff!important;color:#0F172A!important;border-bottom:1px solid #EEF0F3!important;box-shadow:0 1px 8px rgba(15,23,42,.035)!important;backdrop-filter:none!important}
 .dashboard-shell .top-navbar .menu-btn,.dashboard-shell .top-navbar .icon-btn,.dashboard-shell .top-navbar .user-info{background:#fff!important;color:#0F172A!important;border:1px solid #EEF0F3!important}
 .dashboard-shell .top-navbar .menu-btn svg,.dashboard-shell .top-navbar .icon-btn svg,.dashboard-shell .top-navbar .user-info svg{color:currentColor!important;stroke:currentColor!important;fill:none!important}
+
+
+/* =========================================================
+   FINAL UI CONSISTENCY LAYER
+   One product language across every dashboard page.
+   ========================================================= */
+
+.dashboard-shell {
+  --ui-brand: #2563EB;
+  --ui-brand-hover: #1D4ED8;
+  --ui-brand-soft: #EFF6FF;
+  --ui-page: #F7F9FC;
+  --ui-surface: #FFFFFF;
+  --ui-surface-muted: #F8FAFC;
+  --ui-text: #0F172A;
+  --ui-muted: #64748B;
+  --ui-subtle: #94A3B8;
+  --ui-border: #E2E8F0;
+  --ui-border-strong: #CBD5E1;
+  --ui-danger: #DC2626;
+  --ui-success: #15803D;
+  --ui-radius-sm: 9px;
+  --ui-radius-md: 12px;
+  --ui-radius-lg: 16px;
+}
+
+/* Layout + page rhythm */
+.dashboard-shell,
+.dashboard-shell .dashboard-main,
+.dashboard-shell .dashboard-content {
+  background: var(--ui-page) !important;
+  color: var(--ui-text) !important;
+}
+
+.dashboard-shell .dashboard-content {
+  min-height: calc(100vh - 68px);
+}
+
+.dashboard-shell .dashboard-page,
+.dashboard-shell .dashboard-home {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 2.5vw, 32px) 40px;
+}
+
+/* Consistent headings */
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3 {
+  color: var(--ui-text) !important;
+}
+
+.dashboard-shell h1 {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.dashboard-shell h2 {
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-shell p,
+.dashboard-shell .muted,
+.dashboard-shell [class*="subtitle"],
+.dashboard-shell [class*="description"] {
+  color: var(--ui-muted);
+}
+
+/* Cards/panels: same geometry everywhere */
+.dashboard-shell .card,
+.dashboard-shell .panel,
+.dashboard-shell .stat-card,
+.dashboard-shell .dashboard-widget,
+.dashboard-shell .dashboard-stat-card,
+.dashboard-shell .dashboard-home-panel,
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .settings-card,
+.dashboard-shell .wallet-panel,
+.dashboard-shell .payments-panel,
+.dashboard-shell .form-card,
+.dashboard-shell .table-container {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: var(--ui-radius-lg) !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.045) !important;
+}
+
+.dashboard-shell .card:hover,
+.dashboard-shell .panel:hover,
+.dashboard-shell .stat-card:hover,
+.dashboard-shell .dashboard-widget:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.075) !important;
+}
+
+/* Button hierarchy */
+.dashboard-shell .btn-primary,
+.dashboard-shell .primary-button,
+.dashboard-shell .btn-blue,
+.dashboard-shell button[type="submit"],
+.dashboard-shell [class*="btn-primary"] {
+  min-height: 40px;
+  background: var(--ui-brand) !important;
+  border: 1px solid var(--ui-brand) !important;
+  color: #fff !important;
+  border-radius: var(--ui-radius-sm) !important;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16) !important;
+}
+
+.dashboard-shell .btn-primary:hover,
+.dashboard-shell .primary-button:hover,
+.dashboard-shell .btn-blue:hover,
+.dashboard-shell button[type="submit"]:hover,
+.dashboard-shell [class*="btn-primary"]:hover {
+  background: var(--ui-brand-hover) !important;
+  border-color: var(--ui-brand-hover) !important;
+  transform: translateY(-1px);
+}
+
+.dashboard-shell .btn-secondary,
+.dashboard-shell .btn-ghost {
+  min-height: 40px;
+  background: var(--ui-surface) !important;
+  border: 1px solid var(--ui-border-strong) !important;
+  color: var(--ui-text) !important;
+  border-radius: var(--ui-radius-sm) !important;
+}
+
+.dashboard-shell .btn-secondary:hover,
+.dashboard-shell .btn-ghost:hover {
+  background: var(--ui-brand-soft) !important;
+  border-color: #93C5FD !important;
+  color: var(--ui-brand) !important;
+}
+
+/* Sidebar: quiet, neutral, one-color icons */
+.dashboard-shell .sidebar-container {
+  width: var(--sidebar-width) !important;
+  min-width: var(--sidebar-width) !important;
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-right: 1px solid var(--ui-border) !important;
+  box-shadow: 2px 0 18px rgba(15, 23, 42, 0.035) !important;
+}
+
+.dashboard-shell .sidebar-link,
+.dashboard-shell .sidebar-group,
+.dashboard-shell .sidebar-assistant,
+.dashboard-shell .sidebar-child {
+  color: #475569 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+}
+
+.dashboard-shell .sidebar-link svg,
+.dashboard-shell .sidebar-group svg,
+.dashboard-shell .sidebar-assistant svg,
+.dashboard-shell .sidebar-child svg,
+.dashboard-shell .sidebar-icon,
+.dashboard-shell .child-icon,
+.dashboard-shell .sidebar-assistant-icon,
+.dashboard-shell .arrow-icon {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.dashboard-shell .sidebar-link:hover,
+.dashboard-shell .sidebar-group:hover,
+.dashboard-shell .sidebar-assistant:hover,
+.dashboard-shell .sidebar-child:hover {
+  color: var(--ui-brand) !important;
+  background: var(--ui-brand-soft) !important;
+}
+
+.dashboard-shell .sidebar-link.active,
+.dashboard-shell .sidebar-child.active,
+.dashboard-shell .sidebar-group.group-active,
+.dashboard-shell .sidebar-assistant.active {
+  color: var(--ui-brand) !important;
+  background: var(--ui-brand-soft) !important;
+  border-color: transparent !important;
+}
+
+.dashboard-shell .sidebar-link.active svg,
+.dashboard-shell .sidebar-child.active svg,
+.dashboard-shell .sidebar-group.group-active svg,
+.dashboard-shell .sidebar-assistant.active svg {
+  color: var(--ui-brand) !important;
+  stroke: var(--ui-brand) !important;
+}
+
+/* Form controls */
+.dashboard-shell input,
+.dashboard-shell select,
+.dashboard-shell textarea,
+.dashboard-shell .form-input,
+.dashboard-shell .form-select {
+  min-height: 40px;
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border: 1px solid var(--ui-border-strong) !important;
+  border-radius: var(--ui-radius-sm) !important;
+}
+
+.dashboard-shell input:focus,
+.dashboard-shell select:focus,
+.dashboard-shell textarea:focus,
+.dashboard-shell .form-input:focus,
+.dashboard-shell .form-select:focus {
+  border-color: var(--ui-brand) !important;
+  box-shadow: 0 0 0 3px #DBEAFE !important;
+  outline: none !important;
+}
+
+/* Tables */
+.dashboard-shell table th {
+  color: #475569 !important;
+  background: var(--ui-surface-muted) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+  font-weight: 700;
+}
+
+.dashboard-shell table td {
+  color: var(--ui-text) !important;
+  border-bottom: 1px solid #EEF2F7 !important;
+}
+
+.dashboard-shell table tbody tr:hover {
+  background: #F8FBFF !important;
+}
+
+/* Human-made icon system: neutral by default, semantic only where needed. */
+.dashboard-shell .card svg,
+.dashboard-shell .panel svg,
+.dashboard-shell .stat-card svg,
+.dashboard-shell .dashboard-widget svg {
+  color: #475569;
+  stroke: currentColor;
+  fill: none;
+}
+
+.dashboard-shell .dashboard-stat-card-icon,
+.dashboard-shell .dashboard-quick-action-icon,
+.dashboard-shell .dashboard-empty-icon {
+  background: var(--ui-brand-soft) !important;
+  color: var(--ui-brand) !important;
+  border-color: #DBEAFE !important;
+}
+
+/* Kill legacy orange/amber/coral visual leakage without changing semantics. */
+.dashboard-shell [class*="orange"],
+.dashboard-shell [class*="amber"],
+.dashboard-shell [class*="coral"] {
+  color: var(--ui-brand) !important;
+  border-color: #BFDBFE !important;
+}
+
+.dashboard-shell [class*="bg-orange"],
+.dashboard-shell [class*="bg-amber"],
+.dashboard-shell [class*="bg-coral"] {
+  background: var(--ui-brand-soft) !important;
+}
+
+.dashboard-shell [class*="text-orange"],
+.dashboard-shell [class*="text-amber"],
+.dashboard-shell [class*="text-coral"] {
+  color: var(--ui-brand) !important;
+}
+
+/* Responsive behavior */
+@media (max-width: 900px) {
+  .dashboard-shell .dashboard-page,
+  .dashboard-shell .dashboard-home {
+    padding: 22px 18px 32px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell .dashboard-page,
+  .dashboard-shell .dashboard-home {
+    padding: 18px 14px 28px;
+  }
+
+  .dashboard-shell .card,
+  .dashboard-shell .panel,
+  .dashboard-shell .stat-card,
+  .dashboard-shell .dashboard-widget {
+    border-radius: 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell .card:hover,
+  .dashboard-shell .panel:hover,
+  .dashboard-shell .stat-card:hover,
+  .dashboard-shell .dashboard-widget:hover,
+  .dashboard-shell button:hover {
+    transform: none !important;
+  }
+}
