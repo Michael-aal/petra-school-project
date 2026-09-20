@@ -48,6 +48,9 @@ const userNotificationWhere = (user, schoolId, unreadOnly = false) => {
   return { schoolId, userId: user.id, ...readFilter };
 };
 
+const notificationTargetPath = (notification) =>
+  `/dashboard/communication/notifications?notification=${encodeURIComponent(notification.id)}`;
+
 const sectionMatches = (notification, section) => notificationSection(notification) === section;
 
 const sendPushSafely = (userId, notification) => {
@@ -91,6 +94,8 @@ export const notificationService = {
     return {
       notifications: notifications.map(({ userId, ...notification }) => ({
         ...notification,
+        section: notificationSection(notification),
+        targetPath: notificationTargetPath(notification),
         recipientUserId: userId,
         canDelete: userId === user.id,
       })),
