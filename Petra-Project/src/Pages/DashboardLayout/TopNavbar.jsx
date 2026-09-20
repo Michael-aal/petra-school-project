@@ -6,6 +6,7 @@ import { authApi } from "../../services/authApi";
 import { notificationApi } from "../../services/notificationApi";
 import { getDisplayName, normalizeUser } from "../../utils/userProfile";
 import UserAvatar from "../../components/UserAvatar";
+import CommandPalette from "../../components/CommandPalette/CommandPalette";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
 import "../../Styles/DashBoardLayout/NuvoraShellPolish.css";
 
@@ -13,11 +14,11 @@ export default function TopNavbar({ onToggle }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [dark, setDark] = useState(() => { try { return localStorage.getItem("shopeers-theme") === "dark"; } catch { return false; } });
   const [unread, setUnread] = useState(Number(userInfo?.unreadNotifications || userInfo?.notificationCount || 0));
   const menuRef = useRef(null);
   const notificationRef = useRef(null);
-  const searchRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,11 +32,12 @@ export default function TopNavbar({ onToggle }) {
     const onKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        searchRef.current?.focus();
+        setPaletteOpen((prev) => !prev);
       }
       if (event.key === "Escape") {
         setMenuOpen(false);
         setNotificationsOpen(false);
+        setPaletteOpen(false);
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -79,21 +81,72 @@ export default function TopNavbar({ onToggle }) {
     navigate("/signin", { replace: true });
   };
 
-  return <header className="top-navbar">
-    <div className="top-left">
-      <button type="button" className="menu-btn" onClick={() => onToggle?.()} aria-label="Toggle sidebar"><Menu size={18} strokeWidth={2} /></button>
-      <div className="top-search"><Search size={17} /><input ref={searchRef} placeholder="Search anything..." aria-label="Search anything" /><kbd>⌘K</kbd></div>
-    </div>
-    <div className="top-right">
-      <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
-      <div className="notification-menu" ref={notificationRef}>
-        <button type="button" className="icon-btn notification-button" onClick={() => setNotificationsOpen((value) => !value)} aria-expanded={notificationsOpen} aria-haspopup="menu" aria-label="Notifications"><Bell size={18} />{unread > 0 && <span className="nav-badge">{unread > 9 ? "9+" : unread}</span>}</button>
-        {notificationsOpen && <div className="notification-dropdown" role="menu"><div className="notification-header"><strong>Notifications</strong><span>{unread} new</span></div><p>{unread ? "You have recent store updates to review." : "No new notifications."}</p><button type="button" className="notification-action" onClick={() => { setNotificationsOpen(false); navigate("/dashboard/communication/notifications"); }}>See all Notifications</button></div>}
-      </div>
-      <div className="user-menu" ref={menuRef}>
-        <button type="button" className="user-info" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-haspopup="menu"><UserAvatar user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} /><div className="user-meta"><strong>{getDisplayName(userInfo)}</strong><span>{userInfo?.role || "Admin"}</span></div><ChevronDown size={15} /></button>
-        {menuOpen && <div className="account-dropdown" role="menu"><div className="account-dropdown-header"><UserAvatar user={userInfo} size={44} /><div><strong>{getDisplayName(userInfo)}</strong><span>{userInfo?.email || "No email available"}</span></div></div><div className="account-dropdown-actions"><button type="button" onClick={() => navigate("/dashboard/setup/profile")}><UserIcon size={16} />Profile</button><button type="button" onClick={() => navigate("/dashboard/settings")}><Settings size={16} />Settings</button><button type="button" onClick={logout}><LogOut size={16} />Logout</button></div></div>}
-      </div>
-    </div>
-  </header>;
+  return (
+    <>
+      <header className="top-navbar">
+        <div className="top-left">
+          <button type="button" className="menu-btn" onClick={() => onToggle?.()} aria-label="Toggle sidebar">
+            <Menu size={18} strokeWidth={2} />
+          </button>
+          <div className="top-search" onClick={() => setPaletteOpen(true)} role="button" tabIndex={0} aria-label="Open command palette">
+            <Search size={16} />
+            <span className="search-placeholder">Search modules, learners, actions...</span>
+            <kbd>⌘K</kbd>
+          </div>
+        </div>
+        <div className="top-right">
+          <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <div className="notification-menu" ref={notificationRef}>
+            <button type="button" className="icon-btn notification-button" onClick={() => setNotificationsOpen((value) => !value)} aria-expanded={notificationsOpen} aria-haspopup="menu" aria-label="Notifications">
+              <Bell size={18} />
+              {unread > 0 && <span className="nav-badge">{unread > 9 ? "9+" : unread}</span>}
+            </button>
+            {notificationsOpen && (
+              <div className="notification-dropdown" role="menu">
+                <div className="notification-header">
+                  <strong>Notifications</strong>
+                  <span>{unread} new</span>
+                </div>
+                <p>{unread ? "You have recent school updates to review." : "No new notifications."}</p>
+                <button type="button" className="notification-action" onClick={() => { setNotificationsOpen(false); navigate("/dashboard/communication/notifications"); }}>
+                  See all Notifications
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="user-menu" ref={menuRef}>
+            <button type="button" className="user-info" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-haspopup="menu">
+              <UserAvatar user={userInfo} size={36} className="avatar" alt={getDisplayName(userInfo)} />
+              <div className="user-meta">
+                <strong>{getDisplayName(userInfo)}</strong>
+                <span>{userInfo?.role || "Admin"}</span>
+              </div>
+              <ChevronDown size={15} />
+            </button>
+            {menuOpen && (
+              <div className="account-dropdown" role="menu">
+                <div className="account-dropdown-header">
+                  <UserAvatar user={userInfo} size={44} />
+                  <div>
+                    <strong>{getDisplayName(userInfo)}</strong>
+                    <span>{userInfo?.email || "No email available"}</span>
+                  </div>
+                </div>
+                <div className="account-dropdown-actions">
+                  <button type="button" onClick={() => navigate("/dashboard/setup/profile")}><UserIcon size={16} />Profile</button>
+                  <button type="button" onClick={() => navigate("/dashboard/settings")}><Settings size={16} />Settings</button>
+                  <button type="button" onClick={logout}><LogOut size={16} />Logout</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Global Command Palette */}
+      <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
+    </>
+  );
 }

@@ -13,11 +13,12 @@
 .menu-bars{font-size:17px;line-height:1;color:#0F172A}
 .top-navbar svg{display:block;opacity:1;visibility:visible;color:currentColor;stroke:currentColor;fill:none}
 .top-search{
-  width:min(420px,42vw);height:40px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:999px;background:#F1F5F9;color:#64748B;
+  width:min(420px,42vw);height:40px;display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:12px;background:#F1F5F9;color:#64748B;cursor:pointer;border:1px solid transparent;transition:all .16s ease;
 }
-.top-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#0F172A;font-size:12px}
-.top-search input::placeholder{color:#94A3B8}
-.top-search kbd{padding:3px 6px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;color:#64748B;font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.top-search:hover{background:#E8F0FE;border-color:#BFDBFE;color:#2563EB}
+.top-search .search-placeholder{min-width:0;flex:1;color:#64748B;font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-search:hover .search-placeholder{color:#2563EB}
+.top-search kbd{padding:3px 7px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;color:#64748B;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;margin-left:auto}
 .notification-menu,.user-menu{position:relative}
 .notification-button{color:#475569}
 .nav-badge{position:absolute;right:-4px;top:-4px;min-width:17px;height:17px;padding:0 4px;display:grid;place-items:center;border:2px solid #fff;border-radius:999px;background:#2563EB;color:#fff;font-size:9px;font-weight:800}
