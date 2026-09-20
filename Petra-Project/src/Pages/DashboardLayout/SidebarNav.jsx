@@ -44,6 +44,24 @@ const portalNavGroups = [
   {label:"Nuvora",icon:UserRound,href:"/portal/ask-nuvora"},{label:"Dashboard",icon:LayoutDashboard,href:"/portal/dashboard"},{label:"Attendance",icon:ClipboardCheck,href:"/portal/attendance"},{label:"Results",icon:FileText,href:"/portal/results"},{label:"Assignments",icon:ClipboardList,href:"/portal/assignments"},{label:"Fees",icon:CreditCard,href:"/portal/fees"},{label:"Announcements",icon:Megaphone,href:"/portal/announcements"},{label:"Messages",icon:MessageSquare,href:"/portal/messages"},{label:"Support",icon:HelpCircle,href:"/dashboard/communication/support"},{label:"Downloads",icon:Download,href:"/portal/downloads"},{label:"Profile",icon:UserCog,href:"/portal/profile"},{label:"Settings",icon:Settings,href:"/portal/settings"},{label:"Logout",icon:LogOut,href:"/signin"},
 ];
 
+const shopeersNavGroups = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "Orders", icon: ClipboardList, href: "/dashboard/finance/payments", badge: "46" },
+  { label: "Products", icon: BriefcaseBusiness, href: "/dashboard/students" },
+  { label: "Customers", icon: Users, href: "/dashboard/students/parents" },
+  { label: "Content", icon: FileText, href: "/dashboard/communication" },
+  { label: "Online Store", icon: School, href: "/dashboard/ask-nuvora" },
+  { label: "Finances", icon: CreditCard, children: [
+    { label: "Invoices", icon: Receipt, href: "/dashboard/finance/invoices" },
+    { label: "Transactions", icon: Wallet, href: "/dashboard/finance/payments" },
+    { label: "Reports", icon: BarChart2, href: "/dashboard/overview/daily" },
+  ]},
+  { label: "Analytics", icon: BarChart2, href: "/dashboard/overview/live" },
+  { label: "Discounts", icon: TrendingUp, href: "/dashboard/finance/extra-fees" },
+  { label: "Settings", icon: Settings, href: "/dashboard/settings" },
+  { label: "Help & Support", icon: HelpCircle, href: "/dashboard/communication/support" },
+];
+
 const normalizeRole = (role) => String(role || "").toLowerCase().replace(/\s+/g, "_");
 
 const sectionForNav = (label, href = "") => {
@@ -77,7 +95,8 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
   const isParentRole=normalizedRole==="parent";
   const isStudentRole=normalizedRole==="student";
   const isPortalRole=isParentRole||isStudentRole;
-  const navItems=isStaffRole?staffNavGroups:isPortalRole?portalNavGroups:(location.pathname.startsWith("/staff")?staffNavGroups:location.pathname.startsWith("/portal")?portalNavGroups:navGroups);
+  const isShopeersAdmin=!isStaffRole&&!isPortalRole&&!location.pathname.startsWith("/staff")&&!location.pathname.startsWith("/portal");
+  const navItems=isShopeersAdmin?shopeersNavGroups:isStaffRole?staffNavGroups:isPortalRole?portalNavGroups:(location.pathname.startsWith("/staff")?staffNavGroups:location.pathname.startsWith("/portal")?portalNavGroups:navGroups);
   const [openGroups,setOpenGroups]=useState(()=>{const initial={}; navItems.forEach((group)=>{if(group.children?.some((child)=>location.pathname.startsWith(child.href.split("?")[0])))initial[group.label]=true;}); return initial;});
   const [unreadSummary,setUnreadSummary]=useState({total:0,bySection:{}});
 
@@ -111,8 +130,8 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
   const toggleGroup=(label)=>setOpenGroups((prev)=>({...prev,[label]:!prev[label]}));
   const isActive=(href)=>{const path=href.split("?")[0]; return path==="/dashboard"||path==="/"?location.pathname===path:location.pathname.startsWith(path)&&(!href.includes("?")||new URLSearchParams(location.search).toString()===href.split("?")[1]);};
   const handleLogout=async()=>{try{await authApi.logout();}catch{}finally{try{window.sessionStorage.removeItem("petra_user_info");}catch{}try{window.localStorage.removeItem("petra_user_info");}catch{}try{setUserInfo(normalizeUser({}));}catch{}navigate("/signin",{replace:true});}};
-  const workspaceItems=navItems.filter((item)=>!["Nuvora","Links","Settings","Logout"].includes(item.label));
-  const utilityItems=navItems.filter((item)=>["Links","Settings"].includes(item.label));
+  const workspaceItems=navItems.filter((item)=>isShopeersAdmin? !["Settings","Help & Support"].includes(item.label) : !["Nuvora","Links","Settings","Logout"].includes(item.label));
+  const utilityItems=isShopeersAdmin?navItems.filter((item)=>["Settings","Help & Support"].includes(item.label)):navItems.filter((item)=>["Links","Settings"].includes(item.label));
   const assistantHref=isStaffRole?"/staff/ask-nuvora":isPortalRole?"/portal/ask-nuvora":"/dashboard/ask-nuvora";
   const renderAttention = (label, href) => badgeFor(label, href) ? <span aria-label={`Unread ${label}`} title={`Unread ${label}`} style={attentionDotStyle}/> : null;
 
@@ -121,5 +140,5 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
       const useGroupStyle=["Get Started","Dashboard"].includes(item.label); return <NavLink key={item.label} to={item.href} data-tooltip={item.label} aria-label={item.label} onClick={onNavigate} className={`sidebar-link ${useGroupStyle?"sidebar-group":""} ${isActive(item.href)?"active group-active":""}`}><item.icon className="sidebar-icon"/><span className={useGroupStyle?"sidebar-title sidebar-label":"sidebar-label"}>{item.label}</span>{renderAttention(item.label,item.href)}</NavLink>;}
     const isOpen=openGroups[item.label]; const groupActive=item.children.some((child)=>isActive(child.href)); const groupHasAttention=item.children.some((child)=>badgeFor(child.label,child.href)); return <div key={item.label} className="sidebar-group-wrap"><button type="button" data-tooltip={item.label} aria-label={item.label} onClick={()=>toggleGroup(item.label)} className={`sidebar-group has-children ${groupActive?"group-active":""}`}><item.icon className="sidebar-icon"/><span className="sidebar-title sidebar-label">{item.label}</span>{groupHasAttention && <span aria-label={`Unread ${item.label}`} title={`Unread ${item.label}`} style={attentionDotStyle}/>} {isOpen?<ChevronDown className="arrow-icon"/>:<ChevronRight className="arrow-icon"/>}</button>{isOpen||collapsed?<div className="sidebar-children">{item.children.map((child)=><NavLink key={child.href} to={child.href} data-tooltip={child.label} aria-label={child.label} onClick={onNavigate} className={`sidebar-child ${isActive(child.href)?"active":""}`}><child.icon className="child-icon"/><span className="child-label">{child.label}</span>{renderAttention(child.label,child.href)}</NavLink>)}</div>:null}</div>;
   };
-  return <div className={`sidebar-container ${isStaffRole?"sidebar-container-teacher":""} ${collapsed?"collapsed":""}`}><div className="sidebar-header"><div className="sidebar-contaner-logo" aria-label="School logo"><School size={20}/></div><div className="sidebar-brand"><h2 className="brand-title">{schoolName.toUpperCase()}</h2><h3 className="brand-sub">School Platform</h3></div><button className="sidebar-close" onClick={onClose} aria-label="Close sidebar"><X size={18}/></button></div><nav className="sidebar-nav" aria-label="Main navigation"><div className="sidebar-section-label">Assistant</div><NavLink to={assistantHref} data-tooltip="Nuvora" aria-label="Nuvora" onClick={onNavigate} className={`sidebar-assistant ${isActive(assistantHref)?"active":""}`}><span className="sidebar-assistant-icon"><UserRound size={16}/></span><span className="sidebar-label">Nuvora</span></NavLink><div className="sidebar-section-label">Workspace</div>{workspaceItems.map(renderNavItem)}<div className="sidebar-section-label">System</div>{utilityItems.map(renderNavItem)}</nav><div className="sidebar-footer"><UserAvatar user={userInfo} size={32} className="sidebar-avatar"/><div className="sidebar-user"><h3>{getDisplayName(userInfo)}</h3><h4>{userInfo?.role||"Team member"}</h4></div></div></div>;
+  return <div className={`sidebar-container ${isStaffRole?"sidebar-container-teacher":""} ${collapsed?"collapsed":""}`}><div className="sidebar-header"><div className="sidebar-contaner-logo" aria-label="Shopeers logo"><ShoppingBag size={20}/></div><div className="sidebar-brand"><h2 className="brand-title">{isShopeersAdmin ? "Shopeers" : schoolName.toUpperCase()}</h2><h3 className="brand-sub">{isShopeersAdmin ? "Admin workspace" : "School Platform"}</h3></div><button className="sidebar-close" onClick={onClose} aria-label="Close sidebar"><X size={18}/></button></div><nav className="sidebar-nav" aria-label="Main navigation">{isShopeersAdmin ? <><div className="sidebar-section-label">Workspace</div>{workspaceItems.map(renderNavItem)}<div className="sidebar-section-label sidebar-system-label">System</div>{utilityItems.map(renderNavItem)}</> : <><div className="sidebar-section-label">Assistant</div><NavLink to={assistantHref} data-tooltip="Nuvora" aria-label="Nuvora" onClick={onNavigate} className={`sidebar-assistant ${isActive(assistantHref)?"active":""}`}><span className="sidebar-assistant-icon"><UserRound size={16}/></span><span className="sidebar-label">Nuvora</span></NavLink><div className="sidebar-section-label">Workspace</div>{workspaceItems.map(renderNavItem)}<div className="sidebar-section-label">System</div>{utilityItems.map(renderNavItem)}</>}</nav>{isShopeersAdmin ? <div className="shopeers-upgrade-card"><div className="upgrade-icon"><ShoppingBag size={16}/></div><strong>Upgrade to Premium!</strong><p>Upgrade your account and unlock all of the benefits.</p><button type="button" onClick={()=>navigate("/dashboard/settings")}>Upgrade premium</button></div> : null}<div className="sidebar-footer"><UserAvatar user={userInfo} size={32} className="sidebar-avatar"/><div className="sidebar-user"><h3>{getDisplayName(userInfo)}</h3><h4>{userInfo?.role||"Team member"}</h4></div></div></div>;
 }
