@@ -1,0 +1,74 @@
+.petra-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  width: 100%;
+  padding: 2rem;
+}
+
+.petra-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: var(--petra-card-bg, #ffffff);
+  border: 1px solid var(--petra-border, #e2e8f0);
+  padding: 28px 36px;
+  border-radius: var(--petra-radius-lg, 16px);
+  box-shadow: 0 10px 30px -5px rgba(15, 39, 71, 0.08);
+  text-align: center;
+}
+
+.petra-spinner-ring {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--petra-blue-soft, #eff6ff);
+  border-top-color: var(--petra-blue, #2563eb);
+  border-right-color: var(--petra-blue, #2563eb);
+  border-radius: 50%;
+  animation: petraSpin 0.75s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.petra-spinner-inner {
+  width: 16px;
+  height: 16px;
+  background: var(--petra-blue, #2563eb);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: petraPulse 1.2s ease-in-out infinite alternate;
+}
+
+.petra-loading-text h4 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--petra-navy, #0f2747);
+  letter-spacing: -0.01em;
+}
+
+.petra-loading-text p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--petra-text-muted, #64748b);
+}
+
+@keyframes petraSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes petraPulse {
+  from {
+    transform: scale(0.7);
+    opacity: 0.3;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
