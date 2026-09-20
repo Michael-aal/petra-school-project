@@ -158,30 +158,55 @@ input:focus, select:focus, textarea:focus,
   box-shadow: var(--petra-shadow-lg) !important;
 }
 
-/* Tables */
-.data-table th, .payments-table th, .table-container th {
+/* Tables & High-Density Lists */
+.data-table, .payments-table, .petra-data-table, table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.data-table th, .payments-table th, .table-container th, .petra-data-table th {
   color: #52647d !important;
   background: #f8fafc !important;
-  border-bottom-color: var(--petra-border) !important;
+  border-bottom: 1px solid var(--petra-border) !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-weight: 800;
+  letter-spacing: 0.05em;
 }
-.data-table td, .payments-table td, .table-container td {
+.data-table td, .payments-table td, .table-container td, .petra-data-table td {
   color: var(--petra-ink) !important;
-  border-bottom-color: var(--petra-border) !important;
+  border-bottom: 1px solid var(--petra-border) !important;
+  transition: background-color 0.15s ease;
 }
 .data-table tbody tr:hover, .payments-table tbody tr:hover,
-.table-container tbody tr:hover {
+.table-container tbody tr:hover, .petra-data-table tbody tr:hover {
   background: var(--petra-blue-soft) !important;
 }
 
-/* Status language */
-.status-badge.success, .tone-emerald, .tone-teal {
+/* Semantic Status Badges */
+.status-pill, .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-transform: capitalize;
+}
+.status-badge.success, .status-pill.success, .status-pill.paid, .status-pill.active, .status-pill.present, .status-pill.approved, .tone-emerald, .tone-teal {
   background: #ecfdf3 !important; color: var(--petra-success) !important;
 }
-.status-badge.warning, .tone-amber {
-  background: #eff6ff !important; color: var(--petra-warning) !important;
+.status-badge.warning, .status-pill.warning, .status-pill.pending, .status-pill.late, .status-pill.in-review, .tone-amber {
+  background: #fffbeb !important; color: #d97706 !important;
 }
-.status-badge.danger, .tone-rose {
+.status-badge.danger, .status-pill.danger, .status-pill.overdue, .status-pill.absent, .status-pill.rejected, .status-pill.failed, .tone-rose {
   background: #fef2f2 !important; color: var(--petra-danger) !important;
+}
+.status-badge.info, .status-pill.info, .status-pill.upcoming, .status-pill.current, .status-pill.published, .tone-blue {
+  background: var(--petra-blue-soft) !important; color: var(--petra-blue) !important;
 }
 
 /* Dashboard shell */
