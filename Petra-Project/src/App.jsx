@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom";
 import { Bell, BookOpen, CalendarDays, CheckCircle2, Download, FileText, MessageSquare, School } from "lucide-react";
 import Navbar from "./Pages/components/Navbar";
 import Footer from "./Pages/components/Footer";
@@ -11,6 +11,7 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import { UserContext } from "./context/UserContext";
 import { applyTheme } from "./utils/theme.js";
 import "./Styles/DashBoardLayout/SidebarNav.css";
+import "./Styles/DashBoardLayout/AdminDashboardPolish.css";
 import "./components/dashboard/dashboard.css";
 import "../src/utils/theme";
 
@@ -125,6 +126,9 @@ function PublicLayout() {
 
 function DashboardLay() {
   const { userInfo, authReady } = useContext(UserContext);
+  const location = useLocation();
+  const normalizedDashboardRole = String(userInfo?.role || "").trim().toLowerCase().replace(/[\\s-]+/g, "_");
+  const isAdminWorkspace = location.pathname.startsWith("/dashboard") && ["admin", "principal", "school_admin", "school_administrator"].includes(normalizedDashboardRole);
   const sidebarStorageKey = `petra-dashboard-sidebar-${userInfo?.id || "guest"}`;
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -161,7 +165,7 @@ function DashboardLay() {
   if (!authReady) return null;
   if (!userInfo?.email) return <Navigate to="/signin" replace />;
 // <<<<<<< ui/modern-nuvora-topbar
-  return <div className="dashboard-shell"><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onMenuClick={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
+  return <div className={`dashboard-shell${isAdminWorkspace ? " admin-workspace" : ""}`}><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onMenuClick={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
 =======
 
   return (
