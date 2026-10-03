@@ -128,7 +128,7 @@ export function SidebarNav({onNavigate,collapsed=false,onClose}) {
 
   const badgeFor = (label, href = "") => { const section = sectionForNav(label, href); return section ? Boolean(unreadSummary?.bySection?.[section]) : false; };
   const toggleGroup=(label)=>setOpenGroups((prev)=>({...prev,[label]:!prev[label]}));
-  const isActive=(href)=>{const path=href.split("?")[0]; return path==="/dashboard"||path==="/"?location.pathname===path:location.pathname.startsWith(path)&&(!href.includes("?")||new URLSearchParams(location.search).toString()===href.split("?")[1]);};
+  const isActive = (href) => { const [path, query] = href.split("?"); const pathMatches = location.pathname === path || (path === "/dashboard/students/enrollment" && location.pathname.startsWith(path + "/")); if (!pathMatches) return false; return query ? new URLSearchParams(location.search).toString() === query : !location.search; };
   const handleLogout=async()=>{try{await authApi.logout();}catch{}finally{try{window.sessionStorage.removeItem("petra_user_info");}catch{}try{window.localStorage.removeItem("petra_user_info");}catch{}try{setUserInfo(normalizeUser({}));}catch{}navigate("/signin",{replace:true});}};
   const workspaceItems=navItems.filter((item)=>isShopeersAdmin? !["Settings","Help & Support"].includes(item.label) : !["Nuvora","Links","Settings","Logout"].includes(item.label));
   const utilityItems=isShopeersAdmin?navItems.filter((item)=>["Settings","Help & Support"].includes(item.label)):navItems.filter((item)=>["Links","Settings"].includes(item.label));
