@@ -5,6 +5,7 @@ import Navbar from "./Pages/components/Navbar";
 import Footer from "./Pages/components/Footer";
 import { SidebarNav } from "./Pages/DashboardLayout/SidebarNav";
 import TopNavbar from "./Pages/DashboardLayout/TopNavbar";
+import AdminTopNavbar from "./Pages/DashboardLayout/AdminTopNavbar";
 import DeleteAccountButton from "./components/DeleteAccountButton";
 import PageLoadingFallback from "./components/PageLoadingFallback/PageLoadingFallback";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
@@ -164,18 +165,16 @@ function DashboardLay() {
 
   if (!authReady) return null;
   if (!userInfo?.email) return <Navigate to="/signin" replace />;
-// <<<<<<< ui/modern-nuvora-topbar
-  return <div className={`dashboard-shell${isAdminWorkspace ? " admin-workspace" : ""}`}><div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}><SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} /></div>{mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}<div className="dashboard-main"><TopNavbar onMenuClick={toggle} /><div className="dashboard-content"><Outlet /></div></div></div>;
-=======
-
   return (
-    <div className="dashboard-shell">
+    <div className={`dashboard-shell${isAdminWorkspace ? " admin-workspace" : ""}`}>
       <div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}>
         <SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} />
       </div>
-      {mobileOpen && <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />}
+      {mobileOpen && (
+        <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />
+      )}
       <div className="dashboard-main">
-        <TopNavbar onToggle={toggle} />
+        {isAdminWorkspace ? <AdminTopNavbar onMenuClick={toggle} /> : <TopNavbar onToggle={toggle} />}
         <div className="dashboard-content">
           <ErrorBoundary>
             <Suspense fallback={<PageLoadingFallback message="Loading view..." />}>
@@ -186,9 +185,7 @@ function DashboardLay() {
       </div>
     </div>
   );
-
 }
-
 function DynamicParentSection(props) {
   const { userInfo } = useContext(UserContext);
   const myChildren = userInfo?.children || [];
