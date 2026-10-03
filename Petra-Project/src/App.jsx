@@ -128,7 +128,7 @@ function PublicLayout() {
 function DashboardLay() {
   const { userInfo, authReady } = useContext(UserContext);
   const location = useLocation();
-  const normalizedDashboardRole = String(userInfo?.role || "").trim().toLowerCase().replace(/[\\s-]+/g, "_");
+  const normalizedDashboardRole = String(userInfo?.role || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
   const isAdminWorkspace = location.pathname.startsWith("/dashboard") && ["admin", "principal", "school_admin", "school_administrator"].includes(normalizedDashboardRole);
   const sidebarStorageKey = `petra-dashboard-sidebar-${userInfo?.id || "guest"}`;
   const [collapsed, setCollapsed] = useState(() => {
