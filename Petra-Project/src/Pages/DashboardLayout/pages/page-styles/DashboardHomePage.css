@@ -367,7 +367,7 @@
 }
 
 /* Shared card primitives retained for School Setup and Staff Management pages. */
-.dashboard-shell .dashboard-home {
+.dashboard-shell.admin-workspace .dashboard-home {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -378,7 +378,7 @@
   padding: clamp(16px, 2.4vw, 30px);
   color: #1C1E21;
 }
-.dashboard-shell .dashboard-home-header {
+.dashboard-shell.admin-workspace .dashboard-home-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -389,20 +389,20 @@
   border: 1px solid #DADDE1;
   border-radius: 16px;
 }
-.dashboard-shell .dashboard-home-header h1 {
+.dashboard-shell.admin-workspace .dashboard-home-header h1 {
   margin: 0 0 7px;
   color: #1C1E21;
   font-size: clamp(22px, 2.4vw, 30px);
   line-height: 1.2;
 }
-.dashboard-shell .dashboard-home-header p {
+.dashboard-shell.admin-workspace .dashboard-home-header p {
   max-width: 680px;
   margin: 0;
   color: #65676B;
   font-size: 13px;
   line-height: 1.6;
 }
-.dashboard-shell .dashboard-home-session-pill {
+.dashboard-shell.admin-workspace .dashboard-home-session-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -416,33 +416,33 @@
   font-weight: 750;
   white-space: nowrap;
 }
-.dashboard-shell .dashboard-home-summary {
+.dashboard-shell.admin-workspace .dashboard-home-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
-.dashboard-shell .dashboard-home-summary-card,
-.dashboard-shell .dashboard-home-panel {
+.dashboard-shell.admin-workspace .dashboard-home-summary-card,
+.dashboard-shell.admin-workspace .dashboard-home-panel {
   min-width: 0;
   padding: 18px;
   background: #fff;
   border: 1px solid #DADDE1;
   border-radius: 14px;
 }
-.dashboard-shell .dashboard-home-summary-top {
+.dashboard-shell.admin-workspace .dashboard-home-summary-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-.dashboard-shell .dashboard-home-summary-top span {
+.dashboard-shell.admin-workspace .dashboard-home-summary-top span {
   display: block;
   margin-bottom: 8px;
   color: #65676B;
   font-size: 12px;
   font-weight: 650;
 }
-.dashboard-shell .dashboard-home-summary-top strong {
+.dashboard-shell.admin-workspace .dashboard-home-summary-top strong {
   display: block;
   color: #1C1E21;
   font-size: 27px;
@@ -450,8 +450,8 @@
   font-weight: 780;
   font-variant-numeric: tabular-nums;
 }
-.dashboard-shell .dashboard-home-summary-icon,
-.dashboard-shell .dashboard-home-account-icon {
+.dashboard-shell.admin-workspace .dashboard-home-summary-icon,
+.dashboard-shell.admin-workspace .dashboard-home-account-icon {
   display: grid;
   flex: 0 0 auto;
   place-items: center;
@@ -461,47 +461,47 @@
   background: #E7F3FF;
   color: #1877F2;
 }
-.dashboard-shell .dashboard-home-summary-icon svg,
-.dashboard-shell .dashboard-home-account-icon svg { color: currentColor; }
-.dashboard-shell .dashboard-home-summary-icon.tone-teal,
-.dashboard-shell .dashboard-home-summary-icon.tone-rose,
-.dashboard-shell .dashboard-home-summary-icon.tone-blue {
+.dashboard-shell.admin-workspace .dashboard-home-summary-icon svg,
+.dashboard-shell.admin-workspace .dashboard-home-account-icon svg { color: currentColor; }
+.dashboard-shell.admin-workspace .dashboard-home-summary-icon.tone-teal,
+.dashboard-shell.admin-workspace .dashboard-home-summary-icon.tone-rose,
+.dashboard-shell.admin-workspace .dashboard-home-summary-icon.tone-blue {
   background: #E7F3FF;
   color: #1877F2;
 }
-.dashboard-shell .dashboard-home-content {
+.dashboard-shell.admin-workspace .dashboard-home-content {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
-.dashboard-shell .dashboard-home-panel h2 {
+.dashboard-shell.admin-workspace .dashboard-home-panel h2 {
   margin: 0 0 12px;
   color: #1C1E21;
   font-size: 17px;
 }
-.dashboard-shell .dashboard-home-account-row {
+.dashboard-shell.admin-workspace .dashboard-home-account-row {
   display: flex;
   align-items: center;
   gap: 11px;
   min-width: 0;
 }
-.dashboard-shell .dashboard-home-account-text {
+.dashboard-shell.admin-workspace .dashboard-home-account-text {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
-.dashboard-shell .dashboard-home-account-text strong {
+.dashboard-shell.admin-workspace .dashboard-home-account-text strong {
   color: #1C1E21;
   font-size: 13px;
 }
-.dashboard-shell .dashboard-home-account-text span {
+.dashboard-shell.admin-workspace .dashboard-home-account-text span {
   color: #65676B;
   font-size: 12px;
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.dashboard-shell .dashboard-home-summary-action {
+.dashboard-shell.admin-workspace .dashboard-home-summary-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -517,24 +517,24 @@
   text-decoration: none;
   cursor: pointer;
 }
-.dashboard-shell .dashboard-home-summary-action:hover {
+.dashboard-shell.admin-workspace .dashboard-home-summary-action:hover {
   background: #166FE5;
   border-color: #166FE5;
 }
-.dashboard-shell .dashboard-home-summary-action.tone-teal,
-.dashboard-shell .dashboard-home-summary-action.tone-blue {
+.dashboard-shell.admin-workspace .dashboard-home-summary-action.tone-teal,
+.dashboard-shell.admin-workspace .dashboard-home-summary-action.tone-blue {
   background: #1877F2;
   border-color: #1877F2;
   color: #fff;
 }
 @media (max-width: 760px) {
-  .dashboard-shell .dashboard-home-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dashboard-shell .dashboard-home-content { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-shell.admin-workspace .dashboard-home-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-shell.admin-workspace .dashboard-home-content { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 520px) {
-  .dashboard-shell .dashboard-home { padding: 16px 12px 24px; gap: 14px; }
-  .dashboard-shell .dashboard-home-header { padding: 17px; }
-  .dashboard-shell .dashboard-home-summary { grid-template-columns: minmax(0, 1fr); }
-  .dashboard-shell .dashboard-home-summary-card,
-  .dashboard-shell .dashboard-home-panel { padding: 15px; }
+  .dashboard-shell.admin-workspace .dashboard-home { padding: 16px 12px 24px; gap: 14px; }
+  .dashboard-shell.admin-workspace .dashboard-home-header { padding: 17px; }
+  .dashboard-shell.admin-workspace .dashboard-home-summary { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-shell.admin-workspace .dashboard-home-summary-card,
+  .dashboard-shell.admin-workspace .dashboard-home-panel { padding: 15px; }
 }
