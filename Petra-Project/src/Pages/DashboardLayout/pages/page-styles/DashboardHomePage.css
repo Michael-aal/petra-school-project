@@ -365,3 +365,176 @@
     transition-duration: .01ms !important;
   }
 }
+
+/* Shared card primitives retained for School Setup and Staff Management pages. */
+.dashboard-shell .dashboard-home {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1600px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: clamp(16px, 2.4vw, 30px);
+  color: #1C1E21;
+}
+.dashboard-shell .dashboard-home-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 22px 24px;
+  background: #fff;
+  border: 1px solid #DADDE1;
+  border-radius: 16px;
+}
+.dashboard-shell .dashboard-home-header h1 {
+  margin: 0 0 7px;
+  color: #1C1E21;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.2;
+}
+.dashboard-shell .dashboard-home-header p {
+  max-width: 680px;
+  margin: 0;
+  color: #65676B;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.dashboard-shell .dashboard-home-session-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 11px;
+  border: 1px solid #BBD9FF;
+  border-radius: 999px;
+  background: #E7F3FF;
+  color: #1877F2;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.dashboard-shell .dashboard-home-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .dashboard-home-panel {
+  min-width: 0;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #DADDE1;
+  border-radius: 14px;
+}
+.dashboard-shell .dashboard-home-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dashboard-shell .dashboard-home-summary-top span {
+  display: block;
+  margin-bottom: 8px;
+  color: #65676B;
+  font-size: 12px;
+  font-weight: 650;
+}
+.dashboard-shell .dashboard-home-summary-top strong {
+  display: block;
+  color: #1C1E21;
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-shell .dashboard-home-summary-icon,
+.dashboard-shell .dashboard-home-account-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #E7F3FF;
+  color: #1877F2;
+}
+.dashboard-shell .dashboard-home-summary-icon svg,
+.dashboard-shell .dashboard-home-account-icon svg { color: currentColor; }
+.dashboard-shell .dashboard-home-summary-icon.tone-teal,
+.dashboard-shell .dashboard-home-summary-icon.tone-rose,
+.dashboard-shell .dashboard-home-summary-icon.tone-blue {
+  background: #E7F3FF;
+  color: #1877F2;
+}
+.dashboard-shell .dashboard-home-content {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.dashboard-shell .dashboard-home-panel h2 {
+  margin: 0 0 12px;
+  color: #1C1E21;
+  font-size: 17px;
+}
+.dashboard-shell .dashboard-home-account-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.dashboard-shell .dashboard-home-account-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.dashboard-shell .dashboard-home-account-text strong {
+  color: #1C1E21;
+  font-size: 13px;
+}
+.dashboard-shell .dashboard-home-account-text span {
+  color: #65676B;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.dashboard-shell .dashboard-home-summary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #1877F2;
+  border-radius: 9px;
+  background: #1877F2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dashboard-shell .dashboard-home-summary-action:hover {
+  background: #166FE5;
+  border-color: #166FE5;
+}
+.dashboard-shell .dashboard-home-summary-action.tone-teal,
+.dashboard-shell .dashboard-home-summary-action.tone-blue {
+  background: #1877F2;
+  border-color: #1877F2;
+  color: #fff;
+}
+@media (max-width: 760px) {
+  .dashboard-shell .dashboard-home-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-shell .dashboard-home-content { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .dashboard-shell .dashboard-home { padding: 16px 12px 24px; gap: 14px; }
+  .dashboard-shell .dashboard-home-header { padding: 17px; }
+  .dashboard-shell .dashboard-home-summary { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-shell .dashboard-home-summary-card,
+  .dashboard-shell .dashboard-home-panel { padding: 15px; }
+}
