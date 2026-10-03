@@ -16,6 +16,15 @@
   --admin-warning: #F7B928;
   --admin-danger: #E41E3F;
   --admin-info: #45BDFF;
+  --ui-brand: #1877F2;
+  --ui-brand-hover: #166FE5;
+  --ui-brand-soft: #E7F3FF;
+  --ui-page: #F0F2F5;
+  --ui-surface: #FFFFFF;
+  --ui-text: #1C1E21;
+  --ui-muted: #65676B;
+  --ui-subtle: #8A8D91;
+  --ui-border: #DADDE1;
   --admin-radius-sm: 9px;
   --admin-radius-md: 12px;
   --admin-radius-lg: 16px;
@@ -279,4 +288,28 @@
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* The admin topbar uses the same exact brand and neutral palette. */
+.dashboard-shell.admin-workspace .tn-root {
+  --tn-bar-bg: #FFFFFF;
+  --tn-btn-bg: #F0F2F5;
+  --tn-btn-bg-hover: #E7F3FF;
+  --tn-border: #DADDE1;
+  --tn-icon: #65676B;
+  --tn-text: #1C1E21;
+  --tn-text-2: #65676B;
+  --tn-text-muted: #8A8D91;
+  --tn-danger: #E41E3F;
+}
+.dashboard-shell.admin-workspace .tn-root button:focus-visible {
+  outline-color: #1877F2;
+}
+.dashboard-shell.admin-workspace .tn-root .tn-notice:hover,
+.dashboard-shell.admin-workspace .tn-root .tn-menu-item:hover {
+  background: #E7F3FF;
+  color: #1877F2;
+}
+.dashboard-shell.admin-workspace .tn-root .tn-badge {
+  background: #E41E3F;
 }
