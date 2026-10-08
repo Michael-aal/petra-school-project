@@ -1,11 +1,13 @@
 
 .teachers-page {
   --teacher-white: #ffffff;
-  --teacher-bg: #f8fafc;
+  --teacher-bg: #f4f7fb;
 
   --teacher-blue: #2563eb;
   --teacher-blue-dark: #1d4ed8;
+  --teacher-blue-light: #3b82f6;
   --teacher-blue-soft: #eff6ff;
+  --teacher-blue-softer: #f0f9ff;
   --teacher-blue-border: #dbeafe;
 
   --teacher-red: #dc2626;
@@ -13,14 +15,112 @@
   --teacher-red-soft: #fef2f2;
   --teacher-red-border: #fecaca;
 
-  --teacher-text: #172033;
-  --teacher-muted: #64748b;
+  --teacher-text: #1f2937;
+  --teacher-muted: #6b7280;
   --teacher-border: #e5e7eb;
+  --teacher-shadow-sm: 0 2px 8px rgba(37, 99, 235, 0.08);
+  --teacher-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
 
   min-height: 100%;
-  padding: 24px;
-  background: var(--teacher-bg);
+  padding: 32px;
+  background: linear-gradient(135deg, var(--teacher-bg) 0%, #f9fbfd 100%);
   color: var(--teacher-text);
+}
+
+/* =========================================================
+   HEADER SECTION
+   ========================================================= */
+
+.dashboard-home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--teacher-blue-soft);
+}
+
+.dashboard-home-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--teacher-text);
+  letter-spacing: -0.02em;
+}
+
+.dashboard-home-header p {
+  margin: 6px 0 0;
+  color: var(--teacher-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.dashboard-home-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.dashboard-home-summary-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  background: var(--teacher-white);
+  border: 1px solid var(--teacher-blue-border);
+  border-radius: 16px;
+  box-shadow: var(--teacher-shadow-sm);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.dashboard-home-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--teacher-blue);
+  box-shadow: var(--teacher-shadow);
+}
+
+.dashboard-home-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-home-summary-top > div:first-child span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--teacher-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.dashboard-home-summary-top > div:first-child strong {
+  display: block;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--teacher-blue);
+  letter-spacing: -0.03em;
+}
+
+.dashboard-home-summary-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--teacher-blue-softer);
+  color: var(--teacher-blue);
+  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -32,48 +132,71 @@
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .teacher-assignment-controls select,
 .teacher-assignment-controls button {
-  min-height: 36px;
-  padding: 0 10px;
+  min-height: 40px;
+  padding: 0 16px;
   border: 1px solid var(--teacher-border);
-  border-radius: 9px;
+  border-radius: 10px;
   outline: none;
   background: var(--teacher-white);
   color: var(--teacher-text);
-  font-size: 0.76rem;
+  font-size: 0.85rem;
   font-weight: 600;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease,
     color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  cursor: pointer;
+}
+
+.teacher-assignment-controls select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  appearance: none;
+}
+
+.teacher-assignment-controls select:hover {
+  border-color: var(--teacher-blue);
+  background-color: var(--teacher-blue-softer);
 }
 
 .teacher-assignment-controls select:focus {
   border-color: var(--teacher-blue);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .teacher-assignment-controls button {
   border-color: var(--teacher-blue);
-  background: var(--teacher-blue);
+  background: linear-gradient(135deg, var(--teacher-blue), var(--teacher-blue-light));
   color: var(--teacher-white);
-  font-weight: 750;
-  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
-.teacher-assignment-controls button:hover {
+.teacher-assignment-controls button:hover:not(:disabled) {
   border-color: var(--teacher-blue-dark);
-  background: var(--teacher-blue-dark);
+  background: linear-gradient(135deg, var(--teacher-blue-dark), var(--teacher-blue));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.teacher-assignment-controls button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .teacher-assignment-controls button:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* =========================================================
@@ -82,17 +205,17 @@
 
 .admins-actions-panel {
   display: grid;
-  gap: 16px;
-  padding: 20px;
+  gap: 20px;
+  padding: 24px;
   background: var(--teacher-white);
-  border: 1px solid var(--teacher-border);
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--teacher-blue-border);
+  border-radius: 18px;
+  box-shadow: var(--teacher-shadow);
 }
 
 .admins-toolbar {
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 /* =========================================================
@@ -102,20 +225,27 @@
 .search-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 13px;
-  border: 1px solid var(--teacher-border);
-  border-radius: 11px;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 2px solid var(--teacher-border);
+  border-radius: 12px;
   background: var(--teacher-white);
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .search-box:focus-within {
   border-color: var(--teacher-blue);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background-color: var(--teacher-blue-softer);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-box svg {
+  color: var(--teacher-blue);
+  flex-shrink: 0;
 }
 
 .search-box input {
@@ -125,11 +255,12 @@
   background: transparent;
   color: var(--teacher-text);
   font: inherit;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
 }
 
 .search-box input::placeholder {
-  color: #94a3b8;
+  color: #cbd5e1;
+  font-weight: 500;
 }
 
 /* =========================================================
@@ -138,7 +269,7 @@
 
 .admin-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .admin-row {
@@ -146,35 +277,40 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 15px 16px;
+  padding: 18px 20px;
   border: 1px solid var(--teacher-border);
-  border-radius: 13px;
+  border-radius: 14px;
   background: var(--teacher-white);
   transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.2s ease;
+    all 0.2s ease;
 }
 
 .admin-row:hover {
-  border-color: var(--teacher-blue-border);
-  background: #fbfdff;
-  transform: translateY(-1px);
+  border-color: var(--teacher-blue);
+  background: linear-gradient(135deg, #ffffff 0%, var(--teacher-blue-softer) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
 }
 
 .admin-row strong {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   color: var(--teacher-text);
-  font-size: 0.92rem;
-  font-weight: 750;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .admin-row p {
   margin: 0;
   color: var(--teacher-muted);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   line-height: 1.5;
+}
+
+.admin-row > div {
+  flex: 1;
+  min-width: 0;
 }
 
 /* =========================================================
@@ -186,37 +322,115 @@
   align-items: center;
   justify-content: center;
   width: fit-content;
-  padding: 6px 10px;
+  padding: 7px 14px;
   border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 750;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
 }
 
 .teacher-status.active,
 .teacher-status.assigned {
-  border: 1px solid var(--teacher-blue-border);
+  border: 1.5px solid var(--teacher-blue-border);
   background: var(--teacher-blue-soft);
   color: var(--teacher-blue-dark);
 }
 
+.teacher-status.active:hover,
+.teacher-status.assigned:hover {
+  background: var(--teacher-blue-border);
+  transform: scale(1.05);
+}
+
 .teacher-status.warning,
 .teacher-status.unassigned {
-  border: 1px solid var(--teacher-red-border);
+  border: 1.5px solid var(--teacher-red-border);
   background: var(--teacher-red-soft);
   color: var(--teacher-red-dark);
+}
+
+.teacher-status.warning:hover,
+.teacher-status.unassigned:hover {
+  background: var(--teacher-red-border);
+  transform: scale(1.05);
+}
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+.students-inline-alert {
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--teacher-blue-soft), var(--teacher-blue-softer));
+  color: var(--teacher-blue);
+  border: 1px solid var(--teacher-blue-border);
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.module-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--teacher-muted);
+  border: 2px dashed var(--teacher-border);
+  border-radius: 14px;
+  background: var(--teacher-blue-softer);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 /* =========================================================
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .teachers-page {
-    padding: 18px;
+    padding: 24px;
+  }
+
+  .dashboard-home-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dashboard-home-summary {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
+  .teachers-page {
+    padding: 20px;
+  }
+
+  .dashboard-home-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .dashboard-home-summary {
+    grid-template-columns: 1fr;
+  }
+
   .teacher-assignment-controls {
     grid-column: 1 / -1;
     justify-content: flex-start;
@@ -231,20 +445,45 @@
   .admin-row {
     align-items: flex-start;
     flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-home-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-row {
+    padding: 16px;
+  }
+
+  .admin-row strong {
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 640px) {
   .teachers-page {
-    padding: 14px;
+    padding: 16px;
+  }
+
+  .dashboard-home-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-home-header p {
+    font-size: 0.88rem;
   }
 
   .admins-actions-panel {
-    padding: 16px;
+    padding: 18px;
+    gap: 16px;
   }
 
   .teacher-assignment-controls {
     width: 100%;
+    flex-direction: column;
   }
 
   .teacher-assignment-controls select,
@@ -254,22 +493,74 @@
   }
 
   .search-box {
-    min-height: 42px;
+    min-height: 44px;
+    padding: 0 14px;
+  }
+
+  .admin-row {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .admin-row strong {
+    font-size: 0.88rem;
+  }
+
+  .admin-row p {
+    font-size: 0.8rem;
+  }
+
+  .teacher-status {
+    padding: 6px 12px;
+    font-size: 0.7rem;
   }
 }
 
+@media (max-width: 480px) {
+  .teachers-page {
+    padding: 12px;
+  }
 
+  .dashboard-home-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .dashboard-home-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-home-summary {
+    gap: 12px;
+  }
+
+  .dashboard-home-summary-card {
+    padding: 18px;
+  }
+
+  .dashboard-home-summary-top > div:first-child strong {
+    font-size: 1.8rem;
+  }
+
+  .admins-actions-panel {
+    padding: 14px;
+  }
+
+  .search-box {
+    min-height: 40px;
+  }
+}
 
 /* NUVORA GLOBAL PAGE SKIN — shared Django-inspired admin language */
-:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.academics-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard){
- --nuvora-page:#f7f9fc;--nuvora-surface:#fff;--nuvora-surface-soft:#f8fafc;--nuvora-blue:#1877f2;--nuvora-blue-dark:#0f5dcc;--nuvora-blue-soft:#eaf3ff;--nuvora-text:#0f172a;--nuvora-muted:#64748b;--nuvora-border:#e2e8f0;--nuvora-radius:12px;
+:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.results-page,.enrollments-page,.superadmin,.school-setup,.dashboard-page){
+ --nuvora-page:#f7f9fc;--nuvora-surface:#fff;--nuvora-surface-soft:#f8fafc;--nuvora-blue:#1877f2;--nuvora-blue-dark:#0f5dcc;--nuvora-blue-soft:#eaf3ff;--nuvora-text:#0f172a;--nuvora-muted:#64748b;--nuvora-text-secondary:#1e293b;--nuvora-border:#e5e7eb;
  color:var(--nuvora-text);background:var(--nuvora-page);
 }
-:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) button:not([disabled]){font:inherit}
-:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) button,.icon-button,.action-button{min-height:40px;border-radius:10px}
-:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) input,:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) select{border-color:var(--nuvora-border);background:#fff;color:var(--nuvora-text);border-radius:10px}
-:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) svg{opacity:1;visibility:visible}
-@media(prefers-reduced-motion:no-preference){:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.payments-page,.wallet-page,.overview-page,.daily-report-page,.term-summary-page,.reportcards-page,.timetable-page,.results-page,.communication-page,.announcements-page,.messages-page,.notifications-page,.support-page,.settings-page,.profile-page,.bus-page,.cbt-page,.examination-page,.gate-monitoring-page,.students-list-page,.staff-attendance-page,.school-admin-dashboard) button,.icon-button,.action-button{transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease}}
+:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.results-page,.enrollments-page,.superadmin,.school-setup,.dashboard-page) .dashboard-home-summary-card{box-shadow:0 2px 8px rgba(31,41,55,.08)}
+:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.results-page,.enrollments-page,.superadmin,.school-setup,.dashboard-page) .admin-row{border-color:var(--nuvora-border)}
+:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.results-page,.enrollments-page,.superadmin,.school-setup,.dashboard-page) .teacher-status{font-size:0.75rem;font-weight:700}
+@media(prefers-reduced-motion:no-preference){:where(.gs,.finance-page,.finance-module-page,.teachers-page,.teacher-page,.staff-page,.students-page,.parent-page,.classes-page,.subjects-page,.academics-page,.attendance-page,.applicants-page,.results-page,.enrollments-page,.superadmin,.school-setup,.dashboard-page) *{transition:all 0.2s cubic-bezier(0.4,0,0.2,1)}
+}
 
 /* NUVORA REFERENCE SKIN — page-level consistency */
-:root{--page-blue:#1877f2;--page-blue-dark:#0f5dcc;--page-blue-soft:#eaf3ff;--page-bg:#f7f9fc;--page-border:#e2e8f0;--page-text:#0f172a;--page-muted:#64748b}.dashboard-page,.dashboard-content{background:#f7f9fc!important;color:#0f172a!important}.dashboard-page [class*="card"],.dashboard-page [class*="panel"],.dashboard-page [class*="stat"],.dashboard-content [class*="card"],.dashboard-content [class*="panel"],.dashboard-content [class*="stat"]{background:#fff!important;border:1px solid #e2e8f0!important;border-radius:12px!important;box-shadow:0 4px 18px rgb(15 23 42 / 6%)!important}.dashboard-page button,.dashboard-content button{border-radius:9px;transition:all .16s ease}.dashboard-page input,.dashboard-page select,.dashboard-page textarea,.dashboard-content input,.dashboard-content select,.dashboard-content textarea{background:#fff!important;border:1px solid #e2e8f0!important;border-radius:9px!important;color:#0f172a!important;box-shadow:none!important}.dashboard-page input:focus,.dashboard-page select:focus,.dashboard-page textarea:focus,.dashboard-content input:focus,.dashboard-content select:focus,.dashboard-content textarea:focus{border-color:#93c5fd!important;box-shadow:0 0 0 3px rgb(24 119 242 / 10%)!important;outline:0!important}.dashboard-page th,.dashboard-content th{background:#f8fafc!important;color:#64748b!important;border-color:#e2e8f0!important}.dashboard-page td,.dashboard-content td{color:#334155!important;border-color:#e2e8f0!important}.dashboard-page tbody tr:hover,.dashboard-content tbody tr:hover{background:#f8fbff!important}.dashboard-page svg,.dashboard-content svg{opacity:1!important;visibility:visible!important}.dashboard-page [class*="orange"],.dashboard-page [class*="amber"],.dashboard-content [class*="orange"],.dashboard-content [class*="amber"]{color:#64748b!important;background:#f8fafc!important;border-color:#e2e8f0!important}.dashboard-page [class*="gradient"],.dashboard-content [class*="gradient"]{background-image:none!important}@media(max-width:640px){.dashboard-page,.dashboard-content{padding-left:12px!important;padding-right:12px!important}}
+:root{--page-blue:#1877f2;--page-blue-dark:#0f5dcc;--page-blue-soft:#eaf3ff;--page-bg:#f7f9fc;--page-border:#e2e8f0;--page-text:#0f172a;--page-muted:#64748b}.dashboard-page,.dashboard-content{background:var(--page-bg);color:var(--page-text)}
