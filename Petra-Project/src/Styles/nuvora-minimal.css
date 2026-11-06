@@ -1302,7 +1302,7 @@ body[data-theme="light"] {
 
 html[data-theme="dark"],
 body[data-theme="dark"] {
-  color-scheme: dark;
+  color-scheme: dark !important;
   --nuvora-bg: #0b1020;
   --nuvora-surface: #121a2b;
   --nuvora-surface-muted: #182236;
@@ -1615,6 +1615,7 @@ body.light {
   --border: #e2e8f0 !important;
   --input: #cbd5e1 !important;
   --ring: #2563eb !important;
+  --warning: #d97706 !important;
   --dashboard-page-bg: #f7f9fc !important;
   --dashboard-sidebar-bg: #0f2747 !important;
   --dashboard-sidebar-text: #ffffff !important;
@@ -1634,7 +1635,7 @@ body.light {
 html[data-theme="dark"],
 body[data-theme="dark"],
 body.dark {
-  color-scheme: dark;
+  color-scheme: dark !important;
   --petra-navy: #0b1425;
   --petra-blue: #78aaff;
   --petra-blue-hover: #a3c4ff;
@@ -1679,6 +1680,7 @@ body.dark {
   --border: #2a3650 !important;
   --input: #34445f !important;
   --ring: #78aaff !important;
+  --warning: #fbbf24 !important;
   --dashboard-page-bg: #0b1220 !important;
   --dashboard-sidebar-bg: #0a1426 !important;
   --dashboard-sidebar-text: #f3f6fc !important;
