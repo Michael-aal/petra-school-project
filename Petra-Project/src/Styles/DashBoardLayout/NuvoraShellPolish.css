@@ -841,7 +841,6 @@
   background: var(--ui-brand-soft) !important;
 }
 
-.dashboard-shell [class*="text-orange"],
 .dashboard-shell [class*="text-amber"],
 .dashboard-shell [class*="text-coral"] {
   color: var(--ui-brand) !important;
