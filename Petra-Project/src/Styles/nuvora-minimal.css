@@ -1276,3 +1276,286 @@ a > svg.lucide {
     height: 18px !important;
   }
 }
+
+
+/* =========================================================
+   PETRA THEME CONTRACT
+   Theme state is owned by utils/theme.js and exposed through
+   data-theme on html/body. These rules intentionally come
+   after the legacy light-only layers so both modes agree.
+   ========================================================= */
+:root,
+html[data-theme="light"],
+body[data-theme="light"] {
+  color-scheme: light;
+  --nuvora-bg: #ffffff;
+  --nuvora-surface: #ffffff;
+  --nuvora-surface-muted: #f7f7f8;
+  --nuvora-text: #111111;
+  --nuvora-text-strong: #171717;
+  --nuvora-text-muted: #666666;
+  --nuvora-border: #e5e5e5;
+  --nuvora-blue: #1877f2;
+  --nuvora-blue-hover: #0f5dcc;
+  --nuvora-blue-soft: #eff6ff;
+}
+
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  color-scheme: dark;
+  --nuvora-bg: #0b1020;
+  --nuvora-surface: #121a2b;
+  --nuvora-surface-muted: #182236;
+  --nuvora-text: #f3f6fc;
+  --nuvora-text-strong: #ffffff;
+  --nuvora-text-muted: #aab6ca;
+  --nuvora-border: #2a3650;
+  --nuvora-blue: #78aaff;
+  --nuvora-blue-hover: #9bc0ff;
+  --nuvora-blue-soft: #1b3153;
+  --app-bg: var(--nuvora-bg) !important;
+  --app-surface: var(--nuvora-surface) !important;
+  --app-surface-strong: var(--nuvora-surface-muted) !important;
+  --app-card: var(--nuvora-surface) !important;
+  --app-panel: var(--nuvora-surface) !important;
+  --app-text: var(--nuvora-text) !important;
+  --app-text-muted: var(--nuvora-text-muted) !important;
+  --app-border: var(--nuvora-border) !important;
+  --background: var(--nuvora-bg) !important;
+  --foreground: var(--nuvora-text) !important;
+  --card: var(--nuvora-surface) !important;
+  --card-foreground: var(--nuvora-text) !important;
+  --popover: var(--nuvora-surface) !important;
+  --popover-foreground: var(--nuvora-text) !important;
+  --muted: var(--nuvora-surface-muted) !important;
+  --muted-foreground: var(--nuvora-text-muted) !important;
+  --border: var(--nuvora-border) !important;
+  --input: var(--nuvora-border) !important;
+  --dashboard-page-bg: var(--nuvora-bg) !important;
+  --dashboard-topbar-bg: var(--nuvora-surface) !important;
+  --dashboard-topbar-text: var(--nuvora-text) !important;
+  --dashboard-topbar-muted: var(--nuvora-text-muted) !important;
+  --dashboard-card-bg: var(--nuvora-surface) !important;
+  --dashboard-card-text: var(--nuvora-text) !important;
+  --dashboard-card-muted: var(--nuvora-text-muted) !important;
+  --dashboard-panel-bg: var(--nuvora-surface) !important;
+  --dashboard-sidebar-bg: var(--nuvora-surface) !important;
+  --dashboard-sidebar-text: var(--nuvora-text) !important;
+  --dashboard-sidebar-muted: var(--nuvora-text-muted) !important;
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+body[data-theme="dark"],
+body[data-theme="dark"] #root {
+  background: var(--nuvora-bg) !important;
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6,
+body[data-theme="dark"] strong,
+body[data-theme="dark"] b {
+  color: var(--nuvora-text-strong) !important;
+}
+
+body[data-theme="dark"] p,
+body[data-theme="dark"] li,
+body[data-theme="dark"] label,
+body[data-theme="dark"] small,
+body[data-theme="dark"] .muted,
+body[data-theme="dark"] [class*="subtitle"],
+body[data-theme="dark"] [class*="description"] {
+  color: var(--nuvora-text-muted) !important;
+}
+
+body[data-theme="dark"] .dashboard-shell,
+body[data-theme="dark"] .dashboard-main,
+body[data-theme="dark"] .dashboard-content,
+body[data-theme="dark"] .dashboard-page,
+body[data-theme="dark"] .page-container,
+body[data-theme="dark"] .content-container,
+body[data-theme="dark"] .generic-list-page {
+  background: var(--nuvora-bg) !important;
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .panel,
+body[data-theme="dark"] .stat-card,
+body[data-theme="dark"] .form-card,
+body[data-theme="dark"] .settings-card,
+body[data-theme="dark"] .wallet-panel,
+body[data-theme="dark"] .payments-panel,
+body[data-theme="dark"] .modal-content,
+body[data-theme="dark"] .dashboard-widget,
+body[data-theme="dark"] .dashboard-home-panel,
+body[data-theme="dark"] .dashboard-home-summary-card,
+body[data-theme="dark"] .layout-card,
+body[data-theme="dark"] .table-container,
+body[data-theme="dark"] .notification-dropdown,
+body[data-theme="dark"] .account-dropdown,
+body[data-theme="dark"] .command-palette,
+body[data-theme="dark"] .command-palette-content {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%) !important;
+}
+
+body[data-theme="dark"] .top-navbar {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-bottom-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .top-welcome,
+body[data-theme="dark"] .user-name,
+body[data-theme="dark"] .greets,
+body[data-theme="dark"] .user-caret,
+body[data-theme="dark"] .account-dropdown-actions button,
+body[data-theme="dark"] .notification-header strong {
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .menu-btn,
+body[data-theme="dark"] .icon-btn,
+body[data-theme="dark"] .ask-nuvora-btn,
+body[data-theme="dark"] .user-info,
+body[data-theme="dark"] .account-dropdown-actions button {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .sidebar-container,
+body[data-theme="dark"] .dashboard-sidebar,
+body[data-theme="dark"] .sidebar,
+body[data-theme="dark"] .dashboard-nav {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-right-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .sidebar-header,
+body[data-theme="dark"] .sidebar-footer {
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .brand-title,
+body[data-theme="dark"] .sidebar-user h3 {
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .brand-sub,
+body[data-theme="dark"] .sidebar-section-label,
+body[data-theme="dark"] .sidebar-user h4,
+body[data-theme="dark"] .sidebar-link,
+body[data-theme="dark"] .sidebar-group,
+body[data-theme="dark"] .sidebar-assistant,
+body[data-theme="dark"] .sidebar-child {
+  color: var(--nuvora-text-muted) !important;
+}
+
+body[data-theme="dark"] .sidebar-link:hover,
+body[data-theme="dark"] .sidebar-group:hover,
+body[data-theme="dark"] .sidebar-assistant:hover,
+body[data-theme="dark"] .sidebar-child:hover,
+body[data-theme="dark"] .sidebar-link.active,
+body[data-theme="dark"] .sidebar-group.group-active,
+body[data-theme="dark"] .sidebar-assistant.active,
+body[data-theme="dark"] .sidebar-child.active {
+  background: var(--nuvora-blue-soft) !important;
+  color: var(--nuvora-blue) !important;
+  border-color: transparent !important;
+}
+
+body[data-theme="dark"] input,
+body[data-theme="dark"] select,
+body[data-theme="dark"] textarea,
+body[data-theme="dark"] .form-input,
+body[data-theme="dark"] .form-select {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder {
+  color: #8998b0 !important;
+}
+
+body[data-theme="dark"] .btn-secondary,
+body[data-theme="dark"] .btn-ghost,
+body[data-theme="dark"] .landing-button-secondary {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .btn-primary,
+body[data-theme="dark"] button[type="submit"],
+body[data-theme="dark"] .landing-button-primary,
+body[data-theme="dark"] .notification-action {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+body[data-theme="dark"] table th,
+body[data-theme="dark"] .data-table th,
+body[data-theme="dark"] .payments-table th,
+body[data-theme="dark"] .table-container th {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text-muted) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] table td,
+body[data-theme="dark"] .data-table td,
+body[data-theme="dark"] .payments-table td,
+body[data-theme="dark"] .table-container td {
+  background: transparent !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] table tbody tr:hover,
+body[data-theme="dark"] .data-table tbody tr:hover,
+body[data-theme="dark"] .payments-table tbody tr:hover,
+body[data-theme="dark"] .table-container tbody tr:hover {
+  background: var(--nuvora-blue-soft) !important;
+}
+
+body[data-theme="dark"] a {
+  color: var(--nuvora-blue) !important;
+}
+
+body[data-theme="dark"] .status-badge,
+body[data-theme="dark"] .status-pill,
+body[data-theme="dark"] .badge,
+body[data-theme="dark"] .tone-emerald,
+body[data-theme="dark"] .tone-teal,
+body[data-theme="dark"] .tone-amber,
+body[data-theme="dark"] .tone-rose,
+body[data-theme="dark"] .tone-blue {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] svg {
+  color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="dark"] *,
+  body[data-theme="dark"] *::before,
+  body[data-theme="dark"] *::after {
+    transition: none !important;
+  }
+}
