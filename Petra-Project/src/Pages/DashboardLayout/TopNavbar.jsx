@@ -94,7 +94,7 @@ export default function TopNavbar({ onToggle }) {
           <button type="button" className="menu-btn" onClick={() => onToggle?.()} aria-label="Toggle sidebar">
             <Menu size={18} strokeWidth={2} />
           </button>
-          <div className="top-search" onClick={() => setPaletteOpen(true)} role="button" tabIndex={0} aria-label="Open command palette">
+          <div className="top-search" onClick={() => setPaletteOpen(true)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setPaletteOpen(true); } }} role="button" tabIndex={0} aria-haspopup="dialog" aria-expanded={paletteOpen} aria-label="Open command palette">
             <Search size={16} />
             <span className="search-placeholder">Search modules, learners, actions...</span>
             <kbd>⌘K</kbd>
