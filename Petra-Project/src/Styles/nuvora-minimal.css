@@ -1590,6 +1590,7 @@ body.light {
   --nuvora-blue: #2563eb;
   --nuvora-blue-hover: #1d4ed8;
   --nuvora-blue-soft: #eff6ff;
+  --warning: #d97706 !important;
   --app-bg: #f7f9fc !important;
   --app-surface: #ffffff !important;
   --app-surface-strong: #eef3f9 !important;
@@ -1655,6 +1656,7 @@ body.dark {
   --nuvora-blue: #78aaff;
   --nuvora-blue-hover: #a3c4ff;
   --nuvora-blue-soft: #1b3153;
+  --warning: #fbbf24 !important;
   --app-bg: #0b1220 !important;
   --app-surface: #111c2e !important;
   --app-surface-strong: #18263b !important;
@@ -2109,4 +2111,57 @@ body[data-theme="dark"] .dashboard-shell .tone-rose {
   .dashboard-page .form-card {
     padding: 14px !important;
   }
+}
+
+
+/* Higher-specificity fixes for legacy topbar declarations. */
+.dashboard-shell {
+  --nuvora-blue: var(--petra-blue) !important;
+  --nuvora-blue-dark: var(--petra-blue-hover) !important;
+  --nuvora-blue-soft: var(--petra-blue-soft) !important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn,
+.dashboard-shell .top-navbar .notification-action {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn svg,
+.dashboard-shell .top-navbar .notification-action svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar {
+  background: #111c2e !important;
+  color: #e8eef8 !important;
+  border-bottom-color: #2a3650 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .menu-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .icon-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-info {
+  background: #18263b !important;
+  color: #e8eef8 !important;
+  border-color: #34445f !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .menu-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .icon-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-info svg {
+  color: #e8eef8 !important;
+  stroke: #e8eef8 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .ask-nuvora-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .notification-action {
+  background: #78aaff !important;
+  border-color: #78aaff !important;
+  color: #081326 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .ask-nuvora-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .notification-action svg {
+  color: #081326 !important;
+  stroke: #081326 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .top-welcome,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-name,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-meta strong {
+  color: #e8eef8 !important;
 }
