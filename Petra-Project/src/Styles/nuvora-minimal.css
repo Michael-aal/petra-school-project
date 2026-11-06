@@ -1276,3 +1276,892 @@ a > svg.lucide {
     height: 18px !important;
   }
 }
+
+
+/* =========================================================
+   PETRA THEME CONTRACT
+   Theme state is owned by utils/theme.js and exposed through
+   data-theme on html/body. These rules intentionally come
+   after the legacy light-only layers so both modes agree.
+   ========================================================= */
+:root,
+html[data-theme="light"],
+body[data-theme="light"] {
+  color-scheme: light;
+  --nuvora-bg: #ffffff;
+  --nuvora-surface: #ffffff;
+  --nuvora-surface-muted: #f7f7f8;
+  --nuvora-text: #111111;
+  --nuvora-text-strong: #171717;
+  --nuvora-text-muted: #666666;
+  --nuvora-border: #e5e5e5;
+  --nuvora-blue: #1877f2;
+  --nuvora-blue-hover: #0f5dcc;
+  --nuvora-blue-soft: #eff6ff;
+}
+
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  color-scheme: dark !important;
+  --nuvora-bg: #0b1020;
+  --nuvora-surface: #121a2b;
+  --nuvora-surface-muted: #182236;
+  --nuvora-text: #f3f6fc;
+  --nuvora-text-strong: #ffffff;
+  --nuvora-text-muted: #aab6ca;
+  --nuvora-border: #2a3650;
+  --nuvora-blue: #78aaff;
+  --nuvora-blue-hover: #9bc0ff;
+  --nuvora-blue-soft: #1b3153;
+  --app-bg: var(--nuvora-bg) !important;
+  --app-surface: var(--nuvora-surface) !important;
+  --app-surface-strong: var(--nuvora-surface-muted) !important;
+  --app-card: var(--nuvora-surface) !important;
+  --app-panel: var(--nuvora-surface) !important;
+  --app-text: var(--nuvora-text) !important;
+  --app-text-muted: var(--nuvora-text-muted) !important;
+  --app-border: var(--nuvora-border) !important;
+  --background: var(--nuvora-bg) !important;
+  --foreground: var(--nuvora-text) !important;
+  --card: var(--nuvora-surface) !important;
+  --card-foreground: var(--nuvora-text) !important;
+  --popover: var(--nuvora-surface) !important;
+  --popover-foreground: var(--nuvora-text) !important;
+  --muted: var(--nuvora-surface-muted) !important;
+  --muted-foreground: var(--nuvora-text-muted) !important;
+  --border: var(--nuvora-border) !important;
+  --input: var(--nuvora-border) !important;
+  --dashboard-page-bg: var(--nuvora-bg) !important;
+  --dashboard-topbar-bg: var(--nuvora-surface) !important;
+  --dashboard-topbar-text: var(--nuvora-text) !important;
+  --dashboard-topbar-muted: var(--nuvora-text-muted) !important;
+  --dashboard-card-bg: var(--nuvora-surface) !important;
+  --dashboard-card-text: var(--nuvora-text) !important;
+  --dashboard-card-muted: var(--nuvora-text-muted) !important;
+  --dashboard-panel-bg: var(--nuvora-surface) !important;
+  --dashboard-sidebar-bg: var(--nuvora-surface) !important;
+  --dashboard-sidebar-text: var(--nuvora-text) !important;
+  --dashboard-sidebar-muted: var(--nuvora-text-muted) !important;
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+body[data-theme="dark"],
+body[data-theme="dark"] #root {
+  background: var(--nuvora-bg) !important;
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6,
+body[data-theme="dark"] strong,
+body[data-theme="dark"] b {
+  color: var(--nuvora-text-strong) !important;
+}
+
+body[data-theme="dark"] p,
+body[data-theme="dark"] li,
+body[data-theme="dark"] label,
+body[data-theme="dark"] small,
+body[data-theme="dark"] .muted,
+body[data-theme="dark"] [class*="subtitle"],
+body[data-theme="dark"] [class*="description"] {
+  color: var(--nuvora-text-muted) !important;
+}
+
+body[data-theme="dark"] .dashboard-shell,
+body[data-theme="dark"] .dashboard-main,
+body[data-theme="dark"] .dashboard-content,
+body[data-theme="dark"] .dashboard-page,
+body[data-theme="dark"] .page-container,
+body[data-theme="dark"] .content-container,
+body[data-theme="dark"] .generic-list-page {
+  background: var(--nuvora-bg) !important;
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .panel,
+body[data-theme="dark"] .stat-card,
+body[data-theme="dark"] .form-card,
+body[data-theme="dark"] .settings-card,
+body[data-theme="dark"] .wallet-panel,
+body[data-theme="dark"] .payments-panel,
+body[data-theme="dark"] .modal-content,
+body[data-theme="dark"] .dashboard-widget,
+body[data-theme="dark"] .dashboard-home-panel,
+body[data-theme="dark"] .dashboard-home-summary-card,
+body[data-theme="dark"] .layout-card,
+body[data-theme="dark"] .table-container,
+body[data-theme="dark"] .notification-dropdown,
+body[data-theme="dark"] .account-dropdown,
+body[data-theme="dark"] .command-palette,
+body[data-theme="dark"] .command-palette-content {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%) !important;
+}
+
+body[data-theme="dark"] .top-navbar {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-bottom-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .top-welcome,
+body[data-theme="dark"] .user-name,
+body[data-theme="dark"] .greets,
+body[data-theme="dark"] .user-caret,
+body[data-theme="dark"] .account-dropdown-actions button,
+body[data-theme="dark"] .notification-header strong {
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .menu-btn,
+body[data-theme="dark"] .icon-btn,
+body[data-theme="dark"] .ask-nuvora-btn,
+body[data-theme="dark"] .user-info,
+body[data-theme="dark"] .account-dropdown-actions button {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .sidebar-container,
+body[data-theme="dark"] .dashboard-sidebar,
+body[data-theme="dark"] .sidebar,
+body[data-theme="dark"] .dashboard-nav {
+  background: var(--nuvora-surface) !important;
+  color: var(--nuvora-text) !important;
+  border-right-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .sidebar-header,
+body[data-theme="dark"] .sidebar-footer {
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .brand-title,
+body[data-theme="dark"] .sidebar-user h3 {
+  color: var(--nuvora-text) !important;
+}
+
+body[data-theme="dark"] .brand-sub,
+body[data-theme="dark"] .sidebar-section-label,
+body[data-theme="dark"] .sidebar-user h4,
+body[data-theme="dark"] .sidebar-link,
+body[data-theme="dark"] .sidebar-group,
+body[data-theme="dark"] .sidebar-assistant,
+body[data-theme="dark"] .sidebar-child {
+  color: var(--nuvora-text-muted) !important;
+}
+
+body[data-theme="dark"] .sidebar-link:hover,
+body[data-theme="dark"] .sidebar-group:hover,
+body[data-theme="dark"] .sidebar-assistant:hover,
+body[data-theme="dark"] .sidebar-child:hover,
+body[data-theme="dark"] .sidebar-link.active,
+body[data-theme="dark"] .sidebar-group.group-active,
+body[data-theme="dark"] .sidebar-assistant.active,
+body[data-theme="dark"] .sidebar-child.active {
+  background: var(--nuvora-blue-soft) !important;
+  color: var(--nuvora-blue) !important;
+  border-color: transparent !important;
+}
+
+body[data-theme="dark"] input,
+body[data-theme="dark"] select,
+body[data-theme="dark"] textarea,
+body[data-theme="dark"] .form-input,
+body[data-theme="dark"] .form-select {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder {
+  color: #8998b0 !important;
+}
+
+body[data-theme="dark"] .btn-secondary,
+body[data-theme="dark"] .btn-ghost,
+body[data-theme="dark"] .landing-button-secondary {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] .btn-primary,
+body[data-theme="dark"] button[type="submit"],
+body[data-theme="dark"] .landing-button-primary,
+body[data-theme="dark"] .notification-action {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+body[data-theme="dark"] table th,
+body[data-theme="dark"] .data-table th,
+body[data-theme="dark"] .payments-table th,
+body[data-theme="dark"] .table-container th {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text-muted) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] table td,
+body[data-theme="dark"] .data-table td,
+body[data-theme="dark"] .payments-table td,
+body[data-theme="dark"] .table-container td {
+  background: transparent !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] table tbody tr:hover,
+body[data-theme="dark"] .data-table tbody tr:hover,
+body[data-theme="dark"] .payments-table tbody tr:hover,
+body[data-theme="dark"] .table-container tbody tr:hover {
+  background: var(--nuvora-blue-soft) !important;
+}
+
+body[data-theme="dark"] a {
+  color: var(--nuvora-blue) !important;
+}
+
+body[data-theme="dark"] .status-badge,
+body[data-theme="dark"] .status-pill,
+body[data-theme="dark"] .badge,
+body[data-theme="dark"] .tone-emerald,
+body[data-theme="dark"] .tone-teal,
+body[data-theme="dark"] .tone-amber,
+body[data-theme="dark"] .tone-rose,
+body[data-theme="dark"] .tone-blue {
+  background: var(--nuvora-surface-muted) !important;
+  color: var(--nuvora-text) !important;
+  border-color: var(--nuvora-border) !important;
+}
+
+body[data-theme="dark"] svg {
+  color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="dark"] *,
+  body[data-theme="dark"] *::before,
+  body[data-theme="dark"] *::after {
+    transition: none !important;
+  }
+}
+
+
+/* =========================================================
+   PETRA FINAL MODE + RESPONSIVE CONTRACT
+   This is the last dashboard presentation layer. Keep theme
+   state in utils/theme.js; CSS only consumes data-theme.
+   ========================================================= */
+:root,
+html[data-theme="light"],
+body[data-theme="light"],
+body.light {
+  color-scheme: light;
+  --petra-navy: #0f2747;
+  --petra-blue: #2563eb;
+  --petra-blue-hover: #1d4ed8;
+  --petra-blue-soft: #eff6ff;
+  --petra-canvas: #f7f9fc;
+  --petra-white: #ffffff;
+  --petra-ink: #10233f;
+  --petra-muted: #64748b;
+  --petra-border: #e2e8f0;
+  --nuvora-bg: #f7f9fc;
+  --nuvora-surface: #ffffff;
+  --nuvora-surface-muted: #eef3f9;
+  --nuvora-text: #10233f;
+  --nuvora-text-strong: #0f2747;
+  --nuvora-text-muted: #64748b;
+  --nuvora-border: #e2e8f0;
+  --nuvora-blue: #2563eb;
+  --nuvora-blue-hover: #1d4ed8;
+  --nuvora-blue-soft: #eff6ff;
+  --warning: #d97706 !important;
+  --app-bg: #f7f9fc !important;
+  --app-surface: #ffffff !important;
+  --app-surface-strong: #eef3f9 !important;
+  --app-card: #ffffff !important;
+  --app-panel: #ffffff !important;
+  --app-text: #10233f !important;
+  --app-text-muted: #64748b !important;
+  --app-border: #e2e8f0 !important;
+  --app-accent: #2563eb !important;
+  --app-accent-2: #1d4ed8 !important;
+  --background: #f7f9fc !important;
+  --foreground: #10233f !important;
+  --card: #ffffff !important;
+  --card-foreground: #10233f !important;
+  --popover: #ffffff !important;
+  --popover-foreground: #10233f !important;
+  --primary: #2563eb !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: #eef3f9 !important;
+  --secondary-foreground: #0f2747 !important;
+  --muted: #eef3f9 !important;
+  --muted-foreground: #64748b !important;
+  --border: #e2e8f0 !important;
+  --input: #cbd5e1 !important;
+  --ring: #2563eb !important;
+  --warning: #d97706 !important;
+  --dashboard-page-bg: #f7f9fc !important;
+  --dashboard-sidebar-bg: #0f2747 !important;
+  --dashboard-sidebar-text: #ffffff !important;
+  --dashboard-sidebar-muted: #c4d1e2 !important;
+  --dashboard-topbar-bg: #ffffff !important;
+  --dashboard-topbar-text: #10233f !important;
+  --dashboard-topbar-muted: #64748b !important;
+  --dashboard-card-bg: #ffffff !important;
+  --dashboard-card-text: #10233f !important;
+  --dashboard-card-muted: #64748b !important;
+  --dashboard-panel-bg: #ffffff !important;
+  --dashboard-panel-text: #10233f !important;
+  --dashboard-panel-muted: #64748b !important;
+  --dashboard-muted-surface: #eef3f9 !important;
+}
+
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.dark {
+  color-scheme: dark !important;
+  --petra-navy: #0b1425;
+  --petra-blue: #78aaff;
+  --petra-blue-hover: #a3c4ff;
+  --petra-blue-soft: #1b3153;
+  --petra-canvas: #0b1220;
+  --petra-white: #111c2e;
+  --petra-ink: #f3f6fc;
+  --petra-muted: #aab6ca;
+  --petra-border: #2a3650;
+  --nuvora-bg: #0b1220;
+  --nuvora-surface: #111c2e;
+  --nuvora-surface-muted: #18263b;
+  --nuvora-text: #e8eef8;
+  --nuvora-text-strong: #ffffff;
+  --nuvora-text-muted: #aab6ca;
+  --nuvora-border: #2a3650;
+  --nuvora-blue: #78aaff;
+  --nuvora-blue-hover: #a3c4ff;
+  --nuvora-blue-soft: #1b3153;
+  --warning: #fbbf24 !important;
+  --app-bg: #0b1220 !important;
+  --app-surface: #111c2e !important;
+  --app-surface-strong: #18263b !important;
+  --app-card: #111c2e !important;
+  --app-panel: #111c2e !important;
+  --app-text: #e8eef8 !important;
+  --app-text-muted: #aab6ca !important;
+  --app-border: #2a3650 !important;
+  --app-accent: #78aaff !important;
+  --app-accent-2: #a3c4ff !important;
+  --background: #0b1220 !important;
+  --foreground: #e8eef8 !important;
+  --card: #111c2e !important;
+  --card-foreground: #e8eef8 !important;
+  --popover: #111c2e !important;
+  --popover-foreground: #e8eef8 !important;
+  --primary: #78aaff !important;
+  --primary-foreground: #081326 !important;
+  --secondary: #18263b !important;
+  --secondary-foreground: #e8eef8 !important;
+  --muted: #18263b !important;
+  --muted-foreground: #aab6ca !important;
+  --border: #2a3650 !important;
+  --input: #34445f !important;
+  --ring: #78aaff !important;
+  --warning: #fbbf24 !important;
+  --dashboard-page-bg: #0b1220 !important;
+  --dashboard-sidebar-bg: #0a1426 !important;
+  --dashboard-sidebar-text: #f3f6fc !important;
+  --dashboard-sidebar-muted: #aab6ca !important;
+  --dashboard-topbar-bg: #111c2e !important;
+  --dashboard-topbar-text: #e8eef8 !important;
+  --dashboard-topbar-muted: #aab6ca !important;
+  --dashboard-card-bg: #111c2e !important;
+  --dashboard-card-text: #e8eef8 !important;
+  --dashboard-card-muted: #aab6ca !important;
+  --dashboard-panel-bg: #111c2e !important;
+  --dashboard-panel-text: #e8eef8 !important;
+  --dashboard-panel-muted: #aab6ca !important;
+  --dashboard-muted-surface: #18263b !important;
+}
+
+/* Theme surfaces and type are driven only by the active tokens. */
+html,
+body,
+#root,
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content,
+.dashboard-page {
+  background: var(--app-bg) !important;
+  color: var(--app-text) !important;
+}
+body,
+button,
+input,
+select,
+textarea {
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page h3,
+.dashboard-page h4,
+.dashboard-page strong,
+.dashboard-page b {
+  color: var(--app-text) !important;
+}
+.dashboard-page p,
+.dashboard-page small,
+.dashboard-page label,
+.dashboard-page .muted,
+.dashboard-page [class*="description"],
+.dashboard-page [class*="subtitle"] {
+  color: var(--app-text-muted);
+}
+
+/* Navy is the structural anchor; blue is reserved for active/action states. */
+.dashboard-shell .sidebar-container,
+.dashboard-shell .dashboard-sidebar .sidebar-container {
+  background: var(--dashboard-sidebar-bg) !important;
+  color: var(--dashboard-sidebar-text) !important;
+  border-right: 1px solid var(--app-border) !important;
+}
+.dashboard-shell .sidebar-header,
+.dashboard-shell .sidebar-footer {
+  border-color: color-mix(in srgb, var(--dashboard-sidebar-text) 16%, transparent) !important;
+}
+.dashboard-shell .brand-title,
+.dashboard-shell .sidebar-user h3,
+.dashboard-shell .sidebar-link,
+.dashboard-shell .sidebar-group,
+.dashboard-shell .sidebar-assistant,
+.dashboard-shell .sidebar-child,
+.dashboard-shell .sidebar-icon,
+.dashboard-shell .child-icon,
+.dashboard-shell .arrow-icon {
+  color: var(--dashboard-sidebar-text) !important;
+}
+.dashboard-shell .brand-sub,
+.dashboard-shell .sidebar-section-label,
+.dashboard-shell .sidebar-user h4 {
+  color: var(--dashboard-sidebar-muted) !important;
+}
+.dashboard-shell .sidebar-link:hover,
+.dashboard-shell .sidebar-group:hover,
+.dashboard-shell .sidebar-assistant:hover,
+.dashboard-shell .sidebar-child:hover {
+  background: color-mix(in srgb, var(--dashboard-sidebar-text) 9%, transparent) !important;
+  color: var(--dashboard-sidebar-text) !important;
+}
+.dashboard-shell .sidebar-link.active,
+.dashboard-shell .sidebar-child.active,
+.dashboard-shell .sidebar-group.group-active,
+.dashboard-shell .sidebar-assistant.active {
+  background: color-mix(in srgb, var(--app-accent) 22%, transparent) !important;
+  border-color: color-mix(in srgb, var(--app-accent) 26%, transparent) !important;
+  color: var(--dashboard-sidebar-text) !important;
+}
+.dashboard-shell .sidebar-link.active::before,
+.dashboard-shell .sidebar-child.active::before,
+.dashboard-shell .sidebar-group.group-active::before {
+  background: var(--petra-blue) !important;
+}
+.dashboard-shell .sidebar-link.active svg,
+.dashboard-shell .sidebar-child.active svg,
+.dashboard-shell .sidebar-group.group-active svg {
+  color: var(--petra-blue) !important;
+  stroke: var(--petra-blue) !important;
+}
+
+/* Neutral navigation controls; only the main action gets a filled blue surface. */
+.dashboard-shell .top-navbar {
+  background: var(--dashboard-topbar-bg) !important;
+  color: var(--dashboard-topbar-text) !important;
+  border-bottom: 1px solid var(--app-border) !important;
+  box-shadow: 0 1px 8px rgb(15 39 71 / 4%) !important;
+}
+.dashboard-shell .menu-btn,
+.dashboard-shell .icon-btn,
+.dashboard-shell .user-info {
+  background: var(--app-surface) !important;
+  color: var(--app-text) !important;
+  border: 1px solid var(--app-border) !important;
+  box-shadow: none !important;
+}
+.dashboard-shell .ask-nuvora-btn,
+.dashboard-shell .notification-action,
+.dashboard-shell .btn-primary,
+.dashboard-shell button[type="submit"] {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+.dashboard-shell .ask-nuvora-btn svg,
+.dashboard-shell .notification-action svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+.dashboard-shell .top-welcome,
+.dashboard-shell .user-name,
+.dashboard-shell .user-meta strong,
+.dashboard-shell .notification-header strong,
+.dashboard-shell .account-dropdown-header strong {
+  color: var(--app-text) !important;
+}
+.dashboard-shell .greets,
+.dashboard-shell .user-caret,
+.dashboard-shell .user-meta span {
+  color: var(--app-text-muted) !important;
+}
+
+/* Shared dashboard surfaces, forms, menus and data tables. */
+.dashboard-shell .card,
+.dashboard-shell .panel,
+.dashboard-shell .stat-card,
+.dashboard-shell .form-card,
+.dashboard-shell .settings-card,
+.dashboard-shell .wallet-panel,
+.dashboard-shell .payments-panel,
+.dashboard-shell .dashboard-widget,
+.dashboard-shell .dashboard-home-panel,
+.dashboard-shell .dashboard-home-summary-card,
+.dashboard-shell .modal-content,
+.dashboard-shell .table-container,
+.dashboard-shell .notification-dropdown,
+.dashboard-shell .account-dropdown,
+.dashboard-shell .command-palette,
+.dashboard-shell .command-palette-content {
+  background: var(--app-surface) !important;
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+}
+.dashboard-shell input,
+.dashboard-shell select,
+.dashboard-shell textarea,
+.dashboard-shell .form-input,
+.dashboard-shell .form-select {
+  background: var(--app-surface) !important;
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+}
+.dashboard-shell input::placeholder,
+.dashboard-shell textarea::placeholder {
+  color: var(--app-text-muted) !important;
+  opacity: 1;
+}
+.dashboard-shell .btn-secondary,
+.dashboard-shell .btn-ghost,
+.dashboard-shell .menu-btn,
+.dashboard-shell .icon-btn {
+  color: var(--app-text) !important;
+}
+.dashboard-shell table th,
+.dashboard-shell .data-table th,
+.dashboard-shell .payments-table th,
+.dashboard-shell .table-container th {
+  background: var(--app-surface-strong) !important;
+  color: var(--app-text-muted) !important;
+  border-color: var(--app-border) !important;
+}
+.dashboard-shell table td,
+.dashboard-shell .data-table td,
+.dashboard-shell .payments-table td,
+.dashboard-shell .table-container td {
+  color: var(--app-text) !important;
+  border-color: var(--app-border) !important;
+}
+.dashboard-shell a {
+  color: var(--app-accent);
+}
+.dashboard-shell .status-badge.warning,
+.dashboard-shell .status-pill.warning,
+.dashboard-shell .status-pill.pending,
+.dashboard-shell .tone-amber {
+  background: #fffbeb !important;
+  color: #92400e !important;
+}
+.dashboard-shell .status-badge.success,
+.dashboard-shell .status-pill.success,
+.dashboard-shell .tone-emerald,
+.dashboard-shell .tone-teal {
+  background: #ecfdf3 !important;
+  color: #166534 !important;
+}
+.dashboard-shell .status-badge.danger,
+.dashboard-shell .status-pill.danger,
+.dashboard-shell .tone-rose {
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+}
+body[data-theme="dark"] .dashboard-shell .status-badge.warning,
+body[data-theme="dark"] .dashboard-shell .status-pill.warning,
+body[data-theme="dark"] .dashboard-shell .status-pill.pending,
+body[data-theme="dark"] .dashboard-shell .tone-amber {
+  background: #3b2b12 !important;
+  color: #fcd34d !important;
+}
+body[data-theme="dark"] .dashboard-shell .status-badge.success,
+body[data-theme="dark"] .dashboard-shell .status-pill.success,
+body[data-theme="dark"] .dashboard-shell .tone-emerald,
+body[data-theme="dark"] .dashboard-shell .tone-teal {
+  background: #123526 !important;
+  color: #86efac !important;
+}
+body[data-theme="dark"] .dashboard-shell .status-badge.danger,
+body[data-theme="dark"] .dashboard-shell .status-pill.danger,
+body[data-theme="dark"] .dashboard-shell .tone-rose {
+  background: #3b1e26 !important;
+  color: #fda4af !important;
+}
+
+/* Mobile layout: prevent overflow and give every control room to breathe. */
+.dashboard-shell,
+.dashboard-main,
+.dashboard-content,
+.dashboard-page,
+.dashboard-page > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.dashboard-content {
+  overflow-x: clip;
+}
+.dashboard-page .table-container,
+.dashboard-page .table-scroll,
+.dashboard-page [class*="table-responsive"] {
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+.dashboard-page .data-table,
+.dashboard-page .payments-table,
+.dashboard-page .table-container table {
+  min-width: 620px;
+}
+@media (max-width: 900px) {
+  .dashboard-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: clip;
+  }
+  .dashboard-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 100 !important;
+    width: min(288px, calc(100vw - 52px)) !important;
+    max-width: calc(100vw - 52px) !important;
+    height: 100dvh;
+    transform: translateX(-100%);
+  }
+  .dashboard-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+  .dashboard-shell .sidebar-container,
+  .dashboard-shell .sidebar-container.collapsed {
+    width: min(288px, calc(100vw - 52px)) !important;
+    min-width: min(288px, calc(100vw - 52px)) !important;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .sidebar-backdrop {
+    z-index: 90 !important;
+  }
+  .dashboard-main {
+    width: 100%;
+    max-width: 100%;
+  }
+  .dashboard-content {
+    width: 100%;
+    max-width: none;
+    padding: 20px 16px 36px !important;
+  }
+}
+@media (max-width: 640px) {
+  .dashboard-content {
+    padding: 16px 14px 28px !important;
+  }
+  .dashboard-page [class*="grid-cols-2"],
+  .dashboard-page [class*="grid-cols-3"],
+  .dashboard-page [class*="grid-cols-4"],
+  .dashboard-page [class*="grid-cols-5"],
+  .dashboard-page [class*="grid-cols-6"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .dashboard-page .page-header,
+  .dashboard-page .dashboard-header,
+  .dashboard-page .section-header {
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .dashboard-page .toolbar,
+  .dashboard-page .filters,
+  .dashboard-page .actions,
+  .dashboard-page .form-actions,
+  .dashboard-page .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  .dashboard-page .toolbar > *,
+  .dashboard-page .filters > *,
+  .dashboard-page .actions > *,
+  .dashboard-page .form-actions > *,
+  .dashboard-page .button-group > * {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 auto;
+  }
+  .dashboard-page input,
+  .dashboard-page select,
+  .dashboard-page textarea {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 16px !important;
+  }
+  .dashboard-page .card,
+  .dashboard-page .panel,
+  .dashboard-page .stat-card,
+  .dashboard-page .form-card,
+  .dashboard-page .settings-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .dashboard-shell .top-navbar {
+    min-height: 60px !important;
+    padding-inline: 12px !important;
+    gap: 8px;
+  }
+  .dashboard-shell .top-left,
+  .dashboard-shell .top-right {
+    gap: 6px !important;
+    min-width: 0;
+  }
+  .dashboard-shell .top-search {
+    width: 38px !important;
+    min-width: 38px !important;
+    padding-inline: 0 !important;
+    justify-content: center;
+  }
+  .dashboard-shell .top-search .search-placeholder,
+  .dashboard-shell .top-search kbd {
+    display: none !important;
+  }
+  .dashboard-shell .menu-btn,
+  .dashboard-shell .icon-btn,
+  .dashboard-shell .user-info {
+    min-width: 36px !important;
+    width: 36px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+  }
+  .dashboard-shell .user-meta,
+  .dashboard-shell .user-info > svg {
+    display: none !important;
+  }
+  .dashboard-shell .avatar,
+  .dashboard-shell .user-avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .dashboard-page .modal-content,
+  .dashboard-page .modal-card,
+  .dashboard-page .dialog-content {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+  }
+  .dashboard-page button,
+  .dashboard-page .btn,
+  .dashboard-page .sidebar-link,
+  .dashboard-page .sidebar-group {
+    min-height: 44px;
+  }
+}
+@media (max-width: 420px) {
+  .dashboard-content {
+    padding-inline: 10px !important;
+  }
+  .dashboard-page h1 {
+    font-size: 1.4rem !important;
+    line-height: 1.2;
+  }
+  .dashboard-page .card,
+  .dashboard-page .panel,
+  .dashboard-page .form-card {
+    padding: 14px !important;
+  }
+}
+
+
+/* Higher-specificity fixes for legacy topbar declarations. */
+.dashboard-shell {
+  --nuvora-blue: var(--petra-blue) !important;
+  --nuvora-blue-dark: var(--petra-blue-hover) !important;
+  --nuvora-blue-soft: var(--petra-blue-soft) !important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn,
+.dashboard-shell .top-navbar .notification-action {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+.dashboard-shell .top-navbar .ask-nuvora-btn svg,
+.dashboard-shell .top-navbar .notification-action svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar {
+  background: #111c2e !important;
+  color: #e8eef8 !important;
+  border-bottom-color: #2a3650 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .menu-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .icon-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-info {
+  background: #18263b !important;
+  color: #e8eef8 !important;
+  border-color: #34445f !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .menu-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .icon-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-info svg {
+  color: #e8eef8 !important;
+  stroke: #e8eef8 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .ask-nuvora-btn,
+body[data-theme="dark"] .dashboard-shell .top-navbar .notification-action {
+  background: #78aaff !important;
+  border-color: #78aaff !important;
+  color: #081326 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .ask-nuvora-btn svg,
+body[data-theme="dark"] .dashboard-shell .top-navbar .notification-action svg {
+  color: #081326 !important;
+  stroke: #081326 !important;
+}
+body[data-theme="dark"] .dashboard-shell .top-navbar .top-welcome,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-name,
+body[data-theme="dark"] .dashboard-shell .top-navbar .user-meta strong {
+  color: #e8eef8 !important;
+}

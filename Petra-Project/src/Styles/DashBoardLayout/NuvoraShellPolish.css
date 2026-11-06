@@ -257,9 +257,7 @@
 .dashboard-shell .notification-action{background:var(--nuvora-blue)!important;color:#fff!important}
 .dashboard-shell .account-dropdown-actions button:hover{background:var(--nuvora-blue-soft)!important;color:var(--nuvora-blue)!important}
 
-/* Kill accidental orange/amber utility styling inside the dashboard. */
-.dashboard-shell [class*="text-orange"],.dashboard-shell [class*="text-amber"],.dashboard-shell [class*="bg-orange"],.dashboard-shell [class*="bg-amber"],.dashboard-shell [class*="border-orange"],.dashboard-shell [class*="border-amber"],.dashboard-shell [class*="from-orange"],.dashboard-shell [class*="to-orange"],.dashboard-shell [class*="from-amber"],.dashboard-shell [class*="to-amber"]{color:var(--nuvora-blue)!important;border-color:var(--nuvora-blue)!important;background-color:transparent!important;background-image:none!important}
-@media(max-width:900px){.dashboard-shell .top-navbar{height:60px!important;min-height:60px!important;padding:0 14px!important}}
+/* Kill accidental orange/amber utility styling inside the dashboard. */\n@media(max-width:900px){.dashboard-shell .top-navbar{height:60px!important;min-height:60px!important;padding:0 14px!important}}
 @media(prefers-reduced-motion:no-preference){.dashboard-shell .sidebar-link,.dashboard-shell .sidebar-group,.dashboard-shell .sidebar-child,.dashboard-shell .sidebar-assistant,.dashboard-shell .menu-btn,.dashboard-shell .icon-btn,.dashboard-shell .ask-nuvora-btn,.dashboard-shell .user-info{transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,transform 160ms ease,box-shadow 160ms ease!important}}
 
 
@@ -843,7 +841,6 @@
   background: var(--ui-brand-soft) !important;
 }
 
-.dashboard-shell [class*="text-orange"],
 .dashboard-shell [class*="text-amber"],
 .dashboard-shell [class*="text-coral"] {
   color: var(--ui-brand) !important;
