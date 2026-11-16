@@ -35,7 +35,7 @@ function useDropdown() {
     const frame = window.requestAnimationFrame(() => menu?.querySelector('[role="menuitem"]')?.focus());
     return () => window.cancelAnimationFrame(frame);
   }, [open, menu]);
-  return { open, setOpen, close, setRootNode: setRoot, setTriggerNode: setTrigger, setMenuNode: setMenu, menuElement: menu };
+  return [open, setOpen, close, setRoot, setTrigger, setMenu, menu];
 }
 
 function moveMenuFocus(event, menu) {
@@ -58,8 +58,8 @@ const toNotification = (item) => ({
 export default function AdminTopNavbar({ onMenuClick }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
-  const notificationDropdown = useDropdown();
-  const profileDropdown = useDropdown();
+  const [notificationsOpen, setNotificationsOpen, closeNotifications, setNotificationRoot, setNotificationTrigger, setNotificationMenu, notificationMenuElement] = useDropdown();
+  const [profileOpen, setProfileOpen, closeProfile, setProfileRoot, setProfileTrigger, setProfileMenu, profileMenuElement] = useDropdown();
   const [notifications, setNotifications] = useState([]);
   const [unreadTotal, setUnreadTotal] = useState(0);
   const [notificationError, setNotificationError] = useState("");
@@ -143,7 +143,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
   };
 
   const handleLogout = async () => {
-    profileDropdown.close(false);
+    closeProfile(false);
     try { await authApi.logout(); } catch { /* Always clear local session state. */ }
     try {
       window.sessionStorage.removeItem("petra_user_info");
@@ -154,7 +154,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
   };
 
   const openNotifications = () => {
-    notificationDropdown.close(false);
+    closeNotifications(false);
     navigate("/dashboard/communication/notifications");
   };
 
@@ -175,20 +175,20 @@ export default function AdminTopNavbar({ onMenuClick }) {
           title={dark ? "Switch to light mode" : "Switch to dark mode"}>
           {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
         </button>
-        <div className="tn-dropdown" ref={notificationDropdown.setRootNode}>
-          <button ref={notificationDropdown.setTriggerNode} type="button" className="tn-btn tn-bell-btn"
-            onClick={() => { profileDropdown.setOpen(false); notificationDropdown.setOpen((value) => !value); }}
+        <div className="tn-dropdown" ref={setNotificationRoot}>
+          <button ref={setNotificationTrigger} type="button" className="tn-btn tn-bell-btn"
+            onClick={() => { setProfileOpen(false); setNotificationsOpen((value) => !value); }}
             aria-label={unreadCount ? "Notifications, " + unreadCount + " unread" : "Notifications"}
-            title="Notifications" aria-haspopup="menu" aria-expanded={notificationDropdown.open} aria-controls="tn-notification-menu">
+            title="Notifications" aria-haspopup="menu" aria-expanded={notificationsOpen} aria-controls="tn-notification-menu">
             <Bell size={18} aria-hidden="true" />
             {unreadCount > 0 && <span className="tn-badge" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
           </button>
-          {notificationDropdown.open && (
-            <div ref={notificationDropdown.setMenuNode} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
-              role="menu" aria-label="Notifications" onKeyDown={(event) => moveMenuFocus(event, notificationDropdown.menuElement)}>
+          {notificationsOpen && (
+            <div ref={setNotificationMenu} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
+              role="menu" aria-label="Notifications" onKeyDown={(event) => moveMenuFocus(event, notificationMenuElement)}>
               <div className="tn-panel-head">
                 <div><strong>Notifications</strong><span>{unreadCount ? unreadCount + " unread" : "All caught up"}</span></div>
-                <button type="button" className="tn-x-btn" onClick={() => notificationDropdown.close(true)} aria-label="Close notifications"><X size={16} /></button>
+                <button type="button" className="tn-x-btn" onClick={() => closeNotifications(true)} aria-label="Close notifications"><X size={16} /></button>
               </div>
               <div className="tn-notification-list">
                 {notificationError ? (
@@ -211,20 +211,20 @@ export default function AdminTopNavbar({ onMenuClick }) {
             </div>
           )}
         </div>
-        <div className="tn-dropdown" ref={profileDropdown.setRootNode}>
-          <button ref={profileDropdown.setTriggerNode} type="button" className="tn-profile-btn"
-            onClick={() => { notificationDropdown.setOpen(false); profileDropdown.setOpen((value) => !value); }}
-            aria-haspopup="menu" aria-expanded={profileDropdown.open} aria-controls="tn-profile-menu">
+        <div className="tn-dropdown" ref={setProfileRoot}>
+          <button ref={setProfileTrigger} type="button" className="tn-profile-btn"
+            onClick={() => { setNotificationsOpen(false); setProfileOpen((value) => !value); }}
+            aria-haspopup="menu" aria-expanded={profileOpen} aria-controls="tn-profile-menu">
             <span className="tn-avatar" aria-hidden="true">{initials}</span>
             <span className="tn-profile-copy"><strong>{displayName}</strong><small>{role}</small></span>
-            <ChevronDown className={profileDropdown.open ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
+            <ChevronDown className={profileOpen ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
           </button>
-          {profileDropdown.open && (
-            <div ref={profileDropdown.setMenuNode} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
-              role="menu" aria-label="Profile menu" onKeyDown={(event) => moveMenuFocus(event, profileDropdown.menuElement)}>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/finance"); }}><CreditCard size={16} />Finance</button>
+          {profileOpen && (
+            <div ref={setProfileMenu} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
+              role="menu" aria-label="Profile menu" onKeyDown={(event) => moveMenuFocus(event, profileMenuElement)}>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/finance"); }}><CreditCard size={16} />Finance</button>
               <div className="tn-menu-divider" aria-hidden="true" />
               <button type="button" role="menuitem" className="tn-menu-item tn-danger-item" onClick={handleLogout}><LogOut size={16} />Logout</button>
             </div>
