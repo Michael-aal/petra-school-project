@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, CalendarDays, Check, ChevronDown, CreditCard, LogOut, Menu, Settings, UserRound, X, AlertCircle } from "lucide-react";
+import { Bell, CalendarDays, Check, ChevronDown, CreditCard, LogOut, Menu, Settings, UserRound, X, AlertCircle, Moon, Sun } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { notificationApi } from "../../services/notificationApi";
 import { getDisplayName, getFirstName, getUserInitials, normalizeUser } from "../../utils/userProfile";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
+import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "../../utils/theme.js";
 
 const formatToday = () => new Intl.DateTimeFormat("en-NG", { weekday: "long", month: "short", day: "numeric" }).format(new Date());
 
@@ -63,6 +64,29 @@ export default function AdminTopNavbar({ onMenuClick }) {
   const [unreadTotal, setUnreadTotal] = useState(0);
   const [notificationError, setNotificationError] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [dark, setDark] = useState(() => getInitialTheme() === "dark");
+
+  useEffect(() => {
+    const sync = (event) => setDark((event.detail || getInitialTheme()) === "dark");
+    const syncStorage = (event) => {
+      if (event.key !== "nuvora-theme") return;
+      const theme = event.newValue === "dark" ? "dark" : "light";
+      applyTheme(theme, { persist: false });
+      setDark(theme === "dark");
+    };
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    window.addEventListener("storage", syncStorage);
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, sync);
+      window.removeEventListener("storage", syncStorage);
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    const next = dark ? "light" : "dark";
+    applyTheme(next, { broadcast: true });
+    setDark(next === "dark");
+  };
 
   const loadNotifications = useCallback(async () => {
     try {
@@ -146,6 +170,11 @@ export default function AdminTopNavbar({ onMenuClick }) {
         </div>
       </div>
       <div className="tn-root__right">
+        <button type="button" className="tn-btn tn-theme-btn" onClick={toggleTheme}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+          {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+        </button>
         <div className="tn-dropdown" ref={notificationDropdown.rootRef}>
           <button ref={notificationDropdown.triggerRef} type="button" className="tn-btn tn-bell-btn"
             onClick={() => { profileDropdown.setOpen(false); notificationDropdown.setOpen((value) => !value); }}
