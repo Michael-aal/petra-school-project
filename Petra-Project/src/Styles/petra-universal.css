@@ -313,3 +313,243 @@ html[data-theme] :where(.dashboard-page button, .dashboard-content button, .navb
   outline: 2px solid var(--petra-primary, #1769d2);
   outline-offset: 3px;
 }
+
+
+/* --------------------------------------------------------------------------
+   Petra mobile sidebar clarity + consistent card surfaces across route families.
+   Keep the navigation itself crisp; only the page behind it is dimmed.
+   -------------------------------------------------------------------------- */
+
+/* Sidebar is a solid, readable surface on every viewport and in both themes. */
+html[data-theme] .dashboard-sidebar {
+  z-index: 40 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-container {
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  isolation: isolate;
+}
+html[data-theme] .dashboard-sidebar .sidebar-header,
+html[data-theme] .dashboard-sidebar .sidebar-nav,
+html[data-theme] .dashboard-sidebar .sidebar-footer,
+html[data-theme] .dashboard-sidebar .sidebar-section-label,
+html[data-theme] .dashboard-sidebar .sidebar-brand,
+html[data-theme] .dashboard-sidebar .brand-title,
+html[data-theme] .dashboard-sidebar .brand-sub,
+html[data-theme] .dashboard-sidebar .sidebar-label,
+html[data-theme] .dashboard-sidebar .sidebar-title,
+html[data-theme] .dashboard-sidebar .child-label,
+html[data-theme] .dashboard-sidebar .sidebar-link,
+html[data-theme] .dashboard-sidebar .sidebar-group,
+html[data-theme] .dashboard-sidebar .sidebar-child,
+html[data-theme] .dashboard-sidebar .sidebar-assistant {
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  visibility: visible !important;
+  text-shadow: none;
+}
+html[data-theme="light"] .dashboard-sidebar .sidebar-container {
+  --sidebar-bg: #ffffff;
+  --sidebar-surface: #f8fbff;
+  --sidebar-hover: #edf5ff;
+  --sidebar-active: #dcecff;
+  --sidebar-text: #10233f;
+  --sidebar-muted: #475569;
+  --sidebar-blue: #1769d2;
+  --sidebar-border: #dbe4f0;
+  background: #ffffff !important;
+  color: #10233f !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-container {
+  --sidebar-bg: #0f172a;
+  --sidebar-surface: #131f33;
+  --sidebar-hover: #1b2b43;
+  --sidebar-active: #173d70;
+  --sidebar-text: #f8fafc;
+  --sidebar-muted: #cbd5e1;
+  --sidebar-blue: #60a5fa;
+  --sidebar-border: #26364d;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link,
+html[data-theme] .dashboard-sidebar .sidebar-group,
+html[data-theme] .dashboard-sidebar .sidebar-child,
+html[data-theme] .dashboard-sidebar .sidebar-assistant {
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  border-radius: 11px;
+  color: var(--sidebar-muted) !important;
+  background: transparent !important;
+  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease, transform 160ms ease !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link:hover,
+html[data-theme] .dashboard-sidebar .sidebar-group:hover,
+html[data-theme] .dashboard-sidebar .sidebar-child:hover,
+html[data-theme] .dashboard-sidebar .sidebar-assistant:hover {
+  color: var(--sidebar-text) !important;
+  background: var(--sidebar-hover) !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link.active,
+html[data-theme] .dashboard-sidebar .sidebar-group.group-active,
+html[data-theme] .dashboard-sidebar .sidebar-child.active,
+html[data-theme] .dashboard-sidebar .sidebar-assistant.active {
+  color: var(--sidebar-blue) !important;
+  background: var(--sidebar-active) !important;
+  border-color: color-mix(in srgb, var(--sidebar-blue) 22%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sidebar-blue) 12%, transparent),
+              0 3px 12px color-mix(in srgb, var(--sidebar-blue) 13%, transparent) !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link.active::before,
+html[data-theme] .dashboard-sidebar .sidebar-group.group-active::before,
+html[data-theme] .dashboard-sidebar .sidebar-child.active::before,
+html[data-theme] .dashboard-sidebar .sidebar-assistant.active::before {
+  background: var(--sidebar-blue) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sidebar-blue) 55%, transparent);
+}
+html[data-theme] .dashboard-sidebar .sidebar-icon,
+html[data-theme] .dashboard-sidebar .child-icon,
+html[data-theme] .dashboard-sidebar .arrow-icon,
+html[data-theme] .dashboard-sidebar .sidebar-assistant-icon,
+html[data-theme] .dashboard-sidebar svg {
+  opacity: 1 !important;
+  visibility: visible !important;
+  stroke: currentColor !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-section-label {
+  color: #a9b8cd !important;
+}
+html[data-theme="light"] .dashboard-sidebar .sidebar-section-label {
+  color: #64748b !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-close {
+  color: #e2e8f0 !important;
+  background: #1b2b43 !important;
+  border-color: #334155 !important;
+}
+
+/* The scrim dims the page, never the drawer. */
+@media (max-width: 900px) {
+  html[data-theme] .dashboard-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: min(292px, 88vw) !important;
+    max-width: 88vw !important;
+    height: 100dvh !important;
+    transform: translateX(-105%);
+    z-index: 40 !important;
+    box-shadow: 18px 0 48px rgba(15, 23, 42, .18);
+    will-change: transform;
+  }
+  html[data-theme] .dashboard-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  html[data-theme] .dashboard-sidebar .sidebar-container,
+  html[data-theme] .dashboard-sidebar .sidebar-container.collapsed {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    background: var(--sidebar-bg) !important;
+  }
+  html[data-theme] .sidebar-backdrop {
+    z-index: 35 !important;
+    background: rgba(7, 15, 30, .48) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] .dashboard-sidebar,
+  html[data-theme] .dashboard-sidebar * {
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Semantic card/panel surfaces for legacy pages that still use local class names.
+   This applies to every dashboard role and public page card family. */
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace, main
+) :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-container, .table-wrapper, .page-card,
+  [class*="-card"], [class*="Card"], [class*="-panel"], [class*="Panel"],
+  [class*="-widget"], [class*="Widget"], [class*="-stat"], [class*="Stat"],
+  [class*="-tile"], [class*="Tile"]
+) {
+  background-color: #131f33 !important;
+  color: #f8fafc !important;
+  border-color: #26364d !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+html[data-theme="light"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace, main
+) :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-container, .table-wrapper, .page-card,
+  [class*="-card"], [class*="Card"], [class*="-panel"], [class*="Panel"],
+  [class*="-widget"], [class*="Widget"], [class*="-stat"], [class*="Stat"],
+  [class*="-tile"], [class*="Tile"]
+) {
+  background-color: #ffffff;
+  color: #10233f;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(h1, h2, h3, h4, h5, h6, strong, b, label, p, span, small, li, dt, dd) {
+  color: inherit;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(.muted, .text-muted, .description, .subtitle, small, .helper-text) {
+  color: #a9b8cd !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(input, select, textarea) {
+  color: #f8fafc !important;
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(th) {
+  color: #cbd5e1 !important;
+  background-color: #0f172a !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(td) {
+  color: #e2e8f0 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(.card *, .panel *, .stat-card *, .form-card *, .content-card *, .feature-card *, .dashboard-card *, .dashboard-widget *) {
+  color: inherit;
+}
