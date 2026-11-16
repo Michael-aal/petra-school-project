@@ -291,3 +291,25 @@ html[data-theme] :where(.dashboard-page, .dashboard-content) :where(button, a, i
 html[data-theme] :where(.dashboard-page button, .dashboard-content button, .navbar button) {
   cursor: pointer;
 }
+
+
+.petra-standalone-theme-toggle {
+  position: fixed;
+  z-index: 1200;
+  top: 16px;
+  right: 16px;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--petra-border-token, #dbe4f0);
+  border-radius: 12px;
+  background: var(--petra-surface, #ffffff);
+  color: var(--petra-text, #111827);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .12);
+  cursor: pointer;
+}
+.petra-standalone-theme-toggle:focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 3px;
+}
