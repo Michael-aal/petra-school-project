@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "../../utils/theme.js";
 
 import "../../Styles/components/Navbar.css";
 
@@ -29,6 +30,29 @@ const NuvoraLogo = ({ size = 18 }) => (
 export default function Navbar() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dark, setDark] = useState(() => getInitialTheme() === "dark");
+
+  useEffect(() => {
+    const sync = (event) => setDark((event.detail || getInitialTheme()) === "dark");
+    const syncStorage = (event) => {
+      if (event.key !== "nuvora-theme") return;
+      const theme = event.newValue === "dark" ? "dark" : "light";
+      applyTheme(theme, { persist: false });
+      setDark(theme === "dark");
+    };
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    window.addEventListener("storage", syncStorage);
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, sync);
+      window.removeEventListener("storage", syncStorage);
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    const next = dark ? "light" : "dark";
+    applyTheme(next, { broadcast: true });
+    setDark(next === "dark");
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,6 +97,9 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-right">
+          <button type="button" className="navbar-theme-toggle" onClick={toggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+          </button>
           {!isMobile && (
             <>
               <NavLink to="/signin" className="nav-sign-in">Sign in</NavLink>
