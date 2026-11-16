@@ -35,7 +35,7 @@ function useDropdown() {
     const frame = window.requestAnimationFrame(() => menu?.querySelector('[role="menuitem"]')?.focus());
     return () => window.cancelAnimationFrame(frame);
   }, [open, menu]);
-  return { open, setOpen, close, rootRef: setRoot, triggerRef: setTrigger, menuRef: setMenu, menuElement: menu };
+  return { open, setOpen, close, setRootNode: setRoot, setTriggerNode: setTrigger, setMenuNode: setMenu, menuElement: menu };
 }
 
 function moveMenuFocus(event, menu) {
@@ -175,8 +175,8 @@ export default function AdminTopNavbar({ onMenuClick }) {
           title={dark ? "Switch to light mode" : "Switch to dark mode"}>
           {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
         </button>
-        <div className="tn-dropdown" ref={notificationDropdown.rootRef}>
-          <button ref={notificationDropdown.triggerRef} type="button" className="tn-btn tn-bell-btn"
+        <div className="tn-dropdown" ref={notificationDropdown.setRootNode}>
+          <button ref={notificationDropdown.setTriggerNode} type="button" className="tn-btn tn-bell-btn"
             onClick={() => { profileDropdown.setOpen(false); notificationDropdown.setOpen((value) => !value); }}
             aria-label={unreadCount ? "Notifications, " + unreadCount + " unread" : "Notifications"}
             title="Notifications" aria-haspopup="menu" aria-expanded={notificationDropdown.open} aria-controls="tn-notification-menu">
@@ -184,7 +184,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
             {unreadCount > 0 && <span className="tn-badge" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
           </button>
           {notificationDropdown.open && (
-            <div ref={notificationDropdown.menuRef} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
+            <div ref={notificationDropdown.setMenuNode} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
               role="menu" aria-label="Notifications" onKeyDown={(event) => moveMenuFocus(event, notificationDropdown.menuElement)}>
               <div className="tn-panel-head">
                 <div><strong>Notifications</strong><span>{unreadCount ? unreadCount + " unread" : "All caught up"}</span></div>
@@ -211,8 +211,8 @@ export default function AdminTopNavbar({ onMenuClick }) {
             </div>
           )}
         </div>
-        <div className="tn-dropdown" ref={profileDropdown.rootRef}>
-          <button ref={profileDropdown.triggerRef} type="button" className="tn-profile-btn"
+        <div className="tn-dropdown" ref={profileDropdown.setRootNode}>
+          <button ref={profileDropdown.setTriggerNode} type="button" className="tn-profile-btn"
             onClick={() => { notificationDropdown.setOpen(false); profileDropdown.setOpen((value) => !value); }}
             aria-haspopup="menu" aria-expanded={profileDropdown.open} aria-controls="tn-profile-menu">
             <span className="tn-avatar" aria-hidden="true">{initials}</span>
@@ -220,7 +220,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
             <ChevronDown className={profileDropdown.open ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
           </button>
           {profileDropdown.open && (
-            <div ref={profileDropdown.menuRef} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
+            <div ref={profileDropdown.setMenuNode} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
               role="menu" aria-label="Profile menu" onKeyDown={(event) => moveMenuFocus(event, profileDropdown.menuElement)}>
               <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
               <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
