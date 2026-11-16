@@ -5,6 +5,7 @@ import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { notificationApi } from "../../services/notificationApi";
 import { getDisplayName, normalizeUser } from "../../utils/userProfile";
+import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "../../utils/theme.js";
 import UserAvatar from "../../components/UserAvatar";
 import CommandPalette from "../../components/CommandPalette/CommandPalette";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
@@ -14,7 +15,7 @@ export default function TopNavbar({ onToggle }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [dark, setDark] = useState(() => { try { return localStorage.getItem("shopeers-theme") === "dark"; } catch { return false; } });
+  const [dark, setDark] = useState(() => getInitialTheme() === "dark");
   const [unread, setUnread] = useState(Number(userInfo?.unreadNotifications || userInfo?.notificationCount || 0));
   const menuRef = useRef(null);
   const notificationRef = useRef(null);
@@ -22,9 +23,19 @@ export default function TopNavbar({ onToggle }) {
   const location = useLocation();
 
   useEffect(() => {
-    const sync = (event) => setDark(Boolean(event.detail));
-    window.addEventListener("shopeers-theme-change", sync);
-    return () => window.removeEventListener("shopeers-theme-change", sync);
+    const sync = (event) => setDark((event.detail || getInitialTheme()) === "dark");
+    const syncStorage = (event) => {
+      if (event.key !== "nuvora-theme") return;
+      const theme = event.newValue === "dark" ? "dark" : "light";
+      applyTheme(theme, { persist: false });
+      setDark(theme === "dark");
+    };
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    window.addEventListener("storage", syncStorage);
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, sync);
+      window.removeEventListener("storage", syncStorage);
+    };
   }, []);
 
   useEffect(() => {
@@ -66,11 +77,9 @@ export default function TopNavbar({ onToggle }) {
   }, [location.pathname]);
 
   const toggleTheme = () => {
-    const next = !dark;
-    setDark(next);
-    try { localStorage.setItem("shopeers-theme", next ? "dark" : "light"); } catch {}
-    document.documentElement.classList.toggle("shopeers-dark", next);
-    window.dispatchEvent(new CustomEvent("shopeers-theme-change", { detail: next }));
+    const next = dark ? "light" : "dark";
+    applyTheme(next, { broadcast: true });
+    setDark(next === "dark");
   };
 
   const logout = async () => {
