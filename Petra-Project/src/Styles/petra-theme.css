@@ -1,5 +1,5 @@
 /* Petra Design System — Future Blue
- * Visual system: 60% white / 30% deep navy / 10% electric blue.
+ * Visual system: 70% white / 20% blue / 5% black / 5% neutral in light mode.
  * This layer intentionally changes presentation only; routes, API calls and workflows remain untouched.
  */
 
@@ -604,6 +604,46 @@ body[data-theme="light"] {
   --petra-warning: #a16207;
   --petra-danger: #b91c1c;
   --petra-info: #1d4ed8;
+  --app-bg: var(--petra-bg);
+  --app-surface: var(--petra-surface);
+  --app-surface-strong: var(--petra-surface-muted);
+  --app-card: var(--petra-surface);
+  --app-panel: var(--petra-surface);
+  --app-text: var(--petra-text);
+  --app-text-muted: var(--petra-text-muted);
+  --app-border: var(--petra-border-token);
+  --app-accent: var(--petra-primary);
+  --app-accent-2: var(--petra-primary-hover);
+  --background: var(--petra-bg);
+  --foreground: var(--petra-text);
+  --card: var(--petra-surface);
+  --card-foreground: var(--petra-text);
+  --popover: var(--petra-surface);
+  --popover-foreground: var(--petra-text);
+  --primary: var(--petra-primary);
+  --primary-foreground: #ffffff;
+  --muted-foreground: var(--petra-text-muted);
+  --border: var(--petra-border-token);
+  --input: var(--petra-border-token);
+  --ring: var(--petra-primary);
+  --success: var(--petra-success);
+  --warning: var(--petra-warning);
+  --danger: var(--petra-danger);
+  --info: var(--petra-info);
+  --dashboard-page-bg: var(--petra-bg);
+  --dashboard-topbar-bg: var(--petra-surface);
+  --dashboard-topbar-text: var(--petra-text);
+  --dashboard-topbar-muted: var(--petra-text-muted);
+  --dashboard-card-bg: var(--petra-surface);
+  --dashboard-card-text: var(--petra-text);
+  --dashboard-card-muted: var(--petra-text-muted);
+  --dashboard-panel-bg: var(--petra-surface);
+  --dashboard-panel-text: var(--petra-text);
+  --dashboard-panel-muted: var(--petra-text-muted);
+  --dashboard-muted-surface: var(--petra-surface-muted);
+  --dashboard-sidebar-bg: var(--petra-surface);
+  --dashboard-sidebar-text: var(--petra-text);
+  --dashboard-sidebar-muted: var(--petra-text-secondary);
 }
 html[data-theme="dark"],
 body[data-theme="dark"] {
@@ -622,6 +662,46 @@ body[data-theme="dark"] {
   --petra-warning: #fbbf24;
   --petra-danger: #f87171;
   --petra-info: #60a5fa;
+  --app-bg: var(--petra-bg);
+  --app-surface: var(--petra-surface);
+  --app-surface-strong: var(--petra-surface-muted);
+  --app-card: var(--petra-surface);
+  --app-panel: var(--petra-surface);
+  --app-text: var(--petra-text);
+  --app-text-muted: var(--petra-text-muted);
+  --app-border: var(--petra-border-token);
+  --app-accent: var(--petra-primary);
+  --app-accent-2: var(--petra-primary-hover);
+  --background: var(--petra-bg);
+  --foreground: var(--petra-text);
+  --card: var(--petra-surface);
+  --card-foreground: var(--petra-text);
+  --popover: var(--petra-surface);
+  --popover-foreground: var(--petra-text);
+  --primary: var(--petra-primary);
+  --primary-foreground: #ffffff;
+  --muted-foreground: var(--petra-text-muted);
+  --border: var(--petra-border-token);
+  --input: var(--petra-border-token);
+  --ring: var(--petra-primary);
+  --success: var(--petra-success);
+  --warning: var(--petra-warning);
+  --danger: var(--petra-danger);
+  --info: var(--petra-info);
+  --dashboard-page-bg: var(--petra-bg);
+  --dashboard-topbar-bg: var(--petra-surface);
+  --dashboard-topbar-text: var(--petra-text);
+  --dashboard-topbar-muted: var(--petra-text-muted);
+  --dashboard-card-bg: var(--petra-surface);
+  --dashboard-card-text: var(--petra-text);
+  --dashboard-card-muted: var(--petra-text-muted);
+  --dashboard-panel-bg: var(--petra-surface);
+  --dashboard-panel-text: var(--petra-text);
+  --dashboard-panel-muted: var(--petra-text-muted);
+  --dashboard-muted-surface: var(--petra-surface-muted);
+  --dashboard-sidebar-bg: var(--petra-surface-muted);
+  --dashboard-sidebar-text: var(--petra-text);
+  --dashboard-sidebar-muted: var(--petra-text-secondary);
 }
 html[data-theme] body,
 html[data-theme] #root {
