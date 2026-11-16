@@ -141,7 +141,7 @@ function DashboardLay() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    applyTheme("light");
+    applyTheme();
   }, []);
 
   useEffect(() => {
