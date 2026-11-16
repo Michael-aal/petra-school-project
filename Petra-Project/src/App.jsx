@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom";
-import { Bell, BookOpen, CalendarDays, CheckCircle2, Download, FileText, MessageSquare, School } from "lucide-react";
+import { Bell, BookOpen, CalendarDays, CheckCircle2, Download, FileText, MessageSquare, School, Moon, Sun } from "lucide-react";
 import Navbar from "./Pages/components/Navbar";
 import Footer from "./Pages/components/Footer";
 import { SidebarNav } from "./Pages/DashboardLayout/SidebarNav";
@@ -10,7 +10,7 @@ import DeleteAccountButton from "./components/DeleteAccountButton";
 import PageLoadingFallback from "./components/PageLoadingFallback/PageLoadingFallback";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import { UserContext } from "./context/UserContext";
-import { applyTheme } from "./utils/theme.js";
+import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "./utils/theme.js";
 import "./Styles/DashBoardLayout/SidebarNav.css";
 import "./Styles/DashBoardLayout/AdminDashboardPolish.css";
 import "./components/dashboard/dashboard.css";
@@ -113,6 +113,43 @@ const ParentDashboard = lazy(() => import("./Pages/DashboardLayout/pages/parent/
 const ParentSectionPage = lazy(() => import("./Pages/DashboardLayout/pages/parent/ParentSectionPage"));
 const ParentFeesPage = lazy(() => import("./Pages/DashboardLayout/pages/parent/ParentFeesPage"));
 
+function StandaloneThemeToggle() {
+  const location = useLocation();
+  const [dark, setDark] = useState(() => getInitialTheme() === "dark");
+  const standaloneRoutes = ["/signin", "/register", "/get-started", "/admission_form", "/school_Fees", "/student_Payment", "/Payment", "/payment"];
+  const showToggle = standaloneRoutes.some((path) => location.pathname === path || location.pathname.startsWith(path + "/")) || location.pathname.startsWith("/dev");
+
+  useEffect(() => {
+    const sync = (event) => setDark((event.detail || getInitialTheme()) === "dark");
+    const syncStorage = (event) => {
+      if (event.key !== "nuvora-theme") return;
+      const theme = event.newValue === "dark" ? "dark" : "light";
+      applyTheme(theme, { persist: false });
+      setDark(theme === "dark");
+    };
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    window.addEventListener("storage", syncStorage);
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, sync);
+      window.removeEventListener("storage", syncStorage);
+    };
+  }, []);
+
+  if (!showToggle) return null;
+  const toggle = () => {
+    const next = dark ? "light" : "dark";
+    applyTheme(next, { broadcast: true });
+    setDark(next === "dark");
+  };
+  return (
+    <button type="button" className="petra-standalone-theme-toggle" onClick={toggle}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+      {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+    </button>
+  );
+}
+
 function PublicLayout() {
   return (
     <>
@@ -141,7 +178,7 @@ function DashboardLay() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    applyTheme("light");
+    applyTheme();
   }, []);
 
   useEffect(() => {
@@ -212,6 +249,7 @@ function parentSection(props) {
 function App() {
   return (
     <Router>
+      <StandaloneThemeToggle />
       <ErrorBoundary>
         <Suspense fallback={<PageLoadingFallback message="Initializing Petra..." />}>
           <Routes>

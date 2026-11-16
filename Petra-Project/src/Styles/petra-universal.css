@@ -1,0 +1,315 @@
+/* Petra website-wide theme and responsive guardrails.
+   Page-specific layouts remain responsible for their own composition. */
+:root {
+  --petra-focus-ring: 0 0 0 3px color-mix(in srgb, var(--petra-primary, #1769d2) 24%, transparent);
+}
+html[data-theme] {
+  min-width: 320px;
+  background: var(--petra-bg, #fff);
+  color: var(--petra-text, #111827);
+  scroll-behavior: smooth;
+}
+html[data-theme] body,
+html[data-theme] #root {
+  min-width: 320px;
+  max-width: 100%;
+  background: var(--petra-bg, #fff);
+  color: var(--petra-text, #111827);
+}
+html[data-theme] #root,
+html[data-theme] main,
+html[data-theme] .dashboard-shell,
+html[data-theme] .dashboard-main,
+html[data-theme] .dashboard-content {
+  min-width: 0;
+}
+html[data-theme] img,
+html[data-theme] video,
+html[data-theme] canvas,
+html[data-theme] iframe,
+html[data-theme] svg {
+  max-width: 100%;
+}
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea,
+html[data-theme] button {
+  font: inherit;
+}
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea {
+  max-width: 100%;
+  color: var(--petra-text, #111827);
+  background-color: var(--petra-surface, #fff);
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme] input::placeholder,
+html[data-theme] textarea::placeholder {
+  color: var(--petra-text-muted, #64748b);
+  opacity: 1;
+}
+html[data-theme] :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 2px;
+}
+html[data-theme] :where(p, span, label, small, td, th, li) {
+  overflow-wrap: anywhere;
+}
+html[data-theme] :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+html[data-theme] :where(th, td) {
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme="light"] :where(.auth-page, .auth-shell, .auth-card) {
+  color: #111827;
+}
+html[data-theme="dark"] :where(.auth-page, .auth-shell, .auth-card) {
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.auth-card, .auth-shell, .auth-page .form-card, .auth-page .form-panel) {
+  background-color: var(--petra-surface, #131f33);
+  border-color: var(--petra-border-token, #26364d);
+}
+html[data-theme="dark"] :where(.auth-page input, .auth-page select, .auth-page textarea) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html[data-theme="dark"] :where(.auth-page input::placeholder, .auth-page textarea::placeholder) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-home-panel, .dashboard-home-summary-card, .dashboard-home-stat,
+  .dashboard-widget, .stat-card, .empty-state, .page-card, .content-card, .settings-card,
+  .teacher-profile-card, .parent-list-item, .tn-root__dropdown, .notification-dropdown,
+  .account-dropdown) {
+  color: var(--petra-text, #f8fafc);
+  background-color: var(--petra-surface, #131f33);
+  border-color: var(--petra-border-token, #26364d);
+}
+html[data-theme="light"] :where(.dashboard-home-panel, .dashboard-home-summary-card, .dashboard-home-stat,
+  .dashboard-widget, .stat-card, .empty-state, .page-card, .content-card, .settings-card,
+  .teacher-profile-card, .parent-list-item) {
+  color: var(--petra-text, #111827);
+  background-color: var(--petra-surface, #fff);
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme="dark"] :where(.dashboard-home, .teacher-page, .parent-dashboard, .admin-workspace) {
+  color: var(--petra-text, #f8fafc);
+}
+html[data-theme="light"] :where(.dashboard-home, .teacher-page, .parent-dashboard, .admin-workspace) {
+  color: var(--petra-text, #111827);
+}
+html[data-theme="dark"] :where(.dashboard-home p, .dashboard-home span, .teacher-page p,
+  .teacher-page span, .parent-dashboard p, .parent-dashboard span, .admin-workspace p,
+  .admin-workspace span, .admin-workspace label) {
+  color: inherit;
+}
+html[data-theme] .dashboard-content :where(.table-wrap, .table-container, .table-responsive,
+  .data-table-wrapper, .overflow-x-auto) {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 760px) {
+  html[data-theme] body { overflow-x: hidden; }
+  html[data-theme] :where(.dashboard-content, .dashboard-page, .page-container, .auth-page) {
+    max-width: 100%;
+    min-width: 0;
+  }
+  html[data-theme] :where(.dashboard-content table, .dashboard-page table) {
+    min-width: 620px;
+  }
+  html[data-theme] :where(.auth-shell, .auth-card) {
+    width: min(100%, 100vw - 24px);
+    max-width: 100%;
+  }
+}
+@media (max-width: 420px) {
+  html[data-theme] :where(.dashboard-content, .dashboard-page, .page-container) {
+    padding-inline: 12px;
+  }
+  html[data-theme] :where(button, .btn, [role="button"]) {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] { scroll-behavior: auto; }
+  html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* Public site navigation shares the same persisted theme control as dashboards. */
+.navbar-theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--petra-border-token, #dbe4f0);
+  border-radius: 11px;
+  background: var(--petra-surface, #fff);
+  color: var(--petra-text, #111827);
+  cursor: pointer;
+}
+.navbar-theme-toggle:hover {
+  border-color: var(--petra-primary, #1769d2);
+  background: var(--petra-primary-soft, #eaf3ff);
+  color: var(--petra-primary, #1769d2);
+}
+.navbar-theme-toggle:focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 3px;
+}
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .mobile-menu {
+  background: rgba(15, 23, 42, .96);
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="dark"] .navbar-logo,
+html[data-theme="dark"] .mobile-menu-btn {
+  color: #f8fafc;
+}
+html[data-theme="dark"] .nav-link,
+html[data-theme="dark"] .nav-sign-in,
+html[data-theme="dark"] .mobile-menu-link {
+  color: #cbd5e1;
+}
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .nav-sign-in:hover,
+html[data-theme="dark"] .mobile-menu-link:hover,
+html[data-theme="dark"] .mobile-menu-link.active {
+  color: #93c5fd;
+  background: #172b49;
+}
+html[data-theme="dark"] :where(.homeSection1, .homeSection2, .homeSection3, .homeSection4,
+  .homeSection5, .homeSection7, .homeSection8, .homeSection9, .homeSection10, .homeSection11) {
+  background-color: #090f1c;
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.homeSection1, .homeSection2, .homeSection3, .homeSection4,
+  .homeSection5, .homeSection7, .homeSection8, .homeSection9, .homeSection10, .homeSection11)
+  :where(h1, h2, h3, h4, p, li, span, label) {
+  color: inherit;
+}
+html[data-theme="dark"] :where(.info-card, .feature-card, .section7-stats, .section7-exams,
+  .dashboard-card, .section5-card, .section7-card) {
+  background-color: #131f33;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+@media (max-width: 760px) {
+  .navbar-theme-toggle { width: 38px; height: 38px; flex-basis: 38px; }
+}
+
+
+/* Dashboard route families use semantic surfaces even where older page CSS
+   still supplies legacy component class names. */
+html[data-theme="light"] :where(.dashboard-sidebar, .dashboard-sidebar .sidebar-container) {
+  background: #ffffff;
+  color: #111827;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(.dashboard-sidebar, .dashboard-sidebar .sidebar-container) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page, .dashboard-home, .teacher-page, .parent-dashboard,
+  .admin-workspace, .page-content, .page-container) {
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.dashboard-page .card, .dashboard-page .panel,
+  .dashboard-page .form-card, .dashboard-page .table-container,
+  .dashboard-page .content-card, .dashboard-page .page-header,
+  .dashboard-page .stat-card, .dashboard-page .empty-state,
+  .dashboard-content .card, .dashboard-content .panel,
+  .dashboard-content .form-card, .dashboard-content .table-container,
+  .dashboard-content .content-card, .dashboard-content .page-header,
+  .dashboard-content .stat-card, .dashboard-content .empty-state) {
+  background-color: #131f33;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="light"] :where(.dashboard-page .card, .dashboard-page .panel,
+  .dashboard-page .form-card, .dashboard-page .table-container,
+  .dashboard-page .content-card, .dashboard-page .page-header,
+  .dashboard-page .stat-card, .dashboard-page .empty-state,
+  .dashboard-content .card, .dashboard-content .panel,
+  .dashboard-content .form-card, .dashboard-content .table-container,
+  .dashboard-content .content-card, .dashboard-content .page-header,
+  .dashboard-content .stat-card, .dashboard-content .empty-state) {
+  background-color: #ffffff;
+  color: #111827;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(.dashboard-page table, .dashboard-content table) {
+  color: #f8fafc;
+  background: #131f33;
+}
+html[data-theme="dark"] :where(.dashboard-page th, .dashboard-content th) {
+  color: #cbd5e1;
+  background: #0f172a;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page td, .dashboard-content td) {
+  color: #e2e8f0;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page input, .dashboard-page select, .dashboard-page textarea,
+  .dashboard-content input, .dashboard-content select, .dashboard-content textarea) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html[data-theme="dark"] :where(.dashboard-page input::placeholder, .dashboard-page textarea::placeholder,
+  .dashboard-content input::placeholder, .dashboard-content textarea::placeholder) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-page .muted, .dashboard-page .text-muted,
+  .dashboard-content .muted, .dashboard-content .text-muted, .dashboard-content small) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-page button.secondary, .dashboard-page .btn-secondary,
+  .dashboard-content button.secondary, .dashboard-content .btn-secondary) {
+  background: #1b2b43;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+html[data-theme] :where(.dashboard-page, .dashboard-content) :where(button, a, input, select, textarea) {
+  min-height: 36px;
+}
+html[data-theme] :where(.dashboard-page button, .dashboard-content button, .navbar button) {
+  cursor: pointer;
+}
+
+
+.petra-standalone-theme-toggle {
+  position: fixed;
+  z-index: 1200;
+  top: 16px;
+  right: 16px;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--petra-border-token, #dbe4f0);
+  border-radius: 12px;
+  background: var(--petra-surface, #ffffff);
+  color: var(--petra-text, #111827);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .12);
+  cursor: pointer;
+}
+.petra-standalone-theme-toggle:focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 3px;
+}

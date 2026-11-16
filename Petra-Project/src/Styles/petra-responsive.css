@@ -101,3 +101,93 @@ button,input,select,textarea{max-width:100%;font:inherit}
 @media(hover:none){
   button:hover,a:hover{transform:none!important}
 }
+
+
+/* Role dashboards: responsive grids must reflow before columns become cramped. */
+.teacher-page,
+.parent-dashboard,
+.dashboard-shell.admin-workspace {
+  min-width: 0;
+  max-width: 100%;
+}
+.teacher-page .teacher-grid,
+.teacher-page .teacher-grid-hero,
+.teacher-page .teacher-grid-classes,
+.teacher-page .teacher-stats-grid,
+.parent-dashboard .parent-summary-grid,
+.parent-dashboard .parent-grid {
+  min-width: 0;
+}
+.teacher-page .teacher-grid > *,
+.teacher-page .teacher-grid-hero > *,
+.teacher-page .teacher-grid-classes > *,
+.teacher-page .teacher-stats-grid > *,
+.parent-dashboard .parent-summary-grid > *,
+.parent-dashboard .parent-grid > * {
+  min-width: 0;
+}
+@media (max-width: 1100px) {
+  .teacher-page .teacher-grid,
+  .teacher-page .teacher-grid-hero,
+  .parent-dashboard .parent-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .parent-dashboard .parent-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .teacher-page {
+    padding: 18px 14px;
+    gap: 16px;
+  }
+  .teacher-page .dashboard-home-header {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    padding: 20px;
+    gap: 14px;
+  }
+  .teacher-page .teacher-grid-classes,
+  .teacher-page .teacher-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .parent-dashboard {
+    padding: 18px 14px 28px;
+  }
+  .parent-dashboard .parent-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .teacher-page {
+    padding: 14px 10px;
+    gap: 12px;
+  }
+  .teacher-page .teacher-grid-classes,
+  .teacher-page .teacher-stats-grid,
+  .parent-dashboard .parent-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .teacher-page .teacher-profile-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+  .parent-dashboard {
+    padding: 14px 10px 24px;
+  }
+  .parent-dashboard .parent-list-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .parent-dashboard .parent-child-select {
+    width: 100%;
+    min-width: 0;
+  }
+  .dashboard-shell.admin-workspace .dashboard-page,
+  .dashboard-shell.admin-workspace .dashboard-home,
+  .dashboard-shell.admin-workspace main[class*="page"] {
+    padding: 14px 10px;
+  }
+}

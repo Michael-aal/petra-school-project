@@ -1,44 +1,49 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, CalendarDays, Check, ChevronDown, CreditCard, LogOut, Menu, Settings, UserRound, X, AlertCircle } from "lucide-react";
+import { Bell, CalendarDays, Check, ChevronDown, CreditCard, LogOut, Menu, Settings, UserRound, X, AlertCircle, Moon, Sun } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import { authApi } from "../../services/authApi";
 import { notificationApi } from "../../services/notificationApi";
 import { getDisplayName, getFirstName, getUserInitials, normalizeUser } from "../../utils/userProfile";
 import "../../Styles/DashBoardLayout/TopNavbar.css";
+import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "../../utils/theme.js";
 
 const formatToday = () => new Intl.DateTimeFormat("en-NG", { weekday: "long", month: "short", day: "numeric" }).format(new Date());
 
-function useDropdown() {
+function useDropdown(id) {
   const [open, setOpen] = useState(false);
-  const [root, setRoot] = useState(null);
-  const [trigger, setTrigger] = useState(null);
-  const [menu, setMenu] = useState(null);
   const close = useCallback((restoreFocus = true) => {
     setOpen(false);
-    if (restoreFocus) trigger?.focus?.();
-  }, [trigger]);
+    if (restoreFocus) document.querySelector(`[data-dropdown="${id}"] > button`)?.focus();
+  }, [id]);
   useEffect(() => {
     if (!open) return undefined;
-    const onPointerDown = (event) => { if (root && !root.contains(event.target)) close(false); };
-    const onKeyDown = (event) => { if (event.key === "Escape") { event.preventDefault(); close(true); } };
+    const rootSelector = `[data-dropdown="${id}"]`;
+    const onPointerDown = (event) => {
+      if (!event.target.closest(rootSelector)) close(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      }
+    };
     document.addEventListener("mousedown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    const frame = window.requestAnimationFrame(() => {
+      document.querySelector(`${rootSelector} [role="menuitem"]`)?.focus();
+    });
     return () => {
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
+      window.cancelAnimationFrame(frame);
     };
-  }, [open, root, close]);
-  useEffect(() => {
-    if (!open) return undefined;
-    const frame = window.requestAnimationFrame(() => menu?.querySelector('[role="menuitem"]')?.focus());
-    return () => window.cancelAnimationFrame(frame);
-  }, [open, menu]);
-  return { open, setOpen, close, rootRef: setRoot, triggerRef: setTrigger, menuRef: setMenu, menuElement: menu };
+  }, [id, open, close]);
+  return { open, setOpen, close };
 }
 
-function moveMenuFocus(event, menu) {
-  const items = Array.from(menu?.querySelectorAll('[role="menuitem"]') || []);
+function moveMenuFocus(event) {
+  const items = Array.from(event.currentTarget.querySelectorAll('[role="menuitem"]'));
   if (!items.length) return;
   const index = items.indexOf(document.activeElement);
   if (event.key === "ArrowDown") { event.preventDefault(); items[(index + 1) % items.length]?.focus(); }
@@ -57,12 +62,35 @@ const toNotification = (item) => ({
 export default function AdminTopNavbar({ onMenuClick }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
-  const notificationDropdown = useDropdown();
-  const profileDropdown = useDropdown();
+  const notificationDropdown = useDropdown("notifications");
+  const profileDropdown = useDropdown("profile");
   const [notifications, setNotifications] = useState([]);
   const [unreadTotal, setUnreadTotal] = useState(0);
   const [notificationError, setNotificationError] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [dark, setDark] = useState(() => getInitialTheme() === "dark");
+
+  useEffect(() => {
+    const sync = (event) => setDark((event.detail || getInitialTheme()) === "dark");
+    const syncStorage = (event) => {
+      if (event.key !== "nuvora-theme") return;
+      const theme = event.newValue === "dark" ? "dark" : "light";
+      applyTheme(theme, { persist: false });
+      setDark(theme === "dark");
+    };
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    window.addEventListener("storage", syncStorage);
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, sync);
+      window.removeEventListener("storage", syncStorage);
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    const next = dark ? "light" : "dark";
+    applyTheme(next, { broadcast: true });
+    setDark(next === "dark");
+  };
 
   const loadNotifications = useCallback(async () => {
     try {
@@ -146,8 +174,13 @@ export default function AdminTopNavbar({ onMenuClick }) {
         </div>
       </div>
       <div className="tn-root__right">
-        <div className="tn-dropdown" ref={notificationDropdown.rootRef}>
-          <button ref={notificationDropdown.triggerRef} type="button" className="tn-btn tn-bell-btn"
+        <button type="button" className="tn-btn tn-theme-btn" onClick={toggleTheme}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+          {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+        </button>
+        <div className="tn-dropdown" data-dropdown="notifications">
+          <button type="button" className="tn-btn tn-bell-btn"
             onClick={() => { profileDropdown.setOpen(false); notificationDropdown.setOpen((value) => !value); }}
             aria-label={unreadCount ? "Notifications, " + unreadCount + " unread" : "Notifications"}
             title="Notifications" aria-haspopup="menu" aria-expanded={notificationDropdown.open} aria-controls="tn-notification-menu">
@@ -155,8 +188,8 @@ export default function AdminTopNavbar({ onMenuClick }) {
             {unreadCount > 0 && <span className="tn-badge" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
           </button>
           {notificationDropdown.open && (
-            <div ref={notificationDropdown.menuRef} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
-              role="menu" aria-label="Notifications" onKeyDown={(event) => moveMenuFocus(event, notificationDropdown.menuElement)}>
+            <div id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
+              role="menu" aria-label="Notifications" onKeyDown={moveMenuFocus}>
               <div className="tn-panel-head">
                 <div><strong>Notifications</strong><span>{unreadCount ? unreadCount + " unread" : "All caught up"}</span></div>
                 <button type="button" className="tn-x-btn" onClick={() => notificationDropdown.close(true)} aria-label="Close notifications"><X size={16} /></button>
@@ -182,8 +215,8 @@ export default function AdminTopNavbar({ onMenuClick }) {
             </div>
           )}
         </div>
-        <div className="tn-dropdown" ref={profileDropdown.rootRef}>
-          <button ref={profileDropdown.triggerRef} type="button" className="tn-profile-btn"
+        <div className="tn-dropdown" data-dropdown="profile">
+          <button type="button" className="tn-profile-btn"
             onClick={() => { notificationDropdown.setOpen(false); profileDropdown.setOpen((value) => !value); }}
             aria-haspopup="menu" aria-expanded={profileDropdown.open} aria-controls="tn-profile-menu">
             <span className="tn-avatar" aria-hidden="true">{initials}</span>
@@ -191,8 +224,8 @@ export default function AdminTopNavbar({ onMenuClick }) {
             <ChevronDown className={profileDropdown.open ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
           </button>
           {profileDropdown.open && (
-            <div ref={profileDropdown.menuRef} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
-              role="menu" aria-label="Profile menu" onKeyDown={(event) => moveMenuFocus(event, profileDropdown.menuElement)}>
+            <div id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
+              role="menu" aria-label="Profile menu" onKeyDown={moveMenuFocus}>
               <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
               <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
               <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/finance"); }}><CreditCard size={16} />Finance</button>

@@ -1,5 +1,5 @@
 /* Petra Design System — Future Blue
- * Visual system: 60% white / 30% deep navy / 10% electric blue.
+ * Visual system: 70% white / 20% blue / 5% black / 5% neutral in light mode.
  * This layer intentionally changes presentation only; routes, API calls and workflows remain untouched.
  */
 
@@ -92,7 +92,7 @@ body {
 }
 
 body.dark {
-  color-scheme: light !important;
+  color-scheme: dark !important;
   background: var(--petra-canvas) !important;
   color: var(--petra-ink) !important;
 }
@@ -583,3 +583,287 @@ input:focus, select:focus, textarea:focus,
   }
 }
 
+
+
+/* Petra unified theme contract — this file is loaded after legacy theme layers. */
+:root,
+html[data-theme="light"],
+body[data-theme="light"] {
+  color-scheme: light;
+  --petra-white: #ffffff;
+  --petra-canvas: #ffffff;
+  --petra-navy: #111827;
+  --petra-navy-2: #1f2937;
+  --petra-blue: #1769d2;
+  --petra-blue-hover: #1254ad;
+  --petra-blue-soft: #eaf3ff;
+  --petra-ink: #111827;
+  --petra-muted: #64748b;
+  --petra-border: #dbe4f0;
+  --petra-shadow: 0 10px 30px rgba(15, 39, 71, .06);
+
+  --petra-bg: #ffffff;
+  --petra-surface: #ffffff;
+  --petra-surface-muted: #f1f6ff;
+  --petra-text: #111827;
+  --petra-text-secondary: #475569;
+  --petra-text-muted: #64748b;
+  --petra-border-token: #dbe4f0;
+  --petra-primary: #1769d2;
+  --petra-primary-hover: #1254ad;
+  --petra-primary-soft: #eaf3ff;
+  --petra-success: #15803d;
+  --petra-warning: #a16207;
+  --petra-danger: #b91c1c;
+  --petra-info: #1d4ed8;
+  --app-bg: var(--petra-bg);
+  --app-surface: var(--petra-surface);
+  --app-surface-strong: var(--petra-surface-muted);
+  --app-card: var(--petra-surface);
+  --app-panel: var(--petra-surface);
+  --app-text: var(--petra-text);
+  --app-text-muted: var(--petra-text-muted);
+  --app-border: var(--petra-border-token);
+  --app-accent: var(--petra-primary);
+  --app-accent-2: var(--petra-primary-hover);
+  --background: var(--petra-bg);
+  --foreground: var(--petra-text);
+  --card: var(--petra-surface);
+  --card-foreground: var(--petra-text);
+  --popover: var(--petra-surface);
+  --popover-foreground: var(--petra-text);
+  --primary: var(--petra-primary);
+  --primary-foreground: #ffffff;
+  --muted-foreground: var(--petra-text-muted);
+  --border: var(--petra-border-token);
+  --input: var(--petra-border-token);
+  --ring: var(--petra-primary);
+  --success: var(--petra-success);
+  --warning: var(--petra-warning);
+  --danger: var(--petra-danger);
+  --info: var(--petra-info);
+  --dashboard-page-bg: var(--petra-bg);
+  --dashboard-topbar-bg: var(--petra-surface);
+  --dashboard-topbar-text: var(--petra-text);
+  --dashboard-topbar-muted: var(--petra-text-muted);
+  --dashboard-card-bg: var(--petra-surface);
+  --dashboard-card-text: var(--petra-text);
+  --dashboard-card-muted: var(--petra-text-muted);
+  --dashboard-panel-bg: var(--petra-surface);
+  --dashboard-panel-text: var(--petra-text);
+  --dashboard-panel-muted: var(--petra-text-muted);
+  --dashboard-muted-surface: var(--petra-surface-muted);
+  --dashboard-sidebar-bg: var(--petra-surface);
+  --dashboard-sidebar-text: var(--petra-text);
+  --dashboard-sidebar-muted: var(--petra-text-secondary);
+}
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  color-scheme: dark;
+  --petra-white: #131f33;
+  --petra-canvas: #090f1c;
+  --petra-navy: #f8fafc;
+  --petra-navy-2: #e2e8f0;
+  --petra-blue: #60a5fa;
+  --petra-blue-hover: #93c5fd;
+  --petra-blue-soft: #163e75;
+  --petra-ink: #f8fafc;
+  --petra-muted: #a9b8cd;
+  --petra-border: #26364d;
+  --petra-shadow: 0 10px 30px rgba(0, 0, 0, .18);
+
+  --petra-bg: #090f1c;
+  --petra-surface: #131f33;
+  --petra-surface-muted: #0f172a;
+  --petra-text: #f8fafc;
+  --petra-text-secondary: #cbd5e1;
+  --petra-text-muted: #a9b8cd;
+  --petra-border-token: #26364d;
+  --petra-primary: #3b82f6;
+  --petra-primary-hover: #60a5fa;
+  --petra-primary-soft: #163e75;
+  --petra-success: #4ade80;
+  --petra-warning: #fbbf24;
+  --petra-danger: #f87171;
+  --petra-info: #60a5fa;
+  --app-bg: var(--petra-bg);
+  --app-surface: var(--petra-surface);
+  --app-surface-strong: var(--petra-surface-muted);
+  --app-card: var(--petra-surface);
+  --app-panel: var(--petra-surface);
+  --app-text: var(--petra-text);
+  --app-text-muted: var(--petra-text-muted);
+  --app-border: var(--petra-border-token);
+  --app-accent: var(--petra-primary);
+  --app-accent-2: var(--petra-primary-hover);
+  --background: var(--petra-bg);
+  --foreground: var(--petra-text);
+  --card: var(--petra-surface);
+  --card-foreground: var(--petra-text);
+  --popover: var(--petra-surface);
+  --popover-foreground: var(--petra-text);
+  --primary: var(--petra-primary);
+  --primary-foreground: #ffffff;
+  --muted-foreground: var(--petra-text-muted);
+  --border: var(--petra-border-token);
+  --input: var(--petra-border-token);
+  --ring: var(--petra-primary);
+  --success: var(--petra-success);
+  --warning: var(--petra-warning);
+  --danger: var(--petra-danger);
+  --info: var(--petra-info);
+  --dashboard-page-bg: var(--petra-bg);
+  --dashboard-topbar-bg: var(--petra-surface);
+  --dashboard-topbar-text: var(--petra-text);
+  --dashboard-topbar-muted: var(--petra-text-muted);
+  --dashboard-card-bg: var(--petra-surface);
+  --dashboard-card-text: var(--petra-text);
+  --dashboard-card-muted: var(--petra-text-muted);
+  --dashboard-panel-bg: var(--petra-surface);
+  --dashboard-panel-text: var(--petra-text);
+  --dashboard-panel-muted: var(--petra-text-muted);
+  --dashboard-muted-surface: var(--petra-surface-muted);
+  --dashboard-sidebar-bg: var(--petra-surface-muted);
+  --dashboard-sidebar-text: var(--petra-text);
+  --dashboard-sidebar-muted: var(--petra-text-secondary);
+}
+html[data-theme] body,
+html[data-theme] #root {
+  background-color: var(--petra-bg);
+  color: var(--petra-text);
+}
+html[data-theme] .dashboard-shell,
+html[data-theme] .dashboard-main,
+html[data-theme] .dashboard-content {
+  background: var(--petra-bg);
+  color: var(--petra-text);
+}
+
+/* Shared sidebar: white in light mode, charcoal in dark mode, blue for selection. */
+html[data-theme="light"] .dashboard-shell .sidebar-container {
+  --sidebar-bg: #ffffff;
+  --sidebar-surface: #f7f9fc;
+  --sidebar-hover: #f1f6ff;
+  --sidebar-active: #eaf3ff;
+  --sidebar-text: #111827;
+  --sidebar-muted: #475569;
+  --sidebar-blue: #1769d2;
+  --sidebar-border: #dbe4f0;
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-right: 1px solid #dbe4f0 !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container {
+  --sidebar-bg: #0f172a;
+  --sidebar-surface: #131f33;
+  --sidebar-hover: #1b2b43;
+  --sidebar-active: #163e75;
+  --sidebar-text: #f8fafc;
+  --sidebar-muted: #cbd5e1;
+  --sidebar-blue: #60a5fa;
+  --sidebar-border: #26364d;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-right: 1px solid #26364d !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-child,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .arrow-icon {
+  color: #cbd5e1;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-child.active {
+  color: #bfdbfe;
+  background: #163e75;
+}
+
+/* Admin role consumes the same semantic tokens as every other role. */
+html[data-theme="dark"] .dashboard-shell.admin-workspace {
+  --admin-canvas: #090f1c;
+  --admin-surface: #131f33;
+  --admin-text: #f8fafc;
+  --admin-muted: #cbd5e1;
+  --admin-subtle: #a9b8cd;
+  --admin-border: #26364d;
+  --admin-blue-soft: #163e75;
+  --ui-page: #090f1c;
+  --ui-surface: #131f33;
+  --ui-text: #f8fafc;
+  --ui-muted: #cbd5e1;
+  --ui-subtle: #a9b8cd;
+  --ui-border: #26364d;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace input,
+html[data-theme="dark"] .dashboard-shell.admin-workspace select,
+html[data-theme="dark"] .dashboard-shell.admin-workspace textarea {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace input::placeholder,
+html[data-theme="dark"] .dashboard-shell.admin-workspace textarea::placeholder {
+  color: #a9b8cd;
+  opacity: 1;
+}
+
+/* Teacher and parent pages retain their role-specific layouts and share Petra tokens. */
+html[data-theme="dark"] .teacher-page {
+  --teacher-white: #131f33;
+  --teacher-bg: #090f1c;
+  --teacher-blue: #60a5fa;
+  --teacher-blue-dark: #93c5fd;
+  --teacher-blue-soft: #163e75;
+  --teacher-blue-border: #315783;
+  --teacher-ink: #f8fafc;
+  --teacher-muted: #cbd5e1;
+  --teacher-line: #26364d;
+  --teacher-red-soft: #451a1a;
+  --teacher-red-border: #7f1d1d;
+}
+html[data-theme="dark"] .parent-dashboard {
+  --parent-white: #131f33;
+  --parent-bg: #090f1c;
+  --parent-surface-soft: #0f172a;
+  --parent-blue: #60a5fa;
+  --parent-blue-dark: #bfdbfe;
+  --parent-blue-soft: #163e75;
+  --parent-blue-border: #315783;
+  --parent-red-soft: #451a1a;
+  --parent-red-border: #7f1d1d;
+  --parent-green-soft: #123524;
+  --parent-green-border: #166534;
+  --parent-text: #f8fafc;
+  --parent-muted: #cbd5e1;
+  --parent-border: #26364d;
+  --parent-shadow: 0 8px 22px rgba(0, 0, 0, .22);
+}
+html[data-theme="dark"] .parent-dashboard .parent-list-item:hover {
+  background: #1b2b43;
+}
+html[data-theme="dark"] .parent-dashboard .parent-child-select {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* Keep readable form placeholders and semantic feedback in both themes. */
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #a9b8cd;
+  opacity: 1;
+}
+html[data-theme="light"] .dashboard-shell .sidebar-section-label {
+  color: #64748b;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-section-label {
+  color: #a9b8cd;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] *,
+  html[data-theme] *::before,
+  html[data-theme] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

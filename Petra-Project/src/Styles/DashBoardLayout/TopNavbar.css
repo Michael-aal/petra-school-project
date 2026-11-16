@@ -639,7 +639,6 @@
     transition-duration: 0.01ms !important;
   }
 }
-=======
 .top-navbar{
   --topbar-height:72px;position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;
   width:100%;min-height:var(--topbar-height);padding:0 24px;background:#fff;color:#0F172A;border-bottom:1px solid #EEF0F3;
@@ -678,3 +677,57 @@
 .shopeers-dark .top-navbar{background:#172033;color:#F8FAFC;border-color:#263449}.shopeers-dark .menu-btn,.shopeers-dark .icon-btn,.shopeers-dark .user-info{background:#172033;color:#F8FAFC;border-color:#263449}.shopeers-dark .menu-bars,.shopeers-dark .top-search input{color:#F8FAFC}.shopeers-dark .top-search{background:#111827}.shopeers-dark .top-search kbd,.shopeers-dark .notification-dropdown,.shopeers-dark .account-dropdown,.shopeers-dark .account-dropdown-actions button{background:#172033;color:#F8FAFC;border-color:#263449}
 @media(max-width:760px){.top-navbar{min-height:62px;padding:0 12px}.top-search{width:40px;padding:0;justify-content:center;background:#F1F5F9}.top-search input,.top-search kbd{display:none}.user-meta{display:none}.user-info{padding-right:4px}.menu-btn,.icon-btn{width:36px;height:36px}.notification-dropdown,.account-dropdown{position:fixed;right:12px;top:70px;width:min(320px,calc(100vw - 24px))}}
 @media(prefers-reduced-motion:reduce){.top-navbar *{transition:none!important;animation:none!important}}
+
+
+/* Theme-aware legacy navbar styles; the shared Petra theme owns the palette. */
+[data-theme="dark"] .top-navbar {
+  background: #0f172a;
+  color: #f8fafc;
+  border-bottom-color: #26364d;
+}
+[data-theme="dark"] .top-navbar .menu-btn,
+[data-theme="dark"] .top-navbar .icon-btn,
+[data-theme="dark"] .top-navbar .user-info {
+  background: #17243a;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+[data-theme="dark"] .top-navbar .top-search {
+  background: #17243a;
+  color: #cbd5e1;
+  border-color: #334155;
+}
+[data-theme="dark"] .top-navbar .top-search .search-placeholder,
+[data-theme="dark"] .top-navbar .user-meta span {
+  color: #a9b8cd;
+}
+[data-theme="dark"] .top-navbar .top-search kbd,
+[data-theme="dark"] .top-navbar .notification-dropdown,
+[data-theme="dark"] .top-navbar .account-dropdown,
+[data-theme="dark"] .top-navbar .account-dropdown-actions button {
+  background: #131f33;
+  color: #f8fafc;
+  border-color: #334155;
+}
+[data-theme="dark"] .top-navbar .notification-dropdown p,
+[data-theme="dark"] .top-navbar .notification-header span,
+[data-theme="dark"] .top-navbar .account-dropdown-header span {
+  color: #a9b8cd;
+}
+.tn-root button.tn-theme-btn:focus-visible {
+  outline: 2px solid #1769d2;
+  outline-offset: 3px;
+}
+@media (max-width: 520px) {
+  .tn-root {
+    gap: 8px;
+    padding-inline: 12px;
+  }
+  .tn-root__left { gap: 8px; }
+  .tn-root__right { gap: 4px; }
+  .tn-greeting__line {
+    max-width: 38vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
