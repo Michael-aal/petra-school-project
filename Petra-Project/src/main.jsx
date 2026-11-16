@@ -9,6 +9,7 @@ import "./Styles/nuvora-theme.css";
 import "./Styles/nuvora-minimal.css";
 import "./Styles/petra-responsive.css";
 import "./Styles/petra-theme.css";
+import "./Styles/petra-universal.css";
 import { applyTheme } from "./utils/theme.js";
 applyTheme();
 createRoot(document.getElementById("root")).render(
