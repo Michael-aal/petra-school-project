@@ -144,3 +144,69 @@ html[data-theme] .dashboard-content :where(.table-wrap, .table-container, .table
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Public site navigation shares the same persisted theme control as dashboards. */
+.navbar-theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--petra-border-token, #dbe4f0);
+  border-radius: 11px;
+  background: var(--petra-surface, #fff);
+  color: var(--petra-text, #111827);
+  cursor: pointer;
+}
+.navbar-theme-toggle:hover {
+  border-color: var(--petra-primary, #1769d2);
+  background: var(--petra-primary-soft, #eaf3ff);
+  color: var(--petra-primary, #1769d2);
+}
+.navbar-theme-toggle:focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 3px;
+}
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .mobile-menu {
+  background: rgba(15, 23, 42, .96);
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="dark"] .navbar-logo,
+html[data-theme="dark"] .mobile-menu-btn {
+  color: #f8fafc;
+}
+html[data-theme="dark"] .nav-link,
+html[data-theme="dark"] .nav-sign-in,
+html[data-theme="dark"] .mobile-menu-link {
+  color: #cbd5e1;
+}
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .nav-sign-in:hover,
+html[data-theme="dark"] .mobile-menu-link:hover,
+html[data-theme="dark"] .mobile-menu-link.active {
+  color: #93c5fd;
+  background: #172b49;
+}
+html[data-theme="dark"] :where(.homeSection1, .homeSection2, .homeSection3, .homeSection4,
+  .homeSection5, .homeSection7, .homeSection8, .homeSection9, .homeSection10, .homeSection11) {
+  background-color: #090f1c;
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.homeSection1, .homeSection2, .homeSection3, .homeSection4,
+  .homeSection5, .homeSection7, .homeSection8, .homeSection9, .homeSection10, .homeSection11)
+  :where(h1, h2, h3, h4, p, li, span, label) {
+  color: inherit;
+}
+html[data-theme="dark"] :where(.info-card, .feature-card, .section7-stats, .section7-exams,
+  .dashboard-card, .section5-card, .section7-card) {
+  background-color: #131f33;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+@media (max-width: 760px) {
+  .navbar-theme-toggle { width: 38px; height: 38px; flex-basis: 38px; }
+}
