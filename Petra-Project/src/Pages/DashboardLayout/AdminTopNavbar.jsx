@@ -10,36 +10,40 @@ import { applyTheme, getInitialTheme, THEME_CHANGE_EVENT } from "../../utils/the
 
 const formatToday = () => new Intl.DateTimeFormat("en-NG", { weekday: "long", month: "short", day: "numeric" }).format(new Date());
 
-function useDropdown() {
+function useDropdown(id) {
   const [open, setOpen] = useState(false);
-  const [root, setRoot] = useState(null);
-  const [trigger, setTrigger] = useState(null);
-  const [menu, setMenu] = useState(null);
   const close = useCallback((restoreFocus = true) => {
     setOpen(false);
-    if (restoreFocus) trigger?.focus?.();
-  }, [trigger]);
+    if (restoreFocus) document.querySelector(`[data-dropdown="${id}"] > button`)?.focus();
+  }, [id]);
   useEffect(() => {
     if (!open) return undefined;
-    const onPointerDown = (event) => { if (root && !root.contains(event.target)) close(false); };
-    const onKeyDown = (event) => { if (event.key === "Escape") { event.preventDefault(); close(true); } };
+    const rootSelector = `[data-dropdown="${id}"]`;
+    const onPointerDown = (event) => {
+      if (!event.target.closest(rootSelector)) close(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      }
+    };
     document.addEventListener("mousedown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    const frame = window.requestAnimationFrame(() => {
+      document.querySelector(`${rootSelector} [role="menuitem"]`)?.focus();
+    });
     return () => {
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
+      window.cancelAnimationFrame(frame);
     };
-  }, [open, root, close]);
-  useEffect(() => {
-    if (!open) return undefined;
-    const frame = window.requestAnimationFrame(() => menu?.querySelector('[role="menuitem"]')?.focus());
-    return () => window.cancelAnimationFrame(frame);
-  }, [open, menu]);
-  return [open, setOpen, close, setRoot, setTrigger, setMenu, menu];
+  }, [id, open, close]);
+  return { open, setOpen, close };
 }
 
-function moveMenuFocus(event, menu) {
-  const items = Array.from(menu?.querySelectorAll('[role="menuitem"]') || []);
+function moveMenuFocus(event) {
+  const items = Array.from(event.currentTarget.querySelectorAll('[role="menuitem"]'));
   if (!items.length) return;
   const index = items.indexOf(document.activeElement);
   if (event.key === "ArrowDown") { event.preventDefault(); items[(index + 1) % items.length]?.focus(); }
@@ -58,8 +62,8 @@ const toNotification = (item) => ({
 export default function AdminTopNavbar({ onMenuClick }) {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const navigate = useNavigate();
-  const [notificationsOpen, setNotificationsOpen, closeNotifications, setNotificationRoot, setNotificationTrigger, setNotificationMenu, notificationMenuElement] = useDropdown();
-  const [profileOpen, setProfileOpen, closeProfile, setProfileRoot, setProfileTrigger, setProfileMenu, profileMenuElement] = useDropdown();
+  const notificationDropdown = useDropdown("notifications");
+  const profileDropdown = useDropdown("profile");
   const [notifications, setNotifications] = useState([]);
   const [unreadTotal, setUnreadTotal] = useState(0);
   const [notificationError, setNotificationError] = useState("");
@@ -143,7 +147,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
   };
 
   const handleLogout = async () => {
-    closeProfile(false);
+    profileDropdown.close(false);
     try { await authApi.logout(); } catch { /* Always clear local session state. */ }
     try {
       window.sessionStorage.removeItem("petra_user_info");
@@ -154,7 +158,7 @@ export default function AdminTopNavbar({ onMenuClick }) {
   };
 
   const openNotifications = () => {
-    closeNotifications(false);
+    notificationDropdown.close(false);
     navigate("/dashboard/communication/notifications");
   };
 
@@ -175,20 +179,20 @@ export default function AdminTopNavbar({ onMenuClick }) {
           title={dark ? "Switch to light mode" : "Switch to dark mode"}>
           {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
         </button>
-        <div className="tn-dropdown" ref={setNotificationRoot}>
-          <button ref={setNotificationTrigger} type="button" className="tn-btn tn-bell-btn"
-            onClick={() => { setProfileOpen(false); setNotificationsOpen((value) => !value); }}
+        <div className="tn-dropdown" data-dropdown="notifications">
+          <button type="button" className="tn-btn tn-bell-btn"
+            onClick={() => { profileDropdown.setOpen(false); notificationDropdown.setOpen((value) => !value); }}
             aria-label={unreadCount ? "Notifications, " + unreadCount + " unread" : "Notifications"}
-            title="Notifications" aria-haspopup="menu" aria-expanded={notificationsOpen} aria-controls="tn-notification-menu">
+            title="Notifications" aria-haspopup="menu" aria-expanded={notificationDropdown.open} aria-controls="tn-notification-menu">
             <Bell size={18} aria-hidden="true" />
             {unreadCount > 0 && <span className="tn-badge" aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>}
           </button>
-          {notificationsOpen && (
-            <div ref={setNotificationMenu} id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
-              role="menu" aria-label="Notifications" onKeyDown={(event) => moveMenuFocus(event, notificationMenuElement)}>
+          {notificationDropdown.open && (
+            <div id="tn-notification-menu" className="tn-dropdown-panel tn-notification-panel"
+              role="menu" aria-label="Notifications" onKeyDown={moveMenuFocus}>
               <div className="tn-panel-head">
                 <div><strong>Notifications</strong><span>{unreadCount ? unreadCount + " unread" : "All caught up"}</span></div>
-                <button type="button" className="tn-x-btn" onClick={() => closeNotifications(true)} aria-label="Close notifications"><X size={16} /></button>
+                <button type="button" className="tn-x-btn" onClick={() => notificationDropdown.close(true)} aria-label="Close notifications"><X size={16} /></button>
               </div>
               <div className="tn-notification-list">
                 {notificationError ? (
@@ -211,20 +215,20 @@ export default function AdminTopNavbar({ onMenuClick }) {
             </div>
           )}
         </div>
-        <div className="tn-dropdown" ref={setProfileRoot}>
-          <button ref={setProfileTrigger} type="button" className="tn-profile-btn"
-            onClick={() => { setNotificationsOpen(false); setProfileOpen((value) => !value); }}
-            aria-haspopup="menu" aria-expanded={profileOpen} aria-controls="tn-profile-menu">
+        <div className="tn-dropdown" data-dropdown="profile">
+          <button type="button" className="tn-profile-btn"
+            onClick={() => { notificationDropdown.setOpen(false); profileDropdown.setOpen((value) => !value); }}
+            aria-haspopup="menu" aria-expanded={profileDropdown.open} aria-controls="tn-profile-menu">
             <span className="tn-avatar" aria-hidden="true">{initials}</span>
             <span className="tn-profile-copy"><strong>{displayName}</strong><small>{role}</small></span>
-            <ChevronDown className={profileOpen ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
+            <ChevronDown className={profileDropdown.open ? "tn-chevron is-open" : "tn-chevron"} size={15} aria-hidden="true" />
           </button>
-          {profileOpen && (
-            <div ref={setProfileMenu} id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
-              role="menu" aria-label="Profile menu" onKeyDown={(event) => moveMenuFocus(event, profileMenuElement)}>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
-              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { closeProfile(false); navigate("/dashboard/finance"); }}><CreditCard size={16} />Finance</button>
+          {profileDropdown.open && (
+            <div id="tn-profile-menu" className="tn-dropdown-panel tn-profile-panel"
+              role="menu" aria-label="Profile menu" onKeyDown={moveMenuFocus}>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/setup/profile"); }}><UserRound size={16} />Profile</button>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/settings"); }}><Settings size={16} />Settings</button>
+              <button type="button" role="menuitem" className="tn-menu-item" onClick={() => { profileDropdown.close(false); navigate("/dashboard/finance"); }}><CreditCard size={16} />Finance</button>
               <div className="tn-menu-divider" aria-hidden="true" />
               <button type="button" role="menuitem" className="tn-menu-item tn-danger-item" onClick={handleLogout}><LogOut size={16} />Logout</button>
             </div>
