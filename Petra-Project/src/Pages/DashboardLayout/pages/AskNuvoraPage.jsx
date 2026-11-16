@@ -189,12 +189,7 @@ export default function AskNuvoraPage() {
   };
 
   return (
-    <div className="ask-nuvora-page">
-      <div className="ask-nuvora-context">
-        <p className="ask-nuvora-context-label">Nuvora assistant</p>
-        <h1 className="ask-nuvora-context-title">Get clarity from your school data.</h1>
-      </div>
-
+    <div className={`ask-nuvora-page${messages.length ? " has-messages" : " is-empty"}`}>
       <header className="ask-nuvora-header">
         <div className="ask-nuvora-header-left">
           <div className="ask-nuvora-icon-badge"><MessageCircle size={22} /></div>
@@ -248,8 +243,8 @@ export default function AskNuvoraPage() {
         {messages.length === 0 ? (
           <div className="ask-nuvora-empty-state">
             <div className="ask-nuvora-empty-icon"><MessageCircle size={36} /></div>
-            <h2 className="ask-nuvora-empty-title">What would you like to know?</h2>
-            <p className="ask-nuvora-empty-desc">Your Nuvora conversations are saved to your account. You can reopen or permanently delete them from History.</p>
+            <h2 className="ask-nuvora-empty-title">What can I help you with?</h2>
+            <p className="ask-nuvora-empty-desc">Ask about your school, or choose a suggestion to get started.</p>
             <div className="ask-nuvora-suggestions">
               {suggestions.map((text) => (
                 <button key={text} type="button" className="ask-nuvora-suggestion-btn" onClick={() => setInput(text)}>
@@ -295,7 +290,7 @@ export default function AskNuvoraPage() {
 
       <div className="ask-nuvora-input-card">
         <form onSubmit={handleSubmit} className="ask-nuvora-form">
-          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask Nuvora about attendance, results, fees, or school activity..." className="ask-nuvora-textarea" rows={1} disabled={loading} />
+          <textarea value={input} onChange={(e) => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${Math.min(e.target.scrollHeight, 144)}px`; }} onKeyDown={handleKeyDown} placeholder="Message Nuvora..." aria-label="Message Nuvora" className="ask-nuvora-textarea" rows={1} disabled={loading} />
           <button type="submit" disabled={!input.trim() || loading} className="ask-nuvora-send-btn" aria-label="Send query"><Send size={18} /></button>
         </form>
       </div>
