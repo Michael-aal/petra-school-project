@@ -1,0 +1,146 @@
+/* Petra website-wide theme and responsive guardrails.
+   Page-specific layouts remain responsible for their own composition. */
+:root {
+  --petra-focus-ring: 0 0 0 3px color-mix(in srgb, var(--petra-primary, #1769d2) 24%, transparent);
+}
+html[data-theme] {
+  min-width: 320px;
+  background: var(--petra-bg, #fff);
+  color: var(--petra-text, #111827);
+  scroll-behavior: smooth;
+}
+html[data-theme] body,
+html[data-theme] #root {
+  min-width: 320px;
+  max-width: 100%;
+  background: var(--petra-bg, #fff);
+  color: var(--petra-text, #111827);
+}
+html[data-theme] #root,
+html[data-theme] main,
+html[data-theme] .dashboard-shell,
+html[data-theme] .dashboard-main,
+html[data-theme] .dashboard-content {
+  min-width: 0;
+}
+html[data-theme] img,
+html[data-theme] video,
+html[data-theme] canvas,
+html[data-theme] iframe,
+html[data-theme] svg {
+  max-width: 100%;
+}
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea,
+html[data-theme] button {
+  font: inherit;
+}
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea {
+  max-width: 100%;
+  color: var(--petra-text, #111827);
+  background-color: var(--petra-surface, #fff);
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme] input::placeholder,
+html[data-theme] textarea::placeholder {
+  color: var(--petra-text-muted, #64748b);
+  opacity: 1;
+}
+html[data-theme] :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--petra-primary, #1769d2);
+  outline-offset: 2px;
+}
+html[data-theme] :where(p, span, label, small, td, th, li) {
+  overflow-wrap: anywhere;
+}
+html[data-theme] :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+html[data-theme] :where(th, td) {
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme="light"] :where(.auth-page, .auth-shell, .auth-card) {
+  color: #111827;
+}
+html[data-theme="dark"] :where(.auth-page, .auth-shell, .auth-card) {
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.auth-card, .auth-shell, .auth-page .form-card, .auth-page .form-panel) {
+  background-color: var(--petra-surface, #131f33);
+  border-color: var(--petra-border-token, #26364d);
+}
+html[data-theme="dark"] :where(.auth-page input, .auth-page select, .auth-page textarea) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html[data-theme="dark"] :where(.auth-page input::placeholder, .auth-page textarea::placeholder) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-home-panel, .dashboard-home-summary-card, .dashboard-home-stat,
+  .dashboard-widget, .stat-card, .empty-state, .page-card, .content-card, .settings-card,
+  .teacher-profile-card, .parent-list-item, .tn-root__dropdown, .notification-dropdown,
+  .account-dropdown) {
+  color: var(--petra-text, #f8fafc);
+  background-color: var(--petra-surface, #131f33);
+  border-color: var(--petra-border-token, #26364d);
+}
+html[data-theme="light"] :where(.dashboard-home-panel, .dashboard-home-summary-card, .dashboard-home-stat,
+  .dashboard-widget, .stat-card, .empty-state, .page-card, .content-card, .settings-card,
+  .teacher-profile-card, .parent-list-item) {
+  color: var(--petra-text, #111827);
+  background-color: var(--petra-surface, #fff);
+  border-color: var(--petra-border-token, #dbe4f0);
+}
+html[data-theme="dark"] :where(.dashboard-home, .teacher-page, .parent-dashboard, .admin-workspace) {
+  color: var(--petra-text, #f8fafc);
+}
+html[data-theme="light"] :where(.dashboard-home, .teacher-page, .parent-dashboard, .admin-workspace) {
+  color: var(--petra-text, #111827);
+}
+html[data-theme="dark"] :where(.dashboard-home p, .dashboard-home span, .teacher-page p,
+  .teacher-page span, .parent-dashboard p, .parent-dashboard span, .admin-workspace p,
+  .admin-workspace span, .admin-workspace label) {
+  color: inherit;
+}
+html[data-theme] .dashboard-content :where(.table-wrap, .table-container, .table-responsive,
+  .data-table-wrapper, .overflow-x-auto) {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 760px) {
+  html[data-theme] body { overflow-x: hidden; }
+  html[data-theme] :where(.dashboard-content, .dashboard-page, .page-container, .auth-page) {
+    max-width: 100%;
+    min-width: 0;
+  }
+  html[data-theme] :where(.dashboard-content table, .dashboard-page table) {
+    min-width: 620px;
+  }
+  html[data-theme] :where(.auth-shell, .auth-card) {
+    width: min(100%, 100vw - 24px);
+    max-width: 100%;
+  }
+}
+@media (max-width: 420px) {
+  html[data-theme] :where(.dashboard-content, .dashboard-page, .page-container) {
+    padding-inline: 12px;
+  }
+  html[data-theme] :where(button, .btn, [role="button"]) {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] { scroll-behavior: auto; }
+  html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
