@@ -210,3 +210,84 @@ html[data-theme="dark"] :where(.info-card, .feature-card, .section7-stats, .sect
 @media (max-width: 760px) {
   .navbar-theme-toggle { width: 38px; height: 38px; flex-basis: 38px; }
 }
+
+
+/* Dashboard route families use semantic surfaces even where older page CSS
+   still supplies legacy component class names. */
+html[data-theme="light"] :where(.dashboard-sidebar, .dashboard-sidebar .sidebar-container) {
+  background: #ffffff;
+  color: #111827;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(.dashboard-sidebar, .dashboard-sidebar .sidebar-container) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page, .dashboard-home, .teacher-page, .parent-dashboard,
+  .admin-workspace, .page-content, .page-container) {
+  color: #f8fafc;
+}
+html[data-theme="dark"] :where(.dashboard-page .card, .dashboard-page .panel,
+  .dashboard-page .form-card, .dashboard-page .table-container,
+  .dashboard-page .content-card, .dashboard-page .page-header,
+  .dashboard-page .stat-card, .dashboard-page .empty-state,
+  .dashboard-content .card, .dashboard-content .panel,
+  .dashboard-content .form-card, .dashboard-content .table-container,
+  .dashboard-content .content-card, .dashboard-content .page-header,
+  .dashboard-content .stat-card, .dashboard-content .empty-state) {
+  background-color: #131f33;
+  color: #f8fafc;
+  border-color: #26364d;
+}
+html[data-theme="light"] :where(.dashboard-page .card, .dashboard-page .panel,
+  .dashboard-page .form-card, .dashboard-page .table-container,
+  .dashboard-page .content-card, .dashboard-page .page-header,
+  .dashboard-page .stat-card, .dashboard-page .empty-state,
+  .dashboard-content .card, .dashboard-content .panel,
+  .dashboard-content .form-card, .dashboard-content .table-container,
+  .dashboard-content .content-card, .dashboard-content .page-header,
+  .dashboard-content .stat-card, .dashboard-content .empty-state) {
+  background-color: #ffffff;
+  color: #111827;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(.dashboard-page table, .dashboard-content table) {
+  color: #f8fafc;
+  background: #131f33;
+}
+html[data-theme="dark"] :where(.dashboard-page th, .dashboard-content th) {
+  color: #cbd5e1;
+  background: #0f172a;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page td, .dashboard-content td) {
+  color: #e2e8f0;
+  border-color: #26364d;
+}
+html[data-theme="dark"] :where(.dashboard-page input, .dashboard-page select, .dashboard-page textarea,
+  .dashboard-content input, .dashboard-content select, .dashboard-content textarea) {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+html[data-theme="dark"] :where(.dashboard-page input::placeholder, .dashboard-page textarea::placeholder,
+  .dashboard-content input::placeholder, .dashboard-content textarea::placeholder) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-page .muted, .dashboard-page .text-muted,
+  .dashboard-content .muted, .dashboard-content .text-muted, .dashboard-content small) {
+  color: #a9b8cd;
+}
+html[data-theme="dark"] :where(.dashboard-page button.secondary, .dashboard-page .btn-secondary,
+  .dashboard-content button.secondary, .dashboard-content .btn-secondary) {
+  background: #1b2b43;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+html[data-theme] :where(.dashboard-page, .dashboard-content) :where(button, a, input, select, textarea) {
+  min-height: 36px;
+}
+html[data-theme] :where(.dashboard-page button, .dashboard-content button, .navbar button) {
+  cursor: pointer;
+}
