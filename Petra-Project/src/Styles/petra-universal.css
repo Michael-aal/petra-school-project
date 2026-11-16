@@ -313,3 +313,504 @@ html[data-theme] :where(.dashboard-page button, .dashboard-content button, .navb
   outline: 2px solid var(--petra-primary, #1769d2);
   outline-offset: 3px;
 }
+
+
+/* --------------------------------------------------------------------------
+   Petra mobile sidebar clarity + consistent card surfaces across route families.
+   Keep the navigation itself crisp; only the page behind it is dimmed.
+   -------------------------------------------------------------------------- */
+
+/* Sidebar is a solid, readable surface on every viewport and in both themes. */
+html[data-theme] .dashboard-sidebar {
+  z-index: 40 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-container {
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  isolation: isolate;
+}
+html[data-theme] .dashboard-sidebar .sidebar-header,
+html[data-theme] .dashboard-sidebar .sidebar-nav,
+html[data-theme] .dashboard-sidebar .sidebar-footer,
+html[data-theme] .dashboard-sidebar .sidebar-section-label,
+html[data-theme] .dashboard-sidebar .sidebar-brand,
+html[data-theme] .dashboard-sidebar .brand-title,
+html[data-theme] .dashboard-sidebar .brand-sub,
+html[data-theme] .dashboard-sidebar .sidebar-label,
+html[data-theme] .dashboard-sidebar .sidebar-title,
+html[data-theme] .dashboard-sidebar .child-label,
+html[data-theme] .dashboard-sidebar .sidebar-link,
+html[data-theme] .dashboard-sidebar .sidebar-group,
+html[data-theme] .dashboard-sidebar .sidebar-child,
+html[data-theme] .dashboard-sidebar .sidebar-assistant {
+  opacity: 1 !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  visibility: visible !important;
+  text-shadow: none;
+}
+html[data-theme="light"] .dashboard-sidebar .sidebar-container {
+  --sidebar-bg: #ffffff;
+  --sidebar-surface: #f8fbff;
+  --sidebar-hover: #edf5ff;
+  --sidebar-active: #dcecff;
+  --sidebar-text: #10233f;
+  --sidebar-muted: #475569;
+  --sidebar-blue: #1769d2;
+  --sidebar-border: #dbe4f0;
+  background: #ffffff !important;
+  color: #10233f !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-container {
+  --sidebar-bg: #0f172a;
+  --sidebar-surface: #131f33;
+  --sidebar-hover: #1b2b43;
+  --sidebar-active: #173d70;
+  --sidebar-text: #f8fafc;
+  --sidebar-muted: #cbd5e1;
+  --sidebar-blue: #60a5fa;
+  --sidebar-border: #26364d;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link,
+html[data-theme] .dashboard-sidebar .sidebar-group,
+html[data-theme] .dashboard-sidebar .sidebar-child,
+html[data-theme] .dashboard-sidebar .sidebar-assistant {
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  border-radius: 11px;
+  color: var(--sidebar-muted) !important;
+  background: transparent !important;
+  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease, transform 160ms ease !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link:hover,
+html[data-theme] .dashboard-sidebar .sidebar-group:hover,
+html[data-theme] .dashboard-sidebar .sidebar-child:hover,
+html[data-theme] .dashboard-sidebar .sidebar-assistant:hover {
+  color: var(--sidebar-text) !important;
+  background: var(--sidebar-hover) !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link.active,
+html[data-theme] .dashboard-sidebar .sidebar-group.group-active,
+html[data-theme] .dashboard-sidebar .sidebar-child.active,
+html[data-theme] .dashboard-sidebar .sidebar-assistant.active {
+  color: var(--sidebar-blue) !important;
+  background: var(--sidebar-active) !important;
+  border-color: color-mix(in srgb, var(--sidebar-blue) 22%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sidebar-blue) 12%, transparent),
+              0 3px 12px color-mix(in srgb, var(--sidebar-blue) 13%, transparent) !important;
+}
+html[data-theme] .dashboard-sidebar .sidebar-link.active::before,
+html[data-theme] .dashboard-sidebar .sidebar-group.group-active::before,
+html[data-theme] .dashboard-sidebar .sidebar-child.active::before,
+html[data-theme] .dashboard-sidebar .sidebar-assistant.active::before {
+  background: var(--sidebar-blue) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sidebar-blue) 55%, transparent);
+}
+html[data-theme] .dashboard-sidebar .sidebar-icon,
+html[data-theme] .dashboard-sidebar .child-icon,
+html[data-theme] .dashboard-sidebar .arrow-icon,
+html[data-theme] .dashboard-sidebar .sidebar-assistant-icon,
+html[data-theme] .dashboard-sidebar svg {
+  opacity: 1 !important;
+  visibility: visible !important;
+  stroke: currentColor !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-section-label {
+  color: #a9b8cd !important;
+}
+html[data-theme="light"] .dashboard-sidebar .sidebar-section-label {
+  color: #64748b !important;
+}
+html[data-theme="dark"] .dashboard-sidebar .sidebar-close {
+  color: #e2e8f0 !important;
+  background: #1b2b43 !important;
+  border-color: #334155 !important;
+}
+
+/* The scrim dims the page, never the drawer. */
+@media (max-width: 900px) {
+  html[data-theme] .dashboard-sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: min(292px, 88vw) !important;
+    max-width: 88vw !important;
+    height: 100dvh !important;
+    transform: translateX(-105%);
+    z-index: 40 !important;
+    box-shadow: 18px 0 48px rgba(15, 23, 42, .18);
+    will-change: transform;
+  }
+  html[data-theme] .dashboard-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  html[data-theme] .dashboard-sidebar .sidebar-container,
+  html[data-theme] .dashboard-sidebar .sidebar-container.collapsed {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    background: var(--sidebar-bg) !important;
+  }
+  html[data-theme] .sidebar-backdrop {
+    z-index: 35 !important;
+    background: rgba(7, 15, 30, .48) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] .dashboard-sidebar,
+  html[data-theme] .dashboard-sidebar * {
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Semantic card/panel surfaces for legacy pages that still use local class names.
+   This applies to every dashboard role and public page card family. */
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace, main
+) :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-container, .table-wrapper, .page-card,
+  [class*="-card"], [class*="Card"], [class*="-panel"], [class*="Panel"],
+  [class*="-widget"], [class*="Widget"], [class*="-stat"], [class*="Stat"],
+  [class*="-tile"], [class*="Tile"]
+) {
+  background-color: #131f33 !important;
+  color: #f8fafc !important;
+  border-color: #26364d !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+html[data-theme="light"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace, main
+) :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-container, .table-wrapper, .page-card,
+  [class*="-card"], [class*="Card"], [class*="-panel"], [class*="Panel"],
+  [class*="-widget"], [class*="Widget"], [class*="-stat"], [class*="Stat"],
+  [class*="-tile"], [class*="Tile"]
+) {
+  background-color: #ffffff;
+  color: #10233f;
+  border-color: #dbe4f0;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content, .dashboard-home,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(h1, h2, h3, h4, h5, h6, strong, b, label, p, span, small, li, dt, dd) {
+  color: inherit;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(.muted, .text-muted, .description, .subtitle, small, .helper-text) {
+  color: #a9b8cd !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(input, select, textarea) {
+  color: #f8fafc !important;
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(th) {
+  color: #cbd5e1 !important;
+  background-color: #0f172a !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(td) {
+  color: #e2e8f0 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] :where(
+  .dashboard-shell, .dashboard-page, .dashboard-content,
+  .teacher-page, .parent-dashboard, .admin-workspace
+) :where(.card *, .panel *, .stat-card *, .form-card *, .content-card *, .feature-card *, .dashboard-card *, .dashboard-widget *) {
+  color: inherit;
+}
+
+
+/* --------------------------------------------------------------------------
+   Final layout pass: prevent card text collisions and keep card content fluid.
+   Applies to legacy dashboard cards without changing their data or behavior.
+   -------------------------------------------------------------------------- */
+html[data-theme] .dashboard-shell :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .petra-card, .petra-stat-card, .petra-dash-header, .petra-quicklink-item
+) {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+html[data-theme] .dashboard-shell :where(
+  .card-header, .panel-header, .widget-header, .card-title-row,
+  .stat-card-head, .petra-stat-card-head, .petra-card-header,
+  .petra-dash-header, .petra-quicklink-item
+) {
+  min-width: 0;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+html[data-theme] .dashboard-shell :where(
+  .card h1, .card h2, .card h3, .card h4,
+  .panel h1, .panel h2, .panel h3, .panel h4,
+  .stat-card h1, .stat-card h2, .stat-card h3,
+  .petra-card h1, .petra-card h2, .petra-card h3,
+  .petra-stat-card strong, .petra-stat-label, .petra-stat-period,
+  .card p, .panel p, .stat-card p, .petra-card p
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.45;
+}
+html[data-theme] .dashboard-shell :where(
+  .stats-grid, .stat-grid, .petra-stats-grid, .dashboard-grid,
+  .card-grid, .widget-grid, .dashboard-cards, .quick-actions-grid
+) {
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  align-items: stretch;
+  gap: clamp(10px, 1.5vw, 16px);
+}
+html[data-theme] .dashboard-shell :where(.card, .panel, .petra-card, .petra-stat-card) > * {
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  html[data-theme] .dashboard-shell :where(
+    .card, .panel, .stat-card, .form-card, .settings-card,
+    .petra-card, .petra-stat-card
+  ) {
+    padding: clamp(12px, 3.5vw, 16px);
+    border-radius: 13px;
+  }
+  html[data-theme] .dashboard-shell :where(
+    .card-header, .panel-header, .widget-header, .petra-card-header
+  ) {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  html[data-theme] .dashboard-shell :where(
+    .card-title, .panel-title, .widget-title, .petra-card-header h2
+  ) {
+    font-size: clamp(14px, 4vw, 17px);
+    line-height: 1.35;
+  }
+}
+
+/* Nuvora — focused ChatGPT-style conversation layout. */
+.ask-nuvora-page {
+  --n-ink: var(--petra-text, #10233f);
+  --n-muted: var(--petra-text-muted, #64748b);
+  --n-border: var(--petra-border-token, #dbe4f0);
+  --n-surface: var(--petra-surface, #ffffff);
+  --n-soft: var(--petra-surface-soft, #f8fafc);
+  --n-accent: var(--petra-primary, #1769d2);
+  --n-accent-dark: var(--petra-primary-hover, #1254ad);
+  --n-accent-soft: var(--petra-blue-soft, #eaf3ff);
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 920px);
+  min-height: min(760px, calc(100dvh - 112px));
+  margin-inline: auto;
+  padding: clamp(12px, 2vw, 24px) clamp(12px, 2.5vw, 28px) 20px;
+  color: var(--n-ink);
+  box-sizing: border-box;
+}
+.ask-nuvora-header {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 10px 0 14px;
+  border-top: 0;
+}
+.ask-nuvora-header-left { min-width: 0; }
+.ask-nuvora-title { min-width: 0; flex-wrap: wrap; overflow-wrap: anywhere; }
+.ask-nuvora-subtitle { overflow-wrap: anywhere; }
+.ask-nuvora-header-actions { flex: 0 0 auto; }
+.ask-nuvora-btn-ghost {
+  background: var(--n-surface) !important;
+  color: var(--n-ink) !important;
+  border-color: var(--n-border) !important;
+}
+.ask-nuvora-history-panel,
+.ask-nuvora-data-card,
+.ask-nuvora-data-item,
+.ask-nuvora-suggestion-btn,
+.ask-nuvora-input-card {
+  background: var(--n-surface) !important;
+  color: var(--n-ink) !important;
+  border-color: var(--n-border) !important;
+}
+.ask-nuvora-history-head { background: var(--n-soft) !important; }
+.ask-nuvora-messages-container {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 18px 0 12px;
+  gap: 22px;
+}
+.ask-nuvora-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: clamp(260px, 48vh, 460px);
+  margin: 0 auto;
+  padding: 24px 0;
+}
+.ask-nuvora-empty-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 18px;
+  background: var(--n-accent-soft) !important;
+  color: var(--n-accent) !important;
+}
+.ask-nuvora-empty-title {
+  color: var(--n-ink);
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  letter-spacing: -.035em;
+}
+.ask-nuvora-empty-desc { color: var(--n-muted); }
+.ask-nuvora-suggestions { width: 100%; }
+.ask-nuvora-suggestion-btn {
+  min-width: 0;
+  min-height: 72px;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+.ask-nuvora-msg-row { min-width: 0; }
+.ask-nuvora-bubble {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.ask-nuvora-msg-row.ai .ask-nuvora-bubble {
+  background: var(--n-surface) !important;
+  color: var(--n-ink) !important;
+  border-color: var(--n-border) !important;
+}
+.ask-nuvora-data-card {
+  background: var(--n-soft) !important;
+}
+.ask-nuvora-data-item {
+  min-width: 0;
+  background: var(--n-surface) !important;
+}
+.ask-nuvora-data-label { color: var(--n-muted) !important; overflow-wrap: anywhere; }
+.ask-nuvora-data-val { color: var(--n-ink) !important; overflow-wrap: anywhere; }
+.ask-nuvora-input-card {
+  position: sticky;
+  bottom: 8px;
+  z-index: 5;
+  margin-top: 12px;
+  border-radius: 22px;
+  padding: 10px 12px 10px 18px;
+  box-shadow: 0 10px 34px rgba(15, 23, 42, .10);
+  backdrop-filter: blur(14px);
+}
+.ask-nuvora-form { align-items: flex-end; gap: 10px; }
+.ask-nuvora-textarea {
+  min-height: 28px;
+  max-height: 144px;
+  overflow-y: auto;
+  color: var(--n-ink) !important;
+}
+.ask-nuvora-textarea::placeholder { color: var(--n-muted) !important; }
+.ask-nuvora-send-btn { border-radius: 50%; }
+html[data-theme="dark"] .ask-nuvora-page {
+  --n-ink: #f8fafc;
+  --n-muted: #a9b8cd;
+  --n-border: #26364d;
+  --n-surface: #131f33;
+  --n-soft: #0f172a;
+  --n-accent: #60a5fa;
+  --n-accent-dark: #3b82f6;
+  --n-accent-soft: #173d70;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-tag,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-empty-icon {
+  background: #173d70 !important;
+  color: #bfdbfe !important;
+  border-color: #315783 !important;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-btn-ghost,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-delete-all,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-history-item,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-history-delete,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-copy-btn {
+  color: #cbd5e1 !important;
+  background-color: transparent !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-suggestion-btn:hover,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-history-item:hover,
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-history-item.active {
+  background: #1b2b43 !important;
+  color: #f8fafc !important;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-copy-btn:hover {
+  background: #1b2b43 !important;
+  color: #f8fafc !important;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-error-banner {
+  color: #bfdbfe !important;
+  background: #173d70 !important;
+  border-color: #315783 !important;
+}
+html[data-theme="dark"] .ask-nuvora-page .ask-nuvora-send-btn:disabled {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+@media (max-width: 760px) {
+  .ask-nuvora-page { min-height: calc(100dvh - 96px); padding-inline: 12px; }
+  .ask-nuvora-header { align-items: center; gap: 8px; }
+  .ask-nuvora-header-left { gap: 9px; }
+  .ask-nuvora-icon-badge { width: 36px; height: 36px; border-radius: 11px; }
+  .ask-nuvora-title { font-size: .98rem; }
+  .ask-nuvora-subtitle { display: none; }
+  .ask-nuvora-header-actions { gap: 5px; }
+  .ask-nuvora-btn-ghost { min-height: 36px; padding-inline: 9px; font-size: .72rem; }
+  .ask-nuvora-suggestions { grid-template-columns: 1fr; gap: 8px; }
+  .ask-nuvora-suggestion-btn { min-height: 54px; padding: 11px 12px; }
+  .ask-nuvora-avatar { width: 30px; height: 30px; }
+  .ask-nuvora-bubble { max-width: calc(100% - 40px); font-size: .88rem; }
+  .ask-nuvora-input-card { bottom: max(8px, env(safe-area-inset-bottom)); }
+}
+@media (max-width: 420px) {
+  .ask-nuvora-icon-badge { display: none; }
+  .ask-nuvora-header-actions .ask-nuvora-btn-ghost { width: 36px; min-width: 36px; padding: 0; font-size: 0; gap: 0; }
+  .ask-nuvora-header-actions .ask-nuvora-btn-ghost svg { width: 17px; height: 17px; }
+}
