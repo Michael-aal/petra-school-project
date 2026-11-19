@@ -205,7 +205,7 @@ function DashboardLay() {
   return (
     <div className={`dashboard-shell${isAdminWorkspace ? " admin-workspace" : ""}`}>
       <div className={`dashboard-sidebar${collapsed ? " is-collapsed" : ""}${mobileOpen ? " mobile-open" : ""}`}>
-        <SidebarNav collapsed={collapsed} onNavigate={closeSidebar} onClose={closeSidebar} />
+        <SidebarNav collapsed={collapsed && !mobileOpen} onNavigate={closeSidebar} onClose={closeSidebar} />
       </div>
       {mobileOpen && (
         <button type="button" className="sidebar-backdrop" onClick={closeSidebar} aria-label="Close sidebar" />

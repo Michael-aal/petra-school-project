@@ -7,7 +7,7 @@ export type StatCardData = {
   icon: string;
 };
 
-export const BRAND_NAME = "Shopeers";
+export const BRAND_NAME = "Nuvora";
 
 export const stats: StatCardData[] = [
   { title: "Page Views", value: "16,431", delta: "+15,5%", period: "vs. 14,653 last period", positive: true, icon: "eye" },

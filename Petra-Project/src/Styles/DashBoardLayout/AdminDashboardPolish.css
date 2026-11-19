@@ -313,3 +313,335 @@
 .dashboard-shell.admin-workspace .tn-root .tn-badge {
   background: #E41E3F;
 }
+
+
+/* =========================================================
+   PETRA GLOBAL SHELL REPAIR — NAVIGATION + CONTRAST
+   Keep one sidebar design at desktop and laptop widths.
+   Tablet/mobile change presentation to a drawer, not identity.
+   ========================================================= */
+
+.dashboard-shell {
+  --petra-sidebar-expanded: 248px;
+  --petra-sidebar-collapsed: 72px;
+  min-width: 0;
+  width: 100%;
+  overflow-x: clip;
+}
+
+/* Desktop and laptop: the sidebar and its wrapper share one width. */
+@media (min-width: 901px) {
+  .dashboard-shell .dashboard-sidebar {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 var(--petra-sidebar-expanded) !important;
+    width: var(--petra-sidebar-expanded) !important;
+    min-width: var(--petra-sidebar-expanded) !important;
+    max-width: var(--petra-sidebar-expanded) !important;
+    height: 100dvh;
+    align-self: stretch;
+    transform: none !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar.is-collapsed {
+    flex-basis: var(--petra-sidebar-collapsed) !important;
+    width: var(--petra-sidebar-collapsed) !important;
+    min-width: var(--petra-sidebar-collapsed) !important;
+    max-width: var(--petra-sidebar-collapsed) !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar > .sidebar-container {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 100dvh !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar.is-collapsed > .sidebar-container {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .dashboard-shell .dashboard-main {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Tablet and mobile: retain the full original sidebar inside a drawer.
+   A desktop collapsed preference must never hide its labels in the drawer. */
+@media (max-width: 900px) {
+  .dashboard-shell .dashboard-sidebar,
+  .dashboard-shell .dashboard-sidebar.is-collapsed {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 1100 !important;
+    flex: 0 0 min(280px, 88vw) !important;
+    width: min(280px, 88vw) !important;
+    min-width: min(280px, 88vw) !important;
+    max-width: min(280px, 88vw) !important;
+    height: 100dvh !important;
+    transform: translateX(-105%) !important;
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1) !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar.mobile-open,
+  .dashboard-shell .dashboard-sidebar.is-collapsed.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar > .sidebar-container,
+  .dashboard-shell .dashboard-sidebar.is-collapsed > .sidebar-container {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 100dvh !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-label,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-title,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .child-label,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .brand-title,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .brand-sub,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-user,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .arrow-icon,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-section-label {
+    display: initial !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-brand,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-footer {
+    display: flex !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-children {
+    display: flex !important;
+    position: static !important;
+    min-width: 0 !important;
+    margin: 2px 0 3px 14px !important;
+    padding: 0 0 0 9px !important;
+    border: 0 !important;
+    border-left: 1px solid var(--sidebar-border) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-header,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-assistant,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-link,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-group,
+  .dashboard-shell .dashboard-sidebar .sidebar-container.collapsed .sidebar-child {
+    justify-content: flex-start !important;
+  }
+
+  .dashboard-shell .dashboard-main {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Laptop navbar: prevent controls and profile from squeezing one another. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .dashboard-shell .top-navbar,
+  .dashboard-shell .tn-root {
+    padding-inline: 16px !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-shell .top-search {
+    width: min(340px, 34vw) !important;
+    min-width: 180px;
+  }
+
+  .dashboard-shell .top-right { gap: 6px !important; }
+  .dashboard-shell .user-meta { min-width: 0; max-width: 132px; }
+  .dashboard-shell .user-meta strong,
+  .dashboard-shell .user-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .dashboard-shell .user-info,
+  .dashboard-shell .tn-profile-btn {
+    max-width: 210px !important;
+  }
+}
+
+/* Global contrast contract: solid blue actions always use white content. */
+.dashboard-shell :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .dashboard-widget-action, .notification-action,
+ .badge-primary, .badge-blue,
+  .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-blue-800, .bg-blue-900,
+  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700,
+  [data-variant="primary"], [data-tone="solid"]
+) {
+  color: #FFFFFF !important;
+  font-weight: 650;
+}
+
+.dashboard-shell :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .dashboard-widget-action, .notification-action,
+ .badge-primary, .badge-blue,
+  .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-blue-800, .bg-blue-900,
+  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700,
+  [data-variant="primary"], [data-tone="solid"]
+) :is(svg, i, span, strong, small, em) {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+.dashboard-shell :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .dashboard-widget-action, .notification-action,
+ .badge-primary, .badge-blue,
+  .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-blue-800, .bg-blue-900,
+  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700,
+  [data-variant="primary"], [data-tone="solid"]
+) svg {
+  fill: none !important;
+}
+
+/* Solid-blue controls in the shared topbar and dropdowns. */
+.dashboard-shell .tn-root :is(.tn-notice, .tn-menu-item, .tn-text-btn) {
+  font-weight: 600;
+}
+
+.dashboard-shell .tn-root :is(.tn-notice, .tn-menu-item, .tn-text-btn):focus-visible,
+.dashboard-shell .top-navbar :is(button, a, input):focus-visible {
+  outline: 2px solid #1877F2 !important;
+  outline-offset: 3px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell .dashboard-sidebar,
+  .dashboard-shell .dashboard-sidebar * {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell .top-navbar {
+    min-height: 60px !important;
+    padding-inline: 12px !important;
+    gap: 8px !important;
+  }
+
+  .dashboard-shell .top-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 8px !important;
+  }
+
+  .dashboard-shell .top-search {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    max-width: 100%;
+    padding-inline: 10px;
+  }
+
+  .dashboard-shell .top-search .search-placeholder {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-shell .top-right {
+    flex: 0 0 auto;
+    gap: 5px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell .top-navbar {
+    padding-inline: 9px !important;
+  }
+
+  .dashboard-shell .top-search {
+    height: 38px;
+  }
+
+  .dashboard-shell .top-search kbd {
+    display: none;
+  }
+
+  .dashboard-shell .user-meta {
+    display: none;
+  }
+
+  .dashboard-shell .user-info {
+    width: 38px;
+    min-width: 38px;
+    padding: 3px !important;
+    justify-content: center;
+  }
+}
+
+/* Dark admin workspace: retain the same Nuvora blue hierarchy on charcoal surfaces. */
+html[data-theme="dark"] .dashboard-shell.admin-workspace {
+  --admin-brand: #3b82f6;
+  --admin-brand-hover: #2563eb;
+  --admin-brand-active: #1d4ed8;
+  --admin-blue-soft: #173d70;
+  --admin-blue-hover: #1b4b80;
+  --admin-blue-accent: #315783;
+  --admin-canvas: #0b1220;
+  --admin-surface: #131f33;
+  --admin-text: #f8fafc;
+  --admin-muted: #a9b8cd;
+  --admin-subtle: #94a3b8;
+  --admin-border: #26364d;
+  --ui-brand: #3b82f6;
+  --ui-brand-hover: #2563eb;
+  --ui-brand-soft: #173d70;
+  --ui-page: #0b1220;
+  --ui-surface: #131f33;
+  --ui-text: #f8fafc;
+  --ui-muted: #a9b8cd;
+  --ui-subtle: #94a3b8;
+  --ui-border: #26364d;
+  background: var(--admin-canvas) !important;
+  color: var(--admin-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .dashboard-main,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .dashboard-content {
+  background: var(--admin-canvas) !important;
+  color: var(--admin-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table th {
+  background: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table td {
+  color: #e2e8f0 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table tbody tr:hover {
+  background: #17243a !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-container {
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1b2b43;
+  --sidebar-active: #173d70;
+  --sidebar-text: #f8fafc;
+  --sidebar-muted: #cbd5e1;
+  --sidebar-blue: #60a5fa;
+  --sidebar-border: #26364d;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-right-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-link,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-group,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-child,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-assistant {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-link.active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-group.group-active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-child.active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-assistant.active {
+  color: #93c5fd !important;
+  background: #173d70 !important;
+}
