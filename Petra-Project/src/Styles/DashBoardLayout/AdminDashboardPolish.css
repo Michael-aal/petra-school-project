@@ -576,3 +576,72 @@
     justify-content: center;
   }
 }
+
+/* Dark admin workspace: retain the same Nuvora blue hierarchy on charcoal surfaces. */
+html[data-theme="dark"] .dashboard-shell.admin-workspace {
+  --admin-brand: #3b82f6;
+  --admin-brand-hover: #2563eb;
+  --admin-brand-active: #1d4ed8;
+  --admin-blue-soft: #173d70;
+  --admin-blue-hover: #1b4b80;
+  --admin-blue-accent: #315783;
+  --admin-canvas: #0b1220;
+  --admin-surface: #131f33;
+  --admin-text: #f8fafc;
+  --admin-muted: #a9b8cd;
+  --admin-subtle: #94a3b8;
+  --admin-border: #26364d;
+  --ui-brand: #3b82f6;
+  --ui-brand-hover: #2563eb;
+  --ui-brand-soft: #173d70;
+  --ui-page: #0b1220;
+  --ui-surface: #131f33;
+  --ui-text: #f8fafc;
+  --ui-muted: #a9b8cd;
+  --ui-subtle: #94a3b8;
+  --ui-border: #26364d;
+  background: var(--admin-canvas) !important;
+  color: var(--admin-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .dashboard-main,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .dashboard-content {
+  background: var(--admin-canvas) !important;
+  color: var(--admin-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table th {
+  background: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table td {
+  color: #e2e8f0 !important;
+  border-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace table tbody tr:hover {
+  background: #17243a !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-container {
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1b2b43;
+  --sidebar-active: #173d70;
+  --sidebar-text: #f8fafc;
+  --sidebar-muted: #cbd5e1;
+  --sidebar-blue: #60a5fa;
+  --sidebar-border: #26364d;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-right-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-link,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-group,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-child,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-assistant {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-link.active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-group.group-active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-child.active,
+html[data-theme="dark"] .dashboard-shell.admin-workspace .sidebar-assistant.active {
+  color: #93c5fd !important;
+  background: #173d70 !important;
+}
