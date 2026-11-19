@@ -1209,3 +1209,52 @@ html[data-theme="dark"] .dashboard-shell .top-navbar .notification-action {
   color: #ffffff !important;
   border-color: #2563eb !important;
 }
+
+/* Dashboard surfaces follow the selected theme instead of retaining light-only tokens. */
+html[data-theme="dark"] .dashboard-shell {
+  --ui-page: #0b1220;
+  --ui-surface: #131f33;
+  --ui-surface-muted: #0f172a;
+  --ui-text: #f8fafc;
+  --ui-muted: #a9b8cd;
+  --ui-subtle: #94a3b8;
+  --ui-border: #26364d;
+  --ui-border-strong: #334155;
+  background: var(--ui-page) !important;
+  color: var(--ui-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell .dashboard-main,
+html[data-theme="dark"] .dashboard-shell .dashboard-content {
+  background: var(--ui-page) !important;
+  color: var(--ui-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-stat-card,
+  .dashboard-home-panel, .dashboard-home-summary-card, .settings-card,
+  .wallet-panel, .payments-panel, .form-card, .table-container,
+  .content-card, .page-card, .empty-state
+) {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-theme="dark"] .dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .form-card,
+  .settings-card, .content-card, .page-card, .empty-state
+) :is(h1,h2,h3,h4,h5,h6,strong,label) {
+  color: var(--ui-text) !important;
+}
+html[data-theme="dark"] .dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .form-card,
+  .settings-card, .content-card, .page-card, .empty-state
+) :is(p,small,.muted,.text-muted,.description,.subtitle,.helper-text) {
+  color: var(--ui-muted) !important;
+}
+html[data-theme="dark"] .dashboard-shell :is(input,select,textarea) {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] .dashboard-shell :is(input,textarea)::placeholder {
+  color: #a9b8cd !important;
+}
