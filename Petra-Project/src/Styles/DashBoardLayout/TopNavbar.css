@@ -674,7 +674,6 @@
 .notification-action{width:100%;padding:9px 11px;border:1px solid #2563EB;border-radius:9px;background:#2563EB;color:#fff;font-size:10px;font-weight:700;cursor:pointer}
 .account-dropdown-header{justify-content:flex-start;padding-bottom:11px;border-bottom:1px solid #EEF0F3}.account-dropdown-header > div{display:grid;gap:2px;min-width:0}
 .account-dropdown-actions{display:grid;gap:6px;margin-top:11px}.account-dropdown-actions button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;border:1px solid #EEF0F3;border-radius:9px;background:#fff;color:#0F172A;text-align:left;cursor:pointer;transition:.16s ease}.account-dropdown-actions button:hover{background:#E8F0FE;color:#2563EB;border-color:#BFDBFE}
-navbar{background:#172033;color:#F8FAFC;border-color:#263449}nu-btn,n-btn,nfo{background:#172033;color:#F8FAFC;border-color:#263449}nu-bars,nput{color:#F8FAFC}nd:#111827}notification-dropdown,nt-dropdown,nt-dropdown-actions button{background:#172033;color:#F8FAFC;border-color:#263449}
 @media(max-width:760px){.top-navbar{min-height:62px;padding:0 12px}.top-search{width:40px;padding:0;justify-content:center;background:#F1F5F9}.top-search input,.top-search kbd{display:none}.user-meta{display:none}.user-info{padding-right:4px}.menu-btn,.icon-btn{width:36px;height:36px}.notification-dropdown,.account-dropdown{position:fixed;right:12px;top:70px;width:min(320px,calc(100vw - 24px))}}
 @media(prefers-reduced-motion:reduce){.top-navbar *{transition:none!important;animation:none!important}}
 
