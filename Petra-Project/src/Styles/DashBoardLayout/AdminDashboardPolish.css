@@ -512,3 +512,95 @@
     transition: none !important;
   }
 }
+
+
+/* Legacy Shopeers/role navbar responsive sizing. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .dashboard-shell .top-navbar {
+    padding-inline: 16px !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-shell .top-search {
+    width: min(340px, 34vw) !important;
+    min-width: 180px;
+  }
+
+  .dashboard-shell .top-right {
+    gap: 6px !important;
+  }
+
+  .dashboard-shell .user-info {
+    max-width: 210px !important;
+  }
+
+  .dashboard-shell .user-meta {
+    min-width: 0;
+    max-width: 132px;
+  }
+
+  .dashboard-shell .user-meta strong,
+  .dashboard-shell .user-meta span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell .top-navbar {
+    min-height: 60px !important;
+    padding-inline: 12px !important;
+    gap: 8px !important;
+  }
+
+  .dashboard-shell .top-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 8px !important;
+  }
+
+  .dashboard-shell .top-search {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    max-width: 100%;
+    padding-inline: 10px;
+  }
+
+  .dashboard-shell .top-search .search-placeholder {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-shell .top-right {
+    flex: 0 0 auto;
+    gap: 5px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell .top-navbar {
+    padding-inline: 9px !important;
+  }
+
+  .dashboard-shell .top-search {
+    height: 38px;
+  }
+
+  .dashboard-shell .top-search kbd {
+    display: none;
+  }
+
+  .dashboard-shell .user-meta {
+    display: none;
+  }
+
+  .dashboard-shell .user-info {
+    width: 38px;
+    min-width: 38px;
+    padding: 3px !important;
+    justify-content: center;
+  }
+}
