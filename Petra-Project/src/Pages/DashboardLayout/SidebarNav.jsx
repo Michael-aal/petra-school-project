@@ -71,7 +71,7 @@ const attentionDotStyle = { width: 7, height: 7, minWidth: 7, borderRadius: "50%
 
 export function SidebarNav({onNavigate,collapsed=false,onClose}) {
   const location=useLocation(); const {userInfo,setUserInfo}=useContext(UserContext); const navigate=useNavigate();
-  const schoolName=userInfo?.schoolName||userInfo?.institution||"Petra School Project";
+  const schoolName=userInfo?.schoolName||userInfo?.institution||"Nuvora";
   const normalizedRole=normalizeRole(userInfo?.role);
   const isStaffRole=["staff","teacher","teacher_staff"].includes(normalizedRole);
   const isParentRole=normalizedRole==="parent";
