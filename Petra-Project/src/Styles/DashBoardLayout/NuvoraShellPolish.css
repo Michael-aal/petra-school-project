@@ -1120,3 +1120,92 @@
     transition: none !important;
   }
 }
+
+
+/* Dark mode must win over the legacy light-only shell polish above. */
+html[data-theme="dark"] .dashboard-shell .sidebar-container,
+html[data-theme="dark"] .dashboard-shell .sidebar-container:not(.collapsed) {
+  --sidebar-bg: #0f172a !important;
+  --sidebar-surface: #131f33 !important;
+  --sidebar-hover: #1b2b43 !important;
+  --sidebar-active: #173d70 !important;
+  --sidebar-text: #f8fafc !important;
+  --sidebar-muted: #cbd5e1 !important;
+  --sidebar-blue: #60a5fa !important;
+  --sidebar-border: #26364d !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-right-color: #26364d !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .brand-title,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-user h3 {
+  color: #f8fafc !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .brand-sub,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-section-label,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-user h4 {
+  color: #a9b8cd !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-link,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-group,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-child,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-assistant {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-link:hover,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-group:hover,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-child:hover,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-assistant:hover {
+  color: #f8fafc !important;
+  background: #1b2b43 !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-link.active,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-group.group-active,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-child.active,
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-assistant.active {
+  color: #93c5fd !important;
+  background: #173d70 !important;
+}
+html[data-theme="dark"] .dashboard-shell .sidebar-container .sidebar-close {
+  color: #e2e8f0 !important;
+  background: #1b2b43 !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-bottom-color: #26364d !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar .menu-btn,
+html[data-theme="dark"] .dashboard-shell .top-navbar .icon-btn,
+html[data-theme="dark"] .dashboard-shell .top-navbar .user-info,
+html[data-theme="dark"] .dashboard-shell .top-navbar .top-search {
+  background: #17243a !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar .top-search .search-placeholder,
+html[data-theme="dark"] .dashboard-shell .top-navbar .user-meta span,
+html[data-theme="dark"] .dashboard-shell .top-navbar .top-welcome,
+html[data-theme="dark"] .dashboard-shell .top-navbar .user-name {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar .notification-dropdown,
+html[data-theme="dark"] .dashboard-shell .top-navbar .account-dropdown,
+html[data-theme="dark"] .dashboard-shell .top-navbar .account-dropdown-actions button {
+  background: #131f33 !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar .notification-dropdown p,
+html[data-theme="dark"] .dashboard-shell .top-navbar .notification-header span,
+html[data-theme="dark"] .dashboard-shell .top-navbar .account-dropdown-header span {
+  color: #a9b8cd !important;
+}
+html[data-theme="dark"] .dashboard-shell .top-navbar .ask-nuvora-btn,
+html[data-theme="dark"] .dashboard-shell .top-navbar .notification-action {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
