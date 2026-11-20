@@ -20,7 +20,7 @@ export const requirePublicSchoolContext = (source = "body", expectedType = null)
     return res.status(400).json({ success: false, message: "Open this form using the school's official application link." });
   }
 
-  if (req.schoolId && Number(req.schoolId) !== requestedSchoolId) {
+  if (!tokenContext && req.schoolId && Number(req.schoolId) !== requestedSchoolId) {
     return res.status(403).json({ success: false, message: "The requested school does not match your account." });
   }
 
