@@ -54,7 +54,10 @@ export default function TeacherApplicationForm() {
       return () => { active = false; };
     }
     teacherApplicationApi.getPublicSchool(applicationToken)
-      .then((response) => { if (active && response?.type === "teacher") setSchoolInfo(response.school); })
+      .then((response) => {
+        if (response?.type !== "teacher") throw new Error("This link is not a teacher application link.");
+        if (active) setSchoolInfo(response.school);
+      })
       .catch((requestError) => { if (active) setError(requestError?.data?.message || "This teacher application link is invalid or unavailable."); });
     return () => { active = false; };
   }, [applicationToken]);
