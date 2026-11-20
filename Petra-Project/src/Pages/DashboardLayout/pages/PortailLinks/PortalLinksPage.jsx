@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { Copy, ExternalLink, GraduationCap, BriefcaseBusiness, Link2, RefreshCw, ShieldCheck } from "lucide-react";
+import { Copy, ExternalLink, GraduationCap, BriefcaseBusiness, Link2, RefreshCw, ShieldCheck, Users, CheckCircle2, Clock, Link as LinkIcon, Mail } from "lucide-react";
+import GenericListPage from "../../GenericListPage/GenericListPage";
+import { studentApi } from "../../../../services/studentApi";
 import { teacherApplicationApi } from "../../../../services/teacherApplicationApi";
 import "./PortalLinksPage.css";
 
@@ -8,6 +10,8 @@ export default function PortalLinksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState("");
+  const [parents, setParents] = useState([]);
+  const [copiedParentId, setCopiedParentId] = useState(null);
 
   const loadLinks = useCallback(async () => {
     setLoading(true);
@@ -22,7 +26,75 @@ export default function PortalLinksPage() {
     }
   }, []);
 
+
   useEffect(() => { loadLinks(); }, [loadLinks]);
+
+  useEffect(() => {
+    let active = true;
+    studentApi.list({ limit: 200 }).then((response) => {
+      const parentMap = new Map();
+      (response.students || []).filter((student) => Boolean(student.parentId)).forEach((student) => {
+        const key = student.parentId;
+        const parent = parentMap.get(key) || {
+          id: key,
+          name: student.guardianName || student.parentEmail || "Guardian",
+          email: student.parentEmail || "",
+          linkedStudents: 0,
+          inviteStatus: student.parentAccessCodeUsed ? "Active" : "Pending",
+          lastInvited: student.parentAccessCodeUsed ? "Linked" : "Pending",
+        };
+        parent.linkedStudents += 1;
+        if (student.parentAccessCodeUsed) {
+          parent.inviteStatus = "Active";
+          parent.lastInvited = "Linked";
+        }
+        parentMap.set(key, parent);
+      });
+      if (active) setParents(Array.from(parentMap.values()));
+    }).catch(() => { if (active) setParents([]); });
+    return () => { active = false; };
+  }, []);
+
+  const copyParentLink = async (parent) => {
+    const url = window.location.origin + "/signin?email=" + encodeURIComponent(parent.email);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedParentId(parent.id);
+      window.setTimeout(() => setCopiedParentId(null), 1800);
+    } catch {
+      setError("Clipboard access was blocked while copying the parent portal link.");
+    }
+  };
+
+  const parentsConfig = {
+    title: "Parent Portal Access",
+    singularName: "Parent",
+    description: "Existing parent access links remain available here.",
+    icon: ShieldCheck,
+    stats: [
+      { label: "Total Parents", value: (data) => data.length, icon: Users, color: "blue" },
+      { label: "Active Accounts", value: (data) => data.filter((parent) => parent.inviteStatus === "Active").length, icon: CheckCircle2, color: "green" },
+      { label: "Pending Invites", value: (data) => data.filter((parent) => parent.inviteStatus === "Pending").length, icon: Clock, color: "yellow" },
+    ],
+    columns: [
+      { key: "avatar", label: "Parent" },
+      { key: "email", label: "Email", render: (item) => <span className="parent-email">{item.email || "—"}</span> },
+      { key: "linkedStudents", label: "Linked Wards", render: (item) => <span>{item.linkedStudents || 0} Wards</span> },
+      { key: "inviteStatus", label: "Status", render: (item) => <span className={"status-badge status-" + String(item.inviteStatus || "unknown").toLowerCase()}>{item.inviteStatus}</span> },
+      { key: "lastInvited", label: "Last Invited", render: (item) => <span>{item.lastInvited || "—"}</span> },
+      { key: "actions", label: "Actions", align: "right" },
+    ],
+    actions: [
+      { label: copiedParentId ? "Copied!" : "Copy Link", icon: LinkIcon, onClick: copyParentLink },
+      { label: "Send Email", icon: Mail, type: "sendLink" },
+      { label: "Delete", icon: CheckCircle2, type: "delete" },
+    ],
+    emptyState: {
+      icon: Users,
+      title: "No parents found",
+      description: "Parent portal access links will appear here when parent records are linked to students.",
+    },
+  };
 
   const makeUrl = (type) => {
     const token = portal?.links?.[type];
@@ -105,6 +177,14 @@ export default function PortalLinksPage() {
         <ShieldCheck size={19} />
         <div><strong>Private to your school</strong><p>These signed links identify your school without exposing an admin account ID. Applicants do not need to sign in. Keep your links within your school's recruitment and admission channels.</p></div>
       </aside>
+
+      <section className="applicant-parent-links">
+        <div className="applicant-parent-links-heading">
+          <h2>Parent Portal Access</h2>
+          <p>Existing parent sign-in links are still available and have been kept intact.</p>
+        </div>
+        <GenericListPage config={parentsConfig} initialData={parents} />
+      </section>
     </main>
   );
 }
