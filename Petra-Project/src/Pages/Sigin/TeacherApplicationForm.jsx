@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BriefcaseBusiness,
   Check,
@@ -45,6 +45,19 @@ export default function TeacherApplicationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(null);
+  const [schoolInfo, setSchoolInfo] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!applicationToken) {
+      setError("Open this form using the official teacher application link shared by the school.");
+      return () => { active = false; };
+    }
+    teacherApplicationApi.getPublicSchool(applicationToken)
+      .then((response) => { if (active && response?.type === "teacher") setSchoolInfo(response.school); })
+      .catch((requestError) => { if (active) setError(requestError?.data?.message || "This teacher application link is invalid or unavailable."); });
+    return () => { active = false; };
+  }, [applicationToken]);
 
   const change = (event) => {
     const { name, value, type, checked } = event.target;
@@ -134,9 +147,9 @@ export default function TeacherApplicationForm() {
     <main className="teacher-application-page">
       <div className="teacher-application-shell">
         <header className="teacher-application-header">
-          <div className="teacher-application-brand">PETRA</div>
+          <div className="teacher-application-brand">{schoolInfo?.logo ? <img src={schoolInfo.logo} alt="" /> : (schoolInfo?.name || "SCHOOL").slice(0, 1).toUpperCase()}</div>
           <div>
-            <p className="teacher-application-eyebrow">STAFF RECRUITMENT</p>
+            <p className="teacher-application-eyebrow">{schoolInfo?.name || "SCHOOL"} · STAFF RECRUITMENT</p>
             <h1>Teacher Application Form</h1>
             <p>Complete your application to join the school teaching team.</p>
           </div>
