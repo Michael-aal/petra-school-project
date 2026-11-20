@@ -469,3 +469,23 @@
 
 .sidebar-count-badge{margin-left:auto;min-width:22px;height:19px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#EAF3FF;color:#0F5DCC;font-size:9px;font-weight:800}
 html[data-theme="dark"] .sidebar-count-badge{background:#173D70;color:#BFDBFE}
+
+
+/* Dark-mode flyout for the collapsed Nuvora navigation. */
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-children,
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-children {
+  background: #131f33;
+  border-color: #334155;
+  box-shadow: 0 16px 36px rgb(0 0 0 / 32%);
+}
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-child,
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-child {
+  color: #cbd5e1;
+}
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-child:hover,
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-child:hover,
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:hover .sidebar-child.active,
+html[data-theme="dark"] .sidebar-container.collapsed .sidebar-group-wrap:focus-within .sidebar-child.active {
+  color: #93c5fd;
+  background: #173d70;
+}
