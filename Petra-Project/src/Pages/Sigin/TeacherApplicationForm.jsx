@@ -124,8 +124,8 @@ export default function TeacherApplicationForm() {
     event.preventDefault();
     const message = validateAll();
     if (message) return setError(message);
-    if (!/^\d+$/.test(String(schoolId || ""))) {
-      return setError("This application link is missing a valid school reference. Please use the school's official application link.");
+    if (!applicationToken) {
+      return setError("Open this form using the official teacher application link shared by the school.");
     }
 
     setLoading(true);
