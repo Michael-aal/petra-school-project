@@ -11,6 +11,7 @@ import "./Styles/petra-responsive.css";
 import "./Styles/petra-theme.css";
 import "./Styles/petra-universal.css";
 import "./Styles/nuvora-components-audit.css";
+import "./Styles/nuvora-dark-mode-audit.css";
 import { applyTheme } from "./utils/theme.js";
 applyTheme();
 createRoot(document.getElementById("root")).render(
