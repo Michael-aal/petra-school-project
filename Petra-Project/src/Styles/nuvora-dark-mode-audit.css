@@ -1,0 +1,245 @@
+/* NUVORA DARK MODE SURFACE AUDIT
+   Loaded last so legacy page-level light-mode declarations cannot leak into dark mode.
+   White remains reserved for text/icons on colored controls, never page surfaces. */
+:root[data-theme="dark"],
+html.dark,
+body[data-theme="dark"],
+body.dark {
+  color-scheme: dark !important;
+  --app-bg: #0b0812 !important;
+  --app-surface: #110d1b !important;
+  --app-surface-strong: #171123 !important;
+  --app-card: #171123 !important;
+  --app-panel: #110d1b !important;
+  --app-text: #f5f3ff !important;
+  --app-text-muted: #b8aecb !important;
+  --foreground: #f5f3ff !important;
+  --muted-foreground: #b8aecb !important;
+  --background: #0b0812 !important;
+  --card: #171123 !important;
+  --card-foreground: #f5f3ff !important;
+  --popover: #171123 !important;
+  --popover-foreground: #f5f3ff !important;
+  --dashboard-page-bg: #0b0812 !important;
+  --dashboard-card-bg: #171123 !important;
+  --dashboard-panel-bg: #110d1b !important;
+  --dashboard-topbar-bg: #110d1b !important;
+  --dashboard-topbar-text: #f5f3ff !important;
+  --dashboard-sidebar-bg: #110d1b !important;
+  --app-border: #30263e !important;
+  --border: #30263e !important;
+  --input: #40344f !important;
+}
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+body[data-theme="dark"],
+body.dark {
+  background: #0b0812 !important;
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .dashboard-shell,
+body[data-theme="dark"] .dashboard-shell,
+body.dark .dashboard-shell,
+html[data-theme="dark"] .dashboard-main,
+html[data-theme="dark"] .dashboard-content,
+html[data-theme="dark"] .dashboard-page,
+html[data-theme="dark"] .dashboard-home,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .page-content,
+html[data-theme="dark"] .page-container,
+html[data-theme="dark"] .content-wrapper,
+html[data-theme="dark"] .app-content {
+  background-color: #0b0812 !important;
+  color: #f5f3ff !important;
+}
+/* All shared and page-specific card/panel surfaces. */
+html[data-theme="dark"] .dashboard-shell .card,
+html[data-theme="dark"] .dashboard-shell [class*="card"],
+html[data-theme="dark"] .dashboard-shell [class*="panel"],
+html[data-theme="dark"] .dashboard-shell [class*="widget"],
+html[data-theme="dark"] .dashboard-shell [class*="tile"],
+html[data-theme="dark"] .dashboard-shell [class*="summary"],
+html[data-theme="dark"] .dashboard-shell [class*="stat"],
+html[data-theme="dark"] .dashboard-shell .modal-content,
+html[data-theme="dark"] .dashboard-shell .modal,
+html[data-theme="dark"] .dashboard-shell .dropdown-menu,
+html[data-theme="dark"] .dashboard-shell .notification-dropdown,
+html[data-theme="dark"] .dashboard-shell .account-dropdown,
+html[data-theme="dark"] .dashboard-shell .popover,
+html[data-theme="dark"] .dashboard-shell .tooltip,
+html[data-theme="dark"] .dashboard-shell .table-container,
+html[data-theme="dark"] .dashboard-shell .table-responsive,
+html[data-theme="dark"] .dashboard-shell .data-table-wrap,
+html[data-theme="dark"] .dashboard-page .card,
+html[data-theme="dark"] .dashboard-page [class*="card"],
+html[data-theme="dark"] .dashboard-page [class*="panel"],
+html[data-theme="dark"] .dashboard-page [class*="widget"],
+html[data-theme="dark"] .dashboard-page .modal-content,
+html[data-theme="dark"] .dashboard-page .table-container,
+html[data-theme="dark"] .dashboard-home .card,
+html[data-theme="dark"] .dashboard-home [class*="card"],
+html[data-theme="dark"] .dashboard-home [class*="panel"],
+html[data-theme="dark"] .dashboard-home [class*="widget"],
+html[data-theme="dark"] .parent-dashboard .card,
+html[data-theme="dark"] .parent-page .card,
+html[data-theme="dark"] .parent-dashboard .panel,
+html[data-theme="dark"] .parent-page .panel,
+html[data-theme="dark"] .settings-card,
+html[data-theme="dark"] .form-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .empty-state-card {
+  background-color: #171123 !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+  box-shadow: 0 8px 26px rgba(0,0,0,.22) !important;
+}
+/* Headers, navigation bars, sidebars and flyouts. */
+html[data-theme="dark"] .top-navbar,
+html[data-theme="dark"] .dashboard-topbar,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .sidebar-container,
+html[data-theme="dark"] .dashboard-sidebar,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .sidebar-nav,
+html[data-theme="dark"] .notification-dropdown,
+html[data-theme="dark"] .account-dropdown,
+html[data-theme="dark"] .dropdown-menu,
+html[data-theme="dark"] .command-palette,
+html[data-theme="dark"] .command-palette-content {
+  background-color: #110d1b !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+html[data-theme="dark"] .sidebar-container,
+html[data-theme="dark"] .dashboard-shell .sidebar-container {
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .sidebar-link,
+html[data-theme="dark"] .sidebar-group,
+html[data-theme="dark"] .sidebar-child,
+html[data-theme="dark"] .sidebar-assistant,
+html[data-theme="dark"] .sidebar-link *,
+html[data-theme="dark"] .sidebar-group *,
+html[data-theme="dark"] .sidebar-child * {
+  color: #d8cfea !important;
+}
+html[data-theme="dark"] .sidebar-link.active,
+html[data-theme="dark"] .sidebar-group.group-active,
+html[data-theme="dark"] .sidebar-child.active,
+html[data-theme="dark"] .sidebar-assistant.active {
+  background: #2b2040 !important;
+  color: #c4a7ff !important;
+}
+html[data-theme="dark"] .sidebar-link.active *,
+html[data-theme="dark"] .sidebar-group.group-active *,
+html[data-theme="dark"] .sidebar-child.active * {
+  color: #c4a7ff !important;
+}
+/* Form controls must not retain forced white backgrounds. */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .form-input,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .date-picker,
+html[data-theme="dark"] .rich-text-editor {
+  background-color: #110d1b !important;
+  color: #f5f3ff !important;
+  border-color: #40344f !important;
+  color-scheme: dark !important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #9488a8 !important;
+  opacity: 1 !important;
+}
+html[data-theme="dark"] option {
+  background: #171123 !important;
+  color: #f5f3ff !important;
+}
+/* Table headers/rows and separators. */
+html[data-theme="dark"] table,
+html[data-theme="dark"] thead,
+html[data-theme="dark"] tbody,
+html[data-theme="dark"] tr,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
+  background-color: transparent !important;
+  color: #e9e3f2 !important;
+  border-color: #30263e !important;
+}
+html[data-theme="dark"] thead th,
+html[data-theme="dark"] table th {
+  background-color: #20182d !important;
+  color: #cfc4df !important;
+}
+html[data-theme="dark"] tbody tr:hover {
+  background-color: #21182f !important;
+}
+/* Typography: counteract page CSS that hard-codes dark text in dark mode. */
+html[data-theme="dark"] .dashboard-shell h1,
+html[data-theme="dark"] .dashboard-shell h2,
+html[data-theme="dark"] .dashboard-shell h3,
+html[data-theme="dark"] .dashboard-shell h4,
+html[data-theme="dark"] .dashboard-shell h5,
+html[data-theme="dark"] .dashboard-shell h6,
+html[data-theme="dark"] .dashboard-shell p,
+html[data-theme="dark"] .dashboard-shell label,
+html[data-theme="dark"] .dashboard-shell span,
+html[data-theme="dark"] .dashboard-shell small,
+html[data-theme="dark"] .dashboard-shell strong,
+html[data-theme="dark"] .dashboard-shell td,
+html[data-theme="dark"] .dashboard-shell th,
+html[data-theme="dark"] .dashboard-page h1,
+html[data-theme="dark"] .dashboard-page h2,
+html[data-theme="dark"] .dashboard-page h3,
+html[data-theme="dark"] .dashboard-page h4,
+html[data-theme="dark"] .dashboard-page p,
+html[data-theme="dark"] .dashboard-page label,
+html[data-theme="dark"] .dashboard-page span,
+html[data-theme="dark"] .dashboard-page small,
+html[data-theme="dark"] .dashboard-home h1,
+html[data-theme="dark"] .dashboard-home h2,
+html[data-theme="dark"] .dashboard-home h3,
+html[data-theme="dark"] .dashboard-home p,
+html[data-theme="dark"] .dashboard-home label {
+  color: #f0ebf7 !important;
+}
+html[data-theme="dark"] .dashboard-shell [class*="muted"],
+html[data-theme="dark"] .dashboard-page [class*="muted"],
+html[data-theme="dark"] .dashboard-shell .subtitle,
+html[data-theme="dark"] .dashboard-shell .description,
+html[data-theme="dark"] .dashboard-page .subtitle,
+html[data-theme="dark"] .dashboard-page .description {
+  color: #b8aecb !important;
+}
+/* Preserve readable text on deliberately colored primary/destructive controls. */
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .primary-button,
+html[data-theme="dark"] button[type="submit"],
+html[data-theme="dark"] .btn-danger,
+html[data-theme="dark"] .danger-button,
+html[data-theme="dark"] button[class*="danger"],
+html[data-theme="dark"] .landing-button-primary {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .btn-secondary,
+html[data-theme="dark"] .btn-ghost,
+html[data-theme="dark"] .button-secondary {
+  background: #21182f !important;
+  color: #d8c5ff !important;
+  border-color: #49365f !important;
+}
+/* Explicit white utility surfaces are neutralized only in dark mode. */
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .surface-white,
+html[data-theme="dark"] .white-card,
+html[data-theme="dark"] [class~="bg-white"] {
+  background-color: #171123 !important;
+  color: #f5f3ff !important;
+}
