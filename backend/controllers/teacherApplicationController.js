@@ -18,6 +18,7 @@ export const listTeacherApplications = async (req, res, next) => {
       status: req.query.status,
       query: req.query.q,
       limit: req.query.limit,
+      schoolId: req.schoolId,
     });
     return res.json({ success: true, applications });
   } catch (error) {
@@ -29,6 +30,7 @@ export const getTeacherApplication = async (req, res, next) => {
   try {
     const application = await teacherApplicationService.getById({
       id: req.params.id,
+      schoolId: req.schoolId,
     });
     return res.json({ success: true, application });
   } catch (error) {

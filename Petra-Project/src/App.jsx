@@ -51,6 +51,7 @@ const StaffRegister = lazy(() => import("./Pages/Sigin/StaffRegister"));
 const ParentRegister = lazy(() => import("./Pages/Sigin/ParentRegister"));
 const AdminRegister = lazy(() => import("./Pages/Sigin/AdminRegister"));
 const AdmissionForm = lazy(() => import("./Pages/DashboardLayout/AdmissionForm/AdmissionForm"));
+const TeacherApplicationForm = lazy(() => import("./Pages/Sigin/TeacherApplicationForm"));
 const SchoolFeesPaymentPage = lazy(() => import("./Pages/DashboardLayout/SchoolFeesPaymentPage/SchoolFeesPaymentPage"));
 const StudentPaymentPage = lazy(() => import("./Pages/DashboardLayout/StudentPaymentPage/StudentPaymentPage"));
 const Payment = lazy(() => import("./Payment"));
@@ -254,6 +255,7 @@ function App() {
         <Suspense fallback={<PageLoadingFallback message="Initializing Petra..." />}>
           <Routes>
             <Route path="/admission_form" element={<AdmissionForm />} />
+            <Route path="/teacher-application" element={<TeacherApplicationForm />} />
             <Route path="/school_Fees" element={<SchoolFeesPaymentPage />} />
             <Route path="/student_Payment" element={<StudentPaymentPage />} />
             <Route path="/Payment" element={<Payment />} />

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validationResult } from "express-validator";
-import { protect, protectOptional, requirePrincipal } from "../middleware/authMiddleware.js";
+import { protect, protectOptional, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import {
   createAdmission,
   listAdmissions,
@@ -14,6 +14,7 @@ import { createAdmissionValidator } from "../validators/admissionValidator.js";
 import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
 
 const router = Router();
+const schoolAdmin = requireRole(["admin", "principal", "school_admin", "school_administrator", "super_admin", "superadmin"]);
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -23,12 +24,12 @@ const validate = (req, res, next) => {
   return next();
 };
 
-router.post("/", createAdmissionValidator, validate, protectOptional, requirePublicSchoolContext(), createAdmission);
-router.get("/", protect, requirePrincipal, listAdmissions);
-router.get("/:id", protect, requirePrincipal, getAdmissionById);
-router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);
-router.patch("/:id/reject", protect, requirePrincipal, rejectAdmission);
-router.post("/:id/enroll", protect, requirePrincipal, enrollAdmission);
-router.post("/:id/complete-student", protect, requirePrincipal, completeStudentRecord);
+router.post("/", createAdmissionValidator, validate, protectOptional, requirePublicSchoolContext("body", "student"), createAdmission);
+router.get("/", protect, schoolGuard, schoolAdmin, listAdmissions);
+router.get("/:id", protect, schoolGuard, schoolAdmin, getAdmissionById);
+router.patch("/:id/approve", protect, schoolGuard, schoolAdmin, approveAdmission);
+router.patch("/:id/reject", protect, schoolGuard, schoolAdmin, rejectAdmission);
+router.post("/:id/enroll", protect, schoolGuard, schoolAdmin, enrollAdmission);
+router.post("/:id/complete-student", protect, schoolGuard, schoolAdmin, completeStudentRecord);
 
 export default router;
