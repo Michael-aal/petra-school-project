@@ -24,6 +24,6 @@ createRoot(document.getElementById("root")).render(
           <ToastViewport />
         </ToastProvider>
       </SchoolProvider>
-    </ToastProvider>
+    </UserProvider>
   </StrictMode>,
 );
