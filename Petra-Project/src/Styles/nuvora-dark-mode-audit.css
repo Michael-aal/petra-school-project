@@ -243,3 +243,105 @@ html[data-theme="dark"] [class~="bg-white"] {
   background-color: #171123 !important;
   color: #f5f3ff !important;
 }
+
+/* SITE-WIDE COVERAGE: public pages, authentication, payments, parent/staff/student
+   screens, reusable components, dialogs and page-specific cards. */
+html[data-theme="dark"] [class*="card"],
+html[data-theme="dark"] [class*="Card"],
+html[data-theme="dark"] [class*="panel"],
+html[data-theme="dark"] [class*="Panel"],
+html[data-theme="dark"] [class*="widget"],
+html[data-theme="dark"] [class*="Widget"],
+html[data-theme="dark"] [class*="stat"],
+html[data-theme="dark"] [class*="Stat"],
+html[data-theme="dark"] [class*="tile"],
+html[data-theme="dark"] [class*="Tile"],
+html[data-theme="dark"] [class*="modal"],
+html[data-theme="dark"] [class*="Modal"],
+html[data-theme="dark"] [class*="dialog"],
+html[data-theme="dark"] [class*="Dialog"],
+html[data-theme="dark"] [class*="popover"],
+html[data-theme="dark"] [class*="Popover"],
+html[data-theme="dark"] [class*="dropdown"],
+html[data-theme="dark"] [class*="Dropdown"],
+html[data-theme="dark"] [class*="empty-state"],
+html[data-theme="dark"] [class*="EmptyState"],
+html[data-theme="dark"] [class*="form-container"],
+html[data-theme="dark"] [class*="FormContainer"],
+html[data-theme="dark"] [class*="auth-container"],
+html[data-theme="dark"] [class*="AuthContainer"] {
+  background-color: #171123 !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+/* Explicit utility classes and inline white surfaces from page-level components. */
+html[data-theme="dark"] [class~="bg-white"],
+html[data-theme="dark"] [class~="background-white"],
+html[data-theme="dark"] [class~="white-bg"],
+html[data-theme="dark"] [class~="white-card"],
+html[data-theme="dark"] [style*="background:#fff"],
+html[data-theme="dark"] [style*="background: #fff"],
+html[data-theme="dark"] [style*="background-color:#fff"],
+html[data-theme="dark"] [style*="background-color: #fff"],
+html[data-theme="dark"] [style*="background: white"],
+html[data-theme="dark"] [style*="background-color: white"] {
+  background-color: #171123 !important;
+  background-image: none !important;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+/* Shared public/auth/payment surfaces and fixed overlays. */
+html[data-theme="dark"] .auth-page,
+html[data-theme="dark"] .auth-layout,
+html[data-theme="dark"] .login-container,
+html[data-theme="dark"] .signup-container,
+html[data-theme="dark"] .payment-page,
+html[data-theme="dark"] .payment-container,
+html[data-theme="dark"] .checkout-container,
+html[data-theme="dark"] .contact-container,
+html[data-theme="dark"] .company-section,
+html[data-theme="dark"] .solutions-section,
+html[data-theme="dark"] .home-section,
+html[data-theme="dark"] .page-loading-fallback,
+html[data-theme="dark"] .error-boundary,
+html[data-theme="dark"] .command-palette-overlay,
+html[data-theme="dark"] .modal-backdrop,
+html[data-theme="dark"] .dialog-backdrop {
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .modal-backdrop,
+html[data-theme="dark"] .dialog-backdrop,
+html[data-theme="dark"] .command-palette-overlay {
+  background: rgba(5, 3, 9, .78) !important;
+}
+/* All native controls, including checkbox/radio surfaces and autofill. */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] [contenteditable="true"] {
+  accent-color: #a78bfa;
+}
+html[data-theme="dark"] input:-webkit-autofill,
+html[data-theme="dark"] input:-webkit-autofill:hover,
+html[data-theme="dark"] input:-webkit-autofill:focus,
+html[data-theme="dark"] textarea:-webkit-autofill,
+html[data-theme="dark"] select:-webkit-autofill {
+  -webkit-text-fill-color: #f5f3ff !important;
+  box-shadow: 0 0 0 1000px #110d1b inset !important;
+  caret-color: #f5f3ff !important;
+}
+/* Keep icon-only actions legible when their parent has a dark surface. */
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .icon-btn,
+html[data-theme="dark"] button[aria-label],
+html[data-theme="dark"] [role="button"][aria-label] {
+  border-color: #40344f;
+}
+html[data-theme="dark"] .icon-button svg,
+html[data-theme="dark"] .icon-btn svg,
+html[data-theme="dark"] button[aria-label] svg,
+html[data-theme="dark"] [role="button"][aria-label] svg {
+  color: currentColor;
+  stroke: currentColor;
+}
