@@ -1,0 +1,611 @@
+/* NUVORA DARK MODE SURFACE AUDIT
+   Loaded last so legacy page-level light-mode declarations cannot leak into dark mode.
+   White remains reserved for text/icons on colored controls, never page surfaces. */
+:root[data-theme="dark"],
+html.dark,
+body[data-theme="dark"],
+body.dark {
+  color-scheme: dark !important;
+  --app-bg: #0b0812 !important;
+  --app-surface: #110d1b !important;
+  --app-surface-strong: #171123 !important;
+  --app-card: #171123 !important;
+  --app-panel: #110d1b !important;
+  --app-text: #f5f3ff !important;
+  --app-text-muted: #b8aecb !important;
+  --foreground: #f5f3ff !important;
+  --muted-foreground: #b8aecb !important;
+  --background: #0b0812 !important;
+  --card: #171123 !important;
+  --card-foreground: #f5f3ff !important;
+  --popover: #171123 !important;
+  --popover-foreground: #f5f3ff !important;
+  --dashboard-page-bg: #0b0812 !important;
+  --dashboard-card-bg: #171123 !important;
+  --dashboard-panel-bg: #110d1b !important;
+  --dashboard-topbar-bg: #110d1b !important;
+  --dashboard-topbar-text: #f5f3ff !important;
+  --dashboard-sidebar-bg: #110d1b !important;
+  --app-border: #30263e !important;
+  --border: #30263e !important;
+  --input: #40344f !important;
+}
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+body[data-theme="dark"],
+body.dark {
+  background: #0b0812 !important;
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .dashboard-shell,
+body[data-theme="dark"] .dashboard-shell,
+body.dark .dashboard-shell,
+html[data-theme="dark"] .dashboard-main,
+html[data-theme="dark"] .dashboard-content,
+html[data-theme="dark"] .dashboard-page,
+html[data-theme="dark"] .dashboard-home,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .page-content,
+html[data-theme="dark"] .page-container,
+html[data-theme="dark"] .content-wrapper,
+html[data-theme="dark"] .app-content {
+  background-color: #0b0812 !important;
+  color: #f5f3ff !important;
+}
+/* All shared and page-specific card/panel surfaces. */
+html[data-theme="dark"] .dashboard-shell .card,
+html[data-theme="dark"] .dashboard-shell [class*="card"],
+html[data-theme="dark"] .dashboard-shell [class*="panel"],
+html[data-theme="dark"] .dashboard-shell [class*="widget"],
+html[data-theme="dark"] .dashboard-shell [class*="tile"],
+html[data-theme="dark"] .dashboard-shell [class*="summary"],
+html[data-theme="dark"] .dashboard-shell [class*="stat"],
+html[data-theme="dark"] .dashboard-shell .modal-content,
+html[data-theme="dark"] .dashboard-shell .modal,
+html[data-theme="dark"] .dashboard-shell .dropdown-menu,
+html[data-theme="dark"] .dashboard-shell .notification-dropdown,
+html[data-theme="dark"] .dashboard-shell .account-dropdown,
+html[data-theme="dark"] .dashboard-shell .popover,
+html[data-theme="dark"] .dashboard-shell .tooltip,
+html[data-theme="dark"] .dashboard-shell .table-container,
+html[data-theme="dark"] .dashboard-shell .table-responsive,
+html[data-theme="dark"] .dashboard-shell .data-table-wrap,
+html[data-theme="dark"] .dashboard-page .card,
+html[data-theme="dark"] .dashboard-page [class*="card"],
+html[data-theme="dark"] .dashboard-page [class*="panel"],
+html[data-theme="dark"] .dashboard-page [class*="widget"],
+html[data-theme="dark"] .dashboard-page .modal-content,
+html[data-theme="dark"] .dashboard-page .table-container,
+html[data-theme="dark"] .dashboard-home .card,
+html[data-theme="dark"] .dashboard-home [class*="card"],
+html[data-theme="dark"] .dashboard-home [class*="panel"],
+html[data-theme="dark"] .dashboard-home [class*="widget"],
+html[data-theme="dark"] .parent-dashboard .card,
+html[data-theme="dark"] .parent-page .card,
+html[data-theme="dark"] .parent-dashboard .panel,
+html[data-theme="dark"] .parent-page .panel,
+html[data-theme="dark"] .settings-card,
+html[data-theme="dark"] .form-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .empty-state-card {
+  background-color: #171123 !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+  box-shadow: 0 8px 26px rgba(0,0,0,.22) !important;
+}
+/* Headers, navigation bars, sidebars and flyouts. */
+html[data-theme="dark"] .top-navbar,
+html[data-theme="dark"] .dashboard-topbar,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .sidebar-container,
+html[data-theme="dark"] .dashboard-sidebar,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .sidebar-nav,
+html[data-theme="dark"] .notification-dropdown,
+html[data-theme="dark"] .account-dropdown,
+html[data-theme="dark"] .dropdown-menu,
+html[data-theme="dark"] .command-palette,
+html[data-theme="dark"] .command-palette-content {
+  background-color: #110d1b !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+html[data-theme="dark"] .sidebar-container,
+html[data-theme="dark"] .dashboard-shell .sidebar-container {
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .sidebar-link,
+html[data-theme="dark"] .sidebar-group,
+html[data-theme="dark"] .sidebar-child,
+html[data-theme="dark"] .sidebar-assistant,
+html[data-theme="dark"] .sidebar-link *,
+html[data-theme="dark"] .sidebar-group *,
+html[data-theme="dark"] .sidebar-child * {
+  color: #d8cfea !important;
+}
+html[data-theme="dark"] .sidebar-link.active,
+html[data-theme="dark"] .sidebar-group.group-active,
+html[data-theme="dark"] .sidebar-child.active,
+html[data-theme="dark"] .sidebar-assistant.active {
+  background: #2b2040 !important;
+  color: #c4a7ff !important;
+}
+html[data-theme="dark"] .sidebar-link.active *,
+html[data-theme="dark"] .sidebar-group.group-active *,
+html[data-theme="dark"] .sidebar-child.active * {
+  color: #c4a7ff !important;
+}
+/* Form controls must not retain forced white backgrounds. */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .form-input,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .date-picker,
+html[data-theme="dark"] .rich-text-editor {
+  background-color: #110d1b !important;
+  color: #f5f3ff !important;
+  border-color: #40344f !important;
+  color-scheme: dark !important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #9488a8 !important;
+  opacity: 1 !important;
+}
+html[data-theme="dark"] option {
+  background: #171123 !important;
+  color: #f5f3ff !important;
+}
+/* Table headers/rows and separators. */
+html[data-theme="dark"] table,
+html[data-theme="dark"] thead,
+html[data-theme="dark"] tbody,
+html[data-theme="dark"] tr,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
+  background-color: transparent !important;
+  color: #e9e3f2 !important;
+  border-color: #30263e !important;
+}
+html[data-theme="dark"] thead th,
+html[data-theme="dark"] table th {
+  background-color: #20182d !important;
+  color: #cfc4df !important;
+}
+html[data-theme="dark"] tbody tr:hover {
+  background-color: #21182f !important;
+}
+/* Typography: counteract page CSS that hard-codes dark text in dark mode. */
+html[data-theme="dark"] .dashboard-shell h1,
+html[data-theme="dark"] .dashboard-shell h2,
+html[data-theme="dark"] .dashboard-shell h3,
+html[data-theme="dark"] .dashboard-shell h4,
+html[data-theme="dark"] .dashboard-shell h5,
+html[data-theme="dark"] .dashboard-shell h6,
+html[data-theme="dark"] .dashboard-shell p,
+html[data-theme="dark"] .dashboard-shell label,
+html[data-theme="dark"] .dashboard-shell span,
+html[data-theme="dark"] .dashboard-shell small,
+html[data-theme="dark"] .dashboard-shell strong,
+html[data-theme="dark"] .dashboard-shell td,
+html[data-theme="dark"] .dashboard-shell th,
+html[data-theme="dark"] .dashboard-page h1,
+html[data-theme="dark"] .dashboard-page h2,
+html[data-theme="dark"] .dashboard-page h3,
+html[data-theme="dark"] .dashboard-page h4,
+html[data-theme="dark"] .dashboard-page p,
+html[data-theme="dark"] .dashboard-page label,
+html[data-theme="dark"] .dashboard-page span,
+html[data-theme="dark"] .dashboard-page small,
+html[data-theme="dark"] .dashboard-home h1,
+html[data-theme="dark"] .dashboard-home h2,
+html[data-theme="dark"] .dashboard-home h3,
+html[data-theme="dark"] .dashboard-home p,
+html[data-theme="dark"] .dashboard-home label {
+  color: #f0ebf7 !important;
+}
+html[data-theme="dark"] .dashboard-shell [class*="muted"],
+html[data-theme="dark"] .dashboard-page [class*="muted"],
+html[data-theme="dark"] .dashboard-shell .subtitle,
+html[data-theme="dark"] .dashboard-shell .description,
+html[data-theme="dark"] .dashboard-page .subtitle,
+html[data-theme="dark"] .dashboard-page .description {
+  color: #b8aecb !important;
+}
+/* Preserve readable text on deliberately colored primary/destructive controls. */
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .primary-button,
+html[data-theme="dark"] button[type="submit"],
+html[data-theme="dark"] .btn-danger,
+html[data-theme="dark"] .danger-button,
+html[data-theme="dark"] button[class*="danger"],
+html[data-theme="dark"] .landing-button-primary {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .btn-secondary,
+html[data-theme="dark"] .btn-ghost,
+html[data-theme="dark"] .button-secondary {
+  background: #21182f !important;
+  color: #d8c5ff !important;
+  border-color: #49365f !important;
+}
+/* Explicit white utility surfaces are neutralized only in dark mode. */
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .surface-white,
+html[data-theme="dark"] .white-card,
+html[data-theme="dark"] [class~="bg-white"] {
+  background-color: #171123 !important;
+  color: #f5f3ff !important;
+}
+
+/* SITE-WIDE COVERAGE: public pages, authentication, payments, parent/staff/student
+   screens, reusable components, dialogs and page-specific cards. */
+html[data-theme="dark"] [class*="card"],
+html[data-theme="dark"] [class*="Card"],
+html[data-theme="dark"] [class*="panel"],
+html[data-theme="dark"] [class*="Panel"],
+html[data-theme="dark"] [class*="widget"],
+html[data-theme="dark"] [class*="Widget"],
+html[data-theme="dark"] [class*="stat"],
+html[data-theme="dark"] [class*="Stat"],
+html[data-theme="dark"] [class*="tile"],
+html[data-theme="dark"] [class*="Tile"],
+html[data-theme="dark"] [class*="modal"],
+html[data-theme="dark"] [class*="Modal"],
+html[data-theme="dark"] [class*="dialog"],
+html[data-theme="dark"] [class*="Dialog"],
+html[data-theme="dark"] [class*="popover"],
+html[data-theme="dark"] [class*="Popover"],
+html[data-theme="dark"] [class*="dropdown"],
+html[data-theme="dark"] [class*="Dropdown"],
+html[data-theme="dark"] [class*="empty-state"],
+html[data-theme="dark"] [class*="EmptyState"],
+html[data-theme="dark"] [class*="form-container"],
+html[data-theme="dark"] [class*="FormContainer"],
+html[data-theme="dark"] [class*="auth-container"],
+html[data-theme="dark"] [class*="AuthContainer"] {
+  background-color: #171123 !important;
+  background-image: none;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+/* Explicit utility classes and inline white surfaces from page-level components. */
+html[data-theme="dark"] [class~="bg-white"],
+html[data-theme="dark"] [class~="background-white"],
+html[data-theme="dark"] [class~="white-bg"],
+html[data-theme="dark"] [class~="white-card"],
+html[data-theme="dark"] [style*="background:#fff"],
+html[data-theme="dark"] [style*="background: #fff"],
+html[data-theme="dark"] [style*="background-color:#fff"],
+html[data-theme="dark"] [style*="background-color: #fff"],
+html[data-theme="dark"] [style*="background: white"],
+html[data-theme="dark"] [style*="background-color: white"] {
+  background-color: #171123 !important;
+  background-image: none !important;
+  color: #f5f3ff !important;
+  border-color: #30263e !important;
+}
+/* Shared public/auth/payment surfaces and fixed overlays. */
+html[data-theme="dark"] .auth-page,
+html[data-theme="dark"] .auth-layout,
+html[data-theme="dark"] .login-container,
+html[data-theme="dark"] .signup-container,
+html[data-theme="dark"] .payment-page,
+html[data-theme="dark"] .payment-container,
+html[data-theme="dark"] .checkout-container,
+html[data-theme="dark"] .contact-container,
+html[data-theme="dark"] .company-section,
+html[data-theme="dark"] .solutions-section,
+html[data-theme="dark"] .home-section,
+html[data-theme="dark"] .page-loading-fallback,
+html[data-theme="dark"] .error-boundary,
+html[data-theme="dark"] .command-palette-overlay,
+html[data-theme="dark"] .modal-backdrop,
+html[data-theme="dark"] .dialog-backdrop {
+  color: #f5f3ff !important;
+}
+html[data-theme="dark"] .modal-backdrop,
+html[data-theme="dark"] .dialog-backdrop,
+html[data-theme="dark"] .command-palette-overlay {
+  background: rgba(5, 3, 9, .78) !important;
+}
+/* All native controls, including checkbox/radio surfaces and autofill. */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] [contenteditable="true"] {
+  accent-color: #a78bfa;
+}
+html[data-theme="dark"] input:-webkit-autofill,
+html[data-theme="dark"] input:-webkit-autofill:hover,
+html[data-theme="dark"] input:-webkit-autofill:focus,
+html[data-theme="dark"] textarea:-webkit-autofill,
+html[data-theme="dark"] select:-webkit-autofill {
+  -webkit-text-fill-color: #f5f3ff !important;
+  box-shadow: 0 0 0 1000px #110d1b inset !important;
+  caret-color: #f5f3ff !important;
+}
+/* Keep icon-only actions legible when their parent has a dark surface. */
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .icon-btn,
+html[data-theme="dark"] button[aria-label],
+html[data-theme="dark"] [role="button"][aria-label] {
+  border-color: #40344f;
+}
+html[data-theme="dark"] .icon-button svg,
+html[data-theme="dark"] .icon-btn svg,
+html[data-theme="dark"] button[aria-label] svg,
+html[data-theme="dark"] [role="button"][aria-label] svg {
+  color: currentColor;
+  stroke: currentColor;
+}
+
+
+/* =========================================================
+   NUVORA TWO-WAY THEME FINISH
+   Dark: layered midnight / violet gradients with soft glow.
+   Light: clean white / lavender gradients with dark readable copy.
+   This section intentionally comes last in the theme cascade.
+   ========================================================= */
+
+html[data-theme="dark"] {
+  color-scheme: dark !important;
+  --nv-page-gradient: linear-gradient(145deg, #0b0812 0%, #100b1c 48%, #0d0a16 100%);
+  --nv-nav-gradient: linear-gradient(180deg, rgba(25, 17, 39, .98) 0%, rgba(15, 11, 25, .98) 100%);
+  --nv-card-gradient: linear-gradient(145deg, rgba(39, 27, 59, .96) 0%, rgba(23, 17, 35, .98) 54%, rgba(18, 13, 29, .99) 100%);
+  --nv-card-gradient-hover: linear-gradient(145deg, rgba(49, 33, 75, .98) 0%, rgba(27, 19, 42, .99) 100%);
+  --nv-panel-gradient: linear-gradient(135deg, rgba(31, 21, 48, .98) 0%, rgba(17, 13, 27, .99) 100%);
+  --nv-input-gradient: linear-gradient(180deg, #171123 0%, #110d1b 100%);
+  --nv-accent-gradient: linear-gradient(120deg, #8b5cf6 0%, #a78bfa 48%, #6d45c5 100%);
+  --nv-soft-gradient: linear-gradient(135deg, rgba(139, 92, 246, .20) 0%, rgba(109, 69, 197, .08) 100%);
+  --nv-border-gradient: linear-gradient(135deg, rgba(167, 139, 250, .38), rgba(64, 52, 79, .72));
+  --nv-text-strong: #f7f3ff;
+  --nv-text-muted: #b9aecb;
+  --nv-border: #382b4b;
+  --nv-shadow: 0 14px 38px rgba(0, 0, 0, .28), 0 1px 0 rgba(196, 167, 255, .05) inset;
+  --app-bg: #0b0812 !important;
+  --app-surface: #110d1b !important;
+  --app-surface-strong: #171123 !important;
+  --app-card: #171123 !important;
+  --app-panel: #110d1b !important;
+  --app-text: #f5f3ff !important;
+  --app-text-muted: #b8aecb !important;
+  --dashboard-page-bg: #0b0812 !important;
+  --dashboard-card-bg: #171123 !important;
+  --dashboard-panel-bg: #110d1b !important;
+  --dashboard-topbar-bg: #110d1b !important;
+  --dashboard-sidebar-bg: #110d1b !important;
+}
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .dashboard-shell,
+html[data-theme="dark"] .dashboard-main,
+html[data-theme="dark"] .dashboard-content,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .page-content,
+html[data-theme="dark"] .page-container,
+html[data-theme="dark"] .content-wrapper {
+  background: var(--nv-page-gradient) !important;
+  color: var(--nv-text-strong) !important;
+}
+html[data-theme="dark"] :is(.top-navbar, .dashboard-topbar, .topbar, .sidebar-container, .dashboard-sidebar, .sidebar, .sidebar-nav, .sidebar-header, .sidebar-footer) {
+  background: var(--nv-nav-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #30233f !important;
+}
+html[data-theme="dark"] :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel, .dashboard-home-summary-card,
+  .dashboard-home-stat, .wallet-panel, .payments-panel, .layout-card,
+  .modal-content, .modal, .dropdown-menu, .notification-dropdown,
+  .account-dropdown, .popover, .command-palette, .command-palette-content,
+  .table-container, .table-responsive, .data-table-wrap
+) {
+  background: var(--nv-card-gradient) !important;
+  color: #f5f3ff !important;
+  border: 1px solid #382b4b !important;
+  box-shadow: var(--nv-shadow) !important;
+}
+html[data-theme="dark"] :is(
+  .dashboard-shell, .dashboard-page, .dashboard-home, .dashboard-content
+) :is(.card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+      .info-card, .feature-card, .summary-card, .metric-card, .widget-card,
+      .dashboard-card, .dashboard-panel, .dashboard-widget, .payment-card,
+      .profile-card, .notice-card, .announcement-card, .empty-state,
+      .table-card, .page-card, .section-card, [class*="-card"], [class*="-panel"]) {
+  background: var(--nv-card-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #382b4b !important;
+}
+html[data-theme="dark"] :is(.card, .panel, .stat-card, .feature-card, .dashboard-card, .dashboard-widget, .wallet-panel):hover {
+  background: var(--nv-card-gradient-hover) !important;
+  border-color: rgba(167, 139, 250, .55) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .34), 0 0 0 1px rgba(139, 92, 246, .08) !important;
+}
+html[data-theme="dark"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea, [contenteditable="true"], .form-input, .form-select, .search-input, .date-picker, .rich-text-editor) {
+  background: var(--nv-input-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #49375e !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+html[data-theme="dark"] :is(input, select, textarea, [contenteditable="true"]):focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, .18) !important;
+}
+html[data-theme="dark"] :is(button, .btn, a[role="button"], [role="button"].btn) {
+  border-color: #49375e;
+}
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .btn-primary,
+  .landing-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"]) {
+  background: var(--nv-accent-gradient) !important;
+  color: #fff !important;
+  border-color: rgba(196, 167, 255, .58) !important;
+  box-shadow: 0 8px 22px rgba(109, 69, 197, .28) !important;
+}
+html[data-theme="dark"] :is(.btn-secondary, .btn-ghost, .button-secondary, .btn-outline, .button-outline) {
+  background: var(--nv-soft-gradient) !important;
+  color: #e6dcff !important;
+  border-color: #594474 !important;
+}
+html[data-theme="dark"] :is(.sidebar-link.active, .sidebar-group.group-active, .sidebar-child.active, .sidebar-assistant.active,
+  .dashboard-sidebar a.active, .sidebar a.active, .dashboard-nav a.active) {
+  background: linear-gradient(110deg, rgba(139, 92, 246, .28), rgba(109, 69, 197, .12)) !important;
+  color: #e2d5ff !important;
+  border-color: rgba(167, 139, 250, .34) !important;
+}
+html[data-theme="dark"] :is(.sidebar-link, .sidebar-group, .sidebar-child, .sidebar-assistant, .sidebar-link *, .sidebar-group *, .sidebar-child *) {
+  color: #d8cfea !important;
+}
+html[data-theme="dark"] :is(.dashboard-home-summary-icon, .dashboard-home-session-pill, .feature-icon, .tone-indigo, .tone-blue, .wallet-summary-icon, .wallet-quick-stat-icon) {
+  background: var(--nv-soft-gradient) !important;
+  color: #c4a7ff !important;
+  border-color: rgba(167, 139, 250, .28) !important;
+}
+html[data-theme="dark"] :is(.modal-backdrop, .dialog-backdrop, .command-palette-overlay) {
+  background: rgba(5, 3, 10, .78) !important;
+  backdrop-filter: blur(10px);
+}
+html[data-theme="dark"] :is(thead th, table th, .data-table th, .payments-table th, .table-container th) {
+  background: linear-gradient(120deg, #241a34, #1a1427) !important;
+  color: #d9cbed !important;
+}
+html[data-theme="dark"] :is(tbody tr:hover, .data-table tbody tr:hover, .payments-table tbody tr:hover, .table-container tbody tr:hover) {
+  background: rgba(139, 92, 246, .10) !important;
+}
+html[data-theme="dark"] :is(h1, h2, h3, h4, h5, h6, p, label, span, small, strong, li, td, th) {
+  text-decoration-color: currentColor;
+}
+html[data-theme="dark"] :is(.muted, .text-muted, .subtitle, .description, .helper-text, .form-hint) {
+  color: #b9aecb !important;
+}
+
+/* Light mode is the intentional inverse: bright surfaces, dark copy,
+   pale lavender/white gradients and the existing Nuvora blue accent. */
+html[data-theme="light"] {
+  color-scheme: light !important;
+  --nv-page-gradient: linear-gradient(145deg, #ffffff 0%, #f8faff 58%, #f4f1ff 100%);
+  --nv-nav-gradient: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(249,250,255,.98) 100%);
+  --nv-card-gradient: linear-gradient(145deg, #ffffff 0%, #fbfcff 68%, #f7f5ff 100%);
+  --nv-card-gradient-hover: linear-gradient(145deg, #ffffff 0%, #f4f1ff 100%);
+  --nv-panel-gradient: linear-gradient(135deg, #ffffff 0%, #f7f8ff 100%);
+  --nv-input-gradient: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  --nv-text-strong: #111827;
+  --nv-text-muted: #64748b;
+  --nv-border: #e5e7eb;
+  --nv-shadow: 0 10px 28px rgba(31, 41, 55, .06);
+}
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] .dashboard-shell,
+html[data-theme="light"] .dashboard-main,
+html[data-theme="light"] .dashboard-content,
+html[data-theme="light"] main,
+html[data-theme="light"] .page-content,
+html[data-theme="light"] .page-container,
+html[data-theme="light"] .content-wrapper {
+  background: var(--nv-page-gradient) !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] :is(.top-navbar, .dashboard-topbar, .topbar, .sidebar-container, .dashboard-sidebar, .sidebar, .sidebar-nav, .sidebar-header, .sidebar-footer) {
+  background: var(--nv-nav-gradient) !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+html[data-theme="light"] :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel, .dashboard-home-summary-card,
+  .dashboard-home-stat, .wallet-panel, .payments-panel, .layout-card,
+  .modal-content, .modal, .dropdown-menu, .notification-dropdown,
+  .account-dropdown, .popover, .command-palette, .command-palette-content,
+  .table-container, .table-responsive, .data-table-wrap
+) {
+  background: var(--nv-card-gradient) !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+  box-shadow: var(--nv-shadow) !important;
+}
+html[data-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea, [contenteditable="true"], .form-input, .form-select, .search-input, .date-picker, .rich-text-editor) {
+  background: var(--nv-input-gradient) !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+}
+html[data-theme="light"] :is(.btn-secondary, .btn-ghost, .button-secondary, .btn-outline, .button-outline) {
+  background: linear-gradient(135deg, #ffffff, #f3f4f6) !important;
+  color: #1f2937 !important;
+  border-color: #d1d5db !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button, .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary, button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) {
+  background: linear-gradient(120deg, #1877f2, #0f5dcc) !important;
+  color: #ffffff !important;
+  border-color: #1877f2 !important;
+}
+html[data-theme="light"] :is(.dashboard-home-summary-icon, .dashboard-home-session-pill, .feature-icon, .tone-indigo, .tone-blue, .wallet-summary-icon, .wallet-quick-stat-icon) {
+  background: linear-gradient(135deg, #eff6ff, #f2edff) !important;
+  color: #2457a7 !important;
+  border-color: #dbeafe !important;
+}
+html[data-theme="light"] :is(.muted, .text-muted, .subtitle, .description, .helper-text, .form-hint) {
+  color: #64748b !important;
+}
+
+/* Explicit light/dark text guarantees for nested elements and icons. */
+html[data-theme="dark"] :is(.card, .panel, .modal, .modal-content, .dropdown-menu, .popover, .dashboard-shell, .dashboard-page) :is(h1,h2,h3,h4,h5,h6,p,label,span,small,strong,li,td,th) {
+  color: inherit;
+}
+html[data-theme="light"] :is(.card, .panel, .modal, .modal-content, .dropdown-menu, .popover, .dashboard-shell, .dashboard-page) :is(h1,h2,h3,h4,h5,h6,p,label,span,small,strong,li,td,th) {
+  color: inherit;
+}
+html[data-theme="dark"] :is(button, a, [role="button"]) svg { stroke: currentColor; }
+html[data-theme="light"] :is(button, a, [role="button"]) svg { stroke: currentColor; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme] :is(.card, .panel, .stat-card, .feature-card, .dashboard-card, .dashboard-widget) {
+    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+}
+
+
+/* Colored action controls always retain white labels and icon strokes,
+   even when nested inside a card with inherited theme typography. */
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"],
+  .btn-danger, .danger-button, button[class*="danger"]) :is(svg, i, span, strong, small) {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) :is(svg, i, span, strong, small) {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"],
+  .btn-danger, .danger-button, button[class*="danger"]) {
+  color: #ffffff !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) {
+  color: #ffffff !important;
+}
