@@ -222,3 +222,73 @@ html[data-theme="dark"] body :where(input::placeholder, textarea::placeholder) {
     transform: none !important;
   }
 }
+
+/* Final theme authority: neutralize legacy page-level light-only !important rules. */
+html[data-theme="dark"] body .dashboard-shell .dashboard-content :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .summary-card, .metric-card, .widget-card,
+  .dashboard-card, .dashboard-panel, .dashboard-widget, .payment-card,
+  .profile-card, .notice-card, .announcement-card, .empty-state,
+  .table-card, .page-card, .section-card, [class*="-card"], [class*="-panel"]
+) {
+  background-color: #131f33 !important;
+  color: #f1f5f9 !important;
+  border-color: #293a53 !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18) !important;
+}
+html[data-theme="light"] body .dashboard-shell .dashboard-content :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .summary-card, .metric-card, .widget-card,
+  .dashboard-card, .dashboard-panel, .dashboard-widget, .payment-card,
+  .profile-card, .notice-card, .announcement-card, .empty-state,
+  .table-card, .page-card, .section-card, [class*="-card"], [class*="-panel"]
+) {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e2e8f0 !important;
+}
+html[data-theme="dark"] body .dashboard-shell .dashboard-content :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .summary-card, .metric-card, .widget-card,
+  .dashboard-card, .dashboard-panel, .dashboard-widget, .payment-card,
+  .profile-card, .notice-card, .announcement-card, .empty-state,
+  .table-card, .page-card, .section-card, [class*="-card"], [class*="-panel"]
+) :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,td,th) {
+  color: inherit !important;
+}
+html[data-theme="dark"] body .dashboard-shell .dashboard-content :is(input,select,textarea) {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] body .dashboard-shell .dashboard-content :is(input,textarea)::placeholder {
+  color: #a9b8cd !important;
+}
+html[data-theme] body .dashboard-shell .dashboard-content :is(
+  .btn-primary,.button-primary,.primary-button,.btn-blue,.blue-button,
+  .solid-button,.create-btn,.auth-submit,.notification-action,
+  [data-variant="primary"],[class*="btn-primary"],[class*="button-primary"]
+) {
+  background: #1877f2 !important;
+  border-color: #1877f2 !important;
+  color: #ffffff !important;
+}
+html[data-theme] body .dashboard-shell .dashboard-content :is(
+  .btn-primary,.button-primary,.primary-button,.btn-blue,.blue-button,
+  .solid-button,.create-btn,.auth-submit,.notification-action,
+  [data-variant="primary"],[class*="btn-primary"],[class*="button-primary"]
+) :is(svg,i,span,strong,small) {
+  color: #ffffff !important;
+  stroke: currentColor !important;
+}
+/* Public/auth cards also follow the shared palette. */
+html[data-theme="dark"] body main :is(.auth-card,.form-card,.form-panel,.feature-card,.info-card,.solution-card,.step-card) {
+  background: #131f33 !important;
+  color: #f1f5f9 !important;
+  border-color: #293a53 !important;
+}
+html[data-theme="light"] body main :is(.auth-card,.form-card,.form-panel,.feature-card,.info-card,.solution-card,.step-card) {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e2e8f0 !important;
+}
