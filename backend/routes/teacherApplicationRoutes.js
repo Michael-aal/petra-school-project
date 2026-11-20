@@ -2,7 +2,7 @@ import { Router } from "express";
 import { protect, requireRole, schoolGuard } from "../middleware/authMiddleware.js";
 import { requirePublicSchoolContext } from "../middleware/publicSchoolContext.js";
 import { prisma } from "../config/db.js";
-import { createApplicationLinkToken } from "../utils/applicationLinkToken.js";
+import { createApplicationLinkToken, verifyApplicationLinkToken } from "../utils/applicationLinkToken.js";
 import {
   createTeacherApplication,
   listTeacherApplications,
@@ -29,6 +29,22 @@ router.get("/links", protect, schoolGuard, schoolAdmin, async (req, res, next) =
         teacher: createApplicationLinkToken({ schoolId: school.id, type: "teacher" }),
       },
     });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// Resolve school branding from a signed public application link.
+router.get("/public/:token", async (req, res, next) => {
+  try {
+    const context = verifyApplicationLinkToken(req.params.token);
+    if (!context) return res.status(403).json({ success: false, message: "This application link is invalid." });
+    const school = await prisma.school.findFirst({
+      where: { id: context.schoolId, isActive: true },
+      select: { id: true, name: true, logo: true, address: true, email: true, phone: true, website: true },
+    });
+    if (!school) return res.status(404).json({ success: false, message: "This school application portal is unavailable." });
+    return res.json({ success: true, type: context.type, school });
   } catch (error) {
     return next(error);
   }
