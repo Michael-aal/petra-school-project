@@ -313,3 +313,24 @@
 @media (prefers-reduced-motion:reduce) {
   .landing-page .floating-book,.landing-page .fake-chart,.landing-page .hero-orbit,.landing-page .library-orbit { animation:none!important; }
 }
+
+
+/* People-first role cards and the connected school-day mini experience. */
+.role-card-with-image { overflow:hidden; padding:0 0 24px; }
+.role-card-image { height:174px; margin:-1px -1px 20px; overflow:hidden; background:#e9eff9; }
+.role-card-image img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .55s cubic-bezier(.2,.7,.2,1); }
+.role-card-with-image:hover .role-card-image img { transform:scale(1.055); }
+.role-card-with-image .role-icon,.role-card-with-image h3,.role-card-with-image>p,.role-card-with-image ul { margin-left:24px; margin-right:24px; }
+.role-card-with-image .role-icon { width:48px; height:48px; margin-top:-42px; position:relative; z-index:1; border:3px solid #fff; box-shadow:0 8px 22px rgba(16,42,82,.15); }
+.role-card-with-image h3 { margin-top:17px; }
+.school-day-section { position:relative; }
+.school-day-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+.school-day-card { position:relative; min-height:270px; padding:24px 21px; overflow:hidden; border:1px solid #dce5f2; border-radius:19px; background:linear-gradient(145deg,#fff 0%,#fbfcff 70%,#f2f5ff 100%); box-shadow:0 12px 30px rgba(28,58,100,.055); transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
+.school-day-card:hover { transform:translateY(-6px); border-color:#b6c9eb; box-shadow:0 20px 42px rgba(28,58,100,.11); }
+.school-day-time { display:block; color:#73829a; font-size:.61rem; font-weight:900; letter-spacing:.1em; }
+.school-day-icon { display:grid; place-items:center; width:52px; height:52px; margin:26px 0 18px; border:1px solid #dce7fa; border-radius:16px; background:linear-gradient(135deg,#edf4ff,#f4efff); color:#286ac2; }
+.school-day-card h3 { margin:0 0 9px; color:#1b3151; font-size:1rem; letter-spacing:-.02em; }
+.school-day-card p { margin:0; color:#68778e; font-size:.76rem; line-height:1.7; }
+.school-day-tag { display:inline-flex; margin-top:18px; padding:7px 9px; border-radius:999px; background:#eef4ff; color:#315f9e; font-size:.59rem; font-weight:900; }
+@media (max-width:1050px) { .school-day-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px) { .role-card-image { height:190px; } .school-day-grid { grid-template-columns:1fr; } .school-day-card { min-height:230px; } }
