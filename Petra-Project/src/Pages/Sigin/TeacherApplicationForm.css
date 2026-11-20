@@ -35,6 +35,14 @@
   color: #ffffff;
   font-weight: 800;
   letter-spacing: 0.08em;
+  overflow: hidden;
+  text-align: center;
+}
+
+.teacher-application-brand img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .teacher-application-eyebrow {
