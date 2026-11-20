@@ -97,8 +97,8 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-right">
-          <button type="button" className="navbar-theme-toggle" onClick={toggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
-            {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+          <button type="button" className="navbar-theme-toggle" onClick={toggleTheme} aria-pressed={dark} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            {dark ? <Sun size={25} strokeWidth={2.2} aria-hidden="true" /> : <Moon size={25} strokeWidth={2.2} aria-hidden="true" />}
           </button>
           {!isMobile && (
             <>
