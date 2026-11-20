@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 export const createAdmissionValidator = [
-  body("schoolId").isInt({ min: 1 }).toInt().withMessage("A valid schoolId is required"),
+  body().custom((value) => {\n    const schoolId = Number(value?.schoolId);\n    const hasSchoolId = Number.isInteger(schoolId) && schoolId > 0;\n    const hasSignedLink = typeof value?.applicationToken === "string" && value.applicationToken.trim().length > 0;\n    if (hasSchoolId || hasSignedLink) return true;\n    throw new Error("A valid school application link is required");\n  }),
   body("firstName").notEmpty().withMessage("Applicant first name is required"),
   body("lastName").notEmpty().withMessage("Applicant last name is required"),
   body("gender").notEmpty().withMessage("Applicant gender is required"),
