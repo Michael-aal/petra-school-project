@@ -1,6 +1,6 @@
 import { request } from "./apiClient";
 
-export const teacherApplicationApi = {
+export const teacherApplicationApi = {\n  getLinks: () => request("/api/teacher-applications/links", { method: "GET" }),
   submit: (payload) =>
     request("/api/teacher-applications", {
       method: "POST",
