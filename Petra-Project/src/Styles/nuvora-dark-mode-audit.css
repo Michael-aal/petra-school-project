@@ -609,3 +609,82 @@ html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .bt
   button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) {
   color: #ffffff !important;
 }
+
+
+/* Nuvora landing page: complete inverse theme treatment. */
+html[data-theme="dark"] .landing-page {
+  --blue:#a78bfa;
+  --blue-dark:#c4a7ff;
+  --blue-deep:#8b5cf6;
+  --blue-soft:rgba(139,92,246,.17);
+  --blue-pale:rgba(139,92,246,.10);
+  --ink:#f5f3ff;
+  --muted:#b9aecb;
+  --line:#382b4b;
+  --white:#171123;
+  background:linear-gradient(150deg,#0b0812 0%,#110d1b 48%,#0d0a16 100%) !important;
+  color:#f5f3ff !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-story-strip,.story-card-light,.feature-section,.role-section,.journey-section,.dashboard-story-section,.trust-section,.pulse-section,.library-section,.numbers-section,.faq-section) {
+  background:linear-gradient(145deg,#171123 0%,#110d1b 100%) !important;
+  color:#f5f3ff !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-story-strip,.story-card-light,.feature-card,.role-card,.journey-card,.workflow-window,.trust-panel,.faq-grid details,.pulse-post,.pulse-side-card:not(.pulse-side-blue),.library-stage,.numbers-grid,.school-day-card) {
+  background:linear-gradient(145deg,rgba(39,27,59,.97) 0%,rgba(23,17,35,.99) 60%,rgba(17,13,27,.99) 100%) !important;
+  color:#f5f3ff !important;
+  border-color:#382b4b !important;
+  box-shadow:0 14px 38px rgba(0,0,0,.25),0 1px 0 rgba(196,167,255,.04) inset !important;
+}
+html[data-theme="dark"] .landing-page :is(h1,h2,h3,h4,strong,b,.section-title,.landing-hero h1,.dashboard-story-copy h2,.library-copy h2,.role-card h3,.feature-card h3,.journey-card h3,.trust-panel h2,.pulse-post h3,.pulse-meta strong,.pulse-side-card>strong,.numbers-grid span,.faq-grid summary,.school-day-card h3) {
+  color:#f5f3ff !important;
+}
+html[data-theme="dark"] .landing-page :is(p,.landing-text,.section-lead,.feature-card p,.role-card p,.role-card li,.journey-card p,.dashboard-story-copy>p,.trust-panel p,.pulse-post p,.library-copy>p,.numbers-grid p,.faq-grid p,.school-day-card p) {
+  color:#b9aecb !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-kicker,.hero-proof-row,.hero-proof-row svg,.feature-icon,.role-icon,.role-card li svg,.story-line,.school-day-icon) {
+  color:#c4a7ff !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-badge,.landing-story-strip,.feature-icon,.feature-arrow,.role-icon,.journey-card>span,.pulse-actions span,.pulse-meter,.library-label,.school-day-icon,.school-day-tag) {
+  background:linear-gradient(135deg,rgba(139,92,246,.22),rgba(109,69,197,.10)) !important;
+  border-color:rgba(167,139,250,.28) !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-button-secondary,.faq-grid details,.workflow-window,.workflow-main,.activity-card,.updates-card) {
+  background:linear-gradient(145deg,#211831,#171123) !important;
+  color:#e9e2f5 !important;
+  border-color:#49375e !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-button-primary,.landing-cta,.landing-blue-break,.pulse-side-blue) {
+  background:linear-gradient(120deg,#6d45c5 0%,#8b5cf6 52%,#5b3aa8 100%) !important;
+  color:#fff !important;
+}
+html[data-theme="dark"] .landing-page :is(.landing-button-primary,.landing-button-primary svg,.landing-cta h2,.landing-cta p,.landing-blue-break h2,.landing-blue-break p,.white-outline-button,.pulse-side-blue strong,.pulse-side-blue p) { color:#fff !important; }
+html[data-theme="dark"] .landing-page .hero-dashboard {
+  background:linear-gradient(145deg,#211831 0%,#171123 100%) !important;
+  border-color:#49375e !important;
+  box-shadow:0 30px 80px rgba(0,0,0,.42) !important;
+}
+html[data-theme="dark"] .landing-page :is(.hero-dashboard-top,.hero-stat-grid div,.activity-card,.updates-card,.workflow-cards div,.workflow-table span,.window-top,.workflow-layout aside) {
+  background:linear-gradient(145deg,#211831,#171123) !important;
+  border-color:#382b4b !important;
+}
+html[data-theme="dark"] .landing-page :is(.mini-brand,.hero-dashboard-heading h3,.hero-stat-grid strong,.updates-card b,.workflow-main h3,.pulse-metric b) { color:#f5f3ff !important; }
+html[data-theme="dark"] .landing-page :is(.mini-user,.hero-dashboard-heading small,.hero-stat-grid span,.updates-card p span,.activity-title,.window-top b,.workflow-main small,.pulse-meta span,.pulse-metric,.pulse-side-label) { color:#b9aecb !important; }
+html[data-theme="dark"] .landing-page .live-status { background:rgba(139,92,246,.2) !important; color:#e6dcff !important; }
+html[data-theme="dark"] .landing-page .landing-story-strip span { color:#b9aecb !important; }
+html[data-theme="dark"] .landing-page .role-card-image { background:#211831; }
+html[data-theme="dark"] .landing-page .library-stage { background:radial-gradient(circle at 50% 48%,#33234d 0%,#211831 48%,#171123 82%) !important; }
+html[data-theme="dark"] .landing-page .library-label { color:#e6dcff !important; }
+html[data-theme="dark"] .landing-page .numbers-grid { background:#382b4b !important; }
+html[data-theme="dark"] .landing-page .numbers-grid div { background:linear-gradient(145deg,#211831,#171123) !important; }
+html[data-theme="dark"] .landing-page .school-day-tag { color:#e6dcff !important; }
+html[data-theme="dark"] .navbar-theme-toggle {
+  border-color:#49375e;
+  background:linear-gradient(145deg,#2b1e40 0%,#171123 100%);
+  color:#e6dcff;
+  box-shadow:0 7px 22px rgba(0,0,0,.28);
+}
+html[data-theme="light"] .navbar-theme-toggle {
+  border-color:#d7e2f1;
+  background:linear-gradient(145deg,#fff 0%,#f1f5ff 100%);
+  color:#315f9e;
+}
