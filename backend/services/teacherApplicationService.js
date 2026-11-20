@@ -200,7 +200,8 @@ export const teacherApplicationService = {
   },
 
   getById: async ({ id, schoolId }) => {
-    const tenantId = Number(schoolId);\n    if (!Number.isInteger(tenantId) || tenantId <= 0) throw Object.assign(new Error("School context is required."), { statusCode: 403 });
+    const tenantId = Number(schoolId);
+    if (!Number.isInteger(tenantId) || tenantId <= 0) throw Object.assign(new Error("School context is required."), { statusCode: 403 });
     const rows = await prisma.$queryRaw`
       SELECT ta.*,
         (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
