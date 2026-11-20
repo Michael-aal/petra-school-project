@@ -39,7 +39,7 @@ const steps = [
 ];
 
 export default function TeacherApplicationForm() {
-  const schoolId = useMemo(() => new URLSearchParams(window.location.search).get("schoolId"), []);
+  const applicationToken = useMemo(() => new URLSearchParams(window.location.search).get("token"), []);
   const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
@@ -116,7 +116,7 @@ export default function TeacherApplicationForm() {
     setError("");
     try {
       const response = await teacherApplicationApi.submit({
-        schoolId: Number(schoolId),
+        applicationToken,
         ...form,
         submissionData: form,
       });
