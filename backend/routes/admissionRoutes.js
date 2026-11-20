@@ -23,7 +23,7 @@ const validate = (req, res, next) => {
   return next();
 };
 
-router.post("/", createAdmissionValidator, validate, protectOptional, requirePublicSchoolContext(), createAdmission);
+router.post("/", createAdmissionValidator, validate, protectOptional, requirePublicSchoolContext("body", "student"), createAdmission);
 router.get("/", protect, requirePrincipal, listAdmissions);
 router.get("/:id", protect, requirePrincipal, getAdmissionById);
 router.patch("/:id/approve", protect, requirePrincipal, approveAdmission);
