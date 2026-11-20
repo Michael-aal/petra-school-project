@@ -581,3 +581,31 @@ html[data-theme="light"] :is(button, a, [role="button"]) svg { stroke: currentCo
     transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
   }
 }
+
+
+/* Colored action controls always retain white labels and icon strokes,
+   even when nested inside a card with inherited theme typography. */
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"],
+  .btn-danger, .danger-button, button[class*="danger"]) :is(svg, i, span, strong, small) {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) :is(svg, i, span, strong, small) {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"],
+  .btn-danger, .danger-button, button[class*="danger"]) {
+  color: #ffffff !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary,
+  button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) {
+  color: #ffffff !important;
+}
