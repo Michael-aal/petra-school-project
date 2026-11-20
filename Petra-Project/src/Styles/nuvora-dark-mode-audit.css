@@ -345,3 +345,239 @@ html[data-theme="dark"] [role="button"][aria-label] svg {
   color: currentColor;
   stroke: currentColor;
 }
+
+
+/* =========================================================
+   NUVORA TWO-WAY THEME FINISH
+   Dark: layered midnight / violet gradients with soft glow.
+   Light: clean white / lavender gradients with dark readable copy.
+   This section intentionally comes last in the theme cascade.
+   ========================================================= */
+
+html[data-theme="dark"] {
+  color-scheme: dark !important;
+  --nv-page-gradient: linear-gradient(145deg, #0b0812 0%, #100b1c 48%, #0d0a16 100%);
+  --nv-nav-gradient: linear-gradient(180deg, rgba(25, 17, 39, .98) 0%, rgba(15, 11, 25, .98) 100%);
+  --nv-card-gradient: linear-gradient(145deg, rgba(39, 27, 59, .96) 0%, rgba(23, 17, 35, .98) 54%, rgba(18, 13, 29, .99) 100%);
+  --nv-card-gradient-hover: linear-gradient(145deg, rgba(49, 33, 75, .98) 0%, rgba(27, 19, 42, .99) 100%);
+  --nv-panel-gradient: linear-gradient(135deg, rgba(31, 21, 48, .98) 0%, rgba(17, 13, 27, .99) 100%);
+  --nv-input-gradient: linear-gradient(180deg, #171123 0%, #110d1b 100%);
+  --nv-accent-gradient: linear-gradient(120deg, #8b5cf6 0%, #a78bfa 48%, #6d45c5 100%);
+  --nv-soft-gradient: linear-gradient(135deg, rgba(139, 92, 246, .20) 0%, rgba(109, 69, 197, .08) 100%);
+  --nv-border-gradient: linear-gradient(135deg, rgba(167, 139, 250, .38), rgba(64, 52, 79, .72));
+  --nv-text-strong: #f7f3ff;
+  --nv-text-muted: #b9aecb;
+  --nv-border: #382b4b;
+  --nv-shadow: 0 14px 38px rgba(0, 0, 0, .28), 0 1px 0 rgba(196, 167, 255, .05) inset;
+  --app-bg: #0b0812 !important;
+  --app-surface: #110d1b !important;
+  --app-surface-strong: #171123 !important;
+  --app-card: #171123 !important;
+  --app-panel: #110d1b !important;
+  --app-text: #f5f3ff !important;
+  --app-text-muted: #b8aecb !important;
+  --dashboard-page-bg: #0b0812 !important;
+  --dashboard-card-bg: #171123 !important;
+  --dashboard-panel-bg: #110d1b !important;
+  --dashboard-topbar-bg: #110d1b !important;
+  --dashboard-sidebar-bg: #110d1b !important;
+}
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .dashboard-shell,
+html[data-theme="dark"] .dashboard-main,
+html[data-theme="dark"] .dashboard-content,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .page-content,
+html[data-theme="dark"] .page-container,
+html[data-theme="dark"] .content-wrapper {
+  background: var(--nv-page-gradient) !important;
+  color: var(--nv-text-strong) !important;
+}
+html[data-theme="dark"] :is(.top-navbar, .dashboard-topbar, .topbar, .sidebar-container, .dashboard-sidebar, .sidebar, .sidebar-nav, .sidebar-header, .sidebar-footer) {
+  background: var(--nv-nav-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #30233f !important;
+}
+html[data-theme="dark"] :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel, .dashboard-home-summary-card,
+  .dashboard-home-stat, .wallet-panel, .payments-panel, .layout-card,
+  .modal-content, .modal, .dropdown-menu, .notification-dropdown,
+  .account-dropdown, .popover, .command-palette, .command-palette-content,
+  .table-container, .table-responsive, .data-table-wrap
+) {
+  background: var(--nv-card-gradient) !important;
+  color: #f5f3ff !important;
+  border: 1px solid #382b4b !important;
+  box-shadow: var(--nv-shadow) !important;
+}
+html[data-theme="dark"] :is(
+  .dashboard-shell, .dashboard-page, .dashboard-home, .dashboard-content
+) :is(.card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+      .info-card, .feature-card, .summary-card, .metric-card, .widget-card,
+      .dashboard-card, .dashboard-panel, .dashboard-widget, .payment-card,
+      .profile-card, .notice-card, .announcement-card, .empty-state,
+      .table-card, .page-card, .section-card, [class*="-card"], [class*="-panel"]) {
+  background: var(--nv-card-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #382b4b !important;
+}
+html[data-theme="dark"] :is(.card, .panel, .stat-card, .feature-card, .dashboard-card, .dashboard-widget, .wallet-panel):hover {
+  background: var(--nv-card-gradient-hover) !important;
+  border-color: rgba(167, 139, 250, .55) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .34), 0 0 0 1px rgba(139, 92, 246, .08) !important;
+}
+html[data-theme="dark"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea, [contenteditable="true"], .form-input, .form-select, .search-input, .date-picker, .rich-text-editor) {
+  background: var(--nv-input-gradient) !important;
+  color: #f5f3ff !important;
+  border-color: #49375e !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+html[data-theme="dark"] :is(input, select, textarea, [contenteditable="true"]):focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, .18) !important;
+}
+html[data-theme="dark"] :is(button, .btn, a[role="button"], [role="button"].btn) {
+  border-color: #49375e;
+}
+html[data-theme="dark"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action, .btn-primary,
+  .landing-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"]) {
+  background: var(--nv-accent-gradient) !important;
+  color: #fff !important;
+  border-color: rgba(196, 167, 255, .58) !important;
+  box-shadow: 0 8px 22px rgba(109, 69, 197, .28) !important;
+}
+html[data-theme="dark"] :is(.btn-secondary, .btn-ghost, .button-secondary, .btn-outline, .button-outline) {
+  background: var(--nv-soft-gradient) !important;
+  color: #e6dcff !important;
+  border-color: #594474 !important;
+}
+html[data-theme="dark"] :is(.sidebar-link.active, .sidebar-group.group-active, .sidebar-child.active, .sidebar-assistant.active,
+  .dashboard-sidebar a.active, .sidebar a.active, .dashboard-nav a.active) {
+  background: linear-gradient(110deg, rgba(139, 92, 246, .28), rgba(109, 69, 197, .12)) !important;
+  color: #e2d5ff !important;
+  border-color: rgba(167, 139, 250, .34) !important;
+}
+html[data-theme="dark"] :is(.sidebar-link, .sidebar-group, .sidebar-child, .sidebar-assistant, .sidebar-link *, .sidebar-group *, .sidebar-child *) {
+  color: #d8cfea !important;
+}
+html[data-theme="dark"] :is(.dashboard-home-summary-icon, .dashboard-home-session-pill, .feature-icon, .tone-indigo, .tone-blue, .wallet-summary-icon, .wallet-quick-stat-icon) {
+  background: var(--nv-soft-gradient) !important;
+  color: #c4a7ff !important;
+  border-color: rgba(167, 139, 250, .28) !important;
+}
+html[data-theme="dark"] :is(.modal-backdrop, .dialog-backdrop, .command-palette-overlay) {
+  background: rgba(5, 3, 10, .78) !important;
+  backdrop-filter: blur(10px);
+}
+html[data-theme="dark"] :is(thead th, table th, .data-table th, .payments-table th, .table-container th) {
+  background: linear-gradient(120deg, #241a34, #1a1427) !important;
+  color: #d9cbed !important;
+}
+html[data-theme="dark"] :is(tbody tr:hover, .data-table tbody tr:hover, .payments-table tbody tr:hover, .table-container tbody tr:hover) {
+  background: rgba(139, 92, 246, .10) !important;
+}
+html[data-theme="dark"] :is(h1, h2, h3, h4, h5, h6, p, label, span, small, strong, li, td, th) {
+  text-decoration-color: currentColor;
+}
+html[data-theme="dark"] :is(.muted, .text-muted, .subtitle, .description, .helper-text, .form-hint) {
+  color: #b9aecb !important;
+}
+
+/* Light mode is the intentional inverse: bright surfaces, dark copy,
+   pale lavender/white gradients and the existing Nuvora blue accent. */
+html[data-theme="light"] {
+  color-scheme: light !important;
+  --nv-page-gradient: linear-gradient(145deg, #ffffff 0%, #f8faff 58%, #f4f1ff 100%);
+  --nv-nav-gradient: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(249,250,255,.98) 100%);
+  --nv-card-gradient: linear-gradient(145deg, #ffffff 0%, #fbfcff 68%, #f7f5ff 100%);
+  --nv-card-gradient-hover: linear-gradient(145deg, #ffffff 0%, #f4f1ff 100%);
+  --nv-panel-gradient: linear-gradient(135deg, #ffffff 0%, #f7f8ff 100%);
+  --nv-input-gradient: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  --nv-text-strong: #111827;
+  --nv-text-muted: #64748b;
+  --nv-border: #e5e7eb;
+  --nv-shadow: 0 10px 28px rgba(31, 41, 55, .06);
+}
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] .dashboard-shell,
+html[data-theme="light"] .dashboard-main,
+html[data-theme="light"] .dashboard-content,
+html[data-theme="light"] main,
+html[data-theme="light"] .page-content,
+html[data-theme="light"] .page-container,
+html[data-theme="light"] .content-wrapper {
+  background: var(--nv-page-gradient) !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] :is(.top-navbar, .dashboard-topbar, .topbar, .sidebar-container, .dashboard-sidebar, .sidebar, .sidebar-nav, .sidebar-header, .sidebar-footer) {
+  background: var(--nv-nav-gradient) !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+html[data-theme="light"] :is(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel, .dashboard-home-summary-card,
+  .dashboard-home-stat, .wallet-panel, .payments-panel, .layout-card,
+  .modal-content, .modal, .dropdown-menu, .notification-dropdown,
+  .account-dropdown, .popover, .command-palette, .command-palette-content,
+  .table-container, .table-responsive, .data-table-wrap
+) {
+  background: var(--nv-card-gradient) !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+  box-shadow: var(--nv-shadow) !important;
+}
+html[data-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea, [contenteditable="true"], .form-input, .form-select, .search-input, .date-picker, .rich-text-editor) {
+  background: var(--nv-input-gradient) !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+}
+html[data-theme="light"] :is(.btn-secondary, .btn-ghost, .button-secondary, .btn-outline, .button-outline) {
+  background: linear-gradient(135deg, #ffffff, #f3f4f6) !important;
+  color: #1f2937 !important;
+  border-color: #d1d5db !important;
+}
+html[data-theme="light"] :is(.btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button, .solid-button, .create-btn, .auth-submit, .notification-action, .landing-button-primary, button[type="submit"], [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]) {
+  background: linear-gradient(120deg, #1877f2, #0f5dcc) !important;
+  color: #ffffff !important;
+  border-color: #1877f2 !important;
+}
+html[data-theme="light"] :is(.dashboard-home-summary-icon, .dashboard-home-session-pill, .feature-icon, .tone-indigo, .tone-blue, .wallet-summary-icon, .wallet-quick-stat-icon) {
+  background: linear-gradient(135deg, #eff6ff, #f2edff) !important;
+  color: #2457a7 !important;
+  border-color: #dbeafe !important;
+}
+html[data-theme="light"] :is(.muted, .text-muted, .subtitle, .description, .helper-text, .form-hint) {
+  color: #64748b !important;
+}
+
+/* Explicit light/dark text guarantees for nested elements and icons. */
+html[data-theme="dark"] :is(.card, .panel, .modal, .modal-content, .dropdown-menu, .popover, .dashboard-shell, .dashboard-page) :is(h1,h2,h3,h4,h5,h6,p,label,span,small,strong,li,td,th) {
+  color: inherit;
+}
+html[data-theme="light"] :is(.card, .panel, .modal, .modal-content, .dropdown-menu, .popover, .dashboard-shell, .dashboard-page) :is(h1,h2,h3,h4,h5,h6,p,label,span,small,strong,li,td,th) {
+  color: inherit;
+}
+html[data-theme="dark"] :is(button, a, [role="button"]) svg { stroke: currentColor; }
+html[data-theme="light"] :is(button, a, [role="button"]) svg { stroke: currentColor; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme] :is(.card, .panel, .stat-card, .feature-card, .dashboard-card, .dashboard-widget) {
+    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+}
