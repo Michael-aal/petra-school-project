@@ -1374,3 +1374,329 @@ html[data-theme="dark"] .dashboard-shell :is(input,textarea)::placeholder {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* =========================================================
+   NUVORA COMPONENT DESIGN SYSTEM
+   Dribbble-inspired SaaS treatment for dashboard cards/buttons.
+   Keep the Petra blue identity and support both theme modes.
+   ========================================================= */
+
+.dashboard-shell {
+  --nuvora-card-bg: #ffffff;
+  --nuvora-card-border: #e7ebf2;
+  --nuvora-card-shadow: 0 5px 18px rgba(15, 23, 42, 0.045);
+  --nuvora-card-shadow-hover: 0 12px 28px rgba(15, 23, 42, 0.085);
+  --nuvora-control-bg: #ffffff;
+  --nuvora-control-text: #172033;
+  --nuvora-control-border: #dce3ed;
+  --nuvora-control-hover: #f2f7ff;
+  --nuvora-control-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --nuvora-action: #1877f2;
+  --nuvora-action-hover: #1268dc;
+  --nuvora-action-soft: #eaf3ff;
+}
+
+/* Cards: consistent surface, radius, border and depth. */
+.dashboard-shell :where(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) {
+  min-width: 0;
+  background: var(--nuvora-card-bg) !important;
+  color: #111827;
+  border: 1px solid var(--nuvora-card-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--nuvora-card-shadow) !important;
+  background-image: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.dashboard-shell :where(
+  .card-header, .panel-header, .widget-header, .card-title-row
+) {
+  border-color: var(--nuvora-card-border);
+}
+
+.dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) :is(h1, h2, h3, h4, h5, h6, strong, label) {
+  color: #111827;
+}
+
+.dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) :is(p, small, .muted, .description, .subtitle, .helper-text) {
+  color: #64748b;
+}
+
+/* Only interactive cards lift; informational cards remain still. */
+.dashboard-shell .dashboard-content :where(
+  a.card, button.card, [role="button"].card,
+  a.dashboard-widget, button.dashboard-widget,
+  a.summary-card, button.summary-card
+):hover {
+  border-color: #c8dcfb !important;
+  box-shadow: var(--nuvora-card-shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+/* Shared button foundation for page actions, form actions and toolbars. */
+.dashboard-shell .dashboard-content :where(
+  button:not(.icon-btn):not(.menu-btn):not(.sidebar-close):not(.close-btn):not(.modal-close),
+  .btn,
+  [role="button"].btn,
+  a[role="button"]
+) {
+  min-height: 40px;
+  padding: 9px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--nuvora-control-border);
+  border-radius: 11px;
+  background: var(--nuvora-control-bg);
+  color: var(--nuvora-control-text);
+  box-shadow: var(--nuvora-control-shadow);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease,
+    border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.dashboard-shell .dashboard-content :where(
+  button:not(:disabled):not(.icon-btn):not(.menu-btn):not(.sidebar-close):not(.close-btn):not(.modal-close),
+  .btn:not(:disabled),
+  [role="button"].btn:not([aria-disabled="true"]),
+  a[role="button"]
+):hover {
+  background: var(--nuvora-control-hover);
+  color: var(--nuvora-action);
+  border-color: #b9d4fa;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.09);
+  transform: translateY(-1px);
+}
+
+.dashboard-shell .dashboard-content :where(
+  button:active:not(:disabled), .btn:active:not(:disabled),
+  [role="button"].btn:active:not([aria-disabled="true"])
+) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Primary actions are the visual focal point, with white content. */
+.dashboard-shell .dashboard-content :where(
+  button[type="submit"], .btn-primary, .button-primary,
+  .primary-button, .btn-blue, .blue-button, .solid-button,
+  [data-variant="primary"], [class*="btn-primary"],
+  [class*="button-primary"], [class*="action-primary"]
+) {
+  background: var(--nuvora-action) !important;
+  color: #ffffff !important;
+  border-color: var(--nuvora-action) !important;
+  box-shadow: 0 4px 10px rgba(24, 119, 242, 0.18) !important;
+}
+
+.dashboard-shell .dashboard-content :where(
+  button[type="submit"], .btn-primary, .button-primary,
+  .primary-button, .btn-blue, .blue-button, .solid-button,
+  [data-variant="primary"], [class*="btn-primary"],
+  [class*="button-primary"], [class*="action-primary"]
+) :where(svg, i, span, strong, small) {
+  color: #ffffff !important;
+  stroke: currentColor;
+}
+
+.dashboard-shell .dashboard-content :where(
+  button[type="submit"], .btn-primary, .button-primary,
+  .primary-button, .btn-blue, .blue-button, .solid-button,
+  [data-variant="primary"], [class*="btn-primary"],
+  [class*="button-primary"], [class*="action-primary"]
+):hover:not(:disabled) {
+  background: var(--nuvora-action-hover) !important;
+  color: #ffffff !important;
+  border-color: var(--nuvora-action-hover) !important;
+  box-shadow: 0 7px 16px rgba(24, 119, 242, 0.23) !important;
+}
+
+/* Quiet and destructive actions retain clear semantic hierarchy. */
+.dashboard-shell .dashboard-content :where(.btn-ghost, .btn-link, [data-variant="ghost"]) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.dashboard-shell .dashboard-content :where(.btn-danger, .btn-destructive, [data-variant="danger"]) {
+  color: #b4233b;
+  border-color: #f1c5cd;
+  background: #fff7f8;
+}
+.dashboard-shell .dashboard-content :where(.btn-danger, .btn-destructive, [data-variant="danger"]):hover {
+  color: #a3162e;
+  border-color: #e8a7b3;
+  background: #ffedf0;
+}
+
+/* Icon-only controls stay compact and consistently square. */
+.dashboard-shell .dashboard-content :where(
+  .icon-button, .btn-icon, button[aria-label][class*="icon"],
+  button.icon-only
+) {
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 11px;
+}
+
+/* Disabled, keyboard and touch states. */
+.dashboard-shell .dashboard-content :where(button:disabled, .btn:disabled, [aria-disabled="true"]) {
+  opacity: .52;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.dashboard-shell .dashboard-content :where(button, a, .btn):focus-visible {
+  outline: 3px solid rgba(24, 119, 242, .28) !important;
+  outline-offset: 2px;
+}
+.dashboard-shell .dashboard-content :where(button, .btn, [role="button"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Dark mode: deep charcoal-blue cards and calm raised controls. */
+html[data-theme="dark"] .dashboard-shell {
+  --nuvora-card-bg: #131f33;
+  --nuvora-card-border: #293a53;
+  --nuvora-card-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  --nuvora-card-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.26);
+  --nuvora-control-bg: #1a2940;
+  --nuvora-control-text: #f1f5f9;
+  --nuvora-control-border: #34465f;
+  --nuvora-control-hover: #223650;
+  --nuvora-control-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+  --nuvora-action: #3b82f6;
+  --nuvora-action-hover: #2563eb;
+  --nuvora-action-soft: #173d70;
+}
+
+html[data-theme="dark"] .dashboard-shell :where(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) {
+  background: var(--nuvora-card-bg) !important;
+  color: #f1f5f9 !important;
+  border-color: var(--nuvora-card-border) !important;
+  box-shadow: var(--nuvora-card-shadow) !important;
+}
+
+html[data-theme="dark"] .dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) :is(h1, h2, h3, h4, h5, h6, strong, label) {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .dashboard-shell :is(
+  .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
+  .dashboard-home-summary-card, .summary-card, .metric-card,
+  .content-card, .form-card, .settings-card, .table-card,
+  .overview-card, .page-card
+) :is(p, small, .muted, .description, .subtitle, .helper-text) {
+  color: #a9b8cd !important;
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(
+  button:not(.icon-btn):not(.menu-btn):not(.sidebar-close):not(.close-btn):not(.modal-close),
+  .btn,
+  [role="button"].btn,
+  a[role="button"]
+) {
+  background: var(--nuvora-control-bg);
+  color: var(--nuvora-control-text);
+  border-color: var(--nuvora-control-border);
+  box-shadow: var(--nuvora-control-shadow);
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(
+  button:not(:disabled):not(.icon-btn):not(.menu-btn):not(.sidebar-close):not(.close-btn):not(.modal-close),
+  .btn:not(:disabled),
+  [role="button"].btn:not([aria-disabled="true"]),
+  a[role="button"]
+):hover {
+  background: var(--nuvora-control-hover);
+  color: #bfdbfe;
+  border-color: #42618a;
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(
+  button[type="submit"], .btn-primary, .button-primary,
+  .primary-button, .btn-blue, .blue-button, .solid-button,
+  [data-variant="primary"], [class*="btn-primary"],
+  [class*="button-primary"], [class*="action-primary"]
+) {
+  background: var(--nuvora-action) !important;
+  color: #ffffff !important;
+  border-color: var(--nuvora-action) !important;
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(
+  button[type="submit"], .btn-primary, .button-primary,
+  .primary-button, .btn-blue, .blue-button, .solid-button,
+  [data-variant="primary"], [class*="btn-primary"],
+  [class*="button-primary"], [class*="action-primary"]
+):hover:not(:disabled) {
+  background: var(--nuvora-action-hover) !important;
+  color: #ffffff !important;
+  border-color: var(--nuvora-action-hover) !important;
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(.btn-danger, .btn-destructive, [data-variant="danger"]) {
+  color: #fecdd3;
+  border-color: #713342;
+  background: #351d2a;
+}
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(.btn-danger, .btn-destructive, [data-variant="danger"]):hover {
+  color: #ffe4e8;
+  border-color: #9f4358;
+  background: #482231;
+}
+
+html[data-theme="dark"] .dashboard-shell .dashboard-content :where(button:disabled, .btn:disabled, [aria-disabled="true"]) {
+  color: #a9b8cd;
+}
+
+@media (max-width: 640px) {
+  .dashboard-shell .dashboard-content :where(
+    button:not(.icon-btn):not(.menu-btn):not(.sidebar-close):not(.close-btn):not(.modal-close),
+    .btn, a[role="button"]
+  ) {
+    min-height: 42px;
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell :where(
+    .card, .panel, .stat-card, .dashboard-widget,
+    button, .btn, [role="button"]
+  ) {
+    transition: none !important;
+  }
+}
