@@ -4,6 +4,7 @@ import {
   CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { admissionApi } from "./../../../services/admissionApi";
+import { teacherApplicationApi } from "../../../services/teacherApplicationApi";
 import { useToasts } from "../../../context/ToastContext";
 import "./AdmissionForm.css";
 
@@ -21,7 +22,25 @@ export default function AdmissionForm() {
   const [showLin, setShowLin] = useState(false);
   const [submissionSummary, setSubmissionSummary] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
+  const [schoolInfo, setSchoolInfo] = useState(null);
+  const [linkError, setLinkError] = useState("");
   const { success: showSuccess, error: showError } = useToasts();
+
+useEffect(() => {
+  let active = true;
+  if (!applicationToken) {
+    setLinkError("Open this form using the official student application link shared by the school.");
+    return () => { active = false; };
+  }
+  teacherApplicationApi.getPublicSchool(applicationToken)
+    .then((response) => {
+      if (!active) return;
+      if (response?.type !== "student") throw new Error("This link is not a student application link.");
+      setSchoolInfo(response.school);
+    })
+    .catch((error) => { if (active) setLinkError(error?.data?.message || error.message || "This student application link is invalid or unavailable."); });
+  return () => { active = false; };
+}, [applicationToken]);
 
 // Single state object for the entire massive form
   const [formData, setFormData] = useState({
