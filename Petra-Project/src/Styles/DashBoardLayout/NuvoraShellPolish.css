@@ -1423,21 +1423,21 @@ html[data-theme="dark"] .dashboard-shell :is(input,textarea)::placeholder {
   border-color: var(--nuvora-card-border);
 }
 
-.dashboard-shell :where(
+.dashboard-shell :is(
   .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
   .dashboard-home-summary-card, .summary-card, .metric-card,
   .content-card, .form-card, .settings-card, .table-card,
   .overview-card, .page-card
-) :where(h1, h2, h3, h4, h5, h6, strong, label) {
+) :is(h1, h2, h3, h4, h5, h6, strong, label) {
   color: #111827;
 }
 
-.dashboard-shell :where(
+.dashboard-shell :is(
   .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
   .dashboard-home-summary-card, .summary-card, .metric-card,
   .content-card, .form-card, .settings-card, .table-card,
   .overview-card, .page-card
-) :where(p, small, .muted, .description, .subtitle, .helper-text) {
+) :is(p, small, .muted, .description, .subtitle, .helper-text) {
   color: #64748b;
 }
 
@@ -1608,21 +1608,21 @@ html[data-theme="dark"] .dashboard-shell :where(
   box-shadow: var(--nuvora-card-shadow) !important;
 }
 
-html[data-theme="dark"] .dashboard-shell :where(
+html[data-theme="dark"] .dashboard-shell :is(
   .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
   .dashboard-home-summary-card, .summary-card, .metric-card,
   .content-card, .form-card, .settings-card, .table-card,
   .overview-card, .page-card
-) :where(h1, h2, h3, h4, h5, h6, strong, label) {
+) :is(h1, h2, h3, h4, h5, h6, strong, label) {
   color: #f1f5f9 !important;
 }
 
-html[data-theme="dark"] .dashboard-shell :where(
+html[data-theme="dark"] .dashboard-shell :is(
   .card, .panel, .stat-card, .dashboard-widget, .dashboard-home-panel,
   .dashboard-home-summary-card, .summary-card, .metric-card,
   .content-card, .form-card, .settings-card, .table-card,
   .overview-card, .page-card
-) :where(p, small, .muted, .description, .subtitle, .helper-text) {
+) :is(p, small, .muted, .description, .subtitle, .helper-text) {
   color: #a9b8cd !important;
 }
 
