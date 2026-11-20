@@ -186,7 +186,7 @@ export const teacherApplicationService = {
         (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
       FROM "TeacherApplication" ta
       LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
-      WHERE (${normalizedStatus || null}::text IS NULL OR lower(ta."status") = ${normalizedStatus || null})
+      WHERE ta."schoolId" = ${tenantId}\n        AND (${normalizedStatus || null}::text IS NULL OR lower(ta."status") = ${normalizedStatus || null})
         AND (${search || null}::text IS NULL OR
           lower(concat_ws(' ', ta."firstName", ta."middleName", ta."lastName")) LIKE ${search ? `%${search}%` : null} OR
           lower(ta."email") LIKE ${search ? `%${search}%` : null} OR lower(ta."id") LIKE ${search ? `%${search}%` : null} OR
@@ -196,14 +196,14 @@ export const teacherApplicationService = {
     return rows.map(normalizeRow);
   },
 
-  getById: async ({ id }) => {
+  getById: async ({ id, schoolId }) => {\n    const tenantId = Number(schoolId);\n    if (!Number.isInteger(tenantId) || tenantId <= 0) throw Object.assign(new Error("School context is required."), { statusCode: 403 });
     const rows = await prisma.$queryRaw`
       SELECT ta.*,
         (SELECT si."registrationCode" FROM "StaffInvitation" si WHERE si."staffUserId" = u.id ORDER BY si."generatedAt" DESC LIMIT 1) AS "registrationCode",
         (SELECT t.id FROM "Teacher" t WHERE t."userId" = u.id LIMIT 1) AS "teacherId"
       FROM "TeacherApplication" ta
       LEFT JOIN "User" u ON lower(u.email) = lower(ta.email) AND u."schoolId" = ta."schoolId" AND lower(u.role) = 'teacher'
-      WHERE ta."id" = ${String(id)} LIMIT 1
+      WHERE ta."id" = ${String(id)} AND ta."schoolId" = ${tenantId} LIMIT 1
     `;
     if (!rows.length) throw Object.assign(new Error("Teacher application not found."), { statusCode: 404 });
     return normalizeRow(rows[0]);
