@@ -217,8 +217,9 @@ useEffect(() => {
     <div className="admission-page">
       <div className="admission-container">
         <div className="admission-header">
-          <h1>New Student Admission</h1>
-          <p>Complete the form below to apply for enrollment at Nuvora.</p>
+          <h1>{schoolInfo?.name ? `${schoolInfo.name} — Student Admission` : "New Student Admission"}</h1>
+          <p>Complete the form below to apply for enrollment at {schoolInfo?.name || "the school"}.</p>
+          {linkError ? <p role="alert" className="admission-link-error">{linkError}</p> : null}
         </div>
 
         {submissionSummary ? (
