@@ -1,0 +1,85 @@
+/* NUVORA SITE-WIDE BUTTON CONTRAST AUDIT
+   Keep labels and icons white on blue/gradient action buttons in both themes.
+   Secondary, ghost, outline, navigation and icon-only controls keep their own variants. */
+
+html[data-theme] body :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  .landing-button-primary, .cta-btn-primary, .teacher-action-button.primary,
+  .wallet-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"],
+  a[role="button"][class*="primary"], [role="button"].btn-primary
+) {
+  color: #fff !important;
+}
+
+html[data-theme] body :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  .landing-button-primary, .cta-btn-primary, .teacher-action-button.primary,
+  .wallet-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"],
+  a[role="button"][class*="primary"], [role="button"].btn-primary
+) :is(svg, i, span, strong, small, em) {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+
+/* Dashboard action buttons are blue by the existing Nuvora dashboard contract.
+   Counteract legacy global SVG/text rules that were tinting their contents blue. */
+html[data-theme] body .dashboard-shell :is(button, .btn, a[role="button"], [role="button"]):not(
+  .sidebar-link, .sidebar-group, .sidebar-child, .sidebar-assistant,
+  .sidebar-close, .menu-btn, .close-btn, .modal-close, .navbar-theme-toggle,
+  .btn-ghost, .btn-secondary, .button-secondary, .btn-outline, .button-outline,
+  .icon-button:not(.btn-primary), .icon-btn:not(.btn-primary)
+) {
+  color: #fff !important;
+}
+
+html[data-theme] body .dashboard-shell :is(button, .btn, a[role="button"], [role="button"]):not(
+  .sidebar-link, .sidebar-group, .sidebar-child, .sidebar-assistant,
+  .sidebar-close, .menu-btn, .close-btn, .modal-close, .navbar-theme-toggle,
+  .btn-ghost, .btn-secondary, .button-secondary, .btn-outline, .button-outline,
+  .icon-button:not(.btn-primary), .icon-btn:not(.btn-primary)
+) :is(svg, i, span, strong, small, em) {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+
+/* Keep white labels on hover, focus, active and disabled states too. */
+html[data-theme] body :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  .landing-button-primary, .cta-btn-primary, .teacher-action-button.primary,
+  .wallet-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"]
+):is(:hover, :focus, :focus-visible, :active, :disabled),
+html[data-theme] body .dashboard-shell :is(button, .btn):not(
+  .sidebar-link, .sidebar-group, .sidebar-child, .sidebar-assistant,
+  .sidebar-close, .menu-btn, .close-btn, .modal-close, .navbar-theme-toggle,
+  .btn-ghost, .btn-secondary, .button-secondary, .btn-outline, .button-outline
+):is(:hover, :focus, :focus-visible, :active, :disabled) {
+  color: #fff !important;
+}
+
+html[data-theme] body :is(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  .landing-button-primary, .cta-btn-primary, .teacher-action-button.primary,
+  .wallet-button-primary, button[type="submit"], [data-variant="primary"],
+  [class*="btn-primary"], [class*="button-primary"]
+):is(:hover, :focus, :focus-visible, :active, :disabled) :is(svg, i, span, strong, small, em) {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+
+@media (forced-colors: active) {
+  html[data-theme] body :is(
+    .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+    .solid-button, .create-btn, .auth-submit, .notification-action,
+    .landing-button-primary, button[type="submit"], [data-variant="primary"]
+  ) {
+    forced-color-adjust: none;
+    color: #fff !important;
+  }
+}
