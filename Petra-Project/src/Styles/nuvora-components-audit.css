@@ -1,0 +1,224 @@
+/* Nuvora shared component audit
+   Loaded after legacy page styles so every route uses one predictable contract. */
+html[data-theme="light"] { color-scheme: light !important; }
+html[data-theme="dark"] { color-scheme: dark !important; }
+
+/* Normal copy should wrap at word boundaries. Mark URLs/IDs with the opt-in class. */
+html[data-theme] :where(p, span, label, small, td, th, li, h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+html[data-theme] :where(.long-text, .url-text, .identifier-text, [data-overflow-wrap="anywhere"]) {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* Shared tokens */
+html[data-theme] {
+  --nv-blue: #1877f2;
+  --nv-blue-hover: #0f5dcc;
+  --nv-radius-card: 16px;
+  --nv-radius-control: 11px;
+  --nv-shadow-card: 0 5px 20px rgba(15, 23, 42, .055);
+  --nv-shadow-hover: 0 12px 28px rgba(15, 23, 42, .10);
+  --nv-border: #e2e8f0;
+  --nv-surface: #ffffff;
+  --nv-surface-soft: #f8fafc;
+  --nv-text: #111827;
+  --nv-muted: #64748b;
+}
+html[data-theme="dark"] {
+  --nv-border: #293a53;
+  --nv-surface: #131f33;
+  --nv-surface-soft: #0f172a;
+  --nv-text: #f1f5f9;
+  --nv-muted: #a9b8cd;
+  --nv-shadow-card: 0 6px 20px rgba(0, 0, 0, .18);
+  --nv-shadow-hover: 0 12px 28px rgba(0, 0, 0, .28);
+}
+
+/* Cards across dashboards, portals, auth and public feature sections.
+   Excludes navigation and deliberately branded hero surfaces. */
+html[data-theme] body :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel,
+  .dashboard-home-summary-card, .dashboard-home-stat
+) {
+  color: var(--nv-text);
+  background-color: var(--nv-surface);
+  border-color: var(--nv-border);
+  border-radius: var(--nv-radius-card);
+  box-shadow: var(--nv-shadow-card);
+}
+html[data-theme] body :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel,
+  .dashboard-home-summary-card, .dashboard-home-stat
+) :where(h1, h2, h3, h4, h5, h6, strong, label) {
+  color: var(--nv-text);
+}
+html[data-theme] body :where(
+  .card, .panel, .stat-card, .form-card, .settings-card, .content-card,
+  .info-card, .feature-card, .step-card, .summary-card, .metric-card,
+  .widget-card, .dashboard-card, .dashboard-panel, .dashboard-widget,
+  .payment-card, .profile-card, .notice-card, .announcement-card,
+  .empty-state, .table-card, .page-card, .section-card, .solution-card,
+  .auth-card, .form-panel, .dashboard-home-panel,
+  .dashboard-home-summary-card, .dashboard-home-stat
+) :where(p, small, .muted, .text-muted, .description, .subtitle, .helper-text) {
+  color: var(--nv-muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme] body :where(
+    a.card, button.card, [role="button"].card, .interactive-card,
+    a.feature-card, button.feature-card, a.dashboard-quick-action,
+    button.dashboard-quick-action
+  ):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--nv-shadow-hover);
+    border-color: #b9d4fa;
+  }
+}
+
+/* One button foundation. Sidebar and top navigation controls retain their own geometry. */
+html[data-theme] body :where(
+  .dashboard-content, .dashboard-page, .dashboard-home, .teacher-page,
+  .parent-dashboard, .admin-workspace, .auth-page, main
+) :where(
+  button:not(.menu-btn):not(.icon-btn):not(.icon-button):not(.sidebar-close):not(.close-btn):not(.modal-close):not(.navbar-theme-toggle),
+  .btn, a[role="button"], [role="button"].btn
+) {
+  min-height: 40px;
+  padding: 9px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--nv-border);
+  border-radius: var(--nv-radius-control);
+  background: var(--nv-surface);
+  color: var(--nv-text);
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+html[data-theme] body :where(
+  .dashboard-content, .dashboard-page, .dashboard-home, .teacher-page,
+  .parent-dashboard, .admin-workspace, .auth-page, main
+) :where(
+  button:not(:disabled):not(.menu-btn):not(.icon-btn):not(.icon-button):not(.sidebar-close):not(.close-btn):not(.modal-close):not(.navbar-theme-toggle),
+  .btn:not(:disabled), a[role="button"], [role="button"].btn:not([aria-disabled="true"])
+):hover {
+  border-color: #b9d4fa;
+  background: #eaf3ff;
+  color: #0f5dcc;
+}
+html[data-theme] body :where(
+  .dashboard-content, .dashboard-page, .dashboard-home, .teacher-page,
+  .parent-dashboard, .admin-workspace, .auth-page, main
+) :where(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]
+) {
+  background: var(--nv-blue);
+  border-color: var(--nv-blue);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, .16);
+}
+html[data-theme] body :where(
+  .dashboard-content, .dashboard-page, .dashboard-home, .teacher-page,
+  .parent-dashboard, .admin-workspace, .auth-page, main
+) :where(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]
+) :where(svg, i, span, strong, small) {
+  color: #fff;
+  stroke: currentColor;
+}
+html[data-theme] body :where(
+  .dashboard-content, .dashboard-page, .dashboard-home, .teacher-page,
+  .parent-dashboard, .admin-workspace, .auth-page, main
+) :where(
+  .btn-primary, .button-primary, .primary-button, .btn-blue, .blue-button,
+  .solid-button, .create-btn, .auth-submit, .notification-action,
+  [data-variant="primary"], [class*="btn-primary"], [class*="button-primary"]
+):hover:not(:disabled) {
+  background: var(--nv-blue-hover);
+  border-color: var(--nv-blue-hover);
+  color: #fff;
+}
+html[data-theme] body :where(.btn-ghost, .btn-link, [data-variant="ghost"]) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+html[data-theme] body :where(.btn-danger, .btn-destructive, [data-variant="danger"]) {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #9f1239;
+}
+html[data-theme="dark"] body :where(.btn-danger, .btn-destructive, [data-variant="danger"]) {
+  background: #351d2a;
+  border-color: #713342;
+  color: #fecdd3;
+}
+html[data-theme] body :where(button:disabled, .btn:disabled, [aria-disabled="true"]) {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+html[data-theme] body :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid rgba(24, 119, 242, .32);
+  outline-offset: 2px;
+}
+
+/* Icon-only actions must not inherit full text-button padding. */
+html[data-theme] body :where(
+  button.icon-only, button.icon-button, button.btn-icon,
+  button[aria-label][class*="icon"], .icon-button, .btn-icon
+) {
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 11px;
+}
+html[data-theme="dark"] body :where(input, select, textarea) {
+  color-scheme: dark;
+  background-color: #0f172a;
+  color: #f1f5f9;
+  border-color: #334155;
+}
+html[data-theme="dark"] body :where(input::placeholder, textarea::placeholder) {
+  color: #a9b8cd;
+}
+@media (max-width: 640px) {
+  html[data-theme] body :where(.dashboard-content, .dashboard-page, .auth-page) :where(
+    button:not(.menu-btn):not(.icon-btn):not(.icon-button):not(.sidebar-close):not(.close-btn):not(.modal-close),
+    .btn, a[role="button"]
+  ) {
+    min-height: 42px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] body :where(.card, .panel, .stat-card, .feature-card, button, .btn, [role="button"]) {
+    transition: none !important;
+    transform: none !important;
+  }
+}
