@@ -1282,7 +1282,8 @@ html[data-theme="dark"] .dashboard-shell :is(input,textarea)::placeholder {
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .dashboard-shell :where(
   .card-header, .panel-header, .widget-header, .page-header,
@@ -1316,11 +1317,22 @@ html[data-theme="dark"] .dashboard-shell :is(input,textarea)::placeholder {
 }
 .dashboard-shell :where(button, .btn, [role="button"]) {
   max-width: 100%;
-  overflow-wrap: anywhere;
+  min-width: 0;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .dashboard-shell :where(h1, h2, h3, h4, h5, h6, p, label, small, span, strong, td, th) {
   min-width: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+/* Break only genuinely unbroken content; keep ordinary labels and names intact. */
+.dashboard-shell :where(
+  .long-text, .url-text, .identifier-text,
+  [data-overflow-wrap="anywhere"]
+) {
   overflow-wrap: anywhere;
+  word-break: normal;
 }
 .dashboard-shell :where(.card, .panel, .dashboard-widget) > * {
   min-width: 0;
