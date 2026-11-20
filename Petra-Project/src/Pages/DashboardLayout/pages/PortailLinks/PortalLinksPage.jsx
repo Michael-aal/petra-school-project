@@ -146,7 +146,7 @@ export default function PortalLinksPage() {
       {error ? <div className="applicant-links-error" role="alert">{error}</div> : null}
       {loading ? <div className="applicant-links-loading">Loading your application links…</div> : null}
 
-      {!loading && !error && portal?.links ? (
+      {!loading && portal?.links ? (
         <section className="applicant-links-grid">
           {cards.map(({ type, title, description, icon: Icon, accent }) => {
             const url = makeUrl(type);
