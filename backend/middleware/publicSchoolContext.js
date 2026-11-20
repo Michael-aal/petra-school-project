@@ -15,7 +15,7 @@ export const requirePublicSchoolContext = (source = "body", expectedType = null)
     return res.status(403).json({ success: false, message: "This application link is invalid or has the wrong application type." });
   }
 
-  const requestedSchoolId = tokenContext?.schoolId || parseSchoolId(req[source]?.schoolId);
+  const requestedSchoolId = tokenContext?.schoolId || (!expectedType ? parseSchoolId(req[source]?.schoolId) : null);
   if (!requestedSchoolId) {
     return res.status(400).json({ success: false, message: "Open this form using the school's official application link." });
   }
