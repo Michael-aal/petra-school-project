@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   CreditCard,
   GraduationCap,
+  Clock3,
   LayoutDashboard,
   MessageCircle,
   School,
@@ -30,9 +31,9 @@ const features = [
 
 const roles = [
   { icon: School, title: "For school leaders", text: "See the whole school without jumping between disconnected systems.", points: ["Operations at a glance", "Finance visibility", "Staff and student management"] },
-  { icon: GraduationCap, title: "For teachers", text: "Spend more energy teaching and less time fighting paperwork.", points: ["Attendance and classes", "Assessments and results", "Announcements and resources"] },
-  { icon: Users, title: "For parents", text: "Give families a simple window into the school day.", points: ["Results and report cards", "Fees and payment history", "School notices and messages"] },
-  { icon: BookOpen, title: "For students", text: "Make the school experience feel connected from the classroom to home.", points: ["Learning resources", "Schedules and assessments", "Academic progress"] },
+  { icon: GraduationCap, title: "For teachers", image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=85", imageAlt: "Teacher guiding students during a classroom lesson", text: "Spend more energy teaching and less time fighting paperwork.", points: ["Attendance and classes", "Assessments and results", "Announcements and resources"] },
+  { icon: Users, title: "For parents", image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=85", imageAlt: "Parent sharing a learning moment with a child", text: "Give families a simple window into the school day.", points: ["Results and report cards", "Fees and payment history", "School notices and messages"] },
+  { icon: BookOpen, title: "For students", image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=85", imageAlt: "Students learning together in a bright classroom", text: "Make the school experience feel connected from the classroom to home.", points: ["Learning resources", "Schedules and assessments", "Academic progress"] },
 ];
 
 const journey = [
@@ -179,6 +180,44 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="landing-section school-day-section landing-anchor" id="school-day">
+        <div className="section-header centered">
+          <p className="landing-kicker">From the first bell to home time</p>
+          <h2 className="section-title">One school day. Everyone in sync.</h2>
+          <p className="section-lead">A quick look at how everyday school moments connect through Nuvora.</p>
+        </div>
+        <div className="school-day-grid">
+          <article className="school-day-card">
+            <span className="school-day-time">08:00 · MORNING</span>
+            <div className="school-day-icon"><Clock3 size={23}/></div>
+            <h3>Start with a clear picture</h3>
+            <p>Attendance and daily notices help the school begin with the right information.</p>
+            <span className="school-day-tag">Attendance · Notices</span>
+          </article>
+          <article className="school-day-card">
+            <span className="school-day-time">10:30 · CLASSROOM</span>
+            <div className="school-day-icon"><BookOpen size={23}/></div>
+            <h3>Keep learning moving</h3>
+            <p>Teachers organize lessons, assessments and resources in one connected workspace.</p>
+            <span className="school-day-tag">Lessons · Resources</span>
+          </article>
+          <article className="school-day-card">
+            <span className="school-day-time">13:00 · CONNECTION</span>
+            <div className="school-day-icon"><MessageCircle size={23}/></div>
+            <h3>Bring families closer</h3>
+            <p>Parents can follow relevant updates, results and school communication.</p>
+            <span className="school-day-tag">Parent updates · Messages</span>
+          </article>
+          <article className="school-day-card">
+            <span className="school-day-time">15:30 · INSIGHTS</span>
+            <div className="school-day-icon"><BarChart3 size={23}/></div>
+            <h3>See what needs attention</h3>
+            <p>Useful summaries help school leaders understand progress and plan the next day.</p>
+            <span className="school-day-tag">Reports · Insights</span>
+          </article>
+        </div>
+      </section>
+
       <section className="landing-section role-section landing-anchor" id="roles">
         <div className="section-header centered">
           <p className="landing-kicker">Made for everyone</p>
@@ -186,8 +225,9 @@ export default function LandingPage() {
           <p className="section-lead">Every role gets a focused experience while the school keeps one connected source of truth.</p>
         </div>
         <div className="role-grid">
-          {roles.map(({ icon: Icon, title, text, points }) => (
-            <article className="role-card" key={title}>
+          {roles.map(({ icon: Icon, title, text, points, image, imageAlt }) => (
+            <article className={`role-card${image ? " role-card-with-image" : ""}`} key={title}>
+              {image && <div className="role-card-image"><img src={image} alt={imageAlt} loading="lazy" /></div>}
               <div className="role-icon"><Icon size={23} /></div>
               <h3>{title}</h3>
               <p>{text}</p>
