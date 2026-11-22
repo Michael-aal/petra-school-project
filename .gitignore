@@ -13,3 +13,15 @@ node_modules
 /recovered-applicants.txt
 
 /generated/prisma
+
+# Generated frontend/backend output and local tool caches
+**/dist/
+**/coverage/
+.vercel/
+*.tsbuildinfo
+
+# Operating-system and recovery artifacts (never application source)
+.DS_Store
+Thumbs.db
+Microsoft/Windows/PowerShell/ModuleAnalysisCache
+*cbt-recovered.jsx
