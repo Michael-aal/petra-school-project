@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BriefcaseBusiness,
   Check,
@@ -39,12 +39,28 @@ const steps = [
 ];
 
 export default function TeacherApplicationForm() {
-  const schoolId = useMemo(() => new URLSearchParams(window.location.search).get("schoolId"), []);
+  const applicationToken = useMemo(() => new URLSearchParams(window.location.search).get("token"), []);
   const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(null);
+  const [schoolInfo, setSchoolInfo] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!applicationToken) {
+      setError("Open this form using the official teacher application link shared by the school.");
+      return () => { active = false; };
+    }
+    teacherApplicationApi.getPublicSchool(applicationToken)
+      .then((response) => {
+        if (response?.type !== "teacher") throw new Error("This link is not a teacher application link.");
+        if (active) setSchoolInfo(response.school);
+      })
+      .catch((requestError) => { if (active) setError(requestError?.data?.message || "This teacher application link is invalid or unavailable."); });
+    return () => { active = false; };
+  }, [applicationToken]);
 
   const change = (event) => {
     const { name, value, type, checked } = event.target;
@@ -108,15 +124,15 @@ export default function TeacherApplicationForm() {
     event.preventDefault();
     const message = validateAll();
     if (message) return setError(message);
-    if (!/^\d+$/.test(String(schoolId || ""))) {
-      return setError("This application link is missing a valid school reference. Please use the school's official application link.");
+    if (!applicationToken) {
+      return setError("Open this form using the official teacher application link shared by the school.");
     }
 
     setLoading(true);
     setError("");
     try {
       const response = await teacherApplicationApi.submit({
-        schoolId: Number(schoolId),
+        applicationToken,
         ...form,
         submissionData: form,
       });
@@ -134,9 +150,9 @@ export default function TeacherApplicationForm() {
     <main className="teacher-application-page">
       <div className="teacher-application-shell">
         <header className="teacher-application-header">
-          <div className="teacher-application-brand">PETRA</div>
+          <div className="teacher-application-brand">{schoolInfo?.logo ? <img src={schoolInfo.logo} alt="" /> : (schoolInfo?.name || "SCHOOL").slice(0, 1).toUpperCase()}</div>
           <div>
-            <p className="teacher-application-eyebrow">STAFF RECRUITMENT</p>
+            <p className="teacher-application-eyebrow">{schoolInfo?.name || "SCHOOL"} · STAFF RECRUITMENT</p>
             <h1>Teacher Application Form</h1>
             <p>Complete your application to join the school teaching team.</p>
           </div>

@@ -436,3 +436,15 @@
 @media (prefers-reduced-motion: reduce) {
   .admission-page .form-card { animation: none; }
 }
+
+
+.admission-link-error {
+  margin: 12px auto 0 !important;
+  max-width: 680px;
+  padding: 10px 13px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background: var(--app-surface);
+  color: var(--app-text);
+  line-height: 1.5;
+}

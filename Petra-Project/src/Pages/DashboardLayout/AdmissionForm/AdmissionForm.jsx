@@ -4,7 +4,7 @@ import {
   CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { admissionApi } from "./../../../services/admissionApi";
-import { financeApi } from "../../../services/financeApi";
+import { teacherApplicationApi } from "../../../services/teacherApplicationApi";
 import { useToasts } from "../../../context/ToastContext";
 import "./AdmissionForm.css";
 
@@ -17,44 +17,32 @@ const nigerianStates = [
 ];
 
 export default function AdmissionForm() {
-  const publicSchoolId = new URLSearchParams(window.location.search).get("schoolId");
+  const applicationToken = new URLSearchParams(window.location.search).get("token");
   const [currentStep, setCurrentStep] = useState(1);
   const [showLin, setShowLin] = useState(false);
   const [submissionSummary, setSubmissionSummary] = useState(null);
   const [copiedCode, setCopiedCode] = useState("");
+  const [schoolInfo, setSchoolInfo] = useState(null);
+  const [linkError, setLinkError] = useState("");
   const { success: showSuccess, error: showError } = useToasts();
 
 useEffect(() => {
   let active = true;
+  if (!applicationToken) {
+    setLinkError("Open this form using the official student application link shared by the school.");
+    return () => { active = false; };
+  }
+  teacherApplicationApi.getPublicSchool(applicationToken)
+    .then((response) => {
+      if (!active) return;
+      if (response?.type !== "student") throw new Error("This link is not a student application link.");
+      setSchoolInfo(response.school);
+    })
+    .catch((error) => { if (active) setLinkError(error?.data?.message || error.message || "This student application link is invalid or unavailable."); });
+  return () => { active = false; };
+}, [applicationToken]);
 
-  const verifyApplicationPayment = async () => {
-    try {
-      const response = await financeApi.parentFees();
-      const paid = response?.applicationPayment?.status === "Successful";
-
-      if (active && !paid && !import.meta.env.DEV) {
-        showError(
-          "Application fee required",
-          "Please complete the application fee payment before accessing the form."
-        );
-        window.location.href = "/payment";
-      }
-    } catch (error) {
-      console.error("Unable to verify application payment:", error);
-    }
-  };
-
-  verifyApplicationPayment();
-
-  return () => {
-    active = false;
-  };
-}, []);
-
-
-
-
-  // Single state object for the entire massive form
+// Single state object for the entire massive form
   const [formData, setFormData] = useState({
     // Step 1: Student Info
     email: "", firstName: "", middleName: "", lastName: "", gender: "", dob: "",
@@ -89,13 +77,13 @@ useEffect(() => {
       showError("Submission blocked", "Please agree to the terms and conditions to submit.");
       return;
     }
-    if (!/^\d+$/.test(publicSchoolId || "")) {
+    if (!applicationToken) {
       showError("School link required", "Open the admission form from your school's official application link.");
       return;
     }
 
     try {const payload = {
-  schoolId: Number(publicSchoolId),
+  applicationToken,
   // Applicant
   applicantName: `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim(),
   firstName: formData.firstName,
@@ -167,7 +155,7 @@ useEffect(() => {
       })();
       const applicantId = admission?.applicantId || safeRemarks.applicantId;
       const assessmentId = admission?.examReference || safeRemarks.examReference;
-      const schoolId = admission?.schoolId || Number(publicSchoolId);
+      const schoolId = admission?.schoolId || null;
       setSubmissionSummary({
         message: response.message || "Application submitted successfully.",
         applicantId: applicantId || "",
@@ -229,8 +217,9 @@ useEffect(() => {
     <div className="admission-page">
       <div className="admission-container">
         <div className="admission-header">
-          <h1>New Student Admission</h1>
-          <p>Complete the form below to apply for enrollment at Nuvora.</p>
+          <h1>{schoolInfo?.name ? `${schoolInfo.name} — Student Admission` : "New Student Admission"}</h1>
+          <p>Complete the form below to apply for enrollment at {schoolInfo?.name || "the school"}.</p>
+          {linkError ? <p role="alert" className="admission-link-error">{linkError}</p> : null}
         </div>
 
         {submissionSummary ? (
